@@ -1,42 +1,23 @@
 <template>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary elevate-3 mb-3">
-      <a class="navbar-brand" style="color: white;">PERS-STAT</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-lg navbar-dark primary-color-dark fixed-top">
+      <img src="../../static/afpc_log.png" height="30px">
+      <div class="navbar-brand white-text">PERS-STAT</div>
+      <button class="navbar-toggler hoverable" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-              <router-link to="/" tag="li"><a class="nav-link">Home</a></router-link>
-          </li>
-          <router-link to="/ad_manning" tag="li"><a class="nav-link">AD Manning</a></router-link>
-          <li class="nav-item">
-          </li>
-          <li class="nav-item">
-              <router-link to="/officer" tag="li"><a class="nav-link">Officer</a></router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/enlisted" tag="li"><a class="nav-link">Enlisted</a></router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/civilian" tag="li"><a class="nav-link">Civilian</a></router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/assignments" tag="li"><a class="nav-link">Assignments</a></router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/joint" tag="li"><a class="nav-link">Joint</a></router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/care" tag="li"><a class="nav-link">Care</a></router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/first_contact" tag="li"><a class="nav-link">First Contact</a></router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/it" tag="li"><a class="nav-link">IT</a></router-link>
-          </li>
+        <ul class="navbar-nav mr-auto">
+          <router-link class="nav-item" to="/" tag="li"><a class="nav-link">Home</a></router-link>
+        <router-link class="nav-item" to="/ad_manning" tag="li"><a class="nav-link">AD Manning</a></router-link>
+          <router-link class="nav-item" to="/officer" tag="li"><a class="nav-link">Officer</a></router-link>
+          <router-link class="nav-item" to="/enlisted" tag="li"><a class="nav-link">Enlisted</a></router-link>
+          <router-link class="nav-item" to="/civilian" tag="li"><a class="nav-link">Civilian</a></router-link>
+          <router-link class="nav-item" to="/assignments" tag="li"><a class="nav-link">Assignments</a></router-link>
+          <router-link class="nav-item" to="/joint" tag="li"><a class="nav-link">Joint</a></router-link>
+          <router-link class="nav-item" to="/care" tag="li"><a class="nav-link">Care</a></router-link>
+          <router-link class="nav-item" to="/first_contact" tag="li"><a class="nav-link">First Contact</a></router-link>
+          <router-link class="nav-item" to="/it" tag="li"><a class="nav-link">IT</a></router-link>
         </ul>
       </div>
     </nav>
@@ -54,5 +35,12 @@
 
     a, a:active, a:focus, button, button:active, button:focus {
         outline: none;
+    }
+
+    button:hover {
+        background-color: #4285F4;
+    }
+    button:active {
+        background-color: #0d47a1;
     }
 </style>

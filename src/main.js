@@ -6,6 +6,7 @@ import router from './router'
 
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '../node_modules/mdbootstrap/css/mdb.min.css'
 
 /* eslint-disable no-new */
 new Vue({
