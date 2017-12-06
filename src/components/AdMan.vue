@@ -1,13 +1,25 @@
 <template>
     <div class="container">
         <div class="row">
-            Ad manning
+            <h1>AD Manning</h1>
+        </div>
+        <div class="row">
+            
         </div>
     </div>
 </template>
 
 <script>
-    
+    export default {
+        data() {
+            return {
+                
+            }
+        },
+        mounted() {
+            console.log('mounted')
+        }
+    }
 </script>
 
 <style>

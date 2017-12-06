@@ -33,10 +33,6 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0px 6px 6px rgba(0,0,0,0.23);
     }
 
-    a, a:active, a:focus, button, button:active, button:focus {
-        outline: none;
-    }
-
     button:hover {
         background-color: #4285F4;
     }
