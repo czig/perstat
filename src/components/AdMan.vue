@@ -1,27 +1,314 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1>AD Manning</h1>
+            <h1 class="col">AD Manning</h1>
+            <div class="col-auto dc-data-count">
+                <span class="filter-count"></span> 
+                PASCODEs selected out of 
+                <span class="total-count"></span>
+            </div>
+        </div>
+        <div class="row"> 
+            <div id="radioSelect" class="col form-group">
+                <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
+                <label for="radio">Percentage</label>
+                <input name="group2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                <label for="radio">Assigned</label>
+                <input name="group3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                <label for="radio3">Authorized</label>
+            </div>
         </div>
         <div class="row">
-            
+            <div class="col"></div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-danger btn-rounded btn-sm waves-effect" @click="resetAll">Reset All</button>
+            </div>
+        </div>
+        <div class="row">
+            <div id="majcom" class="col-12">
+                <div id="dc-majcom-barchart">
+                    <h3>MAJCOM <small>{{ylabel}}</small>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-majcom-barchart')">Reset</button>
+                    </h3>
+                    <div class="row">
+                        <div class="col-auto">
+                            Assigned:
+                            <span id="asgn"></span>
+                        </div>
+                        <div class="col-auto">
+                            STP:
+                            <span id="stp"></span>
+                        </div>
+                        <div class="col-auto">
+                            Authorized:
+                            <span id="auth"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="grade" class="col-4">
+                <div id="dc-grade-rowchart">
+                    <h3>Grade <small>{{ylabel}}</small>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-grade-barchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+            <div id="afscGroup" class="col-8">
+                <div id="dc-afscGroup-barchart">
+                    <h3>AFSC Group <small>{{ylabel}}</small>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-afscGroup-barchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
+import dchelpers from '@/dchelpers'
+
     export default {
         data() {
             return {
-                
+                data: [],
+                selected: "percent"      
             }
+        },
+        computed: {
+          ndx: function(){
+            return crossfilter(this.data)
+          },
+          allGroup: function(){
+            return this.ndx.groupAll()
+          },
+          ylabel: function() {
+            if (this.selected === "percent") {
+                return "Manning Percent (%)"
+            }
+            else if (this.selected === "asgn") {
+                return "Assigned"
+            }
+            else {
+                return "Authorized"
+            }
+          }
+        },
+        methods: {
+          resetAll: (event)=>{
+            //Emulate javascript:dc.filterAll();dc.redrawAll()
+            dc.filterAll()
+            dc.redrawAll()
+          },
+          resetChart: (id)=>{
+            dc.chartRegistry.list().filter(chart=>{
+              return chart.anchorName() == id
+            }).forEach(chart=>{
+              chart.filterAll()
+            })
+            dc.redrawAll()
+          },
+          radioButton: () => {
+            setTimeout(function() {
+                dc.redrawAll()
+            },10)
+          }
+        },
+        created: function(){
+          console.log('created')
+          var data = require('@/assets/data/ps_off.csv')
+          this.data = data
         },
         mounted() {
             console.log('mounted')
+            dc.dataCount(".dc-data-count")
+              .dimension(this.ndx)
+              .group(this.allGroup)
+
+            //radio button
+            //d3.selectAll('#radioSelect')
+            //    .on('click', function() {
+            //        setTimeout(function(){
+            //            dc.redrawAll();
+            //        },10)
+            //    })
+
+            //Location
+            var majcomConfig = {}
+            majcomConfig.id = 'majcom'
+            majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM_T12C})
+            var majcomPercent = majcomConfig.dim.group().reduce( function(p, v) {
+                p.asgn = p.asgn + +v.ASGNCURR
+                p.auth = p.auth + +v.AUTHCURR
+                p.percent = Math.round((p.asgn/p.auth)*1000)/10
+                return p
+            },
+            function(p,v) {
+                p.asgn = p.asgn - +v.ASGNCURR
+                p.auth = p.auth - +v.AUTHCURR
+                p.percent = p.asgn/p.auth || 0
+                return p
+            },
+            function() {
+                return {
+                    asgn: 0,
+                    auth: 0,
+                    percent: 0
+                }
+            })
+            
+            majcomConfig.group = majcomPercent
+            majcomConfig.minHeight = 300
+            majcomConfig.aspectRatio = 5
+            majcomConfig.margins = {top: 10, left: 40, right: 50, bottom: 100}
+            majcomConfig.colors = ["#1976d2"]
+            var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
+            majcomChart
+                .valueAccessor((d)=> {
+                    return d.value[this.selected];
+                })
+
+            var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })
+            var authND = dc.numberDisplay("#auth")
+            authND.group(auth)
+                .formatNumber(d3.format(".g"))
+                .valueAccessor(function(d) { return d;})
+                .html({
+                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                })
+            var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.ASGNCURR})
+            var asgnND = dc.numberDisplay("#asgn")
+            asgnND.group(asgn)
+                .formatNumber(d3.format(".g"))
+                .valueAccessor(function(d) {return d;})
+                .html({
+                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                })
+            var stp = this.ndx.groupAll().reduceSum(function(d) { return +d.STP})
+            var stpND = dc.numberDisplay("#stp")
+            stpND.group(stp)
+                .formatNumber(d3.format(".g"))
+                .valueAccessor(function(d) {return d;})
+                .html({
+                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                })
+                
+            //grade
+            var gradeOrder = {
+              "LTC": 5,
+              "MAJ": 4,
+              "CPT": 3,
+              "1LT": 2,
+              "2LT": 1
+            }
+            var gradeArray =["2LT","1LT","CPT","MAJ","LTC"]
+            var gradeConfig = {}
+            gradeConfig.id = 'grade'
+            gradeConfig.dim = this.ndx.dimension(function(d){return gradeArray[+d.GRADE-1]})
+            gradeConfig.group = gradeConfig.dim.group().reduce( function(p, v) {
+                p.asgn = p.asgn + +v.ASGNCURR
+                p.auth = p.auth + +v.AUTHCURR
+                p.percent = Math.round((p.asgn/p.auth)*1000)/10
+                return p
+            },
+            function(p,v) {
+                p.asgn = p.asgn - +v.ASGNCURR
+                p.auth = p.auth - +v.AUTHCURR
+                p.percent = p.asgn/p.auth || 0
+                return p
+            },
+            function() {
+                return {
+                    asgn: 0,
+                    auth: 0,
+                    percent: 0
+                }
+            })
+            gradeConfig.minHeight = 200 
+            gradeConfig.aspectRatio = 2
+            gradeConfig.margins = {top: 0, left: 10, right: 20, bottom: 20}
+            gradeConfig.colors = d3.scale.category10()
+            var gradeChart = dchelpers.getRowChart(gradeConfig)
+            gradeChart
+                .valueAccessor((d)=> {
+                    return d.value[this.selected];
+                })
+                .ordering(function(d){
+                  return gradeOrder[d.key]
+                })
+            
+            //afscGroup
+            var afscGroupConfig = {}
+            afscGroupConfig.id = 'afscGroup'
+            afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_GROUP})
+            afscGroupConfig.group = afscGroupConfig.dim.group().reduce( function(p, v) {
+                p.asgn = p.asgn + +v.ASGNCURR
+                p.auth = p.auth + +v.AUTHCURR
+                p.percent = Math.round((p.asgn/p.auth)*1000)/10
+                return p
+            },
+            function(p,v) {
+                p.asgn = p.asgn - +v.ASGNCURR
+                p.auth = p.auth - +v.AUTHCURR
+                p.percent = p.asgn/p.auth || 0
+                return p
+            },
+            function() {
+                return {
+                    asgn: 0,
+                    auth: 0,
+                    percent: 0
+                }
+            })
+            afscGroupConfig.minHeight = 200 
+            afscGroupConfig.aspectRatio = 2.6
+            afscGroupConfig.margins = {top: 0, left: 40, right: 50, bottom: 100}
+            afscGroupConfig.colors = ["#108b52"] 
+            var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
+            afscGroupChart
+                .valueAccessor((d)=> {
+                    return d.value[this.selected];
+                })
+
+            //make responsive
+            var temp
+            window.onresize = function(event) {
+                clearTimeout(temp)
+                temp = setTimeout(dc.redrawAll(), 500)
+            }
+
+            //create charts
+            dc.renderAll()
+            dc.redrawAll()
+        },
+        beforeUpdate() {
+            console.log("beforeupdate")
+        },
+        destroyed() {
+            console.log("destroyed")
         }
     }
 </script>
 
+<style src="../../node_modules/dc/dc.css">
+</style>
 <style>
-    
+div[id*="-barchart"] .x.axis text{
+    text-anchor: end !important;
+    transform: rotate(-45deg);
+  }
+
+div[id*="-rowchart"] g.row text{
+    fill: black;
+}
 </style>

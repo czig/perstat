@@ -63,6 +63,14 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
+      },
+      {
+        test: /\.s[a|c]ss$/,
+        loader: 'style!css!sass'
+      },
+      {
+        test: /\.csv$/,
+        loader: 'dsv-loader'
       }
     ]
   },
@@ -72,6 +80,12 @@ module.exports = {
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
             Popper: ['popper.js', 'default']
+        }),
+        new webpack.ProvidePlugin({
+          d3: 'd3',
+          crossfilter: 'crossfilter2',
+          dc: 'dc',
+          _: 'lodash'
         })
     ]
 }
