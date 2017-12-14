@@ -212,7 +212,6 @@ import dchelpers from '@/dchelpers'
             majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM_T12C})
             var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
             majcomConfig.group = removeEmptyBins(majcomPercent)
-            console.log(majcomConfig.group.all())
             majcomConfig.minHeight = 300
             majcomConfig.aspectRatio = 5
             majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
