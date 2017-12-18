@@ -76,6 +76,7 @@
 
 <script>
 import dchelpers from '@/dchelpers'
+import axios from 'axios'
 
     export default {
         data() {
@@ -125,203 +126,232 @@ import dchelpers from '@/dchelpers'
         },
         created: function(){
           console.log('created')
-          var data = require('@/assets/data/ps_off.csv')
-          this.data = data
+          //var data = require('@/assets/data/ps_off.csv')
+          //this.data = data
         },
         mounted() {
             console.log('mounted')
-            dc.dataCount(".dc-data-count")
-              .dimension(this.ndx)
-              .group(this.allGroup)
 
-            //radio button
-            //d3.selectAll('#radioSelect')
-            //    .on('click', function() {
-            //        setTimeout(function(){
-            //            dc.redrawAll();
-            //        },10)
-            //    })
-            
-            //reduce functions
-            function manningAdd(p,v) {
-                p.asgn = p.asgn + +v.ASGNCURR
-                p.auth = p.auth + +v.AUTHCURR
-                p.stp = p.stp + +v.STP
-                //if divide by 0, set to 0, and if NaN, set to zero
-                p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
-                return p
-            }
-            function manningRemove(p,v) {
-                p.asgn = p.asgn - +v.ASGNCURR
-                p.auth = p.auth - +v.AUTHCURR
-                p.stp = p.stp - +v.STP
-                //if divide by 0, set to 0, and if NaN, set to zero
-                p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
-                return p
-            }
-            function manningInitial() {
-                return {
-                    asgn: 0,
-                    auth: 0,
-                    stp: 0,
-                    percent: 0,
-                    stpPercent: 0,
+            //axios request - can change to a get request and change to the "get" endpoint to see a get request
+            axios.post('http://localhost:5005/api/admanning_post').then(response => {
+                var axiosData = response.data.data
+                var objData = makeObject(axiosData) 
+                this.data = objData
+                console.log(objData)
+                renderCharts()
+            }).catch(console.error)
+
+            var makeObject = (data) => {
+                var keys = data.shift()
+                var i = 0
+                var k = 0
+                var obj = null
+                var output = [];
+
+                for (i=0; i < data.length; i++) {
+                    obj = {};
+                    for (k = 0; k < keys.length; k++) {
+                        obj[keys[k]] = data[i][k];
+                    }
+                    output.push(obj);
                 }
-            }
-            //remove empty function (es6 syntax to keep correct scope)
-            var removeEmptyBins = (source_group) => {
-                return {
-                    all: () => {
-                        return source_group.all().filter((d) => {
-                            return d.value[this.selected] != 0
-                        })
-                    }
-                }
-            }
-            //stacking functions
-            function multikey(x,y) {
-                return x + 'x' + y
-            }
-            function splitkey(k) {
-                return k.split('x');
-            }
-            function stack_second(group) {
-                return {
-                    all: function() {
-                        var all = group.all(),
-                        m = {};
-                        //matrix of multikey/value pairs
-                        all.forEach(function(kv) {
-                            var ks = splitkey(kv.key);
-                            m[ks[0]] = m[ks[0]] || {};
-                            m[ks[0]][ks[1]] = kv.value;
-                        });
-                        //then produce multivalue key/value pairs
-                        return Object.keys(m).map(function(k) {
-                            return {key: k, value: m[k]};
-                        });
-                    }
-                };
+                return output;
             }
 
-            //Location
-            var majcomConfig = {}
-            majcomConfig.id = 'majcom'
-            majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM_T12C})
-            var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-            majcomConfig.group = removeEmptyBins(majcomPercent)
-            majcomConfig.minHeight = 300
-            majcomConfig.aspectRatio = 5
-            majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
-            majcomConfig.colors = ["#1976d2"]
-            var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-            majcomChart
-                .elasticX(true)
-                .group(majcomConfig.group, "1",(d) => {
-                    return d.value[this.selected]
-                })
-                .stack(majcomConfig.group, "2",(d) => {
-                    return d.value[this.selected === "asgn" ? "stp" : 0]
-                })
-                .ordinalColors(["#1976d2","#ff4500"])
-                .legend(dc.legend().horizontal(true).legendText((d) => {
-                    if (d.name === '1') {
-                        return 'PP'
-                    } else {
-                        return 'STP'
-                    }
-                }))
-                .on('pretransition', function(chart) {
-                    chart.selectAll('rect.bar')
-                        .classed('stack-deselected', function(d) {
-                            //d.x is majcom and d.layer is assigned or stp
-                            return chart.filter() && chart.filters().indexOf(d.x) === -1
-                        })
-                        .on('click', function(d) {
-                            chart.filter(d.x)
-                            dc.redrawAll()
-                        })
-                })
+            var renderCharts = () => {
+                dc.dataCount(".dc-data-count")
+                  .dimension(this.ndx)
+                  .group(this.allGroup)
 
-            //Number Display for Auth, Asgn, STP - show total for filtered content
-            var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })
-            var authND = dc.numberDisplay("#auth")
-            authND.group(auth)
-                .formatNumber(d3.format(".g"))
-                .valueAccessor(function(d) { return d;})
-                .html({
-                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                })
-            var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.ASGNCURR})
-            var asgnND = dc.numberDisplay("#asgn")
-            asgnND.group(asgn)
-                .formatNumber(d3.format(".g"))
-                .valueAccessor(function(d) {return d;})
-                .html({
-                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                })
-            var stp = this.ndx.groupAll().reduceSum(function(d) { return +d.STP})
-            var stpND = dc.numberDisplay("#stp")
-            stpND.group(stp)
-                .formatNumber(d3.format(".g"))
-                .valueAccessor(function(d) {return d;})
-                .html({
-                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                })
+                //radio button
+                //d3.selectAll('#radioSelect')
+                //    .on('click', function() {
+                //        setTimeout(function(){
+                //            dc.redrawAll();
+                //        },10)
+                //    })
                 
-            //grade
-            var gradeOrder = {
-              "LTC": 5,
-              "MAJ": 4,
-              "CPT": 3,
-              "1LT": 2,
-              "2LT": 1
-            }
-            var gradeArray =["2LT","1LT","CPT","MAJ","LTC"]
-            var gradeConfig = {}
-            gradeConfig.id = 'grade'
-            gradeConfig.dim = this.ndx.dimension(function(d){return gradeArray[+d.GRADE-1]})
-            gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-            gradeConfig.minHeight = 200 
-            gradeConfig.aspectRatio = 2
-            gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-            gradeConfig.colors = d3.scale.category10()
-            var gradeChart = dchelpers.getRowChart(gradeConfig)
-            gradeChart
-                .valueAccessor((d)=> {
-                    return d.value[this.selected];
-                })
-                .ordering(function(d){
-                  return gradeOrder[d.key]
-                })
-            
-            //afscGroup
-            var afscGroupConfig = {}
-            afscGroupConfig.id = 'afscGroup'
-            afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_GROUP})
-            afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-            afscGroupConfig.minHeight = 200 
-            afscGroupConfig.aspectRatio = 3 
-            afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
-            afscGroupConfig.colors = ["#108b52"] 
-            var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
-            afscGroupChart
-                .valueAccessor((d)=> {
-                    return d.value[this.selected];
-                })
+                //reduce functions
+                function manningAdd(p,v) {
+                    p.asgn = p.asgn + +v.ASGNCURR
+                    p.auth = p.auth + +v.AUTHCURR
+                    p.stp = p.stp + +v.STP
+                    //if divide by 0, set to 0, and if NaN, set to zero
+                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
+                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                    return p
+                }
+                function manningRemove(p,v) {
+                    p.asgn = p.asgn - +v.ASGNCURR
+                    p.auth = p.auth - +v.AUTHCURR
+                    p.stp = p.stp - +v.STP
+                    //if divide by 0, set to 0, and if NaN, set to zero
+                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
+                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                    return p
+                }
+                function manningInitial() {
+                    return {
+                        asgn: 0,
+                        auth: 0,
+                        stp: 0,
+                        percent: 0,
+                        stpPercent: 0,
+                    }
+                }
+                //remove empty function (es6 syntax to keep correct scope)
+                var removeEmptyBins = (source_group) => {
+                    return {
+                        all: () => {
+                            return source_group.all().filter((d) => {
+                                return d.value[this.selected] != 0
+                            })
+                        }
+                    }
+                }
+                //stacking functions
+                function multikey(x,y) {
+                    return x + 'x' + y
+                }
+                function splitkey(k) {
+                    return k.split('x');
+                }
+                function stack_second(group) {
+                    return {
+                        all: function() {
+                            var all = group.all(),
+                            m = {};
+                            //matrix of multikey/value pairs
+                            all.forEach(function(kv) {
+                                var ks = splitkey(kv.key);
+                                m[ks[0]] = m[ks[0]] || {};
+                                m[ks[0]][ks[1]] = kv.value;
+                            });
+                            //then produce multivalue key/value pairs
+                            return Object.keys(m).map(function(k) {
+                                return {key: k, value: m[k]};
+                            });
+                        }
+                    };
+                }
 
-            //make responsive
-            var temp
-            window.onresize = function(event) {
-                clearTimeout(temp)
-                temp = setTimeout(dc.redrawAll(), 500)
-            }
+                //Location
+                var majcomConfig = {}
+                majcomConfig.id = 'majcom'
+                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM_T12C})
+                var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                majcomConfig.group = removeEmptyBins(majcomPercent)
+                majcomConfig.minHeight = 300
+                majcomConfig.aspectRatio = 5
+                majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
+                majcomConfig.colors = ["#1976d2"]
+                var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
+                majcomChart
+                    .elasticX(true)
+                    .group(majcomConfig.group, "1",(d) => {
+                        return d.value[this.selected]
+                    })
+                    .stack(majcomConfig.group, "2",(d) => {
+                        return d.value[this.selected === "asgn" ? "stp" : 0]
+                    })
+                    .ordinalColors(["#1976d2","#ff4500"])
+                    .legend(dc.legend().horizontal(true).legendText((d) => {
+                        if (d.name === '1') {
+                            return 'PP'
+                        } else {
+                            return 'STP'
+                        }
+                    }))
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('rect.bar')
+                            .classed('stack-deselected', function(d) {
+                                //d.x is majcom and d.layer is assigned or stp
+                                return chart.filter() && chart.filters().indexOf(d.x) === -1
+                            })
+                            .on('click', function(d) {
+                                chart.filter(d.x)
+                                dc.redrawAll()
+                            })
+                    })
 
-            //create charts
-            dc.renderAll()
-            dc.redrawAll()
+                //Number Display for Auth, Asgn, STP - show total for filtered content
+                var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })
+                var authND = dc.numberDisplay("#auth")
+                authND.group(auth)
+                    .formatNumber(d3.format(".g"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+                var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.ASGNCURR})
+                var asgnND = dc.numberDisplay("#asgn")
+                asgnND.group(asgn)
+                    .formatNumber(d3.format(".g"))
+                    .valueAccessor(function(d) {return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+                var stp = this.ndx.groupAll().reduceSum(function(d) { return +d.STP})
+                var stpND = dc.numberDisplay("#stp")
+                stpND.group(stp)
+                    .formatNumber(d3.format(".g"))
+                    .valueAccessor(function(d) {return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+                    
+                //grade
+                var gradeOrder = {
+                  "LTC": 5,
+                  "MAJ": 4,
+                  "CPT": 3,
+                  "1LT": 2,
+                  "2LT": 1
+                }
+                var gradeArray =["2LT","1LT","CPT","MAJ","LTC"]
+                var gradeConfig = {}
+                gradeConfig.id = 'grade'
+                gradeConfig.dim = this.ndx.dimension(function(d){return gradeArray[+d.GRADE-1]})
+                gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                gradeConfig.minHeight = 200 
+                gradeConfig.aspectRatio = 2
+                gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                gradeConfig.colors = d3.scale.category10()
+                var gradeChart = dchelpers.getRowChart(gradeConfig)
+                gradeChart
+                    .valueAccessor((d)=> {
+                        return d.value[this.selected];
+                    })
+                    .ordering(function(d){
+                      return gradeOrder[d.key]
+                    })
+                
+                //afscGroup
+                var afscGroupConfig = {}
+                afscGroupConfig.id = 'afscGroup'
+                afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_GROUP})
+                afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                afscGroupConfig.minHeight = 200 
+                afscGroupConfig.aspectRatio = 3 
+                afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                afscGroupConfig.colors = ["#108b52"] 
+                var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
+                afscGroupChart
+                    .valueAccessor((d)=> {
+                        return d.value[this.selected];
+                    })
+
+                //make responsive
+                var temp
+                window.onresize = function(event) {
+                    clearTimeout(temp)
+                    temp = setTimeout(dc.redrawAll(), 500)
+                }
+
+                //create charts
+                dc.renderAll()
+                dc.redrawAll()
+            }
         },
         beforeUpdate() {
             console.log("beforeupdate")
