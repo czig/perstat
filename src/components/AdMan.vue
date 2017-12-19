@@ -133,11 +133,23 @@ import axios from 'axios'
             console.log('mounted')
 
             //axios request - can change to a get request and change to the "get" endpoint to see a get request
+            
+            //PROD AXIOS CALL:  
+            /*
+                var querystring = require('querystring');
+                const formData = {
+                    _PROGRAM:"/REN - Dashboard Home V1/makeHTML_collab",
+                    nPage:"off"
+                }
+                var myData = axios.post('', querystring.stringify(formData)).then(response => {
+            */
+            
+            //TEST AXIOS CALL:
             axios.post('http://localhost:5005/api/admanning_post').then(response => {
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData) 
                 this.data = objData
-                console.log(objData)
+                //console.log(objData)
                 renderCharts()
             }).catch(console.error)
 

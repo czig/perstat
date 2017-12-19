@@ -4,6 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const webpack = require('webpack')
+var Promise = require("es6-promise").Promise;
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -85,7 +86,8 @@ module.exports = {
           d3: 'd3',
           crossfilter: 'crossfilter2',
           dc: 'dc',
-          _: 'lodash'
+          _: 'lodash',
+          Promise: 'es6-promise-promise'
         })
     ]
 }
