@@ -146,6 +146,7 @@ import axios from 'axios'
             
             //TEST AXIOS CALL:
             axios.post('http://localhost:5005/api/admanning_post').then(response => {
+                //console.log(response)
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData) 
                 this.data = objData
@@ -315,17 +316,47 @@ import axios from 'axios'
                     })
                     
                 //grade
+                var grdFormat = {
+                    "01": "[01-02] LT",
+                    "02": "[01-02] LT",
+                    "03": "CPT",
+                    "04": "MAJ",
+                    "05": "LTC",
+                    "31": "[31-33] AMN",
+                    "32": "[31-33] AMN",
+                    "33": "[31-33] AMN",
+                    "34": "SRA",
+                    "35": "SSG",
+                    "36": "TSG",
+                    "37": "MSG",
+                    "38": "SMS",
+                    "39": "CMS"
+                };
+                
                 var gradeOrder = {
-                  "LTC": 5,
-                  "MAJ": 4,
-                  "CPT": 3,
-                  "1LT": 2,
-                  "2LT": 1
-                }
-                var gradeArray =["2LT","1LT","CPT","MAJ","LTC"]
-                var gradeConfig = {}
-                gradeConfig.id = 'grade'
-                gradeConfig.dim = this.ndx.dimension(function(d){return gradeArray[+d.GRADE-1]})
+                    "LTC": 5,
+                    "MAJ": 4,
+                    "CPT": 3,
+                    "1LT": 2,
+                    "2LT": 1,
+                    "[01-02] LT": 0,
+                    "CMS": 39,
+                    "SMS": 38,
+                    "MSG": 37,
+                    "TSG": 36,
+                    "SSG": 35,
+                    "SRA": 34,
+                    "A1C": 33,
+                    "AMN": 32,
+                    "AB": 31,
+                    "[31-33] AMN": 30
+                };
+                //var gradeArray = ["AB", "AMN", "A1C" , "SRA" , "SSG", "TSG", "MSG", "SMS" , "CMS", "2LT", "1LT", "CPT", "MAJ", "LTC"];
+                var gradeConfig = {};
+                gradeConfig.id = 'grade';
+                gradeConfig.dim = this.ndx.dimension(function (d) {
+                    return grdFormat[d.GRADE];
+                })
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 gradeConfig.minHeight = 200 
                 gradeConfig.aspectRatio = 2

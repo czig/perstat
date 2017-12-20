@@ -14,3 +14,4 @@ test/unit/coverage
 *.njsproj
 *.sln
 *.zip
+*sublime*
