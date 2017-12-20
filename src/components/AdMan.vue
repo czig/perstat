@@ -284,13 +284,15 @@ import axios from 'axios'
                                 chart.filter(d.x)
                                 dc.redrawAll()
                             })
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })
                 var authND = dc.numberDisplay("#auth")
                 authND.group(auth)
-                    .formatNumber(d3.format(".g"))
+                    .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) { return d;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
@@ -298,7 +300,7 @@ import axios from 'axios'
                 var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.ASGNCURR})
                 var asgnND = dc.numberDisplay("#asgn")
                 asgnND.group(asgn)
-                    .formatNumber(d3.format(".g"))
+                    .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) {return d;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
@@ -306,7 +308,7 @@ import axios from 'axios'
                 var stp = this.ndx.groupAll().reduceSum(function(d) { return +d.STP})
                 var stpND = dc.numberDisplay("#stp")
                 stpND.group(stp)
-                    .formatNumber(d3.format(".g"))
+                    .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) {return d;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
@@ -336,7 +338,7 @@ import axios from 'axios'
                     })
                     .ordering(function(d){
                       return gradeOrder[d.key]
-                    })
+                    })                                    
                 
                 //afscGroup
                 var afscGroupConfig = {}
@@ -351,6 +353,10 @@ import axios from 'axios'
                 afscGroupChart
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
+                    })
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
                 //make responsive
@@ -383,7 +389,6 @@ import axios from 'axios'
 <style>
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
-    transform: rotate(-45deg);
   }
 
 div[id*="-rowchart"] g.row text{
