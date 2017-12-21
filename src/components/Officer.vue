@@ -21,15 +21,10 @@
                         @click="resetAll">Reset All</button>
             </div>
         </div>
-        <!--<div class="row">-->
-            <!--<div class="col-auto">-->
-                <!--<input v-model="searchText">-->
-                <!--{{searchText}}-->
-            <!--</div>-->
-            <!--<div class="col-auto">-->
-                <!--<button class="btn btn-primary btn-sm" @click="submit">Submit</button>-->
-            <!--</div>-->
-        <!--</div>-->
+        <div class="row">
+            <div class="col-auto">
+            </div>
+        </div>
         <div class="row">
             <div class="col-auto">
                 Assigned:
@@ -57,6 +52,8 @@
                             style="display: none"
                             @click="resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
+                    <input v-model="searchText" placeholder="Search">
+                    <button class="btn btn-primary btn-sm" @click="submit(searchText,'dc-majcom-barchart')">Submit</button>
                 </div>
             </div>
         </div>
@@ -149,7 +146,13 @@ import axios from 'axios'
                 dc.redrawAll()
             },10)
           },
-          submit: () => {
+          submit: (text,id) => {
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id 
+            }).forEach(chart=>{
+                chart.filter(text)
+            })
+            dc.redrawAll()
           }
         },
         created: function(){
@@ -383,6 +386,14 @@ import axios from 'axios'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+
+
+                //search filtering
+                var majcoms = []
+                majcomConfig.dim.group().all().forEach(function(d) {
+                    return majcoms.push(String(d.key))
+                })
+                console.log(majcoms)
                 
 
                 //make responsive

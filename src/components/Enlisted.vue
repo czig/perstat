@@ -325,7 +325,7 @@ import axios from 'axios'
                 afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 afscGroupConfig.minHeight = 200 
                 afscGroupConfig.aspectRatio = 3 
-                afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 120}
                 afscGroupConfig.colors = ["#108b52"] 
                 var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
                 afscGroupChart
