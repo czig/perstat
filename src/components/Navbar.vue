@@ -8,16 +8,16 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
-          <router-link class="nav-item" to="/" tag="li"><a class="nav-link">Home</a></router-link>
-        <router-link class="nav-item" to="/ad_manning" tag="li"><a class="nav-link">AD Manning</a></router-link>
-          <router-link class="nav-item" to="/officer" tag="li"><a class="nav-link">Officer</a></router-link>
-          <router-link class="nav-item" to="/enlisted" tag="li"><a class="nav-link">Enlisted</a></router-link>
-          <router-link class="nav-item" to="/civilian" tag="li"><a class="nav-link">Civilian</a></router-link>
-          <router-link class="nav-item" to="/assignments" tag="li"><a class="nav-link">Assignments</a></router-link>
-          <router-link class="nav-item" to="/joint" tag="li"><a class="nav-link">Joint</a></router-link>
-          <router-link class="nav-item" to="/care" tag="li"><a class="nav-link">Care</a></router-link>
-          <router-link class="nav-item" to="/first_contact" tag="li"><a class="nav-link">First Contact</a></router-link>
-          <router-link class="nav-item" to="/it" tag="li"><a class="nav-link">IT</a></router-link>
+          <router-link class="nav-item" to="/" tag="li" active-class="active" exact><a class="nav-link">Home</a></router-link>
+        <router-link class="nav-item" to="/ad_manning" tag="li" active-class="active"><a class="nav-link">AD Manning</a></router-link>
+          <router-link class="nav-item" to="/officer" tag="li" active-class="active"><a class="nav-link">Officer</a></router-link>
+          <router-link class="nav-item" to="/enlisted" tag="li" active-class="active"><a class="nav-link">Enlisted</a></router-link>
+          <router-link class="nav-item" to="/civilian" tag="li" active-class="active"><a class="nav-link">Civilian</a></router-link>
+          <router-link class="nav-item" to="/assignments" tag="li" active-class="active"><a class="nav-link">Assignments</a></router-link>
+          <router-link class="nav-item" to="/joint" tag="li" active-class="active"><a class="nav-link">Joint</a></router-link>
+          <router-link class="nav-item" to="/care" tag="li" active-class="active"><a class="nav-link">Care</a></router-link>
+          <router-link class="nav-item" to="/first_contact" tag="li" active-class="active"><a class="nav-link" >First Contact</a></router-link>
+          <router-link class="nav-item" to="/it" tag="li" active-class="active"><a class="nav-link">IT</a></router-link>
         </ul>
       </div>
     </nav>

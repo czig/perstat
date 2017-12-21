@@ -308,17 +308,27 @@ import axios from 'axios'
                     })
                     
                 //grade
+                var grdFormat = {
+                    "01": "[01-02] LT",
+                    "02": "[01-02] LT",
+                    "03": "CPT",
+                    "04": "MAJ",
+                    "05": "LTC"
+                };
+                
                 var gradeOrder = {
-                  "LTC": 5,
-                  "MAJ": 4,
-                  "CPT": 3,
-                  "1LT": 2,
-                  "2LT": 1
-                }
-                var gradeArray =["2LT","1LT","CPT","MAJ","LTC"]
-                var gradeConfig = {}
-                gradeConfig.id = 'grade'
-                gradeConfig.dim = this.ndx.dimension(function(d){return +d.GRADE})
+                    "LTC": 5,
+                    "MAJ": 4,
+                    "CPT": 3,
+                    "1LT": 2,
+                    "2LT": 1,
+                    "[01-02] LT": 0
+                };
+                var gradeConfig = {};
+                gradeConfig.id = 'grade';
+                gradeConfig.dim = this.ndx.dimension(function (d) {
+                    return grdFormat[d.GRADE];
+                })
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 gradeConfig.minHeight = 200 
                 gradeConfig.aspectRatio = 2
