@@ -2,11 +2,6 @@
     <div class="container">
         <div class="row">
             <h1 class="col">AD Manning</h1>
-            <!--<div class="col-auto dc-data-count">-->
-                <!--<span class="filter-count"></span> -->
-                <!--PASCODEs selected out of -->
-                <!--<span class="total-count"></span>-->
-            <!--</div>-->
         </div>
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
@@ -16,7 +11,10 @@
                 <label for="radio">Assigned</label>
                 <input name="group3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
                 <label for="radio3">Authorized</label>
+                <input name="group4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                <label for="radio4">STP</label>
             </div>
+            <div class="col"></div>
             <div class="col-auto">
                 <button type="button" 
                         class="btn btn-danger btn-rounded btn-sm waves-effect" 
@@ -24,35 +22,39 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-auto">
+                Assigned:
+                <span id="asgn"></span>
+            </div>
+            <div class="col-auto">
+                STP:
+                <span id="stp"></span>
+            </div>
+            <div class="col-auto">
+                Authorized:
+                <span id="auth"></span>
+            </div>
+            <div class="col-auto">
+                Manning Percent:
+                <span id="percent"></span>
+            </div>
+        </div>
+        <div class="row">
             <div id="majcom" class="col-12">
                 <div id="dc-majcom-barchart">
-                    <h3>MAJCOM <small>{{ylabel}}</small>
+                    <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
                             @click="resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
-                    <div class="row">
-                        <div class="col-auto">
-                            Assigned:
-                            <span id="asgn"></span>
-                        </div>
-                        <div class="col-auto">
-                            STP:
-                            <span id="stp"></span>
-                        </div>
-                        <div class="col-auto">
-                            Authorized:
-                            <span id="auth"></span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div id="grade" class="col-4">
                 <div id="dc-grade-rowchart">
-                    <h3>Grade <small>{{ylabel}}</small>
+                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -62,7 +64,7 @@
             </div>
             <div id="afscGroup" class="col-8">
                 <div id="dc-afscGroup-barchart">
-                    <h3>AFSC Group <small>{{ylabel}}</small>
+                    <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -99,6 +101,9 @@ import axios from 'axios'
             else if (this.selected === "asgn") {
                 return "Assigned"
             }
+            else if (this.selected === "stp") {
+                return "STP"
+            }
             else {
                 return "Authorized"
             }
@@ -106,7 +111,6 @@ import axios from 'axios'
         },
         methods: {
           resetAll: (event)=>{
-            //Emulate javascript:dc.filterAll();dc.redrawAll()
             dc.filterAll()
             dc.redrawAll()
           },
@@ -147,9 +151,8 @@ import axios from 'axios'
             //TEST AXIOS CALL:
             axios.post('http://localhost:5005/api/admanning_post').then(response => {
                 var axiosData = response.data.data
-                var objData = makeObject(axiosData) 
+                var objData = makeObject(axiosData)
                 this.data = objData
-                //console.log(objData)
                 renderCharts()
             }).catch(console.error)
 
@@ -175,14 +178,6 @@ import axios from 'axios'
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
-                //radio button
-                //d3.selectAll('#radioSelect')
-                //    .on('click', function() {
-                //        setTimeout(function(){
-                //            dc.redrawAll();
-                //        },10)
-                //    })
-                
                 //reduce functions
                 function manningAdd(p,v) {
                     p.asgn = p.asgn + +v.ASGNCURR
@@ -211,6 +206,7 @@ import axios from 'axios'
                         stpPercent: 0,
                     }
                 }
+
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
                     return {
@@ -220,31 +216,6 @@ import axios from 'axios'
                             })
                         }
                     }
-                }
-                //stacking functions
-                function multikey(x,y) {
-                    return x + 'x' + y
-                }
-                function splitkey(k) {
-                    return k.split('x');
-                }
-                function stack_second(group) {
-                    return {
-                        all: function() {
-                            var all = group.all(),
-                            m = {};
-                            //matrix of multikey/value pairs
-                            all.forEach(function(kv) {
-                                var ks = splitkey(kv.key);
-                                m[ks[0]] = m[ks[0]] || {};
-                                m[ks[0]][ks[1]] = kv.value;
-                            });
-                            //then produce multivalue key/value pairs
-                            return Object.keys(m).map(function(k) {
-                                return {key: k, value: m[k]};
-                            });
-                        }
-                    };
                 }
 
                 //Location
@@ -260,30 +231,11 @@ import axios from 'axios'
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
                     .elasticX(true)
-                    .group(majcomConfig.group, "1",(d) => {
+                    .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
-                    .stack(majcomConfig.group, "2",(d) => {
-                        return d.value[this.selected === "asgn" ? "stp" : 0]
-                    })
                     .ordinalColors(["#1976d2","#ff4500"])
-                    .legend(dc.legend().horizontal(true).legendText((d) => {
-                        if (d.name === '1') {
-                            return 'PP'
-                        } else {
-                            return 'STP'
-                        }
-                    }))
                     .on('pretransition', function(chart) {
-                        chart.selectAll('rect.bar')
-                            .classed('stack-deselected', function(d) {
-                                //d.x is majcom and d.layer is assigned or stp
-                                return chart.filter() && chart.filters().indexOf(d.x) === -1
-                            })
-                            .on('click', function(d) {
-                                chart.filter(d.x)
-                                dc.redrawAll()
-                            })
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
@@ -313,6 +265,14 @@ import axios from 'axios'
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
+                var percentGroup = this.ndx.groupAll().reduce(manningAdd,manningRemove,manningInitial)
+                var percentND = dc.numberDisplay("#percent")
+                percentND.group(percentGroup)
+                    .formatNumber(d3.format("r"))
+                    .valueAccessor(function(d) {return d.percent})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
+                    })
                     
                 //grade
                 var gradeOrder = {
@@ -325,7 +285,7 @@ import axios from 'axios'
                 var gradeArray =["2LT","1LT","CPT","MAJ","LTC"]
                 var gradeConfig = {}
                 gradeConfig.id = 'grade'
-                gradeConfig.dim = this.ndx.dimension(function(d){return gradeArray[+d.GRADE-1]})
+                gradeConfig.dim = this.ndx.dimension(function(d){return +d.GRADE})
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 gradeConfig.minHeight = 200 
                 gradeConfig.aspectRatio = 2
@@ -389,6 +349,7 @@ import axios from 'axios'
 <style>
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
+    transform: rotate(-45deg);
   }
 
 div[id*="-rowchart"] g.row text{
