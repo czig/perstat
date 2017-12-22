@@ -52,8 +52,15 @@
                             style="display: none"
                             @click="resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
-                    <input v-model="searchText" placeholder="Search">
-                    <button class="btn btn-primary btn-sm" @click="submit(searchText,'dc-majcom-barchart')">Submit</button>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
+                            <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
+                        </div>
+                    </form>
+                    <!--<div id="app" class="container">-->
+                            <!--<autocomplete :suggestions="suggestions" v-model="searchMajcom"></autocomplete>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>
@@ -86,8 +93,14 @@
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-majcom-barchart')">Reset</button>
+                            @click="resetChart('dc-base-barchart')">Reset</button>
                     </h3>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
+                            <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -97,13 +110,15 @@
 <script>
 import dchelpers from '@/dchelpers'
 import axios from 'axios'
+import AutoComplete from './AutoComplete'
 
     export default {
         data() {
             return {
                 data: [],
                 selected: "percent",
-                searchText: ""
+                searchMajcom: "",
+                searchBase: ""
             }
         },
         computed: {
@@ -150,10 +165,24 @@ import axios from 'axios'
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id 
             }).forEach(chart=>{
-                chart.filter(text)
+                var mainArray = []
+                chart.dimension().group().all().forEach((d) => {
+                    mainArray.push(String(d.key))
+                })
+                var filterArray = mainArray.filter((d) => {
+                    var element = d.toUpperCase() 
+                    return element.indexOf(text.toUpperCase()) !== -1
+                })
+                chart.filter(null)
+                if (filterArray.length != mainArray.length) {
+                    chart.filter([filterArray])
+                }
             })
             dc.redrawAll()
           }
+        },
+        components: {
+            'autocomplete': AutoComplete
         },
         created: function(){
           console.log('created')
@@ -387,14 +416,6 @@ import axios from 'axios'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
-
-                //search filtering
-                var majcoms = []
-                majcomConfig.dim.group().all().forEach(function(d) {
-                    return majcoms.push(String(d.key))
-                })
-                console.log(majcoms)
-                
 
                 //make responsive
                 var temp
