@@ -110,6 +110,7 @@
 <script>
 import dchelpers from '@/dchelpers'
 import axios from 'axios'
+import formats from '@/store/format'
 import AutoComplete from './AutoComplete'
 
     export default {
@@ -276,7 +277,7 @@ import AutoComplete from './AutoComplete'
                 //Majcom
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM_T12C})
+                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJCOM_T12C]})
                 var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 majcomConfig.group = removeEmptyBins(majcomPercent)
                 majcomConfig.minHeight = 300
@@ -340,26 +341,11 @@ import AutoComplete from './AutoComplete'
                     })
                     
                 //grade
-                var grdFormat = {
-                    "01": "[01-02] LT",
-                    "02": "[01-02] LT",
-                    "03": "CPT",
-                    "04": "MAJ",
-                    "05": "LTC"
-                };
                 
-                var gradeOrder = {
-                    "LTC": 5,
-                    "MAJ": 4,
-                    "CPT": 3,
-                    "1LT": 2,
-                    "2LT": 1,
-                    "[01-02] LT": 0
-                };
                 var gradeConfig = {};
                 gradeConfig.id = 'grade';
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return grdFormat[d.GRADE];
+                    return formats.gradeFormat[d.GRADE];
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 gradeConfig.minHeight = 200 
@@ -372,13 +358,13 @@ import AutoComplete from './AutoComplete'
                         return d.value[this.selected];
                     })
                     .ordering(function(d){
-                      return gradeOrder[d.key]
+                      return formats.gradeOrder[d.key]
                     })                                    
                 
                 //afscGroup
                 var afscGroupConfig = {}
                 afscGroupConfig.id = 'afscGroup'
-                afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_GROUP})
+                afscGroupConfig.dim = this.ndx.dimension(function(d){return formats.afscGroupFormat[d.AFSC_GROUP]})
                 afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 afscGroupConfig.minHeight = 200 
                 afscGroupConfig.aspectRatio = 3 
@@ -397,7 +383,7 @@ import AutoComplete from './AutoComplete'
                 //base(mpf)
                 var baseConfig = {}
                 baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
+                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
                 var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 baseConfig.group = removeEmptyBins(basePercent)
                 baseConfig.minHeight = 400

@@ -79,6 +79,7 @@
 <script>
 import dchelpers from '@/dchelpers'
 import axios from 'axios'
+import formats from '@/store/format'
 
     export default {
         data() {
@@ -221,7 +222,7 @@ import axios from 'axios'
                 //MAJCOM
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM_T12C})
+                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJCOM_T12C]})
                 var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 majcomConfig.group = removeEmptyBins(majcomPercent)
                 majcomConfig.minHeight = 300
@@ -275,34 +276,11 @@ import axios from 'axios'
                     })
                     
                 //grade
-                var grdFormat = {
-                    "31": "[31-33] AMN",
-                    "32": "[31-33] AMN",
-                    "33": "[31-33] AMN",
-                    "34": "SRA",
-                    "35": "SSG",
-                    "36": "TSG",
-                    "37": "MSG",
-                    "38": "SMS",
-                    "39": "CMS"
-                };
                 
-                var gradeOrder = {
-                    "CMS": 39,
-                    "SMS": 38,
-                    "MSG": 37,
-                    "TSG": 36,
-                    "SSG": 35,
-                    "SRA": 34,
-                    "A1C": 33,
-                    "AMN": 32,
-                    "AB": 31,
-                    "[31-33] AMN": 30
-                };
                 var gradeConfig = {};
                 gradeConfig.id = 'grade';
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return grdFormat[d.GRADE];
+                    return formats.gradeFormat[d.GRADE];
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 gradeConfig.minHeight = 200 
@@ -315,13 +293,13 @@ import axios from 'axios'
                         return d.value[this.selected];
                     })
                     .ordering(function(d){
-                      return gradeOrder[d.key]
+                      return formats.gradeOrder[d.key]
                     })                                    
                 
                 //afscGroup
                 var afscGroupConfig = {}
                 afscGroupConfig.id = 'afscGroup'
-                afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_GROUP})
+                afscGroupConfig.dim = this.ndx.dimension(function(d){return formats.afscGroupFormat[d.AFSC_GROUP]})
                 afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 afscGroupConfig.minHeight = 200 
                 afscGroupConfig.aspectRatio = 3 
