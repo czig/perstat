@@ -1,4 +1,16 @@
 export default {
+	enlRetFormat:{
+		"I": "Inventory",
+		"E": "Eligible",
+		"K": "Keep",
+		"RR": "Reenlistment Ratio",
+		"KR": "Keep Ratio"
+	},
+	catFormat:{
+		"1":"1ST TERM",
+		"2":"2ND TERM",
+		"C":"CAREER"
+	},
 	majFormat : {
 		" ":"UNKNOWN",
 		"02":"AFIA",
