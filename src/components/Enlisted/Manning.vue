@@ -1,23 +1,6 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <h1 class=col-2>Enlisted</h1>
-            <ul class="col-8 nav nav-tabs nav-justified " role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#panel1" role="tab">Manning</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#panel2" role="tab">Retention</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#panel3" role="tab">Promotion</a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="tab-content">
-        <div id="panel1" class="tab-pane active" role="tabpanel">
-
+    <div>
+      
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
                 <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
@@ -89,12 +72,7 @@
             </div>
         </div>
 
-        </div>
-
-        <div id="panel2" role="tabpanel"></div>
-        <div id="panel3" role="tabpanel"></div>
-    </div>
-
+    
     </div>
 </template>
 
@@ -362,7 +340,7 @@ import formats from '@/store/format'
     }
 </script>
 
-<style src="../../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css">
 </style>
 <style>
 .nav-tabs .nav-link{
@@ -382,3 +360,4 @@ div[id*="-rowchart"] g.row text{
     fill: black;
 }
 </style>
+
