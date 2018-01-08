@@ -1,6 +1,17 @@
 <template>
     <div class="container">
         <div class="row pt-2"> 
+            <div id="radioSelect" class="col form-group">
+                <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
+                <label for="radio">Select Rate</label>
+                <input name="radio2" type="radio" id="radio2" value="sel" v-model="selected" @click="radioButton">
+                <label for="radio2">Selects</label>
+                <input name="radio3" type="radio" id="radio3" value="elig" v-model="selected" @click="radioButton">
+                <label for="radio3">Eligible</label>
+                <input name="radio4" type="radio" id="radio4" value="pmePercent" v-model="selected" @click="radioButton">
+                <label for="radio4">PME Rate</label>
+            </div>
+            <div class="col"></div>
             <div class="col-auto">
                 <button type="button" 
                         class="btn btn-danger btn-rounded btn-sm waves-effect" 
@@ -12,9 +23,41 @@
             </div>
         </div>
         <div class="row">
-            <div id="compCat" class="col-12">
+            <div class="col-auto">
+                Selects:        
+                <span id="sel"></span>
+            </div>
+            <div class="col-auto">
+                PME Complete:
+                <span id="pme"></span>
+            </div>
+            <div class="col-auto">
+                Eligibles: 
+                <span id="elig"></span>
+            </div>
+            <div class="col-auto">
+                Select Rate: 
+                <span id="selRate"></span>
+            </div>
+            <div class="col-auto">
+                PME Complete Rate:
+                <span id="pmeRate"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div id="zone" class="col-4">
+                <div id="dc-zone-rowchart">
+                    <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-zone-rowchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+            <div id="compCat" class="col-8">
                 <div id="dc-compCat-barchart">
-                    <h3>CompCat <span style="font-size: 14pt; opacity: 0.87;"></span>
+                    <h3>CompCat <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -24,9 +67,19 @@
             </div>
         </div>
         <div class="row">
-            <div id="grade" class="col-4">
+            <div id="occupGroup" class="col-6">
+                <div id="dc-occupGroup-barchart">
+                    <h3>Occupation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-occupGroup-barchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+            <div id="grade" class="col-3">
                 <div id="dc-grade-rowchart">
-                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;"></span>
+                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -34,35 +87,29 @@
                     </h3>
                 </div>
             </div>
-            <!--<div id="afscGroup" class="col-8">-->
-                <!--<div id="dc-afscGroup-barchart">-->
-                    <!--<h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;"></span>-->
-                    <!--<button type="button" -->
-                            <!--class="btn btn-danger btn-sm btn-rounded reset" -->
-                            <!--style="display: none"-->
-                            <!--@click="resetChart('dc-afscGroup-barchart')">Reset</button>-->
-                    <!--</h3>-->
-                <!--</div>-->
-            <!--</div>-->
+            <div id="recommend" class="col-3">
+                <div id="dc-recommend-rowchart">
+                    <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-recommend-rowchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
         </div>
-        <!--<div class="row">-->
-            <!--<div id="base" class="col-12">-->
-                <!--<div id="dc-base-barchart">-->
-                    <!--<h3>Base <span style="font-size: 14pt; opacity: 0.87;"></span>-->
-                    <!--<button type="button" -->
-                            <!--class="btn btn-danger btn-sm btn-rounded reset" -->
-                            <!--style="display: none"-->
-                            <!--@click="resetChart('dc-base-barchart')">Reset</button>-->
-                    <!--</h3>-->
-                    <!--<form class="form-inline">-->
-                        <!--<div class="form-group">-->
-                            <!--<input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">-->
-                            <!--<button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>-->
-                        <!--</div>-->
-                    <!--</form>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
+        <div class="row">
+            <div id="board" class="col-12">
+                <div id="dc-board-barchart">
+                    <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-board-barchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -75,7 +122,8 @@ import AutoComplete from './AutoComplete'
     export default {
         data() {
             return {
-                data: []
+                data: [],
+                selected: "percent"
             }
         },
         computed: {
@@ -87,16 +135,16 @@ import AutoComplete from './AutoComplete'
           },
           ylabel: function() {
             if (this.selected === "percent") {
-                return "Manning Percent (%)"
+                return "Select Rate (%)"
             }
-            else if (this.selected === "asgn") {
-                return "Assigned"
+            else if (this.selected === "sel") {
+                return "Selects"
             }
-            else if (this.selected === "stp") {
-                return "STP"
+            else if (this.selected === "elig") {
+                return "Eligibles"
             }
             else {
-                return "Authorized"
+                return "PME Complete Rate (%)"
             }
           }
         },
@@ -192,31 +240,31 @@ import AutoComplete from './AutoComplete'
                   .group(this.allGroup)
 
                 //reduce functions
-                function manningAdd(p,v) {
-                    p.asgn = p.asgn + +v.ASGNCURR
-                    p.auth = p.auth + +v.AUTHCURR
-                    p.stp = p.stp + +v.STP
+                function promoAdd(p,v) {
+                    p.elig = p.elig + +v.num_eligible
+                    p.sel = p.sel + +v.num_select
+                    p.pme = p.pme + +v.num_pme
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                    p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
+                    p.pmePercent = p.pme/p.elig === Infinity ? 0 : Math.round((p.pme/p.elig)*1000)/10 || 0
                     return p
                 }
-                function manningRemove(p,v) {
-                    p.asgn = p.asgn - +v.ASGNCURR
-                    p.auth = p.auth - +v.AUTHCURR
-                    p.stp = p.stp - +v.STP
+                function promoRemove(p,v) {
+                    p.elig = p.elig - +v.num_eligible
+                    p.sel = p.sel - +v.num_select
+                    p.pme = p.pme - +v.num_pme
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                    p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
+                    p.pmePercent = p.pme/p.elig === Infinity ? 0 : Math.round((p.pme/p.elig)*1000)/10 || 0
                     return p
                 }
-                function manningInitial() {
+                function promoInitial() {
                     return {
-                        asgn: 0,
-                        auth: 0,
-                        stp: 0,
+                        elig: 0,
+                        sel: 0,
+                        pme: 0,
                         percent: 0,
-                        stpPercent: 0,
+                        pmePercent: 0
                     }
                 }
                 //remove empty function (es6 syntax to keep correct scope)
@@ -230,23 +278,88 @@ import AutoComplete from './AutoComplete'
                     }
                 }
 
+                //Number Display for sel, elig, sel rate, pme, pme rate - show total for filtered content
+                var sel = this.ndx.groupAll().reduceSum(function(d) { return +d.num_select })
+                var selND = dc.numberDisplay("#sel")
+                selND.group(sel)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+                var elig = this.ndx.groupAll().reduceSum(function(d) { return +d.num_eligible})
+                var eligND = dc.numberDisplay("#elig")
+                eligND.group(elig)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) {return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+                var selRate = this.ndx.groupAll().reduce(promoAdd, promoRemove, promoInitial)
+                var selRateND = dc.numberDisplay("#selRate")
+                selRateND.group(selRate)
+                    .formatNumber(d3.format("r"))
+                    .valueAccessor(function(d) {return d.percent;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
+                    })
+                var pme = this.ndx.groupAll().reduceSum(function(d) {return +d.num_pme})
+                var pmeND = dc.numberDisplay("#pme")
+                pmeND.group(pme)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) {return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+                var pmeRate = this.ndx.groupAll().reduce(promoAdd, promoRemove, promoInitial)
+                var pmeRateND = dc.numberDisplay("#pmeRate")
+                pmeRateND.group(pmeRate)
+                    .formatNumber(d3.format("r"))
+                    .valueAccessor(function(d) {return d.pmePercent;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
+                    })
+
+                //zone
+                var zoneConfig = {};
+                zoneConfig.id = 'zone'
+                zoneConfig.dim = this.ndx.dimension(function (d) {
+                    return formats.zoneFormat[d.Zone];
+                })
+                zoneConfig.group = zoneConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                zoneConfig.minHeight = 200 
+                zoneConfig.aspectRatio = 2
+                zoneConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                zoneConfig.colors = d3.scale.category10()
+                var zoneChart = dchelpers.getRowChart(zoneConfig)
+                zoneChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .ordering(function(d){
+                      return formats.zoneOrder[d.key]
+                    })                                    
+
                 //Compcat
                 var compCatConfig = {}
                 compCatConfig.id = 'compCat'
                 compCatConfig.dim = this.ndx.dimension(function(d){return d.Compcat})
-                compCatConfig.group = removeEmptyBins(compCatConfig.dim.group())
+                compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 compCatConfig.minHeight = 300
                 compCatConfig.aspectRatio = 5
                 compCatConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
                 compCatConfig.colors = ["#1976d2"]
                 var compCatChart = dchelpers.getOrdinalBarChart(compCatConfig)
                 compCatChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
                     .elasticX(true)
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('rect.bar')
                             .classed('stack-deselected', function(d) {
-                                //d.x is compCat and d.layer is assigned or stp
+                                //d.x is compCat and d.layer is assigned or selRate
                                 return chart.filter() && chart.filters().indexOf(d.x) === -1
                             })
                             .on('click', function(d) {
@@ -263,59 +376,79 @@ import AutoComplete from './AutoComplete'
                 var gradeConfig = {};
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return d.Board_ID.substring(1,3);
+                    return formats.gradeFormat[d.Board_ID.substring(1,3)];
                 })
-                gradeConfig.group = gradeConfig.dim.group()
+                gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 gradeConfig.minHeight = 200 
                 gradeConfig.aspectRatio = 2
                 gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 gradeConfig.colors = d3.scale.category10()
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })                                    
-                
-          //      //afscGroup
-          //      var afscGroupConfig = {}
-          //      afscGroupConfig.id = 'afscGroup'
-          //      afscGroupConfig.dim = this.ndx.dimension(function(d){return formats.afscGroupFormat[d.AFSC_GROUP]})
-          //      afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-          //      afscGroupConfig.minHeight = 200 
-          //      afscGroupConfig.aspectRatio = 3 
-          //      afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
-          //      afscGroupConfig.colors = ["#108b52"] 
-          //      var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
-          //      afscGroupChart
-          //          .valueAccessor((d)=> {
-          //              return d.value[this.selected];
-          //          })
-          //          .on('pretransition', function(chart) {
-          //              chart.selectAll('g.x text')
-          //              .attr('transform', 'translate(-8,0)rotate(-45)')
-          //          })
 
-          //      //base(mpf)
-          //      var baseConfig = {}
-          //      baseConfig.id = 'base'
-          //      baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
-          //      var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-          //      baseConfig.group = removeEmptyBins(basePercent)
-          //      baseConfig.minHeight = 400
-          //      baseConfig.aspectRatio = 5
-          //      baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
-          //      baseConfig.colors = ["#1976d2"]
-          //      var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-          //      baseChart
-          //          .elasticX(true)
-          //          .valueAccessor((d) => {
-          //              return d.value[this.selected]
-          //          })
-          //          .ordinalColors(["#1976d2","#ff4500"])
-          //          .on('pretransition', function(chart) {
-          //              chart.selectAll('g.x text')
-          //              .attr('transform', 'translate(-8,0)rotate(-45)')
-          //          })
+                //recommend
+                var recommendConfig = {};
+                recommendConfig.id = 'recommend'
+                recommendConfig.dim = this.ndx.dimension(function (d) {
+                    return d.Promo_Recomendation;
+                })
+                recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                recommendConfig.minHeight = 200 
+                recommendConfig.aspectRatio = 2
+                recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                recommendConfig.colors = d3.scale.category10()
+                var recommendChart = dchelpers.getRowChart(recommendConfig)
+                recommendChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                
+                //occupGroup
+                var occupGroupConfig = {}
+                occupGroupConfig.id = 'occupGroup'
+                occupGroupConfig.dim = this.ndx.dimension(function(d){return d.Occupation})
+                occupGroupConfig.group = occupGroupConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                occupGroupConfig.minHeight = 200 
+                occupGroupConfig.aspectRatio = 3 
+                occupGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                occupGroupConfig.colors = ["#108b52"] 
+                var occupGroupChart = dchelpers.getOrdinalBarChart(occupGroupConfig)
+                occupGroupChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
+
+          //      //board(mpf)
+                var boardConfig = {}
+                boardConfig.id = 'board'
+                boardConfig.dim = this.ndx.dimension(function(d){return d.Board_ID})
+                var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                boardConfig.group = removeEmptyBins(boardGroup)
+                boardConfig.minHeight = 400
+                boardConfig.aspectRatio = 5
+                boardConfig.margins = {top: 30, left: 40, right: 30, bottom: 200}
+                boardConfig.colors = ["#1976d2"]
+                var boardChart = dchelpers.getOrdinalBarChart(boardConfig)
+                boardChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .elasticX(true)
+                    .ordinalColors(["#1976d2","#ff4500"])
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
 
 
                 //make responsive

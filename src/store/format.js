@@ -236,6 +236,7 @@ export default {
         "03": "CPT",
         "04": "MAJ",
         "05": "LTC",
+        "06": "COL",
         "31": "[31-33] AMN",
         "32": "[31-33] AMN",
         "33": "[31-33] AMN",
@@ -247,6 +248,7 @@ export default {
         "39": "CMS"
     }
     ,gradeOrder : {
+	    "COL": 6,
 	    "LTC": 5,
 	    "MAJ": 4,
 	    "CPT": 3,
@@ -263,5 +265,16 @@ export default {
 	    "AMN": 32,
 	    "AB": 31,
 	    "[31-33] AMN": 30
+	},
+	zoneFormat : {
+        "A": "APZ",
+        "I": "IPZ",
+        "B": "BPZ"
+    },
+    zoneOrder : {
+        "APZ": 2,
+        "IPZ": 1,
+        "BPZ": 0
+
 	}
 }

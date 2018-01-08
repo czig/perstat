@@ -4,11 +4,11 @@
             <div id="radioSelect" class="col form-group">
                 <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
                 <label for="radio">Percentage</label>
-                <input name="group2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
-                <label for="radio">Assigned</label>
-                <input name="group3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                <input name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                <label for="radio2">Assigned</label>
+                <input name="radio3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
                 <label for="radio3">Authorized</label>
-                <input name="group4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                <input name="radio4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
                 <label for="radio4">STP</label>
             </div>
             <div class="col"></div>
