@@ -23,6 +23,7 @@ module.exports = merge(baseWebpackConfig, {
       'process.env': config.dev.env
     }),
     new webpack.DefinePlugin({
+      'check_portal': '"SANE"',
       'axios_url': '"http://localhost:5005/api"',
       'axios_url_enl_ret': '"http://localhost:5005/api/enlisted_ret_post"',
       'axios_url_enl_man': '"http://localhost:5005/api/enlisted_post"',

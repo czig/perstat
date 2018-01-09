@@ -2,7 +2,7 @@
     <div style="position: relative" :class="{'md-form':true,'open':openSuggestion}">
         <input  type="text" class="form-control" :value="value" 
                 @input="updateValue($event.target.value)" 
-                @keydown.enter = 'enter'
+                @keydown.enter.stop.prevent = 'enter'
                 @keydown.down = 'down'
                 @keydown.up = 'up'
                 :placeholder="placeholder">

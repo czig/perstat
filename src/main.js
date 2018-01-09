@@ -26,7 +26,7 @@ import { store } from '@/store/store'
 router.beforeEach((to, from, next) => {
 	 //PROD:
    //       if (store.state.sanity == "SANE"){
-	 if (store.state.sanity != "SANE"){
+	 if (store.state.sanity != check_portal){
 	 	  var querystring = require('querystring');
           const formData = {
             _PROGRAM:"/REN - Dashboard Home V1/makeHTML_collab",

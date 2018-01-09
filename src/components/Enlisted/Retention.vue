@@ -466,7 +466,7 @@
                 majcomConfig.group = removeEmptyBins(majcomInv)
                 majcomConfig.minHeight = 300
                 majcomConfig.aspectRatio = 5
-                majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
+                majcomConfig.margins = {top: 10, left: 40, right: 30, bottom: 100}
                 majcomConfig.colors = ["#1976d2"]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
@@ -500,7 +500,7 @@
                 baseConfig.group = removeEmptyBins(baseI)
                 baseConfig.minHeight = 400
                 baseConfig.aspectRatio = 5
-                baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
+                baseConfig.margins = {top: 10, left: 110, right: 30, bottom: 200}
                 baseConfig.colors = ["#1976d2"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
 
