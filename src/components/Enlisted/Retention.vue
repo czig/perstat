@@ -297,7 +297,7 @@
             */
             
             //TEST AXIOS CALL:
-            axios.post('http://localhost:5005/api/enlisted_ret_post').then(response => {
+            axios.post(axios_url_enl_ret).then(response => {
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 objData.forEach((d)=>{

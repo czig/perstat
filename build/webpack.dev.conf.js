@@ -22,6 +22,14 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': config.dev.env
     }),
+    new webpack.DefinePlugin({
+      'axios_url': '"http://localhost:5005/api"',
+      'axios_url_enl_ret': '"http://localhost:5005/api/enlisted_ret_post"',
+      'axios_url_enl_man': '"http://localhost:5005/api/enlisted_post"',
+      'axios_url_off_pro': '"http://localhost:5005/api/officer_promo"',
+      'axios_url_off_man': '"http://localhost:5005/api/officer_post"',
+      'axios_url_adman': '"http://localhost:5005/api/admanning_post"'
+    }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
