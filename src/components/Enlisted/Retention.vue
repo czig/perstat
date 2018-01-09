@@ -17,7 +17,7 @@
             <div class="col-auto">
                 <button type="button" 
                         class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                        @click="resetAll">Reset All</button>
+                        @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">Reset All</button>
             </div>
         </div>
         <div class="row">
@@ -53,9 +53,36 @@
                     </h3>
                 </div>
             </div>
-            <div id="cat" class="col-5">
+             <div id="afsc" class="col-4">
+                <div id="dc-afsc-select">
+                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="visibility: hidden"
+                            @click="searchAfsc='';resetChart('dc-afsc-select')">Reset</button>
+                    </h3>
+                    <form class="form-inline">
+                        <div class="col-4">
+                            <autocomplete 
+                                :suggestions="afscAutoComplete"
+                                placeholder="Search AFSC"
+                                v-model="searchAfsc"
+                                @input="submit($event,'dc-afsc-select')"
+                                ref="afscAC"
+                                v-clickOutside="afscOut">
+        
+                            </autocomplete>
+                        </div>   
+                    </form>
+                </div>
+            </div>
+            <!-- div class="col-4 form-group">
+                            <input id="searchAfsc" v-model="searchAfsc" placeholder="Search AFSC" @keydown.enter="submit(searchAfsc,'dc-afsc-barchart')">
+                            <button class="btn btn-primary btn-sm" @click="submit(searchAfsc,'dc-afsc-barchart')">Submit</button>
+            </div -->
+            <div id="cat" class="col-4">
                 <div id="dc-cat-rowchart">
-                    <h3>Enlistment Category <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <h3>Category <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -67,21 +94,30 @@
 		<div class="row">
             <div id="majcom" class="col-12">
                 <div id="dc-majcom-barchart">
-                    <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
+                    <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-majcom-barchart')">Reset</button>
+                            @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
                     <form class="form-inline">
-                        <div class="form-group">
+                        <!-- div class="form-group">
                             <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
-                        </div>
+                        </div -->
+                        <div class="col-3">
+                            <autocomplete 
+                                :suggestions="majAutoComplete"
+                                placeholder="Search MAJCOM"
+                                v-model="searchMajcom"
+                                @input="submit($event,'dc-majcom-barchart')"
+                                ref="majAC"
+                                v-clickOutside="majOut">
+        
+                            </autocomplete>
+                        </div>   
                     </form>
-                    <!--<div id="app" class="container">-->
-                            <!--<autocomplete :suggestions="suggestions" v-model="searchMajcom"></autocomplete>-->
-                    <!--</div>-->
+                    
                 </div>
             </div>
         </div>
@@ -92,14 +128,25 @@
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-base-barchart')">Reset</button>
+                            @click="searchBase='';resetChart('dc-base-barchart')">Reset</button>
                     </h3>
-                    <form class="form-inline">
-                        <div class="form-group">
+                 <form class="form-inline">
+                        <!-- div class="form-group">
                             <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
-                        </div>
-                    </form>
+                        </div -->
+                    
+                    <div class="col-3">
+                            <autocomplete 
+                                :suggestions="mpfAutoComplete"
+                                placeholder="Search BASE"
+                                v-model="searchBase"
+                                @input="submit($event,'dc-base-barchart')"
+                                ref="mpfAC"
+                                v-clickOutside="mpfOut">
+                            </autocomplete>
+                    </div> 
+                </form>
                 </div>
             </div>
         </div>
@@ -118,7 +165,11 @@
                 data: [],
                 selected:'I',
                 searchMajcom: "",
-                searchBase: ""
+                searchBase: "",
+                searchAfsc:"",
+                majAutoComplete: [{key:''}],
+                mpfAutoComplete: [{key:''}],
+                afscAutoComplete: [{key:''}]
             }
         },
         components:{
@@ -147,9 +198,18 @@
             else {
                 return "Keep Rate (%)"
             }
-          }
+          },
         },
         methods: {
+          afscOut(){
+            this.$refs.afscAC.outside();
+          },
+          majOut(){
+            this.$refs.majAC.outside();
+          },
+          mpfOut(){
+            this.$refs.mpfAC.outside();
+          },
           resetAll: (event)=>{
             dc.filterAll()
             dc.redrawAll()
@@ -166,6 +226,9 @@
             setTimeout(function() {
                 dc.redrawAll()
             },10)
+          },
+          majcomSub(){
+            this.submit(searchMajcom,'dc-majcom-barchart');
           },
           submit: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
@@ -185,6 +248,29 @@
                 }
             })
             dc.redrawAll()
+          },
+          chartAutoComplete:(text, id) =>{
+            var outObj = []
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id 
+            }).forEach(chart=>{
+                var mainArray = []
+                chart.dimension().group().all().forEach((d) => {
+                    mainArray.push(String(d.key))
+                })
+                var filterArray = mainArray.filter((d) => {
+                    var element = d.toUpperCase() 
+                    return element.indexOf(text.toUpperCase()) !== -1
+                })
+                filterArray.forEach((d)=>{
+                    outObj.push({
+                        key:d
+                    })
+                })
+            })
+                            console.log('in Method ' + id)
+                console.log(outObj)
+                return outObj;
           }
         },
         components: {
@@ -404,6 +490,8 @@
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
                 
+        
+
                 //base(mpf)
                 var baseConfig = {}
                 baseConfig.id = 'base'
@@ -447,12 +535,29 @@
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+
+                //AFSC
+                var afscDim = this.ndx.dimension(function(d){return d.AFSC})
+                var afscGrp = afscDim.group().reduceCount();
+                var afscChart = dc.selectMenu('#dc-afsc-select');
+                afscChart
+                        .dimension(afscDim)
+                        .group(afscGrp)
+                        .numberVisible(10)
+                        .controlsUseVisibility(true);
+
                 //Resize
                 var temp
                 window.onresize = function(event) {
                     clearTimeout(temp)
                     temp = setTimeout(dc.redrawAll(), 500)
                 }
+
+                this.majAutoComplete= this.chartAutoComplete('', 'dc-majcom-barchart');
+                
+                this.mpfAutoComplete = this.chartAutoComplete('', 'dc-base-barchart');
+
+                this.afscAutoComplete= this.chartAutoComplete('', 'dc-afsc-select');
 
                 //create charts
                 dc.renderAll()
@@ -468,6 +573,23 @@
         },
         destroyed() {
             console.log("destroyed")
+        },
+        directives: {
+            clickOutside: {
+              bind: function (el, binding, vnode) {
+                el.event = function (event) {
+                  // here I check that click was outside the el and his childrens
+                  if (!(el == event.target || el.contains(event.target))) {
+                    // and if it did, call method provided in attribute value
+                    vnode.context[binding.expression](event);
+                  }
+                };
+                document.body.addEventListener('click', el.event)
+              },
+              unbind: function (el) {
+                document.body.removeEventListener('click', el.event)
+              },
+            }
         }
     }
 </script>
@@ -482,5 +604,8 @@ div[id*="-barchart"] .x.axis text{
 
 div[id*="-rowchart"] g.row text{
     fill: black;
+}
+.dc-select-menu{
+    display:none;
 }
 </style>
