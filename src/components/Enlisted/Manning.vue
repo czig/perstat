@@ -150,7 +150,7 @@ import formats from '@/store/format'
             */
             
             //TEST AXIOS CALL:
-            axios.post('http://localhost:5005/api/enlisted_post').then(response => {
+            axios.post(axios_url_enl_man).then(response => {
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData

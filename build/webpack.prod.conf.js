@@ -32,6 +32,14 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
+    new webpack.DefinePlugin({
+      'axios_url': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do"',
+      'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=enlisted_ret_post"',
+      'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=enlisted_post"',
+      'axios_url_off_pro': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=officer_promo"',
+      'axios_url_off_man': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=officer_post"',
+      'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=admanning_post"'
+    }),
     // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
     //new webpack.optimize.UglifyJsPlugin({
       //compress: {
