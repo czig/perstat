@@ -31,4 +31,13 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.nav-tabs .nav-link{
+    color:black;
+}
+.nav-tabs .nav-link.active{
+    font-weight:bold;
+    color:teal;
+    //background-color:red;
+}
+</style>

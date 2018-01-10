@@ -201,10 +201,6 @@ import AutoComplete from '@/components/AutoComplete'
                 }
                 var myData = axios.post('', querystring.stringify(formData)).then(response => {
             */
-            axios.post('http://localhost:5005/api/officer_promo').then(response => {
-                var promoData = response.data.data
-                console.log(promoData)
-            })
             
             //TEST AXIOS CALL:
             axios.post('http://localhost:5005/api/officer_post').then(response => {
@@ -342,7 +338,6 @@ import AutoComplete from '@/components/AutoComplete'
                     })
                     
                 //grade
-                
                 var gradeConfig = {};
                 gradeConfig.id = 'grade';
                 gradeConfig.dim = this.ndx.dimension(function (d) {

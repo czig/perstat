@@ -288,5 +288,28 @@ export default {
         "IPZ": 1,
         "BPZ": 0
 
-	}
+	},
+	recommendFormat : {
+        "D": "Definitely Promote",
+        "L": "Not Required",
+        "N": "Do Not Promote",
+        "P": "Promote"
+    },
+    recommendOrder : {
+        "Do Not Promote": 3,
+        "Not Required": 2,
+        "Promote": 1,
+        "Definitely Promote": 0
+
+	},
+    compCatFormat: {
+        "A": "Line",
+        "C": "Chaplain",
+        "D": "Dental",
+        "J": "Judge Advocate",
+        "M": "Medical",
+        "N": "Nurse",
+        "S": "Medical Service",
+        "W": "Bio-medical Science"
+    }
 }

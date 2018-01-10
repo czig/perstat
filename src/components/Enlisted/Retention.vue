@@ -2,18 +2,17 @@
 	<div>
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
-                <input name="radio" type="radio" id="radio1" checked="checked" value="I" v-model="selected" @click="radioButton">
-                <label for="radio">Inventory</label>
-                <input name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
-                <label for="radio">Eligible</label>
+                 <input name="group5" type="radio" id="radio5" checked="checked" value="KR" v-model="selected" @click="radioButton">
+                <label for="radio4">Keep Rate</label>
                 <input name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
                 <label for="radio3">Keep</label>
+                <input name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
+                <label for="radio">Inventory</label>
                 <input name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
                 <label for="radio4">Re-enlistment Rate</label>
-                 <input name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
-                <label for="radio4">Keep Rate</label>
+                <input name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
+                <label for="radio">Eligible</label>
             </div>
-            <div class="col"></div>
             <div class="col-auto">
                 <button type="button" 
                         class="btn btn-danger btn-rounded btn-sm waves-effect" 
@@ -53,29 +52,29 @@
                     </h3>
                 </div>
             </div>
-             <div id="afsc" class="col-4">
-                <div id="dc-afsc-select">
-                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="visibility: hidden"
-                            @click="searchAfsc='';resetChart('dc-afsc-select')">Reset</button>
-                    </h3>
-                    <form class="form-inline">
-                        <div class="col-4">
-                            <autocomplete 
-                                :suggestions="afscAutoComplete"
-                                placeholder="Search AFSC"
-                                v-model="searchAfsc"
-                                @input="submit($event,'dc-afsc-select')"
-                                ref="afscAC"
-                                v-clickOutside="afscOut">
+             <!--<div id="afsc" class="col-4">-->
+                <!--<div id="dc-afsc-select">-->
+                    <!--<h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>-->
+                    <!--<button type="button" -->
+                            <!--class="btn btn-danger btn-sm btn-rounded reset" -->
+                            <!--style="visibility: hidden"-->
+                            <!--@click="searchAfsc='';resetChart('dc-afsc-select')">Reset</button>-->
+                    <!--</h3>-->
+                    <!--<form class="form-inline">-->
+                        <!--<div class="col-4">-->
+                            <!--<autocomplete -->
+                                <!--:suggestions="afscAutoComplete"-->
+                                <!--placeholder="Search AFSC"-->
+                                <!--v-model="searchAfsc"-->
+                                <!--@keydown.enter="submit($event,'dc-afsc-select')"-->
+                                <!--ref="afscAC"-->
+                                <!--v-clickOutside="afscOut">-->
         
-                            </autocomplete>
-                        </div>   
-                    </form>
-                </div>
-            </div>
+                            <!--</autocomplete>-->
+                        <!--</div>   -->
+                    <!--</form>-->
+                <!--</div>-->
+            <!--</div>-->
             <!-- div class="col-4 form-group">
                             <input id="searchAfsc" v-model="searchAfsc" placeholder="Search AFSC" @keydown.enter="submit(searchAfsc,'dc-afsc-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchAfsc,'dc-afsc-barchart')">Submit</button>
@@ -91,6 +90,49 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div id="afsc1" class="col-3">
+                <div id="dc-afsc1-rowchart">
+                    <h3>AFSC 1st Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-afsc1-rowchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+            <div id="afsc2" class="col-3">
+                <div id="dc-afsc2-rowchart">
+                    <h3>AFSC 2nd Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-afsc2-rowchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+            <div id="afsc3" class="col-3">
+                <div id="dc-afsc3-rowchart">
+                    <h3>AFSC 3rd Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-afsc3-rowchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+            <div id="afsc5" class="col-3">
+                <div id="dc-afsc5-rowchart">
+                    <h3>AFSC 5th Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-afsc5-rowchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+        </div>
+            
 		<div class="row">
             <div id="majcom" class="col-12">
                 <div id="dc-majcom-barchart">
@@ -101,21 +143,21 @@
                             @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
                     <form class="form-inline">
-                        <!-- div class="form-group">
+                         <div class="form-group">
                             <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
-                        </div -->
-                        <div class="col-3">
-                            <autocomplete 
-                                :suggestions="majAutoComplete"
-                                placeholder="Search MAJCOM"
-                                v-model="searchMajcom"
-                                @input="submit($event,'dc-majcom-barchart')"
-                                ref="majAC"
-                                v-clickOutside="majOut">
+                         </div>
+                        <!--<div class="col-3">-->
+                            <!--<autocomplete -->
+                                <!--:suggestions="majAutoComplete"-->
+                                <!--placeholder="Search MAJCOM"-->
+                                <!--v-model="searchMajcom"-->
+                                <!--@keydown.enter="submit($event,'dc-majcom-barchart')"-->
+                                <!--ref="majAC"-->
+                                <!--v-clickOutside="majOut">-->
         
-                            </autocomplete>
-                        </div>   
+                            <!--</autocomplete>-->
+                        <!--</div>   -->
                     </form>
                     
                 </div>
@@ -131,21 +173,21 @@
                             @click="searchBase='';resetChart('dc-base-barchart')">Reset</button>
                     </h3>
                  <form class="form-inline">
-                        <!-- div class="form-group">
+                         <div class="form-group">
                             <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
-                        </div -->
+                         </div>
                     
-                    <div class="col-3">
-                            <autocomplete 
-                                :suggestions="mpfAutoComplete"
-                                placeholder="Search BASE"
-                                v-model="searchBase"
-                                @input="submit($event,'dc-base-barchart')"
-                                ref="mpfAC"
-                                v-clickOutside="mpfOut">
-                            </autocomplete>
-                    </div> 
+                    <!--<div class="col-3">-->
+                            <!--<autocomplete -->
+                                <!--:suggestions="mpfAutoComplete"-->
+                                <!--placeholder="Search BASE"-->
+                                <!--v-model="searchBase"-->
+                                <!--@keydown.enter.native="submit($event,'dc-base-barchart')"-->
+                                <!--ref="mpfAC"-->
+                                <!--v-clickOutside="mpfOut">-->
+                            <!--</autocomplete>-->
+                    <!--</div> -->
                 </form>
                 </div>
             </div>
@@ -163,13 +205,13 @@
         data() {
             return {
                 data: [],
-                selected:'I',
+                selected:'KR',
                 searchMajcom: "",
                 searchBase: "",
-                searchAfsc:"",
-                majAutoComplete: [{key:''}],
-                mpfAutoComplete: [{key:''}],
-                afscAutoComplete: [{key:''}]
+               // searchAfsc:"",
+               // majAutoComplete: [{key:''}],
+               // mpfAutoComplete: [{key:''}],
+               // afscAutoComplete: [{key:''}]
             }
         },
         components:{
@@ -268,8 +310,8 @@
                     })
                 })
             })
-                            console.log('in Method ' + id)
-                console.log(outObj)
+                            //console.log('in Method ' + id)
+                //console.log(outObj)
                 return outObj;
           }
         },
@@ -300,11 +342,6 @@
             axios.post(axios_url_enl_ret).then(response => {
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
-                objData.forEach((d)=>{
-                    //Add 2000 to make year 4 digit
-                    d.FY += 2000;
-                })
-                //console.log(objData)
                 this.data = objData
                 renderCharts()
             }).catch(console.error)
@@ -422,11 +459,11 @@
                 var yearConfig = {};
                 yearConfig.id = 'year';
                 yearConfig.dim = this.ndx.dimension(function (d) {
-                    return d.FY;
+                    return "20" + d.FY;
                 })
                 yearConfig.group = yearConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                yearConfig.minHeight = 200 
-                yearConfig.aspectRatio = 2
+                yearConfig.minHeight = 100 
+                yearConfig.aspectRatio = 3
                 yearConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 yearConfig.colors = d3.scale.category10()
                 var yearChart = dchelpers.getRowChart(yearConfig)
@@ -434,9 +471,6 @@
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
-                    //.ordering(function(d){
-                    //  return formats.gradeOrder[d.key]
-                    //})  
 
                 //CAT
                 var catConfig = {};
@@ -445,8 +479,8 @@
                     return formats.catFormat[d.CAT];
                 })
                 catConfig.group = catConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                catConfig.minHeight = 200 
-                catConfig.aspectRatio = 2
+                catConfig.minHeight = 100 
+                catConfig.aspectRatio = 3
                 catConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 catConfig.colors = d3.scale.category10()
                 var catChart = dchelpers.getRowChart(catConfig)
@@ -454,9 +488,65 @@
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
-                    //.ordering(function(d){
-                    //  return formats.gradeOrder[d.key]
-                    //})                      
+
+                //afsc1
+                var afsc1Config = {}
+                afsc1Config.id = 'afsc1'
+                afsc1Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(0,1);})
+                afsc1Config.group = afsc1Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afsc1Config.minHeight = 450 
+                afsc1Config.aspectRatio = 2 
+                afsc1Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                afsc1Config.colors = d3.scale.category10() 
+                var afsc1Chart = dchelpers.getRowChart(afsc1Config)
+                afsc1Chart
+                    .valueAccessor((d)=> {
+                        return d.value[this.selected];
+                    })
+                //afsc2
+                var afsc2Config = {}
+                afsc2Config.id = 'afsc2'
+                afsc2Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(1,2);})
+                afsc2Config.group = afsc2Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afsc2Config.minHeight = 450 
+                afsc2Config.aspectRatio = 2 
+                afsc2Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                afsc2Config.colors = d3.scale.category10() 
+                var afsc2Chart = dchelpers.getRowChart(afsc2Config)
+                afsc2Chart
+                    .valueAccessor((d)=> {
+                        return d.value[this.selected];
+                    })
+                //afsc3
+                var afsc3Config = {}
+                afsc3Config.id = 'afsc3'
+                afsc3Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(2,3);})
+                afsc3Config.group = afsc3Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afsc3Config.minHeight = 450 
+                afsc3Config.aspectRatio = 2 
+                afsc3Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                afsc3Config.colors = d3.scale.category10() 
+                var afsc3Chart = dchelpers.getRowChart(afsc3Config)
+                afsc3Chart
+                    .valueAccessor((d)=> {
+                        return d.value[this.selected];
+                    })
+
+                //afsc5
+                var afsc5Config = {}
+                afsc5Config.id = 'afsc5'
+                afsc5Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(4,5);})
+                afsc5Config.group = afsc5Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afsc5Config.minHeight = 450 
+                afsc5Config.aspectRatio = 2 
+                afsc5Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                afsc5Config.colors = d3.scale.category10() 
+                var afsc5Chart = dchelpers.getRowChart(afsc5Config)
+                afsc5Chart
+                    .valueAccessor((d)=> {
+                        return d.value[this.selected];
+                    })
+
 
                 //Majcom
                 var majcomConfig = {}
@@ -488,7 +578,6 @@
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
-                    .yAxis().tickFormat(function(v) {return v + "%";})
                 
         
 
@@ -496,32 +585,32 @@
                 var baseConfig = {}
                 baseConfig.id = 'base'
                 baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
-                var baseI = baseConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                baseConfig.group = removeEmptyBins(baseI)
+                var baseGroup = baseConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                baseConfig.group = removeEmptyBins(baseGroup)
                 baseConfig.minHeight = 400
                 baseConfig.aspectRatio = 5
                 baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
                 baseConfig.colors = ["#1976d2"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-
-
-                baseChart.stack(baseConfig.group, 'Inv',)
+//                baseChart.stack(baseConfig.group, 'Inv',)
                 baseChart
                     .elasticX(true)
-                    
-                    .group(baseConfig.group, "K",(d) => {
-                        return d.value.K
+                    .valueAccessor((d) => {
+                        return d.value[this.selected];
                     })
-                    .stack(baseConfig.group, "E",(d) => {
-                        return d.value.E
-                    })
-                    .stack(baseConfig.group, "I",(d) => {
-                        return d.value.I
-                    })
+ //                   .group(baseConfig.group, "K",(d) => {
+ //                       return d.value.K
+ //                   })
+ //                   .stack(baseConfig.group, "E",(d) => {
+ //                       return d.value.E
+ //                   })
+ //                   .stack(baseConfig.group, "I",(d) => {
+ //                       return d.value.I
+ //                   })
                     .ordinalColors(["#1976d2","#ff4500","#228b22"])
-                    .title(function(d) {
-                        return d.key + '\n' + formats.enlRetFormat[this.layer] + ': ' + d.value[this.layer];
-                    })
+//                    .title(function(d) {
+//                        return d.key + '\n' + formats.enlRetFormat[this.layer] + ': ' + d.value[this.layer];
+//                    })
                     /*
                     .title( function(d){
                         return d.key + 
@@ -536,15 +625,15 @@
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
-                //AFSC
-                var afscDim = this.ndx.dimension(function(d){return d.AFSC})
-                var afscGrp = afscDim.group().reduceCount();
-                var afscChart = dc.selectMenu('#dc-afsc-select');
-                afscChart
-                        .dimension(afscDim)
-                        .group(afscGrp)
-                        .numberVisible(10)
-                        .controlsUseVisibility(true);
+//                //AFSC
+//                var afscDim = this.ndx.dimension(function(d){return d.AFSC})
+//                var afscGrp = afscDim.group().reduceCount();
+//                var afscChart = dc.selectMenu('#dc-afsc-select');
+//                afscChart
+//                        .dimension(afscDim)
+//                        .group(afscGrp)
+//                        .numberVisible(10)
+//                        .controlsUseVisibility(true);
 
                 //Resize
                 var temp

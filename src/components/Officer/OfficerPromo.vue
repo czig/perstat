@@ -9,7 +9,7 @@
                 <input name="radio3" type="radio" id="radio3" value="elig" v-model="selected" @click="radioButton">
                 <label for="radio3">Eligible</label>
                 <input name="radio4" type="radio" id="radio4" value="pmePercent" v-model="selected" @click="radioButton">
-                <label for="radio4">PME Rate</label>
+                <label for="radio4">PME Complete Rate</label>
             </div>
             <div class="col"></div>
             <div class="col-auto">
@@ -343,7 +343,9 @@ import AutoComplete from '@/components/AutoComplete'
                 //Compcat
                 var compCatConfig = {}
                 compCatConfig.id = 'compCat'
-                compCatConfig.dim = this.ndx.dimension(function(d){return d.Compcat})
+                compCatConfig.dim = this.ndx.dimension(function(d){
+                    return formats.compCatFormat[d.Compcat];
+                })
                 compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 compCatConfig.minHeight = 300
                 compCatConfig.aspectRatio = 5
@@ -396,10 +398,10 @@ import AutoComplete from '@/components/AutoComplete'
                 var recommendConfig = {};
                 recommendConfig.id = 'recommend'
                 recommendConfig.dim = this.ndx.dimension(function (d) {
-                    return d.Promo_Recomendation;
+                    return formats.recommendFormat[d.Promo_Recomendation];
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                recommendConfig.minHeight = 200 
+                recommendConfig.minHeight = 165 
                 recommendConfig.aspectRatio = 2
                 recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 recommendConfig.colors = d3.scale.category10()
@@ -408,15 +410,18 @@ import AutoComplete from '@/components/AutoComplete'
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
+                    .ordering(function(d) {
+                        return formats.recommendOrder[d.key]
+                    })
                 
                 //occupGroup
                 var occupGroupConfig = {}
                 occupGroupConfig.id = 'occupGroup'
                 occupGroupConfig.dim = this.ndx.dimension(function(d){return d.Occupation})
                 occupGroupConfig.group = occupGroupConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                occupGroupConfig.minHeight = 200 
+                occupGroupConfig.minHeight = 230 
                 occupGroupConfig.aspectRatio = 3 
-                occupGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
+                occupGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 40}
                 occupGroupConfig.colors = ["#108b52"] 
                 var occupGroupChart = dchelpers.getOrdinalBarChart(occupGroupConfig)
                 occupGroupChart
@@ -431,7 +436,7 @@ import AutoComplete from '@/components/AutoComplete'
           //      //board(mpf)
                 var boardConfig = {}
                 boardConfig.id = 'board'
-                boardConfig.dim = this.ndx.dimension(function(d){return d.Board_ID})
+                boardConfig.dim = this.ndx.dimension(function(d){return formats.gradeFormat[d.Board_ID.substring(1,3)] + "20" + d.Board_ID.substring(3,6) })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 boardConfig.group = removeEmptyBins(boardGroup)
                 boardConfig.minHeight = 400
@@ -445,6 +450,9 @@ import AutoComplete from '@/components/AutoComplete'
                     })
                     .elasticX(true)
                     .ordinalColors(["#1976d2","#ff4500"])
+                    .ordering(function(d) {
+                        return formats.gradeOrder[d.key.substring(0,3)] + d.key.substring(3,8)
+                    })
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
