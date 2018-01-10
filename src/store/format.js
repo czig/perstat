@@ -211,8 +211,8 @@ export default {
 		"ZE":"USAF ACADEMY ACD CO CADET WING"
 	},
 	afscGroupFormat : {
-		"1":"*",
-		"2":"**ERROR**",
+		"1":"PENDING UPDATE",
+		"2":"PENDING UPDATE",
 		"3":"ABM",
 		"4":"ACQUISITION",
 		"5":"AEROSPACE MED",
