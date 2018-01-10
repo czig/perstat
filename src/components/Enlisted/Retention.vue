@@ -2,7 +2,7 @@
 	<div>
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
-                <input name="radio" type="radio" id="radio1" checked="checked" value="I" v-model="selected" @click="radioButton">
+                <input name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
                 <label for="radio">Inventory</label>
                 <input name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
                 <label for="radio">Eligible</label>
@@ -10,7 +10,7 @@
                 <label for="radio3">Keep</label>
                 <input name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
                 <label for="radio4">Re-enlistment Rate</label>
-                 <input name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
+                 <input checked="checked" name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
                 <label for="radio4">Keep Rate</label>
             </div>
             <div class="col"></div>
@@ -124,7 +124,7 @@
         <div class="row">
             <div id="base" class="col-12">
                 <div id="dc-base-barchart">
-                    <h3>Base <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
+                    <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"> Stacked Inventory/Elidgible/Keep </span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -163,7 +163,7 @@
         data() {
             return {
                 data: [],
-                selected:'I',
+                selected:'KR',
                 searchMajcom: "",
                 searchBase: "",
                 searchAfsc:"",
