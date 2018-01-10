@@ -52,7 +52,7 @@
                     <form class="form-inline">
                         <div class="form-group">
                             <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
-                            <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
+                            <button class="btn btn-primary btn-sm" @click.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
                         </div>
                     </form>
                     <!--<div id="app" class="container">-->
@@ -95,7 +95,7 @@
                     <form class="form-inline">
                         <div class="form-group">
                             <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
-                            <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
+                            <button class="btn btn-primary btn-sm" @click.stop.prevent="submit(searchBase,'dc-base-barchart')">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -201,13 +201,13 @@ import AutoComplete from '@/components/AutoComplete'
                 }
                 var myData = axios.post('', querystring.stringify(formData)).then(response => {
             */
-            axios.post('http://localhost:5005/api/officer_promo').then(response => {
+            axios.post(axios_url_off_pro).then(response => {
                 var promoData = response.data.data
                 console.log(promoData)
             })
             
             //TEST AXIOS CALL:
-            axios.post('http://localhost:5005/api/officer_post').then(response => {
+            axios.post(axios_url_off_man).then(response => {
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
