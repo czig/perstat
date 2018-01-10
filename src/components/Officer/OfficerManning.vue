@@ -1,32 +1,14 @@
 <template>
     <div class="container">
-        <div class="row">
-            <h1 class=col-2>Enlisted</h1>
-            <ul class="col-8 nav nav-tabs nav-justified " role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#panel1" role="tab">Manning</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#panel2" role="tab">Retention</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#panel3" role="tab">Promotion</a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="tab-content">
-        <div id="panel1" class="tab-pane active" role="tabpanel">
-
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
                 <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
                 <label for="radio">Percentage</label>
-                <input name="group2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
-                <label for="radio">Assigned</label>
-                <input name="group3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                <input name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                <label for="radio2">Assigned</label>
+                <input name="radio3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
                 <label for="radio3">Authorized</label>
-                <input name="group4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                <input name="radio4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
                 <label for="radio4">STP</label>
             </div>
             <div class="col"></div>
@@ -34,6 +16,10 @@
                 <button type="button" 
                         class="btn btn-danger btn-rounded btn-sm waves-effect" 
                         @click="resetAll">Reset All</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-auto">
             </div>
         </div>
         <div class="row">
@@ -63,6 +49,15 @@
                             style="display: none"
                             @click="resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
+                            <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
+                        </div>
+                    </form>
+                    <!--<div id="app" class="container">-->
+                            <!--<autocomplete :suggestions="suggestions" v-model="searchMajcom"></autocomplete>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>
@@ -88,13 +83,24 @@
                 </div>
             </div>
         </div>
-
+        <div class="row">
+            <div id="base" class="col-12">
+                <div id="dc-base-barchart">
+                    <h3>Base <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-base-barchart')">Reset</button>
+                    </h3>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
+                            <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div id="panel2" role="tabpanel"></div>
-        <div id="panel3" role="tabpanel"></div>
-    </div>
-
     </div>
 </template>
 
@@ -102,12 +108,15 @@
 import dchelpers from '@/dchelpers'
 import axios from 'axios'
 import formats from '@/store/format'
+import AutoComplete from '@/components/AutoComplete'
 
     export default {
         data() {
             return {
                 data: [],
-                selected: "percent"
+                selected: "percent",
+                searchMajcom: "",
+                searchBase: ""
             }
         },
         computed: {
@@ -149,7 +158,29 @@ import formats from '@/store/format'
             setTimeout(function() {
                 dc.redrawAll()
             },10)
+          },
+          submit: (text,id) => {
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id 
+            }).forEach(chart=>{
+                var mainArray = []
+                chart.dimension().group().all().forEach((d) => {
+                    mainArray.push(String(d.key))
+                })
+                var filterArray = mainArray.filter((d) => {
+                    var element = d.toUpperCase() 
+                    return element.indexOf(text.toUpperCase()) !== -1
+                })
+                chart.filter(null)
+                if (filterArray.length != mainArray.length) {
+                    chart.filter([filterArray])
+                }
+            })
+            dc.redrawAll()
           }
+        },
+        components: {
+            'autocomplete': AutoComplete
         },
         created: function(){
           console.log('created')
@@ -170,9 +201,13 @@ import formats from '@/store/format'
                 }
                 var myData = axios.post('', querystring.stringify(formData)).then(response => {
             */
+            axios.post('http://localhost:5005/api/officer_promo').then(response => {
+                var promoData = response.data.data
+                console.log(promoData)
+            })
             
             //TEST AXIOS CALL:
-            axios.post('http://localhost:5005/api/enlisted_post').then(response => {
+            axios.post('http://localhost:5005/api/officer_post').then(response => {
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
@@ -229,7 +264,6 @@ import formats from '@/store/format'
                         stpPercent: 0,
                     }
                 }
-
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
                     return {
@@ -241,7 +275,7 @@ import formats from '@/store/format'
                     }
                 }
 
-                //MAJCOM
+                //Majcom
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJCOM_T12C]})
@@ -259,9 +293,19 @@ import formats from '@/store/format'
                     })
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
+                        chart.selectAll('rect.bar')
+                            .classed('stack-deselected', function(d) {
+                                //d.x is majcom and d.layer is assigned or stp
+                                return chart.filter() && chart.filters().indexOf(d.x) === -1
+                            })
+                            .on('click', function(d) {
+                                chart.filter(d.x)
+                                dc.redrawAll()
+                            })
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+                    .yAxis().tickFormat(function(v) {return v + "%";})
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })
@@ -325,7 +369,7 @@ import formats from '@/store/format'
                 afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 afscGroupConfig.minHeight = 200 
                 afscGroupConfig.aspectRatio = 3 
-                afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 120}
+                afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
                 afscGroupConfig.colors = ["#108b52"] 
                 var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
                 afscGroupChart
@@ -336,6 +380,29 @@ import formats from '@/store/format'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+
+                //base(mpf)
+                var baseConfig = {}
+                baseConfig.id = 'base'
+                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
+                var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                baseConfig.group = removeEmptyBins(basePercent)
+                baseConfig.minHeight = 400
+                baseConfig.aspectRatio = 5
+                baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
+                baseConfig.colors = ["#1976d2"]
+                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
+                baseChart
+                    .elasticX(true)
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .ordinalColors(["#1976d2","#ff4500"])
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
+
 
                 //make responsive
                 var temp
@@ -362,17 +429,9 @@ import formats from '@/store/format'
     }
 </script>
 
-<style src="../../node_modules/dc/dc.css">
+<style src="@/../node_modules/dc/dc.css">
 </style>
 <style>
-.nav-tabs .nav-link{
-    color:black;
-}
-.nav-tabs .nav-link.active{
-    font-weight:bold;
-    color:teal;
-    //background-color:red;
-}
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
     transform: rotate(-45deg);

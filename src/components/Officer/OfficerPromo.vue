@@ -3,7 +3,7 @@
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
                 <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
-                <label for="radio">Select Rate</label>
+                <label for="radio">Promotion Rate</label>
                 <input name="radio2" type="radio" id="radio2" value="sel" v-model="selected" @click="radioButton">
                 <label for="radio2">Selects</label>
                 <input name="radio3" type="radio" id="radio3" value="elig" v-model="selected" @click="radioButton">
@@ -36,7 +36,7 @@
                 <span id="elig"></span>
             </div>
             <div class="col-auto">
-                Select Rate: 
+                Promotion Rate: 
                 <span id="selRate"></span>
             </div>
             <div class="col-auto">
@@ -117,7 +117,7 @@
 import dchelpers from '@/dchelpers'
 import axios from 'axios'
 import formats from '@/store/format'
-import AutoComplete from './AutoComplete'
+import AutoComplete from '@/components/AutoComplete'
 
     export default {
         data() {
@@ -135,7 +135,7 @@ import AutoComplete from './AutoComplete'
           },
           ylabel: function() {
             if (this.selected === "percent") {
-                return "Select Rate (%)"
+                return "Promotion Rate (%)"
             }
             else if (this.selected === "sel") {
                 return "Selects"
@@ -211,7 +211,7 @@ import AutoComplete from './AutoComplete'
 
             
             //TEST AXIOS CALL:
-            axios.post(axios_url_off_pro).then(response => {
+            axios.post('http://localhost:5005/api/officer_promo').then(response => {
                 var promoData = response.data.data
                 this.data = promoData
                 renderCharts()
@@ -476,7 +476,7 @@ import AutoComplete from './AutoComplete'
     }
 </script>
 
-<style src="../../node_modules/dc/dc.css">
+<style src="@/../node_modules/dc/dc.css">
 </style>
 <style>
 div[id*="-barchart"] .x.axis text{

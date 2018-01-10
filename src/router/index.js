@@ -2,9 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import AdMan from '@/components/AdMan'
-import Officer from '@/components/Officer'
-import OfficerManning from '@/components/OfficerManning'
-import OfficerPromo from '@/components/OfficerPromo'
+import Officer from '@/components/Officer/Officer'
 import Enlisted from '@/components/Enlisted/Enlisted'
 import Civilian from '@/components/Civilian'
 import Assignments from '@/components/Assignments'
@@ -30,17 +28,7 @@ export default new Router({
     {
       path: '/officer',
       name: 'officer',
-      component: Officer,
-      children: [
-        {
-            path: 'manning',
-            component: OfficerManning
-        },
-        {
-            path: 'promotions',
-            component: OfficerPromo
-        }
-      ]
+      component: Officer
     },
     {
       path: '/enlisted',
