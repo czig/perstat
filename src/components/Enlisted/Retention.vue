@@ -268,8 +268,8 @@
                     })
                 })
             })
-                            console.log('in Method ' + id)
-                console.log(outObj)
+                           // console.log('in Method ' + id)
+                //console.log(outObj)
                 return outObj;
           }
         },
@@ -522,6 +522,7 @@
                     .title(function(d) {
                         return d.key + '\n' + formats.enlRetFormat[this.layer] + ': ' + d.value[this.layer];
                     })
+                    
                     /*
                     .title( function(d){
                         return d.key + 
@@ -535,6 +536,17 @@
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+
+                baseChart.legend(dc.legend());
+                  dc.override(baseChart, 'legendables', function() {
+                      var items = baseChart._legendables();
+                      items.forEach(function(d){
+                        //console.log(d)
+                        d.name = formats.enlRetFormat[d.name];
+                      })
+                      return items.reverse();
+                  });
+                
 
                 //AFSC
                 var afscDim = this.ndx.dimension(function(d){return d.AFSC})
