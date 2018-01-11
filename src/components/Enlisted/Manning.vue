@@ -46,6 +46,12 @@
                             style="display: none"
                             @click="resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
+                            <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -71,6 +77,24 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div id="base" class="col-12">
+                <div id="dc-base-barchart">
+                    <h3>Base <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-base-barchart')">Reset</button>
+                    </h3>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
+                            <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
     
     </div>
@@ -85,7 +109,9 @@ import formats from '@/store/format'
         data() {
             return {
                 data: [],
-                selected: "percent"
+                selected: "percent",
+                searchMajcom: "",
+                searchBase: ""
             }
         },
         computed: {
@@ -127,6 +153,25 @@ import formats from '@/store/format'
             setTimeout(function() {
                 dc.redrawAll()
             },10)
+          },
+          submit: (text,id) => {
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id 
+            }).forEach(chart=>{
+                var mainArray = []
+                chart.dimension().group().all().forEach((d) => {
+                    mainArray.push(String(d.key))
+                })
+                var filterArray = mainArray.filter((d) => {
+                    var element = d.toUpperCase() 
+                    return element.indexOf(text.toUpperCase()) !== -1
+                })
+                chart.filter(null)
+                if (filterArray.length != mainArray.length) {
+                    chart.filter([filterArray])
+                }
+            })
+            dc.redrawAll()
           }
         },
         created: function(){
@@ -310,6 +355,28 @@ import formats from '@/store/format'
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
+
+                //base(mpf)
+                var baseConfig = {}
+                baseConfig.id = 'base'
+                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
+                var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                baseConfig.group = removeEmptyBins(basePercent)
+                baseConfig.minHeight = 400
+                baseConfig.aspectRatio = 5
+                baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
+                baseConfig.colors = ["#1976d2"]
+                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
+                baseChart
+                    .elasticX(true)
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
