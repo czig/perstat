@@ -1,16 +1,6 @@
 <template>
     <div class="container">
         <div class="row pt-2"> 
-            <div id="radioSelect" class="col form-group">
-                <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
-                <label for="radio">Promotion Rate</label>
-                <input name="radio2" type="radio" id="radio2" value="sel" v-model="selected" @click="radioButton">
-                <label for="radio2">Selects</label>
-                <input name="radio3" type="radio" id="radio3" value="elig" v-model="selected" @click="radioButton">
-                <label for="radio3">Eligible</label>
-                <input name="radio4" type="radio" id="radio4" value="pmePercent" v-model="selected" @click="radioButton">
-                <label for="radio4">PME Complete Rate</label>
-            </div>
             <div class="col"></div>
             <div class="col-auto">
                 <button type="button" 
@@ -45,13 +35,13 @@
             </div>
         </div>
         <div class="row">
-            <div id="zone" class="col-4">
-                <div id="dc-zone-rowchart">
-                    <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+            <div id="grade" class="col-4">
+                <div id="dc-grade-rowchart">
+                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-zone-rowchart')">Reset</button>
+                            @click="resetChart('dc-grade-rowchart')">Reset</button>
                     </h3>
                 </div>
             </div>
@@ -67,33 +57,24 @@
             </div>
         </div>
         <div class="row">
-            <div id="occupGroup" class="col-6">
-                <div id="dc-occupGroup-barchart">
-                    <h3>Occupation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+            <div id="zone" class="col-4">
+                <div id="dc-zone-rowchart">
+                    <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-occupGroup-barchart')">Reset</button>
+                            @click="resetChart('dc-zone-rowchart')">Reset</button>
                     </h3>
                 </div>
             </div>
-            <div id="grade" class="col-3">
-                <div id="dc-grade-rowchart">
-                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-grade-rowchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="recommend" class="col-3">
+            <div id="recommend" class="col-5">
                 <div id="dc-recommend-rowchart">
                     <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                        <transition>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-recommend-rowchart')">Reset</button>
+                            @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
                     </h3>
                 </div>
             </div>
@@ -106,6 +87,18 @@
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
                             @click="resetChart('dc-board-barchart')">Reset</button>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="occupGroup" class="col-12">
+                <div id="dc-occupGroup-barchart">
+                    <h3>Occupation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-occupGroup-barchart')">Reset</button>
                     </h3>
                 </div>
             </div>
@@ -279,66 +272,43 @@ import AutoComplete from '@/components/AutoComplete'
                 }
 
                 //Number Display for sel, elig, sel rate, pme, pme rate - show total for filtered content
-                var sel = this.ndx.groupAll().reduceSum(function(d) { return +d.num_select })
+                var numberGroup = this.ndx.groupAll().reduce(promoAdd, promoRemove, promoInitial)
                 var selND = dc.numberDisplay("#sel")
-                selND.group(sel)
+                selND.group(numberGroup)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) { return d;})
+                    .valueAccessor(function(d) { return d.sel;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var elig = this.ndx.groupAll().reduceSum(function(d) { return +d.num_eligible})
                 var eligND = dc.numberDisplay("#elig")
-                eligND.group(elig)
+                eligND.group(numberGroup)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d;})
+                    .valueAccessor(function(d) {return d.elig;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var selRate = this.ndx.groupAll().reduce(promoAdd, promoRemove, promoInitial)
                 var selRateND = dc.numberDisplay("#selRate")
-                selRateND.group(selRate)
-                    .formatNumber(d3.format("r"))
+                selRateND.group(numberGroup)
+                    .formatNumber(d3.format(".1f"))
                     .valueAccessor(function(d) {return d.percent;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
-                var pme = this.ndx.groupAll().reduceSum(function(d) {return +d.num_pme})
                 var pmeND = dc.numberDisplay("#pme")
-                pmeND.group(pme)
+                pmeND.group(numberGroup)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d;})
+                    .valueAccessor(function(d) {return d.pme;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var pmeRate = this.ndx.groupAll().reduce(promoAdd, promoRemove, promoInitial)
                 var pmeRateND = dc.numberDisplay("#pmeRate")
-                pmeRateND.group(pmeRate)
-                    .formatNumber(d3.format("r"))
+                pmeRateND.group(numberGroup)
+                    .formatNumber(d3.format(".1f"))
                     .valueAccessor(function(d) {return d.pmePercent;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
 
-                //zone
-                var zoneConfig = {};
-                zoneConfig.id = 'zone'
-                zoneConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.zoneFormat[d.Zone];
-                })
-                zoneConfig.group = zoneConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                zoneConfig.minHeight = 200 
-                zoneConfig.aspectRatio = 2
-                zoneConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                zoneConfig.colors = d3.scale.category10()
-                var zoneChart = dchelpers.getRowChart(zoneConfig)
-                zoneChart
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .ordering(function(d){
-                      return formats.zoneOrder[d.key]
-                    })                                    
 
                 //Compcat
                 var compCatConfig = {}
@@ -347,7 +317,7 @@ import AutoComplete from '@/components/AutoComplete'
                     return formats.compCatFormat[d.Compcat];
                 })
                 compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                compCatConfig.minHeight = 300
+                compCatConfig.minHeight = 260
                 compCatConfig.aspectRatio = 5
                 compCatConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
                 compCatConfig.colors = ["#1976d2"]
@@ -381,7 +351,7 @@ import AutoComplete from '@/components/AutoComplete'
                     return formats.gradeFormat[d.Board_ID.substring(1,3)];
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                gradeConfig.minHeight = 200 
+                gradeConfig.minHeight = 150 
                 gradeConfig.aspectRatio = 2
                 gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 gradeConfig.colors = d3.scale.category10()
@@ -394,6 +364,26 @@ import AutoComplete from '@/components/AutoComplete'
                       return formats.gradeOrder[d.key]
                     })                                    
 
+                //zone
+                var zoneConfig = {};
+                zoneConfig.id = 'zone'
+                zoneConfig.dim = this.ndx.dimension(function (d) {
+                    return formats.zoneFormat[d.Zone];
+                })
+                zoneConfig.group = zoneConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                zoneConfig.minHeight = 150 
+                zoneConfig.aspectRatio = 3
+                zoneConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                zoneConfig.colors = d3.scale.ordinal().range(["#1b9e77","#7570b3","#d95f02"])
+                var zoneChart = dchelpers.getRowChart(zoneConfig)
+                zoneChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .ordering(function(d){
+                      return formats.zoneOrder[d.key]
+                    })                                    
+
                 //recommend
                 var recommendConfig = {};
                 recommendConfig.id = 'recommend'
@@ -401,10 +391,10 @@ import AutoComplete from '@/components/AutoComplete'
                     return formats.recommendFormat[d.Promo_Recomendation];
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                recommendConfig.minHeight = 165 
-                recommendConfig.aspectRatio = 2
+                recommendConfig.minHeight = 150 
+                recommendConfig.aspectRatio = 3
                 recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                recommendConfig.colors = d3.scale.category10()
+                recommendConfig.colors = d3.scale.ordinal().range(["#1a9641","#a6d96a","#fdae61","#d7191c"])
                 var recommendChart = dchelpers.getRowChart(recommendConfig)
                 recommendChart
                     .valueAccessor((d) => {
@@ -419,8 +409,8 @@ import AutoComplete from '@/components/AutoComplete'
                 occupGroupConfig.id = 'occupGroup'
                 occupGroupConfig.dim = this.ndx.dimension(function(d){return d.Occupation})
                 occupGroupConfig.group = occupGroupConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                occupGroupConfig.minHeight = 230 
-                occupGroupConfig.aspectRatio = 3 
+                occupGroupConfig.minHeight = 200 
+                occupGroupConfig.aspectRatio = 5 
                 occupGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 40}
                 occupGroupConfig.colors = ["#108b52"] 
                 var occupGroupChart = dchelpers.getOrdinalBarChart(occupGroupConfig)
@@ -432,16 +422,17 @@ import AutoComplete from '@/components/AutoComplete'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+                    .gap(20)
 
-          //      //board(mpf)
+                //board
                 var boardConfig = {}
                 boardConfig.id = 'board'
                 boardConfig.dim = this.ndx.dimension(function(d){return formats.gradeFormat[d.Board_ID.substring(1,3)] + "20" + d.Board_ID.substring(3,6) })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 boardConfig.group = removeEmptyBins(boardGroup)
-                boardConfig.minHeight = 400
+                boardConfig.minHeight = 250
                 boardConfig.aspectRatio = 5
-                boardConfig.margins = {top: 30, left: 40, right: 30, bottom: 200}
+                boardConfig.margins = {top: 30, left: 40, right: 30, bottom: 60}
                 boardConfig.colors = ["#1976d2"]
                 var boardChart = dchelpers.getOrdinalBarChart(boardConfig)
                 boardChart
