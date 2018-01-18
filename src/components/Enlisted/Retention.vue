@@ -62,46 +62,29 @@
                 </div>
             </div>
             </div>
-            <div id="afsc-inputs" class="col-3">
-                <div id="dc-afsc-select2">
-                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="visibility: hidden"
-                            @click="resetAfsc">Reset</button>
+            <div id="afsc-inputs" class="col">
+                <div id="dc-afsc-select">
+                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">  {{ylabel}}  </span>
                     </h3>
                     <form class="form-inline">
                          <div class="form-group">
-                            <input id="searchAfsc" v-model="searchAfsc" placeholder="Search AFSC" @keydown.enter="submit(searchAfsc,'dc-afsc-select2')">
-                            <button class="btn btn-primary btn-sm" @click="chooseAfscGroup">Submit</button>
+                            <input id="searchAfsc" v-model="searchAfsc" placeholder="Search AFSC" @keydown.enter.stop.prevent="updateAfsc(searchAfsc, searchAfsc.length)">
+
+                            <button class="btn btn-primary btn-sm" @click="updateAfsc(searchAfsc, searchAfsc.length)">Submit</button>
+                            <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="visibility: hidden"
+                            @click="resetAfsc">Reset</button>
                          </div>
-                         <div> 
-                            <div> {{ afscLevelText }} </div>
-                            <div v-if="this.searchAfsc.length==0">
-                                <button v-for="digit in afsc1" class="btn btn-primary btn-sm"
-                                @click="addDigit(digit)"> {{ digit }}  </button>
-                            </div>
-                            <div v-if="this.searchAfsc.length==1">
-                                <button v-for="digit in afsc2" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
-                            </div>
-                            <div v-if="this.searchAfsc.length==2">
-                                <button v-for="digit in afsc3" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
-                            </div>
-                            <div v-if="this.searchAfsc.length==3">
-                                <button v-for="digit in afsc4" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
-                            </div>
-                            <div v-if="this.searchAfsc.length==4">
-                                <button v-for="digit in afsc5" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
+                         <div v-if="searchAfsc.length > 1"> 
+                            <div> Go back to: </div>
+                            <div>
+                                <button v-for="(suggest, index) in afscTools.Sub" class="btn btn-primary btn-sm"
+                                @click="updateAfsc(suggest, index)"> {{ suggest }}  </button>
                             </div>
                          </div>
-                         <!-- div> 1D: {{afsc1}} <br>
-                          2D: {{afsc2}} <br>
-                          3D: {{afsc3}} <br>
-                          4D: {{afsc4}} <br>
-                          5D: {{afsc5}} </div -->
                     </form>
                 </div>
-                <div id="dc-afsc-select"></div>
             </div>
             <div id="afsc" class="col-5">
                 <div id="dc-afsc-rowchart">
@@ -136,7 +119,7 @@
         <div class="row">
             <div id="base" class="col-12">
                 <div id="dc-base-barchart">
-                    <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"> Stacked Inventory/Elidgible/Keep </span>
+                    <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -168,12 +151,28 @@
                 searchMajcom: "",
                 searchBase: "",
                 searchAfsc:"",
-                afsc: [],
-                afscFreeze: false
+                afscTools:{
+                    Group: [],
+                    Dim: [],
+                    Sub: [],
+                    Freeze: false
+                },
             }
         },
         components:{
         	'autocomplete': AutoComplete
+        },
+        watch: {
+            searchAfsc: function(val){
+                var len = val.length;
+                var arr = [];
+                for (var i=1; i<len; i++){
+                    arr.push(   val.substring( 0, i) + ''+ 
+                                Array(6-i).join("X")
+                            )
+                }
+                this.afscTools.Sub= arr;
+            }
         },
         computed: {
           ndx: function(){
@@ -181,35 +180,6 @@
           },
           allGroup: function(){
             return this.ndx.groupAll()
-          },
-          afsc1:function(){
-            return [...new Set(this.afsc.map(item => item[0]))];
-          },
-          afsc2:function(){
-            return [...new Set(this.afsc.map(item => item[1]))];
-          },
-          afsc3:function(){
-            return [...new Set(this.afsc.map(item => item[2]))];
-          },
-          afsc4:function(){
-            return [...new Set(this.afsc.map(item => item[3]))];
-          },
-          afsc5:function(){
-            return [...new Set(this.afsc.map(item => item[4]))];
-          },
-          afscLevelText:function(){
-            var len = this.searchAfsc.length;
-            if (len == 0)
-                return 'First Digit Options:'
-            else if (len == 1)
-                return 'Seceond Digit Options:'
-            else if (len == 2)
-                return 'Third Digit Options:'
-            else if (len==3)
-                return 'Fourth Digit Options:'
-            else if (len==4)
-                return 'Fifth Digit Options:'
-            else return '';
           },
           ylabel: function() {
             if (this.selected === "I") {
@@ -222,7 +192,7 @@
                 return "KEEP"
             }
             else if (this.selected === "RR") {
-                return "Re-Enlistment Rate (%)"
+                return "Re-Enlist Rate (%)"
             }
             else {
                 return "Keep Rate (%)"
@@ -231,57 +201,80 @@
         },
         methods: {
           addDigit(val){
+             console.log('in ADD DIGIt')
             this.searchAfsc += '' + val;
-            console.log(this.searchAfsc)
+            //console.log(this.searchAfsc)
             this.chooseAfscGroup();
           },
-          updateAfsc(val){
-            //console.log(val)
-            this.afsc=val.slice();
+          updateAfsc(suggest, index){
+            //Reset AFSC
+            this.resetAfsc();
+            //set searchAfsc
+            this.searchAfsc = suggest.substring(0,index+1);
+            //Update Charts
+            this.chooseAfscGroup();
           },
           resetAfsc(){
             this.searchAfsc = '';
-            this.afscFreeze = false;
+            this.afscTools.Freeze = false;
             //resetChart('dc-afsc-rowchart')
-            this.afscChangeGroup(1);
+            this.afscChangeGroup(0);
+            //this.resetChart('dc-afsc-select')
             this.resetChart('dc-afsc-select')
-            this.resetChart('dc-afsc-select2')
+            this.resetChart('dc-afsc-rowchart')
           },
           chooseAfscGroup(){
             var len = this.searchAfsc.length;
-            this.submitStart(this.searchAfsc, 'dc-afsc-select2');
+            
+            this.submitStart(this.searchAfsc, 'dc-afsc-select');
             dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == 'dc-afsc-select2' 
+                return chart.anchorName() == 'dc-afsc-select' 
             }).forEach(chart=>{
                 var results = chart.group().all().length;
-                if ((!this.afscFreeze) && results < 11){
+                if ((!this.afscTools.Freeze) && results < 11){
                     this.afscChangeGroup(6)
-                    this.afscFreeze = true;
+                    this.afscTools.Freeze = true;
                 } else if (results >=11){
-                    this.afscChangeGroup(len+1)
-                    this.afscFreeze = false;
+                    this.afscChangeGroup(len)
+                    this.afscTools.Freeze = false;
                 }
             })
           },
           afscChangeGroup(val){
-            var xes = Array(6-val).join("X")
-            var dim = this.ndx.dimension(function(d){return d.AFSC.substring(0,val) + xes;})
-            var group = dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-            var groupFull = this.removeEmptyBins(group)
+
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == 'dc-afsc-rowchart' 
             }).forEach(chart=>{
-                 chart.filterAll()
-                chart.dimension(dim).group(groupFull)
+                chart.filterAll()
+                chart.dimension(this.afscTools.Dim[val]).group(this.afscTools.Group[val])
                 //this.resetChart('dc-afsc-rowchart')
                 dc.redrawAll()
             })
           },
+          createAfscTools(){
+            var xes = '';
+            for (var i = 0;i<6;i++){
+                xes = Array(5-i).join("X")
+                this.afscTools.Dim[i] = this.ndx.dimension(function (d) {
+                        return d.AFSC.substring(0,i+1) + xes;
+                });
+
+                this.afscTools.Group[i] = this.removeEmptyBins(this.afscTools.Dim[i].group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial));
+            }
+            this.afscTools.Dim[6] = this.ndx.dimension(function (d) {
+                        return d.AFSC;
+                }
+            );
+
+            this.afscTools.Group[6] = this.removeEmptyBins(this.afscTools.Dim[6].group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial));
+          },
           resetAll(){
             dc.filterAll();
-            dc.redrawAll();
-            this.afscFreeze = false;
-            this.afscChangeGroup(1);
+            //dc.redrawAll();
+            this.afscTools.Freeze = false;
+
+            //resetAfsc Calls dc.redrawAll()
+            this.resetAfsc()
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -597,9 +590,11 @@
                     })
                 
 
-                //AFSC
+                // **** AFSC ****
+
+                //AFSC select -- this dc chart is invisibile used only to filter things from afsc graph
                 var afscDim = this.ndx.dimension(function(d){return d.AFSC})
-                var afscGrp = afscDim.group().reduce(retentionAdd,retentionRemove,retentionInitial);
+                var afscGrp = this.removeEmptyBins(afscDim.group().reduce(retentionAdd,retentionRemove,retentionInitial));
                 var afscChart = dc.selectMenu('#dc-afsc-select');
                 afscChart
                         .dimension(afscDim)
@@ -607,27 +602,14 @@
                         .numberVisible(10)
                         .controlsUseVisibility(true);
 
-                var afscDim2 = this.ndx.dimension(function(d){return d.AFSC})
-                var afscGrp2 = this.removeEmptyBins(afscDim2.group().reduce(retentionAdd,retentionRemove,retentionInitial));
-                var afscChart2 = dc.selectMenu('#dc-afsc-select2');
-                afscChart2
-                        .dimension(afscDim2)
-                        .group(afscGrp2)       
-                        .numberVisible(10)
-                        .controlsUseVisibility(true);
-
-                afscChart.on('pretransition', (chart)=> {
-                        this.updateAfsc([...new Set(chart.group().all().filter((d)=>{return d.value.I > 0;}).map(item => item.key))]);
-                        //console.log(this.afsc)
-                    })
-
                 //AFSC Graph
+                //Groups and Dim are Created by Vue for CONROL
+                this.createAfscTools();
+
                 var afscConfig = {};
                 afscConfig.id = 'afsc';
-                afscConfig.dim = this.ndx.dimension(function (d) {
-                    return d.AFSC.substring(0,1) + 'XXXXX';
-                })
-                afscConfig.group = afscConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afscConfig.dim = this.afscTools.Dim[0];
+                afscConfig.group = this.afscTools.Group[0];
                 afscConfig.minHeight = 200 
                 afscConfig.aspectRatio = 1.25;
                 afscConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
@@ -639,13 +621,11 @@
                     })
                     //.fixedBarHeight(38)
 
+                //On Filter change Dim/Group from Vue Method
                 afscGraph.on('filtered', (chart,filter)=> {
-                    if (filter && (!this.afscFreeze)){
+                    if (filter && (!this.afscTools.Freeze)){
                         var len = this.searchAfsc.length;
-                        console.log('Length: ' + len);
-                        console.log(filter.substring(len,len+1))
                         this.addDigit(filter.substring(len,len+1))
-                        //chart.filterAll()
                     }
                 });
                 //Resize
