@@ -2,16 +2,16 @@
 	<div>
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
-                 <input name="group5" type="radio" id="radio5" checked="checked" value="KR" v-model="selected" @click="radioButton">
-                <label for="radio4">Keep Rate</label>
-                <input name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
-                <label for="radio3">Keep</label>
                 <input name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
                 <label for="radio">Inventory</label>
-                <input name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
-                <label for="radio4">Re-enlistment Rate</label>
                 <input name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
                 <label for="radio">Eligible</label>
+                <input name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
+                <label for="radio3">Keep</label>
+                <input checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
+                <label for="radio4">Re-enlistment Rate</label>
+                 <input name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
+                <label for="radio4">Keep Rate</label>
             </div>
             <div class="col-auto">
                 <button type="button" 
@@ -51,86 +51,69 @@
                             @click="resetChart('dc-year-rowchart')">Reset</button>
                     </h3>
                 </div>
+                <div id="cat" class="col-12">
+                    <div id="dc-cat-rowchart">
+                        <h3>Category <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                        <button type="button" 
+                                class="btn btn-danger btn-sm btn-rounded reset" 
+                                style="display: none"
+                                @click="resetChart('dc-cat-rowchart')">Reset</button>
+                        </h3>
+                    </div>
+                </div>
             </div>
-             <!--<div id="afsc" class="col-4">-->
-                <!--<div id="dc-afsc-select">-->
-                    <!--<h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>-->
-                    <!--<button type="button" -->
-                            <!--class="btn btn-danger btn-sm btn-rounded reset" -->
-                            <!--style="visibility: hidden"-->
-                            <!--@click="searchAfsc='';resetChart('dc-afsc-select')">Reset</button>-->
-                    <!--</h3>-->
-                    <!--<form class="form-inline">-->
-                        <!--<div class="col-4">-->
-                            <!--<autocomplete -->
-                                <!--:suggestions="afscAutoComplete"-->
-                                <!--placeholder="Search AFSC"-->
-                                <!--v-model="searchAfsc"-->
-                                <!--@keydown.enter="submit($event,'dc-afsc-select')"-->
-                                <!--ref="afscAC"-->
-                                <!--v-clickOutside="afscOut">-->
-        
-                            <!--</autocomplete>-->
-                        <!--</div>   -->
-                    <!--</form>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!-- div class="col-4 form-group">
-                            <input id="searchAfsc" v-model="searchAfsc" placeholder="Search AFSC" @keydown.enter="submit(searchAfsc,'dc-afsc-barchart')">
-                            <button class="btn btn-primary btn-sm" @click="submit(searchAfsc,'dc-afsc-barchart')">Submit</button>
-            </div -->
-            <div id="cat" class="col-4">
-                <div id="dc-cat-rowchart">
-                    <h3>Category <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+            <div id="afsc-inputs" class="col-3">
+                <div id="dc-afsc-select2">
+                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="visibility: hidden"
+                            @click="resetAfsc">Reset</button>
+                    </h3>
+                    <form class="form-inline">
+                         <div class="form-group">
+                            <input id="searchAfsc" v-model="searchAfsc" placeholder="Search AFSC" @keydown.enter="submit(searchAfsc,'dc-afsc-select2')">
+                            <button class="btn btn-primary btn-sm" @click="chooseAfscGroup">Submit</button>
+                         </div>
+                         <div> 
+                            <div> {{ afscLevelText }} </div>
+                            <div v-if="this.searchAfsc.length==0">
+                                <button v-for="digit in afsc1" class="btn btn-primary btn-sm"
+                                @click="addDigit(digit)"> {{ digit }}  </button>
+                            </div>
+                            <div v-if="this.searchAfsc.length==1">
+                                <button v-for="digit in afsc2" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
+                            </div>
+                            <div v-if="this.searchAfsc.length==2">
+                                <button v-for="digit in afsc3" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
+                            </div>
+                            <div v-if="this.searchAfsc.length==3">
+                                <button v-for="digit in afsc4" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
+                            </div>
+                            <div v-if="this.searchAfsc.length==4">
+                                <button v-for="digit in afsc5" class="btn btn-primary btn-sm" @click="addDigit(digit)"> {{ digit }}  </button>
+                            </div>
+                         </div>
+                         <!-- div> 1D: {{afsc1}} <br>
+                          2D: {{afsc2}} <br>
+                          3D: {{afsc3}} <br>
+                          4D: {{afsc4}} <br>
+                          5D: {{afsc5}} </div -->
+                    </form>
+                </div>
+                <div id="dc-afsc-select"></div>
+            </div>
+            <div id="afsc" class="col-5">
+                <div id="dc-afsc-rowchart">
+                    <h3> <span style="font-size: 14pt; opacity: 0.87;"></span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-cat-rowchart')">Reset</button>
+                            @click="resetChart('dc-afsc-rowchart')">Reset</button>
                     </h3>
                 </div>
             </div>
         </div>
-        <div id="afsc" class="row">
-            <div id="afsc1" class="col-12">
-                <div id="dc-afsc1-barchart" v-show="afscToggle==='one'">
-                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('afsc')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="afsc3" class="col-12">
-                <div id="dc-afsc3-barchart" v-show="afscToggle==='three'">
-                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('afsc')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="afsc5" class="col-12">
-                <div id="dc-afsc5-barchart" v-show="afscToggle==='five'">
-                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('afsc')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="radioSelect" class="col-auto form-group pl-5">
-                <input name="first" type="radio" id="afscOne" checked="checked" value="one" v-model="afscToggle" @click="afscToggle='one'">
-                <label for="first">First Digit</label>
-                <input name="third" type="radio" id="afscThree" value="three" v-model="afscToggle" @click="afscToggle='three'">
-                <label for="third">Three Digits</label>
-                <input name="fifth" type="radio" id="afscFive" value="five" v-model="afscToggle" @click="afscToggle='five'">
-                <label for="afscFive">All Digits</label>
-            </div>
-        </div>
-            
 		<div class="row">
             <div id="majcom" class="col-12">
                 <div id="dc-majcom-barchart">
@@ -145,17 +128,6 @@
                             <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
                          </div>
-                        <!--<div class="col-3">-->
-                            <!--<autocomplete -->
-                                <!--:suggestions="majAutoComplete"-->
-                                <!--placeholder="Search MAJCOM"-->
-                                <!--v-model="searchMajcom"-->
-                                <!--@keydown.enter="submit($event,'dc-majcom-barchart')"-->
-                                <!--ref="majAC"-->
-                                <!--v-clickOutside="majOut">-->
-        
-                            <!--</autocomplete>-->
-                        <!--</div>   -->
                     </form>
                     
                 </div>
@@ -164,7 +136,7 @@
         <div class="row">
             <div id="base" class="col-12">
                 <div id="dc-base-barchart">
-                    <h3>Base <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
+                    <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"> Stacked Inventory/Elidgible/Keep </span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
@@ -175,17 +147,6 @@
                             <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
                          </div>
-                    
-                    <!--<div class="col-3">-->
-                            <!--<autocomplete -->
-                                <!--:suggestions="mpfAutoComplete"-->
-                                <!--placeholder="Search BASE"-->
-                                <!--v-model="searchBase"-->
-                                <!--@keydown.enter.native="submit($event,'dc-base-barchart')"-->
-                                <!--ref="mpfAC"-->
-                                <!--v-clickOutside="mpfOut">-->
-                            <!--</autocomplete>-->
-                    <!--</div> -->
                 </form>
                 </div>
             </div>
@@ -203,14 +164,12 @@
         data() {
             return {
                 data: [],
-                selected:'KR',
+                selected:'RR',
                 searchMajcom: "",
                 searchBase: "",
-                afscToggle: "one" 
-               // searchAfsc:"",
-               // majAutoComplete: [{key:''}],
-               // mpfAutoComplete: [{key:''}],
-               // afscAutoComplete: [{key:''}]
+                searchAfsc:"",
+                afsc: [],
+                afscFreeze: false
             }
         },
         components:{
@@ -222,6 +181,35 @@
           },
           allGroup: function(){
             return this.ndx.groupAll()
+          },
+          afsc1:function(){
+            return [...new Set(this.afsc.map(item => item[0]))];
+          },
+          afsc2:function(){
+            return [...new Set(this.afsc.map(item => item[1]))];
+          },
+          afsc3:function(){
+            return [...new Set(this.afsc.map(item => item[2]))];
+          },
+          afsc4:function(){
+            return [...new Set(this.afsc.map(item => item[3]))];
+          },
+          afsc5:function(){
+            return [...new Set(this.afsc.map(item => item[4]))];
+          },
+          afscLevelText:function(){
+            var len = this.searchAfsc.length;
+            if (len == 0)
+                return 'First Digit Options:'
+            else if (len == 1)
+                return 'Seceond Digit Options:'
+            else if (len == 2)
+                return 'Third Digit Options:'
+            else if (len==3)
+                return 'Fourth Digit Options:'
+            else if (len==4)
+                return 'Fifth Digit Options:'
+            else return '';
           },
           ylabel: function() {
             if (this.selected === "I") {
@@ -242,18 +230,58 @@
           },
         },
         methods: {
-          afscOut(){
-            this.$refs.afscAC.outside();
+          addDigit(val){
+            this.searchAfsc += '' + val;
+            console.log(this.searchAfsc)
+            this.chooseAfscGroup();
           },
-          majOut(){
-            this.$refs.majAC.outside();
+          updateAfsc(val){
+            //console.log(val)
+            this.afsc=val.slice();
           },
-          mpfOut(){
-            this.$refs.mpfAC.outside();
+          resetAfsc(){
+            this.searchAfsc = '';
+            this.afscFreeze = false;
+            //resetChart('dc-afsc-rowchart')
+            this.afscChangeGroup(1);
+            this.resetChart('dc-afsc-select')
+            this.resetChart('dc-afsc-select2')
           },
-          resetAll: (event)=>{
-            dc.filterAll()
-            dc.redrawAll()
+          chooseAfscGroup(){
+            var len = this.searchAfsc.length;
+            this.submitStart(this.searchAfsc, 'dc-afsc-select2');
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == 'dc-afsc-select2' 
+            }).forEach(chart=>{
+                var results = chart.group().all().length;
+                if ((!this.afscFreeze) && results < 11){
+                    this.afscChangeGroup(6)
+                    this.afscFreeze = true;
+                } else if (results >=11){
+                    this.afscChangeGroup(len+1)
+                    this.afscFreeze = false;
+                }
+            })
+          },
+          afscChangeGroup(val){
+            var xes = Array(6-val).join("X")
+            var dim = this.ndx.dimension(function(d){return d.AFSC.substring(0,val) + xes;})
+            var group = dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
+            var groupFull = this.removeEmptyBins(group)
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == 'dc-afsc-rowchart' 
+            }).forEach(chart=>{
+                 chart.filterAll()
+                chart.dimension(dim).group(groupFull)
+                //this.resetChart('dc-afsc-rowchart')
+                dc.redrawAll()
+            })
+          },
+          resetAll(){
+            dc.filterAll();
+            dc.redrawAll();
+            this.afscFreeze = false;
+            this.afscChangeGroup(1);
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -290,8 +318,7 @@
             })
             dc.redrawAll()
           },
-          chartAutoComplete:(text, id) =>{
-            var outObj = []
+          submitStart: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id 
             }).forEach(chart=>{
@@ -301,18 +328,51 @@
                 })
                 var filterArray = mainArray.filter((d) => {
                     var element = d.toUpperCase() 
-                    return element.indexOf(text.toUpperCase()) !== -1
+                    return element.startsWith(text.toUpperCase())
                 })
-                filterArray.forEach((d)=>{
-                    outObj.push({
-                        key:d
-                    })
-                })
+                chart.filter(null)
+                if (filterArray.length != mainArray.length) {
+                    chart.filter([filterArray])
+                }
             })
-                            //console.log('in Method ' + id)
-                //console.log(outObj)
-                return outObj;
-          }
+            dc.redrawAll()
+          },
+          retentionAdd(p,v) {
+            p.I = p.I + +v.INV
+            p.E = p.E + +v.ELIG
+            p.K = p.K + +v.KEEP
+            //if divide by 0, set to 0, and if NaN, set to zero
+            p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
+            p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
+            return p
+          },
+          retentionRemove(p,v) {
+            p.I = p.I - +v.INV
+            p.E = p.E - +v.ELIG
+            p.K = p.K - +v.KEEP
+            //if divide by 0, set to 0, and if NaN, set to zero
+            p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
+            p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
+            return p
+          },
+          retentionInitial() {
+            return {
+                I: 0,
+                E: 0,
+                K: 0,
+                RR: 0,
+                KR: 0,
+            }
+          },
+          removeEmptyBins:(source_group) => {
+            return {
+                all: () => {
+                    return source_group.all().filter((d) => {
+                        return d.value.I != 0
+                    })
+                }
+            }
+          }  
         },
         components: {
             'autocomplete': AutoComplete
@@ -324,18 +384,6 @@
         },
         mounted() {
             console.log('mounted')
-
-            //axios request - can change to a get request and change to the "get" endpoint to see a get request
-            
-            //PROD AXIOS CALL:  
-            /*
-                var querystring = require('querystring');
-                const formData = {
-                    _PROGRAM:"/REN - Dashboard Home V1/makeHTML_collab",
-                    nPage:"off"
-                }
-                var myData = axios.post('', querystring.stringify(formData)).then(response => {
-            */
             
             //TEST AXIOS CALL:
             axios.post(axios_url_enl_ret).then(response => {
@@ -479,7 +527,7 @@
                 })
                 catConfig.group = catConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
                 catConfig.minHeight = 100 
-                catConfig.aspectRatio = 3
+                catConfig.aspectRatio = 2
                 catConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 catConfig.colors = d3.scale.category10()
                 var catChart = dchelpers.getRowChart(catConfig)
@@ -487,80 +535,6 @@
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
-
-
-                //afsc1
-                var afsc1Config = {};
-                afsc1Config.id = 'afsc1';
-                afsc1Config.dim = this.ndx.dimension(function (d) {
-                    return d.AFSC.substring(0,1) + 'XXXX';
-                })
-                var afsc1Group = afsc1Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                afsc1Config.group = removeEmptyBins(afsc1Group)
-                afsc1Config.minHeight = 300 
-                afsc1Config.aspectRatio = 5
-                afsc1Config.margins = {top: 10, left: 40, right: 30, bottom: 40}
-                afsc1Config.colors = ["#108982"]
-                var afsc1Chart = dchelpers.getOrdinalBarChart(afsc1Config)
-                afsc1Chart
-                    .elasticX(true)
-                    .valueAccessor((d)=> {
-                        return d.value[this.selected];
-                    })
-                    .ordinalColors(["#d05952"])
-                    .on('pretransition', function(chart) {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                    })
-
-                //afsc3
-                var afsc3Config = {};
-                afsc3Config.id = 'afsc3';
-                afsc3Config.dim = this.ndx.dimension(function (d) {
-                    return d.AFSC.substring(0,3) + 'XXX';
-                })
-                var afsc3Group = afsc3Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                afsc3Config.group = removeEmptyBins(afsc3Group)
-                afsc3Config.minHeight = 300 
-                afsc3Config.aspectRatio = 5
-                afsc3Config.margins = {top: 10, left: 40, right: 30, bottom: 40}
-                afsc3Config.colors = ["#99f6d2"]
-                var afsc3Chart = dchelpers.getOrdinalBarChart(afsc3Config)
-                afsc3Chart
-                    .elasticX(true)
-                    .valueAccessor((d)=> {
-                        return d.value[this.selected];
-                    })
-                    .ordinalColors(["#39b6f2"])
-                    .on('pretransition', function(chart) {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                    })
-
-                //afsc5
-                var afsc5Config = {};
-                afsc5Config.id = 'afsc5';
-                afsc5Config.dim = this.ndx.dimension(function (d) {
-                    return d.AFSC.substring(0,3) + 'X' + d.AFSC.substring(4,5);
-                })
-                var afsc5Group = afsc5Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                afsc5Config.group = removeEmptyBins(afsc5Group)
-                afsc5Config.minHeight = 300 
-                afsc5Config.aspectRatio = 5
-                afsc5Config.margins = {top: 10, left: 40, right: 30, bottom: 40}
-                afsc5Config.colors = ["#1976d2"]
-                var afsc5Chart = dchelpers.getOrdinalBarChart(afsc5Config)
-                afsc5Chart
-                    .elasticX(true)
-                    .valueAccessor((d)=> {
-                        return d.value[this.selected];
-                    })
-                    .ordinalColors(["#9976d2"])
-                    .on('pretransition', function(chart) {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                    })
-
 
                 //Majcom
                 var majcomConfig = {}
@@ -570,7 +544,7 @@
                 majcomConfig.group = removeEmptyBins(majcomInv)
                 majcomConfig.minHeight = 300
                 majcomConfig.aspectRatio = 5
-                majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
+                majcomConfig.margins = {top: 10, left: 40, right: 30, bottom: 100}
                 majcomConfig.colors = ["#1976d2"]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
@@ -612,56 +586,69 @@
                     .valueAccessor((d) => {
                         return d.value[this.selected];
                     })
- //                   .group(baseConfig.group, "K",(d) => {
- //                       return d.value.K
- //                   })
- //                   .stack(baseConfig.group, "E",(d) => {
- //                       return d.value.E
- //                   })
- //                   .stack(baseConfig.group, "I",(d) => {
- //                       return d.value.I
- //                   })
                     .ordinalColors(["#198632"])
-//                    .title(function(d) {
-//                        return d.key + '\n' + formats.enlRetFormat[this.layer] + ': ' + d.value[this.layer];
-//                    })
-                    /*
-                    .title( function(d){
-                        return d.key + 
-                               "\nInv: " + d.value.I + 
-                               "\nElig: " + d.value.E + 
-                               "\nKeep: " + d.value.K;
-                    })
-                    */
-                    //.ordinalColors(["#1976d2","#ff4500",'darkgrey'])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+                
+                //AFSC
+                var afscDim = this.ndx.dimension(function(d){return d.AFSC})
+                var afscGrp = afscDim.group().reduce(retentionAdd,retentionRemove,retentionInitial);
+                var afscChart = dc.selectMenu('#dc-afsc-select');
+                afscChart
+                        .dimension(afscDim)
+                        .group(afscGrp)       
+                        .numberVisible(10)
+                        .controlsUseVisibility(true);
 
-//                //AFSC
-//                var afscDim = this.ndx.dimension(function(d){return d.AFSC})
-//                var afscGrp = afscDim.group().reduceCount();
-//                var afscChart = dc.selectMenu('#dc-afsc-select');
-//                afscChart
-//                        .dimension(afscDim)
-//                        .group(afscGrp)
-//                        .numberVisible(10)
-//                        .controlsUseVisibility(true);
+                var afscDim2 = this.ndx.dimension(function(d){return d.AFSC})
+                var afscGrp2 = this.removeEmptyBins(afscDim2.group().reduce(retentionAdd,retentionRemove,retentionInitial));
+                var afscChart2 = dc.selectMenu('#dc-afsc-select2');
+                afscChart2
+                        .dimension(afscDim2)
+                        .group(afscGrp2)       
+                        .numberVisible(10)
+                        .controlsUseVisibility(true);
 
+                afscChart.on('pretransition', (chart)=> {
+                        this.updateAfsc([...new Set(chart.group().all().filter((d)=>{return d.value.I > 0;}).map(item => item.key))]);
+                        //console.log(this.afsc)
+                    })
+
+                //AFSC Graph
+                var afscConfig = {};
+                afscConfig.id = 'afsc';
+                afscConfig.dim = this.ndx.dimension(function (d) {
+                    return d.AFSC.substring(0,1) + 'XXXXX';
+                })
+                afscConfig.group = afscConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afscConfig.minHeight = 200 
+                afscConfig.aspectRatio = 1.25;
+                afscConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                afscConfig.colors = d3.scale.category10()
+                var afscGraph = dchelpers.getRowChart(afscConfig)
+                afscGraph
+                    .valueAccessor((d)=> {
+                        return d.value[this.selected];
+                    })
+                    //.fixedBarHeight(38)
+
+                afscGraph.on('filtered', (chart,filter)=> {
+                    if (filter && (!this.afscFreeze)){
+                        var len = this.searchAfsc.length;
+                        console.log('Length: ' + len);
+                        console.log(filter.substring(len,len+1))
+                        this.addDigit(filter.substring(len,len+1))
+                        //chart.filterAll()
+                    }
+                });
                 //Resize
                 var temp
                 window.onresize = function(event) {
                     clearTimeout(temp)
                     temp = setTimeout(dc.redrawAll(), 500)
                 }
-
-                this.majAutoComplete= this.chartAutoComplete('', 'dc-majcom-barchart');
-                
-                this.mpfAutoComplete = this.chartAutoComplete('', 'dc-base-barchart');
-
-                this.afscAutoComplete= this.chartAutoComplete('', 'dc-afsc-select');
-
                 //create charts
                 dc.renderAll()
                 dc.redrawAll()
@@ -677,23 +664,6 @@
         destroyed() {
             console.log("destroyed")
         },
-        directives: {
-            clickOutside: {
-              bind: function (el, binding, vnode) {
-                el.event = function (event) {
-                  // here I check that click was outside the el and his childrens
-                  if (!(el == event.target || el.contains(event.target))) {
-                    // and if it did, call method provided in attribute value
-                    vnode.context[binding.expression](event);
-                  }
-                };
-                document.body.addEventListener('click', el.event)
-              },
-              unbind: function (el) {
-                document.body.removeEventListener('click', el.event)
-              },
-            }
-        }
     }
 </script>
 

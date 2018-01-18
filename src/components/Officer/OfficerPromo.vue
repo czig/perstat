@@ -211,7 +211,7 @@ import AutoComplete from '@/components/AutoComplete'
 
             
             //TEST AXIOS CALL:
-            axios.post('http://localhost:5005/api/officer_promo').then(response => {
+            axios.post(axios_url_off_pro).then(response => {
                 var promoData = response.data.data
                 this.data = promoData
                 renderCharts()

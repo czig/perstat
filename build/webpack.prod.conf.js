@@ -33,6 +33,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       'process.env': env
     }),
     new webpack.DefinePlugin({
+      'check_portal': '"INSANE"',
       'axios_url': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do"',
       'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=enlisted_ret_post"',
       'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=enlisted_post"',
