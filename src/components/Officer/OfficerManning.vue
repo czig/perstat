@@ -301,7 +301,6 @@ import AutoComplete from '@/components/AutoComplete'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
-                    .yAxis().tickFormat(function(v) {return v + "%";})
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })

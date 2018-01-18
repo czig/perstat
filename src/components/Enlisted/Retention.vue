@@ -90,46 +90,44 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div id="afsc1" class="col-3">
-                <div id="dc-afsc1-rowchart">
-                    <h3>AFSC 1st Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+        <div id="afsc" class="row">
+            <div id="afsc1" class="col-12">
+                <div id="dc-afsc1-barchart" v-show="afscToggle==='one'">
+                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-afsc1-rowchart')">Reset</button>
+                            @click="resetChart('afsc')">Reset</button>
                     </h3>
                 </div>
             </div>
-            <div id="afsc2" class="col-3">
-                <div id="dc-afsc2-rowchart">
-                    <h3>AFSC 2nd Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+            <div id="afsc3" class="col-12">
+                <div id="dc-afsc3-barchart" v-show="afscToggle==='three'">
+                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-afsc2-rowchart')">Reset</button>
+                            @click="resetChart('afsc')">Reset</button>
                     </h3>
                 </div>
             </div>
-            <div id="afsc3" class="col-3">
-                <div id="dc-afsc3-rowchart">
-                    <h3>AFSC 3rd Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+            <div id="afsc5" class="col-12">
+                <div id="dc-afsc5-barchart" v-show="afscToggle==='five'">
+                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
-                            @click="resetChart('dc-afsc3-rowchart')">Reset</button>
+                            @click="resetChart('afsc')">Reset</button>
                     </h3>
                 </div>
             </div>
-            <div id="afsc5" class="col-3">
-                <div id="dc-afsc5-rowchart">
-                    <h3>AFSC 5th Digit <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-afsc5-rowchart')">Reset</button>
-                    </h3>
-                </div>
+            <div id="radioSelect" class="col-auto form-group pl-5">
+                <input name="first" type="radio" id="afscOne" checked="checked" value="one" v-model="afscToggle" @click="afscToggle='one'">
+                <label for="first">First Digit</label>
+                <input name="third" type="radio" id="afscThree" value="three" v-model="afscToggle" @click="afscToggle='three'">
+                <label for="third">Three Digits</label>
+                <input name="fifth" type="radio" id="afscFive" value="five" v-model="afscToggle" @click="afscToggle='five'">
+                <label for="afscFive">All Digits</label>
             </div>
         </div>
             
@@ -208,6 +206,7 @@
                 selected:'KR',
                 searchMajcom: "",
                 searchBase: "",
+                afscToggle: "one" 
                // searchAfsc:"",
                // majAutoComplete: [{key:''}],
                // mpfAutoComplete: [{key:''}],
@@ -258,7 +257,7 @@
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
-              return chart.anchorName() == id
+              return chart.anchorName().indexOf(id) !== -1
             }).forEach(chart=>{
               chart.filterAll()
             })
@@ -489,62 +488,77 @@
                         return d.value[this.selected];
                     })
 
+
                 //afsc1
-                var afsc1Config = {}
-                afsc1Config.id = 'afsc1'
-                afsc1Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(0,1);})
-                afsc1Config.group = afsc1Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                afsc1Config.minHeight = 450 
-                afsc1Config.aspectRatio = 2 
-                afsc1Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
-                afsc1Config.colors = d3.scale.category10() 
-                var afsc1Chart = dchelpers.getRowChart(afsc1Config)
+                var afsc1Config = {};
+                afsc1Config.id = 'afsc1';
+                afsc1Config.dim = this.ndx.dimension(function (d) {
+                    return d.AFSC.substring(0,1) + 'XXXX';
+                })
+                var afsc1Group = afsc1Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afsc1Config.group = removeEmptyBins(afsc1Group)
+                afsc1Config.minHeight = 300 
+                afsc1Config.aspectRatio = 5
+                afsc1Config.margins = {top: 10, left: 40, right: 30, bottom: 40}
+                afsc1Config.colors = ["#108982"]
+                var afsc1Chart = dchelpers.getOrdinalBarChart(afsc1Config)
                 afsc1Chart
+                    .elasticX(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
-                //afsc2
-                var afsc2Config = {}
-                afsc2Config.id = 'afsc2'
-                afsc2Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(1,2);})
-                afsc2Config.group = afsc2Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                afsc2Config.minHeight = 450 
-                afsc2Config.aspectRatio = 2 
-                afsc2Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
-                afsc2Config.colors = d3.scale.category10() 
-                var afsc2Chart = dchelpers.getRowChart(afsc2Config)
-                afsc2Chart
-                    .valueAccessor((d)=> {
-                        return d.value[this.selected];
+                    .ordinalColors(["#d05952"])
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+
                 //afsc3
-                var afsc3Config = {}
-                afsc3Config.id = 'afsc3'
-                afsc3Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(2,3);})
-                afsc3Config.group = afsc3Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                afsc3Config.minHeight = 450 
-                afsc3Config.aspectRatio = 2 
-                afsc3Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
-                afsc3Config.colors = d3.scale.category10() 
-                var afsc3Chart = dchelpers.getRowChart(afsc3Config)
+                var afsc3Config = {};
+                afsc3Config.id = 'afsc3';
+                afsc3Config.dim = this.ndx.dimension(function (d) {
+                    return d.AFSC.substring(0,3) + 'XXX';
+                })
+                var afsc3Group = afsc3Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afsc3Config.group = removeEmptyBins(afsc3Group)
+                afsc3Config.minHeight = 300 
+                afsc3Config.aspectRatio = 5
+                afsc3Config.margins = {top: 10, left: 40, right: 30, bottom: 40}
+                afsc3Config.colors = ["#99f6d2"]
+                var afsc3Chart = dchelpers.getOrdinalBarChart(afsc3Config)
                 afsc3Chart
+                    .elasticX(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
+                    })
+                    .ordinalColors(["#39b6f2"])
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
                 //afsc5
-                var afsc5Config = {}
-                afsc5Config.id = 'afsc5'
-                afsc5Config.dim = this.ndx.dimension(function(d){return d.AFSC.substring(4,5);})
-                afsc5Config.group = afsc5Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
-                afsc5Config.minHeight = 450 
-                afsc5Config.aspectRatio = 2 
-                afsc5Config.margins = {top: 10, left: 40, right: 30, bottom: 80}
-                afsc5Config.colors = d3.scale.category10() 
-                var afsc5Chart = dchelpers.getRowChart(afsc5Config)
+                var afsc5Config = {};
+                afsc5Config.id = 'afsc5';
+                afsc5Config.dim = this.ndx.dimension(function (d) {
+                    return d.AFSC.substring(0,3) + 'X' + d.AFSC.substring(4,5);
+                })
+                var afsc5Group = afsc5Config.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
+                afsc5Config.group = removeEmptyBins(afsc5Group)
+                afsc5Config.minHeight = 300 
+                afsc5Config.aspectRatio = 5
+                afsc5Config.margins = {top: 10, left: 40, right: 30, bottom: 40}
+                afsc5Config.colors = ["#1976d2"]
+                var afsc5Chart = dchelpers.getOrdinalBarChart(afsc5Config)
                 afsc5Chart
+                    .elasticX(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
+                    })
+                    .ordinalColors(["#9976d2"])
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
 
@@ -590,7 +604,7 @@
                 baseConfig.minHeight = 400
                 baseConfig.aspectRatio = 5
                 baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
-                baseConfig.colors = ["#1976d2"]
+                baseConfig.colors = ["#198632"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
 //                baseChart.stack(baseConfig.group, 'Inv',)
                 baseChart
@@ -607,7 +621,7 @@
  //                   .stack(baseConfig.group, "I",(d) => {
  //                       return d.value.I
  //                   })
-                    .ordinalColors(["#1976d2","#ff4500","#228b22"])
+                    .ordinalColors(["#198632"])
 //                    .title(function(d) {
 //                        return d.key + '\n' + formats.enlRetFormat[this.layer] + ': ' + d.value[this.layer];
 //                    })
