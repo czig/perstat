@@ -52,17 +52,17 @@
                     </h3>
                 </div>
                 <div id="cat" class="col-12">
-                <div id="dc-cat-rowchart">
-                    <h3>Category <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-cat-rowchart')">Reset</button>
-                    </h3>
+                    <div id="dc-cat-rowchart">
+                        <h3>Category <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                        <button type="button" 
+                                class="btn btn-danger btn-sm btn-rounded reset" 
+                                style="display: none"
+                                @click="resetChart('dc-cat-rowchart')">Reset</button>
+                        </h3>
+                    </div>
                 </div>
             </div>
-            </div>
-            <div id="afsc-inputs" class="col">
+            <div id="afsc-inputs" class="col-3">
                 <div id="dc-afsc-select">
                     <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">  {{ylabel}}  </span>
                     </h3>
@@ -278,7 +278,7 @@
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
-              return chart.anchorName() == id
+              return chart.anchorName().indexOf(id) !== -1
             }).forEach(chart=>{
               chart.filterAll()
             })
@@ -570,8 +570,8 @@
                 baseConfig.group = removeEmptyBins(baseGroup)
                 baseConfig.minHeight = 400
                 baseConfig.aspectRatio = 5
-                baseConfig.margins = {top: 10, left: 110, right: 30, bottom: 200}
-                baseConfig.colors = ["#1976d2"]
+                baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
+                baseConfig.colors = ["#198632"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
 //                baseChart.stack(baseConfig.group, 'Inv',)
                 baseChart
@@ -579,16 +579,12 @@
                     .valueAccessor((d) => {
                         return d.value[this.selected];
                     })
-                    .ordinalColors(["#1976d2","#ff4500","#228b22"])
-                    .title(function(d) {
-                        return d.key + '\n' + formats.enlRetFormat[this.layer] + ': ' + d.value[this.layer];
-                    })
-                    
+                    .ordinalColors(["#198632"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
-                
+
 
                 // **** AFSC ****
 
