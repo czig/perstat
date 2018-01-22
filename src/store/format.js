@@ -311,5 +311,14 @@ export default {
         "N": "Nurse",
         "S": "Medical Service",
         "W": "Bio-medical Science"
-    }
+    },
+	pmeFormat : {
+       "1": "Complete",
+       "0": "Not Complete"
+    },
+    pmeOrder : {
+        "Complete": 0,
+        "Not Complete": 1
+
+	},
 }

@@ -18,20 +18,12 @@
                 <span id="sel"></span>
             </div>
             <div class="col-auto">
-                PME Complete:
-                <span id="pme"></span>
-            </div>
-            <div class="col-auto">
                 Eligibles: 
                 <span id="elig"></span>
             </div>
             <div class="col-auto">
                 Promotion Rate: 
                 <span id="selRate"></span>
-            </div>
-            <div class="col-auto">
-                PME Complete Rate:
-                <span id="pmeRate"></span>
             </div>
         </div>
         <div class="row">
@@ -75,6 +67,16 @@
                             class="btn btn-danger btn-sm btn-rounded reset" 
                             style="display: none"
                             @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
+                    </h3>
+                </div>
+            </div>
+            <div id="pmeSelect" class="col-3">
+                <div id="dc-pmeSelect-rowchart">
+                    <h3>PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="display: none"
+                            @click="resetChart('dc-pmeSelect-rowchart')">Reset</button>
                     </h3>
                 </div>
             </div>
@@ -236,28 +238,22 @@ import AutoComplete from '@/components/AutoComplete'
                 function promoAdd(p,v) {
                     p.elig = p.elig + +v.num_eligible
                     p.sel = p.sel + +v.num_select
-                    p.pme = p.pme + +v.num_pme
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
-                    p.pmePercent = p.pme/p.elig === Infinity ? 0 : Math.round((p.pme/p.elig)*1000)/10 || 0
                     return p
                 }
                 function promoRemove(p,v) {
                     p.elig = p.elig - +v.num_eligible
                     p.sel = p.sel - +v.num_select
-                    p.pme = p.pme - +v.num_pme
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
-                    p.pmePercent = p.pme/p.elig === Infinity ? 0 : Math.round((p.pme/p.elig)*1000)/10 || 0
                     return p
                 }
                 function promoInitial() {
                     return {
                         elig: 0,
                         sel: 0,
-                        pme: 0,
                         percent: 0,
-                        pmePercent: 0
                     }
                 }
                 //remove empty function (es6 syntax to keep correct scope)
@@ -271,7 +267,7 @@ import AutoComplete from '@/components/AutoComplete'
                     }
                 }
 
-                //Number Display for sel, elig, sel rate, pme, pme rate - show total for filtered content
+                //Number Display for sel, elig, sel rate - show total for filtered content
                 var numberGroup = this.ndx.groupAll().reduce(promoAdd, promoRemove, promoInitial)
                 var selND = dc.numberDisplay("#sel")
                 selND.group(numberGroup)
@@ -291,20 +287,6 @@ import AutoComplete from '@/components/AutoComplete'
                 selRateND.group(numberGroup)
                     .formatNumber(d3.format(".1f"))
                     .valueAccessor(function(d) {return d.percent;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
-                    })
-                var pmeND = dc.numberDisplay("#pme")
-                pmeND.group(numberGroup)
-                    .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d.pme;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                    })
-                var pmeRateND = dc.numberDisplay("#pmeRate")
-                pmeRateND.group(numberGroup)
-                    .formatNumber(d3.format(".1f"))
-                    .valueAccessor(function(d) {return d.pmePercent;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
@@ -403,6 +385,26 @@ import AutoComplete from '@/components/AutoComplete'
                     .ordering(function(d) {
                         return formats.recommendOrder[d.key]
                     })
+
+                //pme
+                var pmeConfig = {};
+                pmeConfig.id = 'pmeSelect'
+                pmeConfig.dim = this.ndx.dimension(function (d) {
+                    return formats.pmeFormat[d.PME_Complete];
+                })
+                pmeConfig.group = pmeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                pmeConfig.minHeight = 150 
+                pmeConfig.aspectRatio = 3
+                pmeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                pmeConfig.colors = d3.scale.ordinal().range(["#1a9641","#d7191c"])
+                var pmeChart = dchelpers.getRowChart(pmeConfig)
+                pmeChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .ordering(function(d){
+                      return formats.pmeOrder[d.key]
+                    })                                    
                 
                 //occupGroup
                 var occupGroupConfig = {}
