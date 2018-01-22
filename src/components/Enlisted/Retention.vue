@@ -1,17 +1,42 @@
 <template>
 	<div>
         <div class="row pt-2"> 
-            <div id="radioSelect" class="col form-group">
-                <input name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
-                <label for="radio">Inventory</label>
-                <input name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
-                <label for="radio">Eligible</label>
-                <input name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
-                <label for="radio3">Keep</label>
-                <input checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
-                <label for="radio4">Re-enlistment Rate</label>
-                 <input name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
-                <label for="radio4">Keep Rate</label>
+            <div class="col form-group">
+                
+                    <label class="custom-control custom-radio" >
+                        <input class="custom-control-input" name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Inventory</span>
+                    </label>
+        
+                
+                    <label class="custom-control custom-radio">
+                        <input class="custom-control-input" name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Eligible</span>
+                    </label>
+               
+                
+                    <label class="custom-control custom-radio">
+                        <input class="custom-control-input" name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Keep</span>
+                    </label>
+               
+               
+                    <label class="custom-control custom-radio">
+                       <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
+                       <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Reenlistment Rate</span>
+                    </label>
+              
+              
+                    <label class="custom-control custom-radio">
+                        <input class="custom-control-input" name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Keep Rate</span>
+                    </label>
+               
             </div>
             <div class="col-auto">
                 <button type="button" 
@@ -42,7 +67,7 @@
             </div>
         </div>
         <div class="row">
-            <div id="year" class="col-4">
+            <div id="year" class="col-3">
                 <div id="dc-year-rowchart">
                     <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <button type="button" 
@@ -51,9 +76,10 @@
                             @click="resetChart('dc-year-rowchart')">Reset</button>
                     </h3>
                 </div>
-                <div id="cat" class="col-12">
+            </div>
+            <div id="cat" class="col-3">
                     <div id="dc-cat-rowchart">
-                        <h3>Category <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                        <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
                         <button type="button" 
                                 class="btn btn-danger btn-sm btn-rounded reset" 
                                 style="display: none"
@@ -61,40 +87,62 @@
                         </h3>
                     </div>
                 </div>
-            </div>
-            <div id="afsc-inputs" class="col-3">
-                <div id="dc-afsc-select">
-                    <h3>AFSC <span style="font-size: 14pt; opacity: 0.87;">  {{ylabel}}  </span>
-                    </h3>
-                    <form class="form-inline">
-                         <div class="form-group">
-                            <input id="searchAfsc" v-model="searchAfsc" placeholder="Search AFSC" @keydown.enter.stop.prevent="updateAfsc(searchAfsc, searchAfsc.length)">
-
-                            <button class="btn btn-primary btn-sm" @click="updateAfsc(searchAfsc, searchAfsc.length)">Submit</button>
+            <div id="afsc-inputs" class="col-6">
+                    <div id="dc-afsc-select">
+                        <h3>
+                            AFSC 
+                            <span v-if="afscTools.Current>1">[ {{afscFilter}} ] </span>
+                            <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                            <!-- span v-if="afscTools.Current<6" style="font-size: 12pt;"> Grouped @ {{ afscTools.currOrd }} AFSC Digit</span -->
                             <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="visibility: hidden"
-                            @click="resetAfsc">Reset</button>
-                         </div>
-                         <div v-if="searchAfsc.length > 1"> 
-                            <div> Go back to: </div>
-                            <div>
-                                <button v-for="(suggest, index) in afscTools.Sub" class="btn btn-primary btn-sm"
-                                @click="updateAfsc(suggest, index)"> {{ suggest }}  </button>
+                                class="btn btn-danger btn-sm btn-rounded reset" 
+                                style="visibility: hidden"
+                                @click="resetAfsc">Reset</button>
+                        </h3>
+                        <!-- form class="form-inline">
+                             <div class="row">
+                                <input type="text" class="form-control col-3" id="searchAfsc" v-model="searchAfsc" placeholder="Enter AFSC" @keydown.enter.stop.prevent="updateAfsc(searchAfsc, searchAfsc.length)">
+                                <div>
+                                <button class="btn btn-primary btn-sm" @click="updateAfsc(searchAfsc, searchAfsc.length)">Submit</button>
+                                </div>
+                             </div -->
+                             <!-- div v-if="searchAfsc.length > 1"> 
+                                <div> Go to: </div>
+                                <div>
+                                    <button v-for="(suggest, index) in afscTools.Sub" class="btn btn-default btn-sm"
+                                    @click="updateAfsc(suggest, index)"> {{ suggest }}  </button>
+                                </div>
+                             </div -->
+                        <!-- /form -->
+                    </div>
+                    
+                        <div id="afsc" class="col-12">
+                            <div id="dc-afsc-rowchart">
+                                <!-- div class="row"> <span style="font-size: 14pt; opacity: 0.87;"></span>
+                                    <button class="btn btn-danger btn-sm btn-rounded" style="visibility:hidden"></button>
+                                <button type="button" 
+                                        class="btn btn-danger btn-sm btn-rounded reset" 
+                                        style="display: none"
+                                        @click="resetChart('dc-afsc-rowchart')">Reset</button>
+                                <div>
+                    
+                                </div>
+                                </div -->
                             </div>
-                         </div>
-                    </form>
-                </div>
+                        </div>
+                   
+                
             </div>
-            <div id="afsc" class="col-5">
-                <div id="dc-afsc-rowchart">
-                    <h3> <span style="font-size: 14pt; opacity: 0.87;"></span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-afsc-rowchart')">Reset</button>
-                    </h3>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <afsc-component
+                    :ndx="ndx"
+                    :ylabel="ylabel"
+
+
+                >
+                </afsc-component>
             </div>
         </div>
 		<div class="row">
@@ -108,7 +156,7 @@
                     </h3>
                     <form class="form-inline">
                          <div class="form-group">
-                            <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
+                            <input type="text"  class="form-control" id="searchMajcom" v-model="searchMajcom" placeholder="Enter MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
                          </div>
                     </form>
@@ -127,7 +175,7 @@
                     </h3>
                  <form class="form-inline">
                          <div class="form-group">
-                            <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
+                            <input type="text" class="form-control" id="searchBase" v-model="searchBase" placeholder="Enter Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
                          </div>
                 </form>
@@ -141,8 +189,8 @@
 	import dchelpers from '@/dchelpers'
 	import axios from 'axios'
 	import formats from '@/store/format'
-	import AutoComplete from '../AutoComplete'
-
+    import AutoComplete from '@/components/AutoComplete'
+    import AfscComponent from '@/components/afsc'
 	export default {
         data() {
             return {
@@ -155,12 +203,15 @@
                     Group: [],
                     Dim: [],
                     Sub: [],
-                    Freeze: false
+                    Freeze: false,
+                    Current: 1,
+                    currOrd: '1st',
                 },
             }
         },
         components:{
-        	'autocomplete': AutoComplete
+        	'autocomplete': AutoComplete,
+            'afsc-component': AfscComponent
         },
         watch: {
             searchAfsc: function(val){
@@ -172,6 +223,7 @@
                             )
                 }
                 this.afscTools.Sub= arr;
+                console.log(AutoComplete)
             }
         },
         computed: {
@@ -192,12 +244,16 @@
                 return "KEEP"
             }
             else if (this.selected === "RR") {
-                return "Re-Enlist Rate (%)"
+                return "Reenlist Rate(%)"
             }
             else {
-                return "Keep Rate (%)"
+                return "Keep Rate(%)"
             }
           },
+          afscFilter: function(){
+            var word = this.searchAfsc.substring(0,this.afscTools.Current);
+            return word;
+          }
         },
         methods: {
           addDigit(val){
@@ -231,17 +287,18 @@
                 return chart.anchorName() == 'dc-afsc-select' 
             }).forEach(chart=>{
                 var results = chart.group().all().length;
-                if ((!this.afscTools.Freeze) && results < 11){
+                if ((!this.afscTools.Freeze) && results < 15){
                     this.afscChangeGroup(6)
                     this.afscTools.Freeze = true;
-                } else if (results >=11){
+                } else if (results >=15){
                     this.afscChangeGroup(len)
                     this.afscTools.Freeze = false;
                 }
             })
           },
           afscChangeGroup(val){
-
+            this.afscTools.currOrd = formats.ordinalNum[val+1];
+            this.afscTools.Current = val+1;
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == 'dc-afsc-rowchart' 
             }).forEach(chart=>{
@@ -503,7 +560,7 @@
                 })
                 yearConfig.group = yearConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
                 yearConfig.minHeight = 100 
-                yearConfig.aspectRatio = 3
+                yearConfig.aspectRatio = 2
                 yearConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 yearConfig.colors = d3.scale.category10()
                 var yearChart = dchelpers.getRowChart(yearConfig)
@@ -520,8 +577,8 @@
                 })
                 catConfig.group = catConfig.dim.group().reduce(retentionAdd,retentionRemove,retentionInitial)
                 catConfig.minHeight = 100 
-                catConfig.aspectRatio = 2
-                catConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                catConfig.aspectRatio = 1.4
+                catConfig.margins = {top: 10, left: 40, right: 20, bottom: 20}
                 catConfig.colors = d3.scale.category10()
                 var catChart = dchelpers.getRowChart(catConfig)
                 catChart
@@ -607,8 +664,8 @@
                 afscConfig.dim = this.afscTools.Dim[0];
                 afscConfig.group = this.afscTools.Group[0];
                 afscConfig.minHeight = 200 
-                afscConfig.aspectRatio = 1.25;
-                afscConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                afscConfig.aspectRatio = 2.15;
+                afscConfig.margins = {top: 0, left: 20, right: 30, bottom: 20}
                 afscConfig.colors = d3.scale.category10()
                 var afscGraph = dchelpers.getRowChart(afscConfig)
                 afscGraph
@@ -661,5 +718,11 @@ div[id*="-rowchart"] g.row text{
 }
 .dc-select-menu{
     display:none;
+}
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
 }
 </style>
