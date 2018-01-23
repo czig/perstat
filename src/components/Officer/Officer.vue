@@ -11,7 +11,9 @@
                 <a class="nav-link" @click="dynamicComponent='off-promo'" data-toggle="tab">Promotions</a>
             </li>
         </ul>
-        <component :is="dynamicComponent"></component>
+        <transition name="fade" mode="out-in">
+            <component :is="dynamicComponent"></component>
+        </transition>
     </div>
 </template>
 
@@ -38,6 +40,14 @@ export default {
 .nav-tabs .nav-link.active{
     font-weight:bold;
     color:teal;
-    //background-color:red;
+}
+.fade-enter{
+    opacity: 0;
+}
+.fade-enter-active, .fade-leave-active{
+    transition: all 0.5s;
+}
+.fade-leave-to{
+    opacity: 0;
 }
 </style>

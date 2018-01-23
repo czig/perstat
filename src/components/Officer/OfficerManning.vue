@@ -434,4 +434,8 @@ div[id*="-barchart"] .x.axis text{
 div[id*="-rowchart"] g.row text{
     fill: black;
 }
+
+div[id*="chart"] {
+    min-height: 200px;
+}
 </style>

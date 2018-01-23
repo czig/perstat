@@ -437,6 +437,7 @@ import AutoComplete from '@/components/AutoComplete'
                 boardConfig.margins = {top: 30, left: 40, right: 30, bottom: 60}
                 boardConfig.colors = ["#1976d2"]
                 var boardChart = dchelpers.getOrdinalBarChart(boardConfig)
+
                 boardChart
                     .valueAccessor((d) => {
                         return d.value[this.selected]
@@ -487,5 +488,10 @@ div[id*="-barchart"] .x.axis text{
 
 div[id*="-rowchart"] g.row text{
     fill: black;
+}
+
+div[id*="chart"] {
+    min-height: 200px;
+
 }
 </style>

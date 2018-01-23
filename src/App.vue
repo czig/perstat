@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid grey lighten-5">
         <app-navbar></app-navbar>
-        <div class="pt-5 mt-3">
+        <div class="pt-5 mt-3" style="min-height: 800px;">
             <router-view></router-view>
         </div>
         <app-footer></app-footer>
