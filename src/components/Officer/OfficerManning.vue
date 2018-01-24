@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+        <transition-group name="fade" mode="out-in">
+        <div v-show="!loaded" class="loader" key="loader"></div>
+        <div v-show="loaded" key="content">
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
                 <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
@@ -101,6 +104,8 @@
                 </div>
             </div>
         </div>
+        </div>
+        </transition-group>
     </div>
 </template>
 
@@ -116,7 +121,8 @@ import AutoComplete from '@/components/AutoComplete'
                 data: [],
                 selected: "percent",
                 searchMajcom: "",
-                searchBase: ""
+                searchBase: "",
+                loaded: false 
             }
         },
         computed: {
@@ -207,6 +213,7 @@ import AutoComplete from '@/components/AutoComplete'
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
+                this.loaded = true 
                 renderCharts()
             }).catch(console.error)
 
@@ -397,7 +404,11 @@ import AutoComplete from '@/components/AutoComplete'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
-
+                // after DOM updated redraw to make chart widths update
+                this.$nextTick(() => {
+                    dc.redrawAll()
+                })
+                
                 //make responsive
                 var temp
                 window.onresize = function(event) {
@@ -425,7 +436,7 @@ import AutoComplete from '@/components/AutoComplete'
 
 <style src="@/../node_modules/dc/dc.css">
 </style>
-<style>
+<style scoped>
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
     transform: rotate(-45deg);
@@ -435,7 +446,37 @@ div[id*="-rowchart"] g.row text{
     fill: black;
 }
 
-div[id*="chart"] {
-    min-height: 200px;
+.fade-enter-active {
+    transition: all 0.5s;
+}
+.fade-leave-active {
+    transition: all 0.2s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+.fade-enter-to, .fade-leave {
+    opacity: 1;
+}
+
+.loader {
+    border: 16px solid #d3d3d3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    position: fixed;
+    margin: auto;
+    top: 40%;
+    left: 45%;
+    animation: spin 2s linear infinite;
+}
+@keyframes spin{
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

@@ -33,7 +33,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .nav-tabs .nav-link{
     color:black;
 }

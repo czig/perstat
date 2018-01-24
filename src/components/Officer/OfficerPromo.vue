@@ -1,110 +1,115 @@
 <template>
     <div class="container">
-        <div class="row pt-2"> 
-            <div class="col"></div>
-            <div class="col-auto">
-                <button type="button" 
-                        class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                        @click="resetAll">Reset All</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-auto">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-auto">
-                Selects:        
-                <span id="sel"></span>
-            </div>
-            <div class="col-auto">
-                Eligibles: 
-                <span id="elig"></span>
-            </div>
-            <div class="col-auto">
-                Promotion Rate: 
-                <span id="selRate"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div id="grade" class="col-4">
-                <div id="dc-grade-rowchart">
-                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-grade-rowchart')">Reset</button>
-                    </h3>
+        <transition-group name="fade" mode="out-in">
+            <div v-show="!loaded" class="loader" key="loader"></div>
+            <div v-show="loaded" key="content">
+                <div class="row pt-2"> 
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="resetAll">Reset All</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto">
+                        Selects:        
+                        <span id="sel"></span>
+                    </div>
+                    <div class="col-auto">
+                        Eligibles: 
+                        <span id="elig"></span>
+                    </div>
+                    <div class="col-auto">
+                        Promotion Rate: 
+                        <span id="selRate"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="grade" class="col-4">
+                        <div id="dc-grade-rowchart">
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-grade-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="compCat" class="col-8">
+                        <div id="dc-compCat-barchart">
+                            <h3>CompCat <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-compCat-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="zone" class="col-4">
+                        <div id="dc-zone-rowchart">
+                            <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-zone-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="recommend" class="col-5">
+                        <div id="dc-recommend-rowchart">
+                            <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                <transition>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="pmeSelect" class="col-3">
+                        <div id="dc-pmeSelect-rowchart">
+                            <h3>PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-pmeSelect-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="board" class="col-12">
+                        <div id="dc-board-barchart">
+                            <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-board-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="occupGroup" class="col-12">
+                        <div id="dc-occupGroup-barchart">
+                            <h3>Occupation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-occupGroup-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="compCat" class="col-8">
-                <div id="dc-compCat-barchart">
-                    <h3>CompCat <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-compCat-barchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div id="zone" class="col-4">
-                <div id="dc-zone-rowchart">
-                    <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-zone-rowchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="recommend" class="col-5">
-                <div id="dc-recommend-rowchart">
-                    <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                        <transition>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
-                    </h3>
-                </div>
-            </div>
-            <div id="pmeSelect" class="col-3">
-                <div id="dc-pmeSelect-rowchart">
-                    <h3>PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-pmeSelect-rowchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div id="board" class="col-12">
-                <div id="dc-board-barchart">
-                    <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-board-barchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div id="occupGroup" class="col-12">
-                <div id="dc-occupGroup-barchart">
-                    <h3>Occupation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-occupGroup-barchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-        </div>
+        </transition-group>
     </div>
 </template>
 
@@ -118,7 +123,9 @@ import AutoComplete from '@/components/AutoComplete'
         data() {
             return {
                 data: [],
-                selected: "percent"
+                selected: "percent",
+                loaded: false 
+
             }
         },
         computed: {
@@ -209,6 +216,7 @@ import AutoComplete from '@/components/AutoComplete'
             axios.post(axios_url_off_pro).then(response => {
                 var promoData = response.data.data
                 this.data = promoData
+                this.loaded = true
                 renderCharts()
             }).catch(console.error)
 
@@ -452,6 +460,10 @@ import AutoComplete from '@/components/AutoComplete'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
+                // after DOM updated redraw to make chart widths update
+                this.$nextTick(() => {
+                    dc.redrawAll()
+                })
 
                 //make responsive
                 var temp
@@ -480,7 +492,7 @@ import AutoComplete from '@/components/AutoComplete'
 
 <style src="@/../node_modules/dc/dc.css">
 </style>
-<style>
+<style scoped>
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
     transform: rotate(-45deg);
@@ -490,8 +502,37 @@ div[id*="-rowchart"] g.row text{
     fill: black;
 }
 
-div[id*="chart"] {
-    min-height: 200px;
+.fade-enter-active {
+    transition: all 0.5s;
+}
+.fade-leave-active {
+    transition: all 0.2s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+.fade-enter-to, .fade-leave {
+    opacity: 1;
+}
 
+.loader {
+    border: 16px solid #d3d3d3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    position: fixed;
+    margin: auto;
+    top: 40%;
+    left: 45%;
+    animation: spin 2s linear infinite;
+}
+@keyframes spin{
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>
