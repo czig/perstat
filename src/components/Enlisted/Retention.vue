@@ -125,7 +125,7 @@
                     </h3>
                     <form class="form-inline">
                          <div class="form-group">
-                            <input type="text"  class="form-control" id="searchMajcom" v-model="searchMajcom" placeholder="Enter MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
+                            <input type="text"  class="form-control" id="searchMajcom" v-model="searchMajcom" placeholder="Enter MAJCOM" @keydown.enter.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
                          </div>
                     </form>
@@ -144,7 +144,7 @@
                     </h3>
                  <form class="form-inline">
                          <div class="form-group">
-                            <input type="text" class="form-control" id="searchBase" v-model="searchBase" placeholder="Enter Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
+                            <input type="text" class="form-control" id="searchBase" v-model="searchBase" placeholder="Enter Installation" @keydown.enter.stop.prevent="submit(searchBase,'dc-base-barchart')">
                             <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
                          </div>
                 </form>

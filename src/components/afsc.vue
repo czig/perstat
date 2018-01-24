@@ -152,13 +152,15 @@ export default {
 	    },
 	    chooseAfscGroup(){
             var len = this.searchAfsc.length;
+            if (len == 4)
+            	len+=1;
             this.submitStart(this.searchAfsc, 'dc-afsc-select');
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == 'dc-afsc-select' 
             }).forEach(chart=>{
                 var results = chart.group().all().length;
                 if ((!this.Freeze) && results < 15){
-                    this.afscChangeGroup(6)
+                    this.afscChangeGroup(5)
                     this.Freeze = true;
                 } else if (results >=15){
                     this.afscChangeGroup(len)
@@ -180,19 +182,71 @@ export default {
         },
         createAfscTools(){
             var xes = '';
-            for (var i = 0;i<6;i++){
+
+            //AFSC1 - With Labels
+            xes = Array(5).join("X")
+            this.Dim[0] = this.ndx.dimension((d)=> {
+            	var temp = d[this.dataVar].substring(0,1);
+	            return temp + xes + ' - ' + formats.AFSC1[temp];
+	        });
+
+            this.Group[0] = this.removeEmptyBins(this.Dim[0].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+
+            //AFSC2 - With Labels
+            xes = Array(4).join("X")
+            this.Dim[1] = this.ndx.dimension((d)=> {
+	            var temp = d[this.dataVar].substring(0,2);
+	            return temp + xes + ' - ' + formats.AFSC2[temp];
+	        });
+
+            this.Group[1] = this.removeEmptyBins(this.Dim[1].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+			
+			//AFSC3 WITH LABELS
+			xes = Array(3).join("X")
+            this.Dim[2] = this.ndx.dimension((d)=> {
+	            var temp = d[this.dataVar].substring(0,3);
+	            return temp + xes + ' - ' + formats.AFSC3[temp];
+	        });
+
+            this.Group[2] = this.removeEmptyBins(this.Dim[2].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+
+            //AFSC4 WITH LABELS
+            this.Dim[3] = this.Dim[2];
+            this.Group[3] = this.Group[2];
+
+			//AFSC5 WITH LABELS
+			
+            this.Dim[4] = this.ndx.dimension((d)=> {
+	            var temp = d[this.dataVar];
+	            return temp  + ' - ' + formats.AFSC6[temp];
+	        });
+
+            this.Group[4] = this.removeEmptyBins(this.Dim[4].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+
+           	//AFSC6
+           	this.Dim[5] = this.Dim[4];
+            this.Group[5] = this.Group[4];
+
+            /*
+            //AFSC3-AFSC6 NO LABELS
+            for (var i = 1;i<6;i++){
                 xes = Array(5-i).join("X")
                 this.Dim[i] = this.ndx.dimension((d)=> {
-                        return d[this.dataVar].substring(0,i+1) + xes;
+                	var temp = d[this.dataVar].substring(0,2);
+                    return d[this.dataVar].substring(0,i+1) + xes + ' - ' + formats.AFSC2[temp];
                 });
 
                 this.Group[i] = this.removeEmptyBins(this.Dim[i].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
             }
-            this.Dim[6] = this.ndx.dimension((d)=> {
+
+            //AFSC clear without any filters
+            
+            this.Dim[5] = this.ndx.dimension((d)=> {
                         return d[this.dataVar];
                 }
             );
-            this.Group[6] = this.removeEmptyBins(this.Dim[6].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+            this.Group[5] = this.removeEmptyBins(this.Dim[6].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+            */
         },
         resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -260,7 +314,7 @@ export default {
         afscConfig.dim = this.Dim[0];
         afscConfig.group = this.Group[0];
         afscConfig.minHeight = 200 
-        afscConfig.aspectRatio = 2.15;
+        afscConfig.aspectRatio = 1.8;
         afscConfig.margins = {top: 0, left: 20, right: 30, bottom: 20}
         afscConfig.colors = d3.scale.category10()
         var afscGraph = dchelpers.getRowChart(afscConfig)

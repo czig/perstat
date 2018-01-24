@@ -4,7 +4,7 @@
             <div class="col">
                 <div class="card">
                     <img class="card-img-top" style="position: relative;" src="../../static/welcome_tight.jpg">
-                    <span class="white-text" style="position: absolute; top: 320px; left: 20px;"><h1>Welcome!</h1></span>
+                    <span class="white-text" style="position: absolute; bottom: 0; left: 20px;"><h1>Welcome!</h1></span>
                 </div>
             </div>
         </div>
