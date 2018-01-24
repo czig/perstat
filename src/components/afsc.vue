@@ -1,36 +1,69 @@
+
+<!--######################################
+USAGE:
+
+//Shell to display Header before chart
+<div  v-if="!startAfsc" class="col-6">
+                    <h3>
+                        AFSC 
+                        <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                        <button type="button" 
+                            class="btn btn-danger btn-sm btn-rounded reset" 
+                            style="visibility: hidden"
+                            >Reset</button>
+                    </h3>
+</div>
+
+//Parent Div must have a certain "size" such as col-x
+<div v-else class="col-6">
+<afsc
+    :ndx="ndx"      	 //Data to Use
+    :ylabel="ylabel"	 //Label - Not Required
+    :selected="selected" //selected - Not Required
+
+    :reduceAdd = "retentionAdd" 		
+    :reduceRemove = "retentionRemove"
+    :reduceInitial = "retentionInitial"
+
+    dataVar="AFSC"		 //Var of data to crossfilter (Requires 6 digit ATM)
+    removeBin = "I"      //Remove Empty value bins - Not Required
+    					 //If Empty defaults to d.value[this.selected]
+    					 //if (!selected) defaults to d.value
+>
+</afsc>
+</div>
+
+TODO: Find A way to load component (With Data) Without v-if
+###########################################-->
+
 <template>
 <div>
 
-<div id="dc-afsc-select2">
+<div id="dc-afsc-select" class="col-12">
     <h3>
         AFSC 
-        <span v-if="afscTools.Current>1">[ {{afscFilter}} ] </span>
+        <span v-if="Current>1">[ {{afscFilter}} ] </span>
         <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
         <button type="button" 
             class="btn btn-danger btn-sm btn-rounded reset" 
             style="visibility: hidden"
             @click="resetAfsc">Reset</button>
     </h3>
-    <div id="afsc2" class="col-12">
-	    <div id="dc-afsc2-rowchart">
+    <div id="afsc" class="col-12">
+	    <div id="dc-afsc-rowchart">
 	    </div>
 	</div>
 </div>
 
 
 </div>
-<!-- 
-<div>END OF TEMPLATE</div>
-<div>END OF TEMPLATE</div>
-<div>END OF TEMPLATE</div>
-<div>END OF TEMPLATE</div> 
--->
 </template>
 
 <script>
 
 import dchelpers from '@/dchelpers'
 import formats from '@/store/format'
+import { store } from '@/store/store'
 
 export default {
 	props:{
@@ -40,31 +73,62 @@ export default {
 		},
 		ylabel:{
 			type: String,
-            required: true
-		}
+            required: false
+		},
+		selected:{
+			type: String,
+            required: false
+		}, 
+		reduceAdd:{
+			type: Function,
+			required: true
+		},
+		reduceRemove:{
+			type:Function, 
+			required: true
+		},
+		reduceInitial:{
+			type:Function,
+			required: true
+		},
+		dataVar:{
+			type:String,
+			required: true
+		},
+		removeBin:{
+			type:String,
+			required: false
+		},
 	},
 	data(){
 		return {
 			searchAfsc: '',
-			afscTools:{
-		        Group: [],
-		        Dim: [],
-		        Sub: [],
-		        Freeze: false,
-		        Current: 1,
-		        currOrd: '1st',
-		    }
+	        Group: [],
+	        Dim: [],
+	        Freeze: false,
+	        Current: 1,
+	        currOrd: '1st',
 		}
 	},
 	computed:{
 		afscFilter: function(){
-	    	var word = this.searchAfsc.substring(0,this.afscTools.Current);
+	    	var word = this.searchAfsc.substring(0,this.Current);
 	        return word;
-	    }
+	    },
+	    parentReset: function(){
+	    	return store.state.resetAfsc;
+	    },
+	},
+	watch:{
+		parentReset: function(val){
+			if (val === true){
+				this.resetAfsc();
+				store.state.resetAfsc = false;
+			}
+		},
 	},
 	methods:{
 		addDigit(val){
-	         console.log('in ADD DIGIt')
 	        this.searchAfsc += '' + val;
 	        //console.log(this.searchAfsc)
 	        this.chooseAfscGroup();
@@ -79,57 +143,110 @@ export default {
 	    },
 	    resetAfsc(){
 	        this.searchAfsc = '';
-	        this.afscTools.Freeze = false;
+	        this.Freeze = false;
 	        //resetChart('dc-afsc-rowchart')
 	        this.afscChangeGroup(0);
 	        //this.resetChart('dc-afsc-select')
-	        this.resetChart('dc-afsc-select2')
-	        this.resetChart('dc-afsc2-rowchart')
+	        this.resetChart('dc-afsc-select')
+	        this.resetChart('dc-afsc-rowchart')
 	    },
 	    chooseAfscGroup(){
             var len = this.searchAfsc.length;
-            
-            this.submitStart(this.searchAfsc, 'dc-afsc-select2');
+            if (len == 4)
+            	len+=1;
+            this.submitStart(this.searchAfsc, 'dc-afsc-select');
             dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == 'dc-afsc-select2' 
+                return chart.anchorName() == 'dc-afsc-select' 
             }).forEach(chart=>{
                 var results = chart.group().all().length;
-                if ((!this.afscTools.Freeze) && results < 15){
-                    this.afscChangeGroup(6)
-                    this.afscTools.Freeze = true;
+                if ((!this.Freeze) && results < 15){
+                    this.afscChangeGroup(5)
+                    this.Freeze = true;
                 } else if (results >=15){
                     this.afscChangeGroup(len)
-                    this.afscTools.Freeze = false;
+                    this.Freeze = false;
                 }
             })
         },
         afscChangeGroup(val){
-            this.afscTools.currOrd = formats.ordinalNum[val+1];
-            this.afscTools.Current = val+1;
+            this.currOrd = formats.ordinalNum[val+1];
+            this.Current = val+1;
             dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == 'dc-afsc2-rowchart' 
+                return chart.anchorName() == 'dc-afsc-rowchart' 
             }).forEach(chart=>{
                 chart.filterAll()
-                chart.dimension(this.afscTools.Dim[val]).group(this.afscTools.Group[val])
+                chart.dimension(this.Dim[val]).group(this.Group[val])
                 //this.resetChart('dc-afsc-rowchart')
                 dc.redrawAll()
             })
         },
         createAfscTools(){
             var xes = '';
-            for (var i = 0;i<6;i++){
+
+            //AFSC1 - With Labels
+            xes = Array(5).join("X")
+            this.Dim[0] = this.ndx.dimension((d)=> {
+            	var temp = d[this.dataVar].substring(0,1);
+	            return temp + xes + ' - ' + formats.AFSC1[temp];
+	        });
+
+            this.Group[0] = this.removeEmptyBins(this.Dim[0].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+
+            //AFSC2 - With Labels
+            xes = Array(4).join("X")
+            this.Dim[1] = this.ndx.dimension((d)=> {
+	            var temp = d[this.dataVar].substring(0,2);
+	            return temp + xes + ' - ' + formats.AFSC2[temp];
+	        });
+
+            this.Group[1] = this.removeEmptyBins(this.Dim[1].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+			
+			//AFSC3 WITH LABELS
+			xes = Array(3).join("X")
+            this.Dim[2] = this.ndx.dimension((d)=> {
+	            var temp = d[this.dataVar].substring(0,3);
+	            return temp + xes + ' - ' + formats.AFSC3[temp];
+	        });
+
+            this.Group[2] = this.removeEmptyBins(this.Dim[2].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+
+            //AFSC4 WITH LABELS
+            this.Dim[3] = this.Dim[2];
+            this.Group[3] = this.Group[2];
+
+			//AFSC5 WITH LABELS
+			
+            this.Dim[4] = this.ndx.dimension((d)=> {
+	            var temp = d[this.dataVar];
+	            return temp  + ' - ' + formats.AFSC6[temp];
+	        });
+
+            this.Group[4] = this.removeEmptyBins(this.Dim[4].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+
+           	//AFSC6
+           	this.Dim[5] = this.Dim[4];
+            this.Group[5] = this.Group[4];
+
+            /*
+            //AFSC3-AFSC6 NO LABELS
+            for (var i = 1;i<6;i++){
                 xes = Array(5-i).join("X")
-                this.afscTools.Dim[i] = this.ndx.dimension(function (d) {
-                        return d.AFSC.substring(0,i+1) + xes;
+                this.Dim[i] = this.ndx.dimension((d)=> {
+                	var temp = d[this.dataVar].substring(0,2);
+                    return d[this.dataVar].substring(0,i+1) + xes + ' - ' + formats.AFSC2[temp];
                 });
 
-                this.afscTools.Group[i] = this.removeEmptyBins(this.afscTools.Dim[i].group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial));
+                this.Group[i] = this.removeEmptyBins(this.Dim[i].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
             }
-            this.afscTools.Dim[6] = this.ndx.dimension(function (d) {
-                        return d.AFSC;
+
+            //AFSC clear without any filters
+            
+            this.Dim[5] = this.ndx.dimension((d)=> {
+                        return d[this.dataVar];
                 }
             );
-            this.afscTools.Group[6] = this.removeEmptyBins(this.afscTools.Dim[6].group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial));
+            this.Group[5] = this.removeEmptyBins(this.Dim[6].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+            */
         },
         resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -139,7 +256,7 @@ export default {
             })
             dc.redrawAll()
         },
-        submit: (text,id) => {
+        submitStart: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id 
             }).forEach(chart=>{
@@ -149,57 +266,39 @@ export default {
                 })
                 var filterArray = mainArray.filter((d) => {
                     var element = d.toUpperCase() 
-                    return element.indexOf(text.toUpperCase()) !== -1
+                    return element.startsWith(text.toUpperCase())
                 })
+
                 chart.filter(null)
+              
                 if (filterArray.length != mainArray.length) {
                     chart.filter([filterArray])
                 }
             })
             dc.redrawAll()
         },
-        retentionAdd(p,v) {
-            p.I = p.I + +v.INV
-            p.E = p.E + +v.ELIG
-            p.K = p.K + +v.KEEP
-            //if divide by 0, set to 0, and if NaN, set to zero
-            p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
-            p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
-            return p
-        },
-          retentionRemove(p,v) {
-            p.I = p.I - +v.INV
-            p.E = p.E - +v.ELIG
-            p.K = p.K - +v.KEEP
-            //if divide by 0, set to 0, and if NaN, set to zero
-            p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
-            p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
-            return p
-        },
-          retentionInitial() {
-            return {
-                I: 0,
-                E: 0,
-                K: 0,
-                RR: 0,
-                KR: 0,
-            }
-        },
-          removeEmptyBins:(source_group) => {
+        removeEmptyBins(source_group){
             return {
                 all: () => {
                     return source_group.all().filter((d) => {
-                        return d.value.I != 0
+                    	if (this.removeBin)
+                    		return d.value[this.removeBin] != 0;
+                    	else if (!this.selected)
+            				return d.value !=0;	
+                        else return d.value[this.selected] != 0;
                     })
                 }
             }
-        }  
+        },
 	},
 	mounted(){
-		console.log('AFSC MOUNTED');
-		var afscDim = this.ndx.dimension(function(d){return d.AFSC})
-        var afscGrp = this.removeEmptyBins(afscDim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial));
-        var afscChart = dc.selectMenu('#dc-afsc-select2');
+		console.log('AFSC MOUNTED  ' + this.dataVar);
+		var afscDim = this.ndx.dimension((d)=>{
+			return d[this.dataVar];
+		})
+		//console.log(afscDim.group().top(Infinity))
+        var afscGrp = this.removeEmptyBins(afscDim.group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+        var afscChart = dc.selectMenu('#dc-afsc-select');
         afscChart
                 .dimension(afscDim)
                 .group(afscGrp)       
@@ -211,32 +310,40 @@ export default {
         this.createAfscTools();
 
         var afscConfig = {};
-        afscConfig.id = 'afsc2';
-        afscConfig.dim = this.afscTools.Dim[0];
-        afscConfig.group = this.afscTools.Group[0];
+        afscConfig.id = 'afsc';
+        afscConfig.dim = this.Dim[0];
+        afscConfig.group = this.Group[0];
         afscConfig.minHeight = 200 
-        afscConfig.aspectRatio = 2.15;
+        afscConfig.aspectRatio = 1.8;
         afscConfig.margins = {top: 0, left: 20, right: 30, bottom: 20}
         afscConfig.colors = d3.scale.category10()
         var afscGraph = dchelpers.getRowChart(afscConfig)
         afscGraph
             .valueAccessor((d)=> {
-                return d.value[this.selected];
+            	if (!this.selected)
+            		return d.value;	
+                else return d.value[this.selected];
             })
             //.fixedBarHeight(38)
-
         //On Filter change Dim/Group from Vue Method
         afscGraph.on('filtered', (chart,filter)=> {
-            if (filter && (!this.afscTools.Freeze)){
+        	if (filter && (!this.Freeze)){
                 var len = this.searchAfsc.length;
                 this.addDigit(filter.substring(len,len+1))
             }
         });
+
+    	
+        dc.renderAll()
+        dc.redrawAll()
 	}
+	
 }
 
 </script>
 
 <style scoped>
-	
+	#dc-afsc-select{
+		padding-left: 0;
+	}
 </style>
