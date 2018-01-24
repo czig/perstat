@@ -66,5 +66,8 @@ export default new Router({
       component: IT 
     },
     { path: '*', redirect: '/' }
-  ]
+  ],
+  scrollBehavior (to, from, savedPosition) {
+    return {x: 0, y: 0}
+  }
 })

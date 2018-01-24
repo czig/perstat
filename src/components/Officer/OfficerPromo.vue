@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <transition-group name="fade" mode="out-in">
-            <div v-show="!loaded" class="loader" key="loader"></div>
+            <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
                     <div class="col"></div>
@@ -118,6 +118,7 @@ import dchelpers from '@/dchelpers'
 import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
+import Loader from '@/components/Loader'
 
     export default {
         data() {
@@ -189,7 +190,8 @@ import AutoComplete from '@/components/AutoComplete'
           }
         },
         components: {
-            'autocomplete': AutoComplete
+            'autocomplete': AutoComplete,
+            'loader': Loader
         },
         created: function(){
           console.log('created')
@@ -493,15 +495,6 @@ import AutoComplete from '@/components/AutoComplete'
 <style src="@/../node_modules/dc/dc.css">
 </style>
 <style scoped>
-div[id*="-barchart"] .x.axis text{
-    text-anchor: end !important;
-    transform: rotate(-45deg);
-  }
-
-div[id*="-rowchart"] g.row text{
-    fill: black;
-}
-
 .fade-enter-active {
     transition: all 0.5s;
 }
@@ -513,26 +506,5 @@ div[id*="-rowchart"] g.row text{
 }
 .fade-enter-to, .fade-leave {
     opacity: 1;
-}
-
-.loader {
-    border: 16px solid #d3d3d3;
-    border-top: 16px solid #3498db;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    position: fixed;
-    margin: auto;
-    top: 40%;
-    left: 45%;
-    animation: spin 2s linear infinite;
-}
-@keyframes spin{
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
 }
 </style>

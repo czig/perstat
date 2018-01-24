@@ -13,11 +13,12 @@
                 <div class="card">
                     <div class="card-body row">
                         <img class="card-img-left" src="../../static/afpc_log.png" width="150px" height="150px">
-                        <h4 class="pl-3">AFPC's performance statistics
+                        <h4 class="pl-3">AFPC's Personnel Statistics
                             <br>
                             <br>
-                            <h6>Click the following cards to see the respective statistics!</h6>
-                            <h6>Can insert information or a tutorial here</h6>
+                            <h6>Click the links in the navigation bar above or the tiles below to see the respective statistics!</h6>
+                            <h6>Each page contains "interactive" charts that you may use to display and filter data.</h6>
+                            <h6>The AD Manning, Officer, and Enlisted pages are complete, but the remaining six are in development.</h6>
                         </h4>
                     </div>
                 </div>

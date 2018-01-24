@@ -20,7 +20,9 @@
                 <!--</a>-->
             <!--</li>-->
         </ul>
-        <component :is="dynamicComponent"></component>
+        <transition name="fade" mode="out-in">
+            <component :is="dynamicComponent"></component>
+        </transition>
     </div>
 </template>
 
@@ -41,9 +43,7 @@ import retention from '@/components/Enlisted/Retention'
     }
 </script>
 
-<style src="@/../node_modules/dc/dc.css">
-</style>
-<style>
+<style scoped>
 .nav-tabs .nav-link{
     color:black;
 }
@@ -51,6 +51,15 @@ import retention from '@/components/Enlisted/Retention'
     font-weight:bold;
     color:teal;
     //background-color:red;
+}
+.fade-enter{
+    opacity: 0;
+}
+.fade-enter-active, .fade-leave-active{
+    transition: all 0.5s;
+}
+.fade-leave-to{
+    opacity: 0;
 }
 </style>
 

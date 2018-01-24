@@ -1,156 +1,161 @@
 
 <template>
 	<div>
-        <div class="row pt-2"> 
-            <div class="col form-group">
+        <transition-group name="fade" mode="out-in">
+            <loader v-show="!loaded" key="loader"></loader>
+            <div v-show="loaded" key="content">
+                <div class="row pt-2"> 
+                    <div class="col form-group">
+                        
+                            <label class="custom-control custom-radio" >
+                                <input class="custom-control-input" name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Inventory</span>
+                            </label>
                 
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Inventory</span>
-                    </label>
-        
-                
-                    <label class="custom-control custom-radio">
-                        <input class="custom-control-input" name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Eligible</span>
-                    </label>
-               
-                
-                    <label class="custom-control custom-radio">
-                        <input class="custom-control-input" name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Keep</span>
-                    </label>
-               
-               
-                    <label class="custom-control custom-radio">
-                       <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
-                       <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Reenlistment Rate</span>
-                    </label>
-              
-              
-                    <label class="custom-control custom-radio">
-                        <input class="custom-control-input" name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Keep Rate</span>
-                    </label>
-               
-            </div>
-            <div class="col-auto">
-                <button type="button" 
-                        class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                        @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">Reset All</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-auto">
-                Inventory:
-                <span id="inv"></span>
-            </div>
-            <div class="col-auto">
-                Eligible:
-                <span id="elig"></span>
-            </div>
-            <div class="col-auto">
-                Keep:
-                <span id="keep"></span>
-            </div>
-            <div class="col-auto">
-                Re-Enlist Rate:
-                <span id="rr"></span>
-            </div>
-            <div class="col-auto">
-                Keep Rate:
-                <span id="kr"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div id="year" class="col-3">
-                <div id="dc-year-rowchart">
-                    <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-year-rowchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="cat" class="col-3">
-                <div id="dc-cat-rowchart">
-                    <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-cat-rowchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <template class="AFSC-SECTION">
-                <div  v-if="!startAfsc" class="col-6"> 
-                    <h3>
-                        AFSC 
-                        <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                        
+                            <label class="custom-control custom-radio">
+                                <input class="custom-control-input" name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Eligible</span>
+                            </label>
+                       
+                        
+                            <label class="custom-control custom-radio">
+                                <input class="custom-control-input" name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Keep</span>
+                            </label>
+                       
+                       
+                            <label class="custom-control custom-radio">
+                               <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
+                               <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Reenlistment Rate</span>
+                            </label>
+                      
+                      
+                            <label class="custom-control custom-radio">
+                                <input class="custom-control-input" name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">Keep Rate</span>
+                            </label>
+                       
+                    </div>
+                    <div class="col-auto">
                         <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="visibility: hidden"
-                            >Reset</button>
-                    </h3>
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">Reset All</button>
+                    </div>
                 </div>
-                <div v-else class="col-6">
-                    <afsc
-                        :ndx="ndx"
-                        :ylabel="ylabel"
-                        :selected="selected"
-                        :reduceAdd = "retentionAdd"
-                        :reduceRemove = "retentionRemove"
-                        :reduceInitial = "retentionInitial"
-                        dataVar="AFSC"
-                        removeBin = "I"
-                    >
-                    </afsc>
+                <div class="row">
+                    <div class="col-auto">
+                        Inventory:
+                        <span id="inv"></span>
+                    </div>
+                    <div class="col-auto">
+                        Eligible:
+                        <span id="elig"></span>
+                    </div>
+                    <div class="col-auto">
+                        Keep:
+                        <span id="keep"></span>
+                    </div>
+                    <div class="col-auto">
+                        Re-Enlist Rate:
+                        <span id="rr"></span>
+                    </div>
+                    <div class="col-auto">
+                        Keep Rate:
+                        <span id="kr"></span>
+                    </div>
                 </div>
-            </template>
-        </div>
-		<div class="row">
-            <div id="majcom" class="col-12">
-                <div id="dc-majcom-barchart">
-                    <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
-                    </h3>
-                    <form class="form-inline">
-                         <div class="form-group">
-                            <input type="text"  class="form-control" id="searchMajcom" v-model="searchMajcom" placeholder="Enter MAJCOM" @keydown.enter.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">
-                            <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
-                         </div>
-                    </form>
-                    
+                <div class="row">
+                    <div id="year" class="col-3">
+                        <div id="dc-year-rowchart">
+                            <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-year-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="cat" class="col-3">
+                        <div id="dc-cat-rowchart">
+                            <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-cat-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <template class="AFSC-SECTION">
+                        <div  v-if="!startAfsc" class="col-6"> 
+                            <h3>
+                                AFSC 
+                                <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                                <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    >Reset</button>
+                            </h3>
+                        </div>
+                        <div v-else class="col-6">
+                            <afsc
+                                :ndx="ndx"
+                                :ylabel="ylabel"
+                                :selected="selected"
+                                :reduceAdd = "retentionAdd"
+                                :reduceRemove = "retentionRemove"
+                                :reduceInitial = "retentionInitial"
+                                dataVar="AFSC"
+                                removeBin = "I"
+                            >
+                            </afsc>
+                        </div>
+                    </template>
+                </div>
+                <div class="row">
+                    <div id="majcom" class="col-12">
+                        <div id="dc-majcom-barchart">
+                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
+                            </h3>
+                            <form class="form-inline">
+                                 <div class="form-group">
+                                    <input type="text"  class="form-control" id="searchMajcom" v-model="searchMajcom" placeholder="Enter MAJCOM" @keydown.enter.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">
+                                    <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
+                                 </div>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="base" class="col-12">
+                        <div id="dc-base-barchart">
+                            <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="searchBase='';resetChart('dc-base-barchart')">Reset</button>
+                            </h3>
+                         <form class="form-inline">
+                                 <div class="form-group">
+                                    <input type="text" class="form-control" id="searchBase" v-model="searchBase" placeholder="Enter Installation" @keydown.enter.stop.prevent="submit(searchBase,'dc-base-barchart')">
+                                    <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
+                                 </div>
+                        </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div id="base" class="col-12">
-                <div id="dc-base-barchart">
-                    <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="searchBase='';resetChart('dc-base-barchart')">Reset</button>
-                    </h3>
-                 <form class="form-inline">
-                         <div class="form-group">
-                            <input type="text" class="form-control" id="searchBase" v-model="searchBase" placeholder="Enter Installation" @keydown.enter.stop.prevent="submit(searchBase,'dc-base-barchart')">
-                            <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
-                         </div>
-                </form>
-                </div>
-            </div>
-        </div>
+        </transition-group>
 	</div>
 </template>
 
@@ -160,6 +165,7 @@
 	import formats from '@/store/format'
     import afsc from '@/components/afsc'
     import { store } from '@/store/store'
+    import Loader from '@/components/Loader'
 
 	export default {
         data() {
@@ -169,10 +175,12 @@
                 searchMajcom: "",
                 searchBase: "",
                 startAfsc:false,
+                loaded: false
             }
         },
         components:{
             'afsc': afsc,
+            'loader': Loader
         },
         computed: {
           ndx: function(){
@@ -287,6 +295,7 @@
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
+                this.loaded = true
                 renderCharts()
             }).catch(console.error)
 
@@ -454,6 +463,11 @@
                 //Call The AFSC Component HERE
                 this.startAfsc = true;
 
+                // after DOM updated redraw to make chart widths update
+                this.$nextTick(() => {
+                    dc.redrawAll()
+                })
+
                 //Resize
                 var temp
                 window.onresize = function(event) {
@@ -479,14 +493,7 @@
 <style src="../../../node_modules/dc/dc.css">
 </style>
 <style>
-div[id*="-barchart"] .x.axis text{
-    text-anchor: end !important;
-    transform: rotate(-45deg);
-  }
-
-div[id*="-rowchart"] g.row text{
-    fill: black;
-}
+/* need to make this scoped */
 .dc-select-menu{
     display:none;
 }
@@ -495,5 +502,17 @@ div[id*="-rowchart"] g.row text{
     padding-right:10px;
     margin-right: 0;
     cursor:pointer;
+}
+.fade-enter-active {
+    transition: all 0.5s;
+}
+.fade-leave-active {
+    transition: all 0.2s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+.fade-enter-to, .fade-leave {
+    opacity: 1;
 }
 </style>

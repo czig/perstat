@@ -21,4 +21,12 @@ export default {
 </script>
 
 <style>
+div[id*="-barchart"] .x.axis text{
+    text-anchor: end !important;
+    transform: rotate(-45deg);
+  }
+
+div[id*="-rowchart"] g.row text{
+    fill: black;
+}
 </style>
