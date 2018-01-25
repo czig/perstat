@@ -3,76 +3,81 @@
         <div class="row">
             <h1 class="col">AD Manning</h1>
         </div>
-        <div class="row pt-2"> 
-            <div id="radioSelect" class="col form-group">
-                <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
-                <label for="radio">Percentage</label>
-                <input name="group2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
-                <label for="radio">Assigned</label>
-                <input name="group3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
-                <label for="radio3">Authorized</label>
-                <input name="group4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
-                <label for="radio4">STP</label>
-            </div>
-            <div class="col"></div>
-            <div class="col-auto">
-                <button type="button" 
-                        class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                        @click="resetAll">Reset All</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-auto">
-                Assigned:
-                <span id="asgn"></span>
-            </div>
-            <div class="col-auto">
-                STP:
-                <span id="stp"></span>
-            </div>
-            <div class="col-auto">
-                Authorized:
-                <span id="auth"></span>
-            </div>
-            <div class="col-auto">
-                Manning Percent:
-                <span id="percent"></span>
-            </div>
-        </div>
-        <div class="row">
-            <div id="majcom" class="col-12">
-                <div id="dc-majcom-barchart">
-                    <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-majcom-barchart')">Reset</button>
-                    </h3>
+        <transition-group name="fade" mode="out-in">
+            <loader v-show="!loaded" key="loader"></loader>
+            <div v-show="loaded" key="content">
+                <div class="row pt-2"> 
+                    <div id="radioSelect" class="col form-group">
+                        <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
+                        <label for="radio">Percentage</label>
+                        <input name="group2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                        <label for="radio">Assigned</label>
+                        <input name="group3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                        <label for="radio3">Authorized</label>
+                        <input name="group4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                        <label for="radio4">STP</label>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="resetAll">Reset All</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto">
+                        Assigned:
+                        <span id="asgn"></span>
+                    </div>
+                    <div class="col-auto">
+                        STP:
+                        <span id="stp"></span>
+                    </div>
+                    <div class="col-auto">
+                        Authorized:
+                        <span id="auth"></span>
+                    </div>
+                    <div class="col-auto">
+                        Manning Percent:
+                        <span id="percent"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="majcom" class="col-12">
+                        <div id="dc-majcom-barchart">
+                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-majcom-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="grade" class="col-4">
+                        <div id="dc-grade-rowchart">
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-grade-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="afscGroup" class="col-8">
+                        <div id="dc-afscGroup-barchart">
+                            <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-afscGroup-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div id="grade" class="col-4">
-                <div id="dc-grade-rowchart">
-                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-grade-rowchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="afscGroup" class="col-8">
-                <div id="dc-afscGroup-barchart">
-                    <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-afscGroup-barchart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-        </div>
+        </transition-group>
     </div>
 </template>
 
@@ -80,12 +85,14 @@
 import dchelpers from '@/dchelpers'
 import axios from 'axios'
 import formats from '@/store/format'
+import Loader from '@/components/Loader'
 
     export default {
         data() {
             return {
                 data: [],
-                selected: "percent"
+                selected: "percent",
+                loaded: false
             }
         },
         computed: {
@@ -129,6 +136,9 @@ import formats from '@/store/format'
             },10)
           }
         },
+        components: {
+            'loader': Loader
+        },
         created: function(){
           console.log('created')
           //var data = require('@/assets/data/ps_off.csv')
@@ -155,6 +165,7 @@ import formats from '@/store/format'
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
+                this.loaded = true
                 renderCharts()
             }).catch(console.error)
 
@@ -316,6 +327,11 @@ import formats from '@/store/format'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
+                // after DOM updated redraw to make chart widths update
+                this.$nextTick(() => {
+                    dc.redrawAll()
+                })
+
                 //make responsive
                 var temp
                 window.onresize = function(event) {
@@ -343,13 +359,17 @@ import formats from '@/store/format'
 
 <style src="../../node_modules/dc/dc.css">
 </style>
-<style>
-div[id*="-barchart"] .x.axis text{
-    text-anchor: end !important;
-    transform: rotate(-45deg);
-  }
-
-div[id*="-rowchart"] g.row text{
-    fill: black;
+<style scoped>
+.fade-enter-active {
+    transition: all 0.5s;
+}
+.fade-leave-active {
+    transition: all 0.2s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+.fade-enter-to, .fade-leave {
+    opacity: 1;
 }
 </style>

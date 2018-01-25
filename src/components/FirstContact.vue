@@ -1,12 +1,16 @@
 <template>
     <div class="container">
-        <div class="row">
-            first contact 
-        </div>
+        <construction></construction>
     </div>
 </template>
 
 <script>
+import Construction from '@/components/Construction'
+export default {
+    components: {
+        'construction': Construction    
+    }
+}
     
 </script>
 

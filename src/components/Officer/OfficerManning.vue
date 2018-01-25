@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+        <transition-group name="fade" mode="out-in">
+        <loader v-show="!loaded" key="loader"></loader>
+        <div v-show="loaded" key="content">
         <div class="row pt-2"> 
             <div id="radioSelect" class="col form-group">
                 <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
@@ -101,6 +104,8 @@
                 </div>
             </div>
         </div>
+        </div>
+        </transition-group>
     </div>
 </template>
 
@@ -109,6 +114,7 @@ import dchelpers from '@/dchelpers'
 import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
+import Loader from '@/components/Loader'
 
     export default {
         data() {
@@ -116,7 +122,8 @@ import AutoComplete from '@/components/AutoComplete'
                 data: [],
                 selected: "percent",
                 searchMajcom: "",
-                searchBase: ""
+                searchBase: "",
+                loaded: false 
             }
         },
         computed: {
@@ -180,7 +187,8 @@ import AutoComplete from '@/components/AutoComplete'
           }
         },
         components: {
-            'autocomplete': AutoComplete
+            'autocomplete': AutoComplete,
+            'loader': Loader
         },
         created: function(){
           console.log('created')
@@ -207,6 +215,7 @@ import AutoComplete from '@/components/AutoComplete'
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
+                this.loaded = true 
                 renderCharts()
             }).catch(console.error)
 
@@ -397,7 +406,11 @@ import AutoComplete from '@/components/AutoComplete'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
-
+                // after DOM updated redraw to make chart widths update
+                this.$nextTick(() => {
+                    dc.redrawAll()
+                })
+                
                 //make responsive
                 var temp
                 window.onresize = function(event) {
@@ -425,7 +438,7 @@ import AutoComplete from '@/components/AutoComplete'
 
 <style src="@/../node_modules/dc/dc.css">
 </style>
-<style>
+<style scoped>
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
     transform: rotate(-45deg);
@@ -433,5 +446,18 @@ div[id*="-barchart"] .x.axis text{
 
 div[id*="-rowchart"] g.row text{
     fill: black;
+}
+
+.fade-enter-active {
+    transition: all 0.5s;
+}
+.fade-leave-active {
+    transition: all 0.2s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+.fade-enter-to, .fade-leave {
+    opacity: 1;
 }
 </style>
