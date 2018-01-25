@@ -33,6 +33,16 @@ const webpackConfig = merge(baseWebpackConfig, {
       'process.env': env
     }),
     new webpack.DefinePlugin({
+
+      'check_portal': '"SANE"',
+      'axios_url': '"http://localhost:5005/api"',
+      'axios_url_enl_ret': '"http://localhost:5005/api/enlisted_ret_post"',
+      'axios_url_enl_man': '"http://localhost:5005/api/enlisted_post"',
+      'axios_url_off_pro': '"http://localhost:5005/api/officer_promo"',
+      'axios_url_off_man': '"http://localhost:5005/api/officer_post"',
+      'axios_url_adman': '"http://localhost:5005/api/admanning_post"'
+  
+      /*
       'check_portal': '"INSANE"',
       'axios_url': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do"',
       'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=enlisted_ret_post"',
@@ -40,6 +50,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       'axios_url_off_pro': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=officer_promo"',
       'axios_url_off_man': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=officer_post"',
       'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=admanning_post"'
+      */
     }),
     // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
     //new webpack.optimize.UglifyJsPlugin({
@@ -63,16 +74,16 @@ const webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: process.env.NODE_ENV === 'testing'
+      filename: process.env.NODE_ENV === 'production'
         ? 'index.html'
         : config.build.index,
       template: 'index.html',
       inject: true,
       //changed minify props from true to false
       minify: {
-        removeComments: false,
-        collapseWhitespace: false,
-        removeAttributeQuotes: false 
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true 
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },

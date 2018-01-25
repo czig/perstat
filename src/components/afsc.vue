@@ -129,6 +129,8 @@ export default {
 	},
 	methods:{
 		addDigit(val){
+			if (val === 'E')
+				val = '*';
 	        this.searchAfsc += '' + val;
 	        //console.log(this.searchAfsc)
 	        this.chooseAfscGroup();
@@ -187,6 +189,8 @@ export default {
             xes = Array(5).join("X")
             this.Dim[0] = this.ndx.dimension((d)=> {
             	var temp = d[this.dataVar].substring(0,1);
+            	if (temp === '*')
+            		return 'ERROR - MISSING AFSC'; 
 	            return temp + xes + ' - ' + formats.AFSC1[temp];
 	        });
 
