@@ -28,12 +28,14 @@ const webpackConfig = merge(baseWebpackConfig, {
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   },
   plugins: [
-    // http://vuejs.github.io/vue-loader/en/workflow/production.html
+    // http://vuejs.github.io/vue-/en/workflow/production.html
     new webpack.DefinePlugin({
       'process.env': env
     }),
     new webpack.DefinePlugin({
 
+      /*
+      //PROD testing for Local RUN -- MINIFY/FONT deployment test
       'check_portal': '"SANE"',
       'axios_url': '"http://localhost:5005/api"',
       'axios_url_enl_ret': '"http://localhost:5005/api/enlisted_ret_post"',
@@ -41,16 +43,17 @@ const webpackConfig = merge(baseWebpackConfig, {
       'axios_url_off_pro': '"http://localhost:5005/api/officer_promo"',
       'axios_url_off_man': '"http://localhost:5005/api/officer_post"',
       'axios_url_adman': '"http://localhost:5005/api/admanning_post"'
-  
-      /*
-      'check_portal': '"INSANE"',
-      'axios_url': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do"',
-      'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=enlisted_ret_post"',
-      'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=enlisted_post"',
-      'axios_url_off_pro': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=officer_promo"',
-      'axios_url_off_man': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=officer_post"',
-      'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do?_PROGRAM=/REN - Dashboard Home V1/makeHTML_collab&nPage=admanning_post"'
       */
+      
+      //PROD BUILD - HIS MUST be run for PROD DEPLOYMENT
+      //'check_portal': '"INSANE"',
+      'axios_url': '"https://starsraw.afpc.randolph.af.mil/"',
+      'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ENL_RET.js"',
+      'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ENL.js"',
+      'axios_url_off_pro': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_off_promo.json"',
+      'axios_url_off_man': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_OFF.js"',
+      'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ALL.js"'
+      
     }),
     // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
     new webpack.optimize.UglifyJsPlugin({
