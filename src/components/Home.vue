@@ -27,7 +27,7 @@
         <div class="row mt-3">
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/ad_manning')">
-                    <img class="card-img-top" src="../../static/ad_manning.png" height="200px">
+                    <img class="card-img-top" src="../../static/ad_manning.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">AD Manning</h4>
                     </div>
@@ -35,7 +35,7 @@
             </div>
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/officer')">
-                    <img class="card-img-top" src="../../static/officer.png" height="200px">
+                    <img class="card-img-top" src="../../static/officer.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Officer</h4>
                     </div>
@@ -43,7 +43,7 @@
             </div>
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/enlisted')">
-                    <img class="card-img-top" src="../../static/enlisted.png" height="200px">
+                    <img class="card-img-top" src="../../static/enlisted.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Enlisted</h4>
                     </div>
@@ -53,7 +53,7 @@
         <div class="row mt-3">
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/civilian')">
-                    <img class="card-img-top" src="../../static/civilian.png" height="200px">
+                    <img class="card-img-top" src="../../static/civilian.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Civilian</h4>
                     </div>
@@ -61,7 +61,7 @@
             </div>
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/assignments')">
-                    <img class="card-img-top" src="../../static/assignments.png" height="200px">
+                    <img class="card-img-top" src="../../static/assignments.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Assignments</h4>
                     </div>
@@ -69,7 +69,7 @@
             </div>
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/joint')">
-                    <img class="card-img-top" src="../../static/joint.png" height="200px">
+                    <img class="card-img-top" src="../../static/joint.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Joint</h4>
                     </div>
@@ -79,7 +79,7 @@
         <div class="row mt-3">
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/care')">
-                    <img class="card-img-top" src="../../static/careww.png" height="200px">
+                    <img class="card-img-top" src="../../static/careww.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Care / WW</h4>
                     </div>
@@ -87,7 +87,7 @@
             </div>
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/first_contact')">
-                    <img class="card-img-top" src="../../static/firstcontact.png" height="200px">
+                    <img class="card-img-top" src="../../static/firstcontact.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">First Contact</h4>
                     </div>
@@ -95,7 +95,7 @@
             </div>
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/it')">
-                    <img class="card-img-top" src="../../static/it.png" height="200px">
+                    <img class="card-img-top" src="../../static/it.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">IT</h4>
                     </div>
