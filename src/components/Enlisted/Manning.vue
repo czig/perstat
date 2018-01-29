@@ -4,16 +4,30 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
+
                     <div id="radioSelect" class="col form-group">
-                        <input name="radio" type="radio" id="radio1" checked="checked" value="percent" v-model="selected" @click="radioButton">
-                        <label for="radio">Percentage</label>
-                        <input name="group2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
-                        <label for="radio">Assigned</label>
-                        <input name="group3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
-                        <label for="radio3">Authorized</label>
-                        <input name="group4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
-                        <label for="radio4">STP</label>
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Percentage</span>
+                        </label>
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radio" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Assigned</span>
+                        </label>
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radio" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Authorized</span>
+                        </label>
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radio" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">STP</span>
+                        </label>
                     </div>
+
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" 

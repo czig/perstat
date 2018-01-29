@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class=col>Enlisted </h1>
+            <h1 class=col>Enlisted</h1>
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
