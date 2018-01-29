@@ -129,7 +129,8 @@ export default {
 	},
 	methods:{
 		addDigit(val){
-			if (val === 'E')
+			//Put Error at the bottom on AFSC1
+			if (val === 'E' && this.Current === 1)
 				val = '*';
 	        this.searchAfsc += '' + val;
 	        //console.log(this.searchAfsc)
@@ -230,27 +231,6 @@ export default {
            	//AFSC6
            	this.Dim[5] = this.Dim[4];
             this.Group[5] = this.Group[4];
-
-            /*
-            //AFSC3-AFSC6 NO LABELS
-            for (var i = 1;i<6;i++){
-                xes = Array(5-i).join("X")
-                this.Dim[i] = this.ndx.dimension((d)=> {
-                	var temp = d[this.dataVar].substring(0,2);
-                    return d[this.dataVar].substring(0,i+1) + xes + ' - ' + formats.AFSC2[temp];
-                });
-
-                this.Group[i] = this.removeEmptyBins(this.Dim[i].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
-            }
-
-            //AFSC clear without any filters
-            
-            this.Dim[5] = this.ndx.dimension((d)=> {
-                        return d[this.dataVar];
-                }
-            );
-            this.Group[5] = this.removeEmptyBins(this.Dim[6].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
-            */
         },
         resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
