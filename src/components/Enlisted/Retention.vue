@@ -127,7 +127,8 @@
                                     @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
                             <form class="form-inline">
-                                 <div class="form-group">
+                                 <div class="form-group ">
+
                                     <input type="text"  class="form-control" id="searchMajcom" v-model="searchMajcom" placeholder="Enter MAJCOM" @keydown.enter.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">
                                     <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
                                  </div>
@@ -492,17 +493,32 @@
 
 <style src="../../../node_modules/dc/dc.css">
 </style>
-<style>
+<style scoped>
 /* need to make this scoped */
-.dc-select-menu{
-    display:none;
-}
+
 .custom-control.custom-radio{
     padding-left:20px;
     padding-right:10px;
     margin-right: 0;
     cursor:pointer;
 }
+
+input[type="text"].form-control{
+    color:black;
+    padding:5px;
+    border-radius: 5px;
+    position: relative;
+    top: 15px;
+    transform: translateY(-50%);
+    margin-bottom: 0px;
+    box-sizing: border-box;
+    background-color:rgba(222, 224, 226, 0.4);
+}
+
+.form-group{
+    align-content: center;
+}
+
 .fade-enter-active {
     transition: all 0.5s;
 }

@@ -317,7 +317,17 @@ export default {
             }
         });
 
-    	
+        /*
+        afscGraph.on('pretransition', (chart)=> {
+            chart.selectAll('.row').each(function(d){
+                console.log(d)
+            })
+    	    chart.selectAll('g .row').on("click",function(d){
+                console.log(d.width)
+            })
+        })
+        */
+        
         dc.renderAll()
         dc.redrawAll()
 	}
@@ -327,6 +337,10 @@ export default {
 </script>
 
 <style scoped>
+    #dc-afsc-select >>> .dc-select-menu{
+        display:none;
+    }
+
 	#dc-afsc-select{
 		padding-left: 0;
 	}

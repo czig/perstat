@@ -459,7 +459,12 @@ div[id*="-barchart"] .x.axis text{
 div[id*="-rowchart"] g.row text{
     fill: black;
 }
-
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
 .fade-enter-active {
     transition: all 0.5s;
 }
