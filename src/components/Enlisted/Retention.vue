@@ -126,10 +126,16 @@
                                     style="display: none"
                                     @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
-                            <form class="form-inline">
-                                 <div class="form-group ">
 
-                                    <input type="text"  class="form-control" id="searchMajcom" v-model="searchMajcom" placeholder="Enter MAJCOM" @keydown.enter.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">
+                            <form class="form-inline">
+                                 <div id="maj" class="form-group">
+                                        <searchBox
+                                            v-model:value="searchMajcom"
+                                            label="Search MAJCOM"
+                                            @sub="submit(searchMajcom,'dc-majcom-barchart')"
+                                        ></searchBox>
+                                  
+                                   
                                     <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
                                  </div>
                             </form>
@@ -148,7 +154,13 @@
                             </h3>
                          <form class="form-inline">
                                  <div class="form-group">
-                                    <input type="text" class="form-control" id="searchBase" v-model="searchBase" placeholder="Enter Installation" @keydown.enter.stop.prevent="submit(searchBase,'dc-base-barchart')">
+
+                                    <searchBox
+                                            v-model:value="searchBase"
+                                            label="Search Installation"
+                                            @sub="submit(searchBase,'dc-base-barchart')"
+                                    ></searchBox>
+
                                     <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
                                  </div>
                         </form>
@@ -167,6 +179,7 @@
     import afsc from '@/components/afsc'
     import { store } from '@/store/store'
     import Loader from '@/components/Loader'
+    import searchBox from '@/components/searchBox'
 
 	export default {
         data() {
@@ -181,7 +194,8 @@
         },
         components:{
             'afsc': afsc,
-            'loader': Loader
+            'loader': Loader,
+            'searchBox': searchBox,
         },
         computed: {
           ndx: function(){
@@ -501,18 +515,6 @@
     padding-right:10px;
     margin-right: 0;
     cursor:pointer;
-}
-
-input[type="text"].form-control{
-    color:black;
-    padding:5px;
-    border-radius: 5px;
-    position: relative;
-    top: 15px;
-    transform: translateY(-50%);
-    margin-bottom: 0px;
-    box-sizing: border-box;
-    background-color:rgba(222, 224, 226, 0.4);
 }
 
 .form-group{

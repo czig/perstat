@@ -308,7 +308,9 @@ export default {
             		return d.value;	
                 else return d.value[this.selected];
             })
-            //.fixedBarHeight(38)
+
+        //afscGraph.transitionDuration(1500)
+                 //.fixedBarHeight(38)
         //On Filter change Dim/Group from Vue Method
         afscGraph.on('filtered', (chart,filter)=> {
         	if (filter && (!this.Freeze)){
@@ -319,15 +321,16 @@ export default {
 
         /*
         afscGraph.on('pretransition', (chart)=> {
-            chart.selectAll('.row').each(function(d){
-                console.log(d)
+            var rowData=[];
+            chart.select('svg').selectAll('.row rect').each(function(d){
+                rowData.push(d);
             })
     	    chart.selectAll('g .row').on("click",function(d){
-                console.log(d.width)
+                console.log(rowData)
             })
         })
-        */
-        
+        */  
+
         dc.renderAll()
         dc.redrawAll()
 	}
