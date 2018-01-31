@@ -126,20 +126,12 @@
                                     style="display: none"
                                     @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
-
-                            <form class="form-inline">
-                                 <div id="maj" class="form-group">
-                                        <searchBox
-                                            v-model:value="searchMajcom"
-                                            label="Search MAJCOM"
-                                            @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                        ></searchBox>
-                                  
-                                   
-                                    <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
-                                 </div>
-                            </form>
-                            
+                            <searchBox
+                                v-model:value="searchMajcom"
+                                label="Search MAJCOM"
+                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
+                                button="true"
+                            ></searchBox>
                         </div>
                     </div>
                 </div>
@@ -152,18 +144,13 @@
                                     style="display: none"
                                     @click="searchBase='';resetChart('dc-base-barchart')">Reset</button>
                             </h3>
-                         <form class="form-inline">
-                                 <div class="form-group">
-
-                                    <searchBox
-                                            v-model:value="searchBase"
-                                            label="Search Installation"
-                                            @sub="submit(searchBase,'dc-base-barchart')"
-                                    ></searchBox>
-
-                                    <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
-                                 </div>
-                        </form>
+                            <searchBox
+                                v-model:value="searchBase"
+                                label="Search Installation"
+                                @sub="submit(searchBase,'dc-base-barchart')"
+                                button="true"
+                                color="#2f9146"
+                            ></searchBox>
                         </div>
                     </div>
                 </div>

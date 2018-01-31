@@ -1,17 +1,39 @@
+
+<!--##########################################
+<searchBox
+    v-model:value="searchMajcom"
+    label="Search MAJCOM"
+    @sub="submit(searchMajcom,'dc-majcom-barchart')"
+    color="red"
+    button="true"
+    buttonLabel="Feeling Lucky"
+    btnColor="#5a95f5"
+></searchBox>
+
+TODO: Prevent typed text to overflow in the 'close-icon'
+###########################################-->
 <template>
-	<div style="position:relative">
-        <div class='searchTip'>
-            <span v-show="searchVar.length>0">
-                {{ label }}
-            </span>
-        </div>
-        <input type="text"  class="form-control" :id="searchVar" v-model="searchVar" :placeholder="label" > 
-        <div v-show="searchVar.length>0" 
-             class='searchRemove'
-             @click="searchVar=''">
-            <i class="close-icon"></i>
-        </div>
-    </div>
+	<form class="form-inline">
+        <div class="form-group">
+			<div style="position:relative">
+		        <div class='searchTip' :style="getColor">
+		            <span v-show="searchVar.length>0">
+		                {{ label }}
+		            </span>
+		        </div>
+		        <input type="text"  class="form-control" v-model="searchVar" :placeholder="label" @keydown.enter.stop.prevent="action"
+		        @focus="focus = true" @blur="focus = false" :style="[getShadow,getBorderBottom]"
+       			> 
+		        <div v-show="searchVar.length>0" 
+		             class='searchRemove'
+		             @click="searchVar=''">
+		            <i class="close-icon" @mouseenter="hover=true" @mouseleave="hover=false" :style="[getBackground, getIconShadow,]"></i>
+		        </div>
+		    </div>
+		    <button v-if="bIf" class="btn btn-primary btn-sm" @click="action" :style="getBackgroundColor"> {{ bLabel }} </button>
+    	</div>
+    </form>
+             
 </template>
 
 <script>
@@ -26,44 +48,88 @@ export default {
 			type: String,
             required: true
 		},
+		button:{
+			type: String,
+			required: false
+		},
+		buttonLabel:{
+			type: String,
+			required: false
+		},
+		color:{
+			type: String,
+			required: false
+		},
+		btnColor:{
+			type:String,
+			required: false
+		}
 	},
 	data(){
 		return {
-			searchVar:this.value
+			searchVar: this.value,
+			bLabel: this.buttonLabel ? this.buttonLabel : "Submit",
+			bIf: this.button ? true : false,
+			colorGiven: this.color ? this.color : "#4d8bf9",
+			buttonColor: this.btnColor ? this.btnColor : this.color,
+			hover: false,
+			focus: false,
+		}
+	},
+	computed:{
+		getColor(){
+			return {
+				color: this.colorGiven
+			}
+		},
+		getBackgroundColor(){
+			return {
+				'background-color': this.buttonColor + ' !important'
+			}
+		},
+		getBackground(){
+			return {
+				background: '-webkit-linear-gradient(-45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' +  this.colorGiven + ' 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' + this.colorGiven + ' 56%,transparent 56%, transparent 100%)'
+			}
+		},
+		getIconShadow(){
+			if (this.hover)
+				return {
+					'box-shadow': '0px 0px 5px 3px ' + this.colorGiven,
+				}
+			else return {}
+		},
+		getShadow(){
+			if (this.focus)
+				return {
+					'box-shadow': '0 1px 0 0 ' + this.colorGiven,
+				}
+			else return {}
+		},
+		getBorderBottom(){
+			if (this.focus)
+				return {
+					'border-bottom': '2px solid ' + this.colorGiven,
+				}
+			else return {}
 		}
 	},
 	watch: {
 	    searchVar(val) {
-	      this.$emit('input', val);
+	      	//Update Parent
+	      	this.$emit('input', val);
 	    },
 	    value(val){
+	    	//Update this from Parent
 	    	this.searchVar = val;
-	    }
+	    },
 	},
 	methods:{
 		action(){
-			this.$emit('sub', true);
+			//tell Parent we want to submit input field
+			this.$emit('sub');
 		},
-		submit: (text,id) => {
-	        dc.chartRegistry.list().filter(chart=>{
-	            return chart.anchorName() == id 
-	        }).forEach(chart=>{
-	            var mainArray = []
-	            chart.dimension().group().all().forEach((d) => {
-	                mainArray.push(String(d.key))
-	            })
-	            var filterArray = mainArray.filter((d) => {
-	                var element = d.toUpperCase() 
-	                return element.indexOf(text.toUpperCase()) !== -1
-	            })
-	            chart.filter(null)
-	            if (filterArray.length != mainArray.length) {
-	                chart.filter([filterArray])
-	            }
-	        })
-	        dc.redrawAll()
-	    },
-	}
+	},
 }	
 
 </script>
@@ -74,9 +140,10 @@ export default {
     position: absolute;
     top: -10px;
     left: 0;
-    color:blue;
+    //color:blue;
     padding-left: 5px;
     font-size: 10px;
+    font-weight:bold;
     height: 10px;
 }
 
@@ -90,7 +157,7 @@ export default {
   //border-style: solid;
   border-color:transparent;
   border-radius:100%;
-  background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, blue 46%,  blue 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, blue 46%,  blue 56%,transparent 56%, transparent 100%);
+  //background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, blue 46%,  blue 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, blue 46%,  blue 56%,transparent 56%, transparent 100%);
   background-color:transparent;
   //box-shadow:0px 0px 5px 2px rgba(0,0,0,0.5);
   transition: all 0.3s ease;
@@ -99,7 +166,7 @@ export default {
 .close-icon:hover{
     border-width:3px;
     //border-style: solid;
-    box-shadow:0px 0px 5px 2px rgba(0,0,255,0.5);
+    //box-shadow:0px 0px 5px 2px blue;
     background-color:white;
 }
 
@@ -126,5 +193,4 @@ input[type="text"].form-control{
     box-sizing: border-box;
     background-color:rgba(222, 224, 226, 0.4);
 }
-
 </style>
