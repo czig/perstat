@@ -16,9 +16,9 @@
                         <h4 class="pl-3">AFPC's Personnel Statistics
                             <br>
                             <br>
+                            <h6>The purpose is to drive internal AFPC performance and awareness, and to provide the field data and education.</h6>
                             <h6>Click the links in the navigation bar above or the tiles below to see the respective statistics!</h6>
                             <h6>Each page contains "interactive" charts that you may use to display and filter data.</h6>
-                            <h6>The AD Manning, Officer, and Enlisted pages are complete, but the remaining six are in development.</h6>
                         </h4>
                     </div>
                 </div>

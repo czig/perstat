@@ -13,9 +13,11 @@
 TODO: Prevent typed text to overflow in the 'close-icon'
 ###########################################-->
 <template>
-	<form class="form-inline">
-        <div class="form-group">
-			<div style="position:relative">
+<div class="row" style="margin-top:13px">
+	<div :class="'col-' + size">
+		<div class="md-form">
+			<div  style="position:relative;top: 10px;">
+				
 		        <div class='searchTip' :style="getColor">
 		            <span v-show="searchVar.length>0">
 		                {{ label }}
@@ -23,23 +25,30 @@ TODO: Prevent typed text to overflow in the 'close-icon'
 		        </div>
 		        <input type="text"  class="form-control" v-model="searchVar" :placeholder="label" @keydown.enter.stop.prevent="action"
 		        @focus="focus = true" @blur="focus = false" :style="[getShadow,getBorderBottom]"
-       			> 
+	   			> 
 		        <div v-show="searchVar.length>0" 
 		             class='searchRemove'
 		             @click="searchVar=''">
 		            <i class="close-icon" @mouseenter="hover=true" @mouseleave="hover=false" :style="[getBackground, getIconShadow,]"></i>
 		        </div>
+		       
 		    </div>
-		    <button v-if="bIf" class="btn btn-primary btn-sm" @click="action" :style="getBackgroundColor"> {{ bLabel }} </button>
-    	</div>
-    </form>
-             
+		</div>
+	</div>
+	<div class="col-auto" style="top:-3px">
+		<button v-if="bIf" class="btn btn-primary btn-sm" @click="action" :style="getBackgroundColor"> {{ bLabel }} </button>
+	</div>
+</div>
 </template>
 
 <script>
 
 export default {
 	props:{
+		size:{
+			type: String,
+			required: true
+		},
 		value: {
 			type: String,
             required: true
@@ -138,7 +147,7 @@ export default {
 
 .searchTip{
     position: absolute;
-    top: -10px;
+    top: -85%;
     left: 0;
     //color:blue;
     padding-left: 5px;
@@ -146,7 +155,6 @@ export default {
     font-weight:bold;
     height: 10px;
 }
-
 .close-icon
 {
   display:block;
@@ -162,18 +170,16 @@ export default {
   //box-shadow:0px 0px 5px 2px rgba(0,0,0,0.5);
   transition: all 0.3s ease;
 }
-
 .close-icon:hover{
     border-width:3px;
     //border-style: solid;
     //box-shadow:0px 0px 5px 2px blue;
     background-color:white;
 }
-
 .searchRemove{
     position: absolute;
-    top: 10px;
-    right: 0px;
+    top: -30%;
+    right: 0;
     color: black;
     padding-left: 5px;
     //font-size: 10px;
@@ -181,16 +187,22 @@ export default {
     width: 30px;
     cursor:pointer;
 }
-
 input[type="text"].form-control{
     color:black;
     padding:5px;
     border-radius: 5px;
     position: relative;
-    top: 15px;
     transform: translateY(-50%);
     margin-bottom: 0px;
     box-sizing: border-box;
     background-color:rgba(222, 224, 226, 0.4);
 }
+.md-form{
+	margin-bottom: 0;
+}
+button.btn.btn-primary.btn-sm {
+	margin: 0;
+	padding: .5rem 1.5rem;
+}
+
 </style>

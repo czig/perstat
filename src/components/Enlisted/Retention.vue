@@ -42,6 +42,7 @@
                             </label>
                        
                     </div>
+                    
                     <div class="col-auto">
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
@@ -69,6 +70,10 @@
                         Keep Rate:
                         <span id="kr"></span>
                     </div>
+                    <!-- div class="col text-right" style="margin-right:5px">
+                        As of Date: 
+                        <span style="font-weight:bold"> {{ asDate }} </span>
+                    </div -->
                 </div>
                 <div class="row">
                     <div id="year" class="col-3">
@@ -126,12 +131,17 @@
                                     style="display: none"
                                     @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
+                            
                             <searchBox
                                 v-model:value="searchMajcom"
+                                size="3"
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
                                 button="true"
+                              
+                        
                             ></searchBox>
+                           
                         </div>
                     </div>
                 </div>
@@ -146,6 +156,7 @@
                             </h3>
                             <searchBox
                                 v-model:value="searchBase"
+                                size="3"
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
@@ -176,7 +187,8 @@
                 searchMajcom: "",
                 searchBase: "",
                 startAfsc:false,
-                loaded: false
+                loaded: false,
+                asDate: 'Undetermined',
             }
         },
         components:{
@@ -295,6 +307,8 @@
             //TEST AXIOS CALL:
             axios.post(axios_url_enl_ret).then(response => {
                 var axiosData = response.data.data
+                console.log(response.data)
+                store.state.asDate = response.data.asofdate
                 var objData = makeObject(axiosData)
                 this.data = objData
                 this.loaded = true
@@ -485,6 +499,7 @@
         beforeDestroy() {
             console.log("beforeDestroy")
             dc.chartRegistry.clear()
+            store.state.asDate = 'Undetermined'
         },
         destroyed() {
             console.log("destroyed")
