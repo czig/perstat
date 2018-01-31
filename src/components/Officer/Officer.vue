@@ -2,6 +2,10 @@
     <div class="container">
         <div class="row">
             <h1 class="col">Officer</h1>
+            <div class="col-4 text-right" style="margin-top:15px;">
+                        Data as of: 
+                        <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
+            </div>
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -20,11 +24,18 @@
 <script>
 import OfficerManning from '@/components/Officer/OfficerManning'
 import OfficerPromo from '@/components/Officer/OfficerPromo'
+import { store } from '@/store/store'
+
 export default {
     data() {
         return {
            dynamicComponent: "off-manning" 
         }
+    },
+    computed:{
+        asDate: function(){
+            return store.state.asDate;
+        },
     },
     components: {
         'off-manning': OfficerManning,

@@ -138,8 +138,6 @@
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
                                 button="true"
-                              
-                        
                             ></searchBox>
                            
                         </div>
@@ -308,7 +306,7 @@
             axios.post(axios_url_enl_ret).then(response => {
                 var axiosData = response.data.data
                 console.log(response.data)
-                store.state.asDate = response.data.asofdate
+                store.state.asDate = response.data.ASOFDATE
                 var objData = makeObject(axiosData)
                 this.data = objData
                 this.loaded = true
@@ -386,6 +384,7 @@
                     })
                 
                 //YEAR
+                d3.selectAll("#row1")
                 var yearConfig = {};
                 yearConfig.id = 'year';
                 yearConfig.dim = this.ndx.dimension(function (d) {

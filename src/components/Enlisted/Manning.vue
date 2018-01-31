@@ -62,12 +62,13 @@
                                     style="display: none"
                                     @click="resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
-                                    <button class="btn btn-primary btn-sm" @click="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
-                                </div>
-                            </form>
+                            <searchBox
+                                v-model:value="searchMajcom"
+                                size="3"
+                                label="Search MAJCOM"
+                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
+                                button="true"
+                            ></searchBox>
                         </div>
                     </div>
                 </div>
@@ -102,12 +103,19 @@
                                     style="display: none"
                                     @click="resetChart('dc-base-barchart')">Reset</button>
                             </h3>
-                            <form class="form-inline">
+                            <searchBox
+                                v-model:value="searchBase"
+                                size="3"
+                                label="Search Installation"
+                                @sub="submit(searchBase,'dc-base-barchart')"
+                                button="true"
+                            ></searchBox>
+                            <!-- <form class="form-inline">
                                 <div class="form-group">
                                     <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
                                     <button class="btn btn-primary btn-sm" @click="submit(searchBase,'dc-base-barchart')">Submit</button>
                                 </div>
-                            </form>
+                            </form> -->
                         </div>
                     </div>
                 </div>
@@ -121,6 +129,8 @@ import dchelpers from '@/dchelpers'
 import axios from 'axios'
 import formats from '@/store/format'
 import Loader from '@/components/Loader'
+import { store } from '@/store/store'
+import searchBox from '@/components/searchBox'
 
     export default {
         data() {
@@ -193,7 +203,8 @@ import Loader from '@/components/Loader'
           }
         },
         components: {
-            'loader': Loader   
+            'loader': Loader,
+            searchBox, 
         },
         created: function(){
           console.log('created')
@@ -203,20 +214,9 @@ import Loader from '@/components/Loader'
         mounted() {
             console.log('mounted')
 
-            //axios request - can change to a get request and change to the "get" endpoint to see a get request
-            
-            //PROD AXIOS CALL:  
-            /*
-                var querystring = require('querystring');
-                const formData = {
-                    _PROGRAM:"/REN - Dashboard Home V1/makeHTML_collab",
-                    nPage:"off"
-                }
-                var myData = axios.post('', querystring.stringify(formData)).then(response => {
-            */
-            
             //TEST AXIOS CALL:
             axios.post(axios_url_enl_man).then(response => {
+                store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
@@ -427,6 +427,7 @@ import Loader from '@/components/Loader'
         beforeDestroy() {
             console.log("beforeDestroy")
             dc.chartRegistry.clear()
+            store.state.asDate = 'Undetermined'
         },
         destroyed() {
             console.log("destroyed")

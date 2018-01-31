@@ -119,6 +119,7 @@ import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
+import { store } from '@/store/store'
 
     export default {
         data() {
@@ -201,21 +202,10 @@ import Loader from '@/components/Loader'
         mounted() {
             console.log('mounted')
 
-            //axios request - can change to a get request and change to the "get" endpoint to see a get request
-            
-            //PROD AXIOS CALL:  
-            /*
-                var querystring = require('querystring');
-                const formData = {
-                    _PROGRAM:"/REN - Dashboard Home V1/makeHTML_collab",
-                    nPage:"off"
-                }
-                var myData = axios.post('', querystring.stringify(formData)).then(response => {
-            */
-
             
             //TEST AXIOS CALL:
             axios.post(axios_url_off_pro).then(response => {
+                store.state.asDate = response.data.ASOFDATE
                 var promoData = response.data.data
                 this.data = promoData
                 this.loaded = true
@@ -485,6 +475,7 @@ import Loader from '@/components/Loader'
         beforeDestroy() {
             console.log("beforeDestroy")
             dc.chartRegistry.clear()
+            store.state.asDate = 'Undetermined'
         },
         destroyed() {
             console.log("destroyed")

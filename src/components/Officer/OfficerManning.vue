@@ -64,12 +64,19 @@
                             style="display: none"
                             @click="resetChart('dc-majcom-barchart')">Reset</button>
                     </h3>
-                    <form class="form-inline">
+                    <searchBox
+                        v-model:value="searchMajcom"
+                        size="3"
+                        label="Search MAJCOM"
+                        @sub="submit(searchMajcom,'dc-majcom-barchart')"
+                        button="true"
+                    ></searchBox>
+                    <!-- <form class="form-inline">
                         <div class="form-group">
                             <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
                             <button class="btn btn-primary btn-sm" @click.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
                         </div>
-                    </form>
+                    </form> -->
                     <!--<div id="app" class="container">-->
                             <!--<autocomplete :suggestions="suggestions" v-model="searchMajcom"></autocomplete>-->
                     <!--</div>-->
@@ -107,12 +114,19 @@
                             style="display: none"
                             @click="resetChart('dc-base-barchart')">Reset</button>
                     </h3>
-                    <form class="form-inline">
+                    <searchBox
+                        v-model:value="searchBase"
+                        size="3"
+                        label="Search Installation"
+                        @sub="submit(searchBase,'dc-base-barchart')"
+                        button="true"
+                    ></searchBox>
+                    <!-- <form class="form-inline">
                         <div class="form-group">
                             <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
                             <button class="btn btn-primary btn-sm" @click.stop.prevent="submit(searchBase,'dc-base-barchart')">Submit</button>
                         </div>
-                    </form>
+                    </form> -->
                 </div>
             </div>
         </div>
@@ -127,6 +141,8 @@ import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
+import { store } from '@/store/store'
+import searchBox from '@/components/searchBox'
 
     export default {
         data() {
@@ -200,7 +216,8 @@ import Loader from '@/components/Loader'
         },
         components: {
             'autocomplete': AutoComplete,
-            'loader': Loader
+            'loader': Loader,
+            searchBox,
         },
         created: function(){
           console.log('created')
@@ -224,6 +241,7 @@ import Loader from '@/components/Loader'
                         
             //TEST AXIOS CALL:
             axios.post(axios_url_off_man).then(response => {
+                store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
@@ -441,6 +459,7 @@ import Loader from '@/components/Loader'
         beforeDestroy() {
             console.log("beforeDestroy")
             dc.chartRegistry.clear()
+            store.state.asDate = 'Undetermined'
         },
         destroyed() {
             console.log("destroyed")

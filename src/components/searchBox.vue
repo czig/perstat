@@ -3,6 +3,7 @@
 <searchBox
     v-model:value="searchMajcom"
     label="Search MAJCOM"
+    size="3"
     @sub="submit(searchMajcom,'dc-majcom-barchart')"
     color="red"
     button="true"
@@ -97,9 +98,13 @@ export default {
 			}
 		},
 		getBackground(){
-			return {
+			if (this.msieversion())
+				return {
+				background: '-ms-linear-gradient(-45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' +  this.colorGiven + ' 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' + this.colorGiven + ' 56%,transparent 56%, transparent 100%)'
+				}
+			else return {
 				background: '-webkit-linear-gradient(-45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' +  this.colorGiven + ' 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' + this.colorGiven + ' 56%,transparent 56%, transparent 100%)'
-			}
+				}
 		},
 		getIconShadow(){
 			if (this.hover)
@@ -138,6 +143,16 @@ export default {
 			//tell Parent we want to submit input field
 			this.$emit('sub');
 		},
+		msieversion() {
+		    var ua = window.navigator.userAgent;
+		    var msie = ua.indexOf("MSIE ");
+		    var trident = ua.indexOf('Trident/');
+		    var edge = ua.indexOf('Edge/');
+
+		    if (msie > 0 || trident > 0 || edge > 0 || !! navigator.userAgent.match(/Trident.*rv\:11\./))  
+		       return true
+		    return false;
+		}
 	},
 }	
 
@@ -149,7 +164,6 @@ export default {
     position: absolute;
     top: -85%;
     left: 0;
-    //color:blue;
     padding-left: 5px;
     font-size: 10px;
     font-weight:bold;
@@ -161,20 +175,18 @@ export default {
   box-sizing:border-box;
   width:18px;
   height:18px;
-  //border-width:3px;
-  //border-style: solid;
+  border: none;
   border-color:transparent;
   border-radius:100%;
-  //background: -webkit-linear-gradient(-45deg, transparent 0%, transparent 46%, blue 46%,  blue 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%, blue 46%,  blue 56%,transparent 56%, transparent 100%);
   background-color:transparent;
   //box-shadow:0px 0px 5px 2px rgba(0,0,0,0.5);
   transition: all 0.3s ease;
 }
 .close-icon:hover{
-    border-width:3px;
+    //border-width:3px;
     //border-style: solid;
     //box-shadow:0px 0px 5px 2px blue;
-    background-color:white;
+    //background-color:white;
 }
 .searchRemove{
     position: absolute;
@@ -195,7 +207,8 @@ input[type="text"].form-control{
     transform: translateY(-50%);
     margin-bottom: 0px;
     box-sizing: border-box;
-    background-color:rgba(222, 224, 226, 0.4);
+    background-color:rgba(0, 0, 0, 0);
+    box-shadow:3px 3px 3px 3px #d6d6d6;
 }
 .md-form{
 	margin-bottom: 0;

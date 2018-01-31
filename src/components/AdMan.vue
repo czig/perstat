@@ -2,6 +2,10 @@
     <div class="container">
         <div class="row">
             <h1 class="col">AD Manning</h1>
+            <div class="col-4 text-right" style="margin-top:15px;">
+                        Data as of: 
+                        <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
+            </div>
         </div>
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
@@ -63,6 +67,13 @@
                                     style="display: none"
                                     @click="resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
+                            <searchBox
+                                v-model:value="searchMajcom"
+                                size="3"
+                                label="Search MAJCOM"
+                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
+                                button="true"
+                            ></searchBox>
                         </div>
                     </div>
                 </div>
@@ -98,11 +109,14 @@ import dchelpers from '@/dchelpers'
 import axios from 'axios'
 import formats from '@/store/format'
 import Loader from '@/components/Loader'
+import { store } from '@/store/store'
+import searchBox from '@/components/searchBox'
 
     export default {
         data() {
             return {
                 data: [],
+                searchMajcom: '',
                 selected: "percent",
                 loaded: false
             }
@@ -110,6 +124,9 @@ import Loader from '@/components/Loader'
         computed: {
           ndx: function(){
             return crossfilter(this.data)
+          },
+          asDate: function(){
+            return store.state.asDate;
           },
           allGroup: function(){
             return this.ndx.groupAll()
@@ -146,10 +163,30 @@ import Loader from '@/components/Loader'
             setTimeout(function() {
                 dc.redrawAll()
             },10)
+          },
+          submit: (text,id) => {
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id 
+            }).forEach(chart=>{
+                var mainArray = []
+                chart.dimension().group().all().forEach((d) => {
+                    mainArray.push(String(d.key))
+                })
+                var filterArray = mainArray.filter((d) => {
+                    var element = d.toUpperCase() 
+                    return element.indexOf(text.toUpperCase()) !== -1
+                })
+                chart.filter(null)
+                if (filterArray.length != mainArray.length) {
+                    chart.filter([filterArray])
+                }
+            })
+            dc.redrawAll()
           }
         },
         components: {
-            'loader': Loader
+            'loader': Loader,
+            searchBox
         },
         created: function(){
           console.log('created')
@@ -157,23 +194,11 @@ import Loader from '@/components/Loader'
           //this.data = data
         },
         mounted() {
-            console.log('mounted')
-
-            //axios request - can change to a get request and change to the "get" endpoint to see a get request
-            
-            //PROD AXIOS CALL:  
-            /*
-                var querystring = require('querystring');
-                const formData = {
-                    _PROGRAM:"/REN - Dashboard Home V1/makeHTML_collab",
-                    nPage:"all"
-                }
-                var myData = axios.post('', querystring.stringify(formData)).then(response => {
-            */
-            
+            console.log('mounted')       
             //TEST AXIOS CALL:
             axios.post(axios_url_adman).then(response => {
                 //console.log(response)
+                store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)
                 this.data = objData
@@ -362,6 +387,7 @@ import Loader from '@/components/Loader'
         beforeDestroy() {
             console.log("beforeDestroy")
             dc.chartRegistry.clear()
+            store.state.asDate = 'Undetermined'
         },
         destroyed() {
             console.log("destroyed")
