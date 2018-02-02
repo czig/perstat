@@ -305,7 +305,6 @@
             //TEST AXIOS CALL:
             axios.post(axios_url_enl_ret).then(response => {
                 var axiosData = response.data.data
-                console.log(response.data)
                 store.state.asDate = response.data.ASOFDATE
                 var objData = makeObject(axiosData)
                 this.data = objData

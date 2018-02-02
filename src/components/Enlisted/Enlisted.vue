@@ -18,11 +18,11 @@
                     Retention
                 </a>
             </li>
-            <!--<li class="nav-item">-->
-                <!--<a class="nav-link" data-toggle="tab" @click="dynamicComponent='promotion'">-->
-                    <!--Promotion-->
-                <!--</a>-->
-            <!--</li>-->
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" @click="dynamicComponent='promotions'">
+                    Promotions
+                </a>
+            </li>
         </ul>
         <transition name="fade" mode="out-in">
             <component :is="dynamicComponent"></component>
@@ -33,6 +33,7 @@
 <script>
 import manning from '@/components/Enlisted/Manning'
 import retention from '@/components/Enlisted/Retention'
+import promotions from '@/components/Enlisted/EnlistedPromo'
 import { store } from '@/store/store'
 
     export default {
@@ -48,7 +49,8 @@ import { store } from '@/store/store'
         },
         components:{
             manning,
-            retention
+            retention,
+            promotions
         }
     }
 </script>
