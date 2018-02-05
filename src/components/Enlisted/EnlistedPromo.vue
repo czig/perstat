@@ -28,6 +28,18 @@
                         Promotion Rate: 
                         <span id="SelectsRate"></span>
                     </div>
+                    <div class="col-auto">
+                        Test Score (E5-E7 Eligibles): 
+                        <span id="testEligE57ND"></span>
+                    </div>
+                    <div class="col-auto">
+                        Test Score (E8-E9 Eligibles): 
+                        <span id="testEligE89ND"></span>
+                    </div>
+                    <div class="col-auto">
+                        Board Score (E8-E9 Eligibles): 
+                        <span id="brdEligND"></span>
+                    </div>
                 </div>
                 <div class="row">
                     <div id="grade" class="col-4">
@@ -40,9 +52,30 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="afsc" class="col-8">
-                    
-                    </div>
+                    <template class="AFSC-SECTION">
+                        <div  v-if="!startAfsc" class="col-6"> 
+                            <h3>
+                                AFSC 
+                                <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                                <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    >Reset</button>
+                            </h3>
+                        </div>
+                        <div v-else class="col-6">
+                            <afsc
+                                :ndx="ndx"
+                                :ylabel="ylabel"
+                                :selected="selected"
+                                :reduceAdd = "promoAdd"
+                                :reduceRemove = "promoRemove"
+                                :reduceInitial = "promoInitial"
+                                dataVar="ACA43"
+                            >
+                            </afsc>
+                        </div>
+                    </template>
                 </div>
                 <div class="row">
                     <div id="look" class="col-4">
@@ -74,7 +107,17 @@
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
-                                    @click="resetChart('dc-board-barchart')">Reset</button>
+                                    @click="resetChart('dc-testElig-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="brdElig" class="col-6">
+                        <div id="dc-brdElig-barchart">
+                            <h3>Board Score - Eligibles <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-brdElig-barchart')">Reset</button>
                             </h3>
                         </div>
                     </div>
@@ -102,6 +145,7 @@ import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
+import Afsc from '@/components/afsc'
 import { store } from '@/store/store'
 
     export default {
@@ -109,7 +153,8 @@ import { store } from '@/store/store'
             return {
                 data: [],
                 selected: "percent",
-                loaded: false 
+                startAfsc: false,
+                loaded: false
             }
         },
         computed: {
@@ -135,46 +180,103 @@ import { store } from '@/store/store'
           }
         },
         methods: {
-          resetAll: (event)=>{
-            dc.filterAll()
-            dc.redrawAll()
-          },
-          resetChart: (id)=>{
-            dc.chartRegistry.list().filter(chart=>{
-              return chart.anchorName() == id
-            }).forEach(chart=>{
-              chart.filterAll()
-            })
-            dc.redrawAll()
-          },
-          radioButton: () => {
-            setTimeout(function() {
-                dc.redrawAll()
-            },10)
-          },
-          submit: (text,id) => {
-            dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == id 
-            }).forEach(chart=>{
-                var mainArray = []
-                chart.dimension().group().all().forEach((d) => {
-                    mainArray.push(String(d.key))
-                })
-                var filterArray = mainArray.filter((d) => {
-                    var element = d.toUpperCase() 
-                    return element.indexOf(text.toUpperCase()) !== -1
-                })
-                chart.filter(null)
-                if (filterArray.length != mainArray.length) {
-                    chart.filter([filterArray])
+            resetAll: (event)=>{
+              dc.filterAll()
+              dc.redrawAll()
+            },
+            resetChart: (id)=>{
+              dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id
+              }).forEach(chart=>{
+                chart.filterAll()
+              })
+              dc.redrawAll()
+            },
+            radioButton: () => {
+              setTimeout(function() {
+                  dc.redrawAll()
+              },10)
+            },
+            submit: (text,id) => {
+              dc.chartRegistry.list().filter(chart=>{
+                  return chart.anchorName() == id 
+              }).forEach(chart=>{
+                  var mainArray = []
+                  chart.dimension().group().all().forEach((d) => {
+                      mainArray.push(String(d.key))
+                  })
+                  var filterArray = mainArray.filter((d) => {
+                      var element = d.toUpperCase() 
+                      return element.indexOf(text.toUpperCase()) !== -1
+                  })
+                  chart.filter(null)
+                  if (filterArray.length != mainArray.length) {
+                      chart.filter([filterArray])
+                  }
+              })
+              dc.redrawAll()
+            },
+            //reduce functions
+            promoAdd: (p,v) => {
+                p.Eligible += +v.Eligible
+                p.Selects += +v.Selects
+                //if divide by 0, set to 0, and if NaN, set to zero
+                p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
+                //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
+                if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                    p.eligE57 += +v.Eligible 
+                    p.testEligWghtSumE57 += (v.Test_Sco_Eligible*v.Eligible)
+                } else {
+                    p.eligE89 += +v.Eligible 
+                    p.testEligWghtSumE89 += (v.Test_Sco_Eligible*v.Eligible)
+                    p.brdEligWghtSum += (v.Brd_Sco_Eligible*v.Eligible)
                 }
-            })
-            dc.redrawAll()
-          }
+                // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
+                p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
+                p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
+                p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
+                return p
+            },
+            promoRemove: (p,v) => {
+                p.Eligible -= +v.Eligible
+                p.Selects -= +v.Selects
+                //if divide by 0, set to 0, and if NaN, set to zero
+                p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
+                //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
+                if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                    p.eligE57 -= +v.Eligible 
+                    p.testEligWghtSumE57 -= (v.Test_Sco_Eligible*v.Eligible)
+                } else {
+                    p.eligE89 -= +v.Eligible 
+                    p.testEligWghtSumE89 -= (v.Test_Sco_Eligible*v.Eligible)
+                    p.brdEligWghtSum -= (v.Brd_Sco_Eligible*v.Eligible)
+                }
+                // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
+                p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
+                p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
+                p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
+                return p
+            },
+            promoInitial: () => {
+                return {
+                    Eligible: 0,
+                    Selects: 0,
+                    percent: 0,
+                    eligE57: 0,
+                    eligE89: 0,
+                    testEligWghtSumE57: 0,
+                    testEligWghtSumE89: 0,
+                    brdEligWghtSum: 0,
+                    testEligE57: 0,
+                    testEligE89: 0,
+                    brdElig: 0
+                }
+            }
         },
         components: {
             'autocomplete': AutoComplete,
-            'loader': Loader
+            'loader': Loader,
+            'afsc': Afsc
         },
         created: function(){
           console.log('created')
@@ -189,20 +291,11 @@ import { store } from '@/store/store'
             axios.post(axios_url_enl_promo).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var promoData = response.data.data
-                store.state.asDate = response.data.ASOFDATE
+                store.state.asDate = response.data.ASOFDATE //TODO: properly set with mutation
                 var objData = makeObject(promoData)
                 this.data = objData
-                console.log(JSON.stringify(this.data.filter(function(d) {return d.Prom_rec === 'NA'}), null, 2))
-                var Prom_freq = {}
-                this.data.forEach((d)=> {
-                    if (Prom_freq[d.Prom_rec + d.board.substr(6,8)] !== undefined)  {
-                        Prom_freq[d.Prom_rec + d.board.substr(6,8)] += 1
-                    } else {
-                        Prom_freq[d.Prom_rec + d.board.substr(6,8)] = 1
-                    }
-                })
-                console.log(Prom_freq)
                 this.loaded = true
+                this.startAfsc = true
                 renderCharts()
             }).catch(console.error)
 
@@ -230,17 +323,43 @@ import { store } from '@/store/store'
 
                 //reduce functions
                 function promoAdd(p,v) {
-                    p.Eligible = p.Eligible + +v.Eligible
-                    p.Selects = p.Selects + +v.Selects
+                    p.Eligible += +v.Eligible
+                    p.Selects += +v.Selects
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
+                    //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
+                    if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                        p.eligE57 += +v.Eligible 
+                        p.testEligWghtSumE57 += (v.Test_Sco_Eligible*v.Eligible)
+                    } else {
+                        p.eligE89 += +v.Eligible 
+                        p.testEligWghtSumE89 += (v.Test_Sco_Eligible*v.Eligible)
+                        p.brdEligWghtSum += (v.Brd_Sco_Eligible*v.Eligible)
+                    }
+                    // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
+                    p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
+                    p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
+                    p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
                     return p
                 }
                 function promoRemove(p,v) {
-                    p.Eligible = p.Eligible - +v.Eligible
-                    p.Selects = p.Selects - +v.Selects
+                    p.Eligible -= +v.Eligible
+                    p.Selects -= +v.Selects
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
+                    //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
+                    if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                        p.eligE57 -= +v.Eligible 
+                        p.testEligWghtSumE57 -= (v.Test_Sco_Eligible*v.Eligible)
+                    } else {
+                        p.eligE89 -= +v.Eligible 
+                        p.testEligWghtSumE89 -= (v.Test_Sco_Eligible*v.Eligible)
+                        p.brdEligWghtSum -= (v.Brd_Sco_Eligible*v.Eligible)
+                    }
+                    // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
+                    p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
+                    p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
+                    p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
                     return p
                 }
                 function promoInitial() {
@@ -248,6 +367,14 @@ import { store } from '@/store/store'
                         Eligible: 0,
                         Selects: 0,
                         percent: 0,
+                        eligE57: 0,
+                        eligE89: 0,
+                        testEligWghtSumE57: 0,
+                        testEligWghtSumE89: 0,
+                        brdEligWghtSum: 0,
+                        testEligE57: 0,
+                        testEligE89: 0,
+                        brdElig: 0
                     }
                 }
                 //remove empty function (es6 syntax to keep correct scope)
@@ -283,6 +410,27 @@ import { store } from '@/store/store'
                     .valueAccessor(function(d) {return d.percent;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
+                    })
+                var testEligE57ND = dc.numberDisplay("#testEligE57ND")
+                testEligE57ND.group(numberGroup)
+                    .formatNumber(d3.format("f"))
+                    .valueAccessor(function(d) {return d.testEligE57;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>",
+                    })
+                var testEligE89ND = dc.numberDisplay("#testEligE89ND")
+                testEligE89ND.group(numberGroup)
+                    .formatNumber(d3.format("f"))
+                    .valueAccessor(function(d) {return d.testEligE89;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>",
+                    })
+                var brdEligND = dc.numberDisplay("#brdEligND")
+                brdEligND.group(numberGroup)
+                    .formatNumber(d3.format("f"))
+                    .valueAccessor(function(d) {return d.brdElig;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>",
                     })
 
 
@@ -363,12 +511,28 @@ import { store } from '@/store/store'
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
-                    .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', function(chart) {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
+
+                //board score for eligibles
+                var brdEligConfig = {};
+                brdEligConfig.id = 'brdElig';
+                brdEligConfig.dim = this.ndx.dimension(function (d) {
+                    return d.Brd_Sco_Eligible;
+                })
+                brdEligConfig.group = brdEligConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial) 
+                brdEligConfig.xUnits =  5
+                var brdEligMax = d3.max(this.data, function(d) {return d.Brd_Sco_Eligible;}) + brdEligConfig.xUnits 
+                var brdEligMin = d3.min(this.data, function(d) {return d.Brd_Sco_Eligible || Infinity;}) - brdEligConfig.xUnits // return min value that isn't 0
+                brdEligConfig.x = d3.scale.linear().domain([brdEligMin,brdEligMax])
+                brdEligConfig.minHeight = 250
+                brdEligConfig.aspectRatio = 5
+                brdEligConfig.margins = {top: 10, left: 40, right: 30, bottom: 60}
+                brdEligConfig.colors = ["#1976d2"] 
+                var brdEligChart = dchelpers.getBrushBarChart(brdEligConfig)
+                brdEligChart
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
                     })
+                    .zoomOutRestrict(false)
 
 
                 //board
@@ -395,6 +559,7 @@ import { store } from '@/store/store'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
