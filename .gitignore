@@ -1,5 +1,6 @@
 .DS_Store
 node_modules/
+src/assets/data
 dist/
 npm-debug.log*
 yarn-debug.log*
