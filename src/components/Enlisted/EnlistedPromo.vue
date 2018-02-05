@@ -28,6 +28,8 @@
                         Promotion Rate: 
                         <span id="SelectsRate"></span>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-auto">
                         Test Score (E5-E7 Eligibles): 
                         <span id="testEligE57ND"></span>
@@ -42,85 +44,73 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="grade" class="col-4">
-                        <div id="dc-grade-rowchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-grade-rowchart')">Reset</button>
-                            </h3>
+                    <div class="col-4">
+                        <div class="row">
+                            <div id="grade" class="col-12">
+                                <div id="dc-grade-rowchart">
+                                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-grade-rowchart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div id="look" class="col-12">
+                                <div id="dc-look-rowchart">
+                                    <h3>Look <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-look-rowchart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <template class="AFSC-SECTION">
-                        <div  v-if="!startAfsc" class="col-6"> 
-                            <h3>
-                                AFSC 
-                                <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
-                                <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="visibility: hidden"
-                                    >Reset</button>
-                            </h3>
+                    <div class="col-8">
+                        <div class="row">
+                            <template class="AFSC-SECTION col-12">
+                                <div v-if="!startAfsc" class="col-12"> 
+                                    <h3>
+                                        AFSC 
+                                        <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                                        <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="visibility: hidden"
+                                            >Reset</button>
+                                    </h3>
+                                </div>
+                                <div v-else class="col-12">
+                                    <afsc
+                                        :ndx="ndx"
+                                        :ylabel="ylabel"
+                                        :selected="selected"
+                                        :reduceAdd = "promoAdd"
+                                        :reduceRemove = "promoRemove"
+                                        :reduceInitial = "promoInitial"
+                                        dataVar="ACA43"
+                                        :minHeight="200"
+                                        :aspectRatio="3"
+                                    >
+                                    </afsc>
+                                </div>
+                            </template>
+                            <div id="recommend" class="col-12">
+                                <div id="dc-recommend-rowchart">
+                                    <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                        <transition>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
-                        <div v-else class="col-6">
-                            <afsc
-                                :ndx="ndx"
-                                :ylabel="ylabel"
-                                :selected="selected"
-                                :reduceAdd = "promoAdd"
-                                :reduceRemove = "promoRemove"
-                                :reduceInitial = "promoInitial"
-                                dataVar="ACA43"
-                            >
-                            </afsc>
-                        </div>
-                    </template>
+                    </div>
                 </div>
                 <div class="row">
-                    <div id="look" class="col-4">
-                        <div id="dc-look-rowchart">
-                            <h3>Look <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-look-rowchart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                    <div id="recommend" class="col-5">
-                        <div id="dc-recommend-rowchart">
-                            <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                                <transition>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div id="testElig" class="col-6">
-                        <div id="dc-testElig-barchart">
-                            <h3>Test Score - Eligibles <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-testElig-barchart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                    <div id="brdElig" class="col-6">
-                        <div id="dc-brdElig-barchart">
-                            <h3>Board Score - Eligibles <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-brdElig-barchart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div id="board" class="col-12">
@@ -181,8 +171,9 @@ import { store } from '@/store/store'
         },
         methods: {
             resetAll: (event)=>{
+              store.state.resetAfsc = true;
               dc.filterAll()
-              dc.redrawAll()
+              //dc.redrawAll()
             },
             resetChart: (id)=>{
               dc.chartRegistry.list().filter(chart=>{
@@ -289,7 +280,6 @@ import { store } from '@/store/store'
             
             //TEST AXIOS CALL:
             axios.post(axios_url_enl_promo).then(response => {
-                store.state.asDate = response.data.ASOFDATE
                 var promoData = response.data.data
                 store.state.asDate = response.data.ASOFDATE //TODO: properly set with mutation
                 var objData = makeObject(promoData)
@@ -464,7 +454,7 @@ import { store } from '@/store/store'
                 })
                 lookConfig.group = lookConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 lookConfig.minHeight = 150 
-                lookConfig.aspectRatio = 3
+                lookConfig.aspectRatio = 2
                 lookConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 lookConfig.colors = d3.scale.category10().domain([100,0])
                 var lookChart = dchelpers.getRowChart(lookConfig)
@@ -481,7 +471,7 @@ import { store } from '@/store/store'
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 recommendConfig.minHeight = 150 
-                recommendConfig.aspectRatio = 3
+                recommendConfig.aspectRatio = 5
                 recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 recommendConfig.colors = d3.scale.ordinal().range(["#1a9850","#91cf60","#d9ef8b","#fee08b","#fc8d59","#d73027"])
                 var recommendChart = dchelpers.getRowChart(recommendConfig)
@@ -492,48 +482,6 @@ import { store } from '@/store/store'
                     .ordering(function(d) {
                         return formats.enlRecommendOrder[d.key]
                     })
-
-                //test score for eligibles
-                var testEligConfig = {};
-                testEligConfig.id = 'testElig';
-                testEligConfig.dim = this.ndx.dimension(function (d) {
-                    return d.Test_Sco_Eligible;
-                })
-                testEligConfig.group = testEligConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial) 
-                testEligConfig.x = d3.scale.linear().domain([0,200])
-                testEligConfig.xUnits = 10
-                testEligConfig.minHeight = 250
-                testEligConfig.aspectRatio = 5
-                testEligConfig.margins = {top: 10, left: 40, right: 30, bottom: 60}
-                testEligConfig.colors = ["#1976d2"] 
-                var testEligChart = dchelpers.getBrushBarChart(testEligConfig)
-                testEligChart
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-
-                //board score for eligibles
-                var brdEligConfig = {};
-                brdEligConfig.id = 'brdElig';
-                brdEligConfig.dim = this.ndx.dimension(function (d) {
-                    return d.Brd_Sco_Eligible;
-                })
-                brdEligConfig.group = brdEligConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial) 
-                brdEligConfig.xUnits =  5
-                var brdEligMax = d3.max(this.data, function(d) {return d.Brd_Sco_Eligible;}) + brdEligConfig.xUnits 
-                var brdEligMin = d3.min(this.data, function(d) {return d.Brd_Sco_Eligible || Infinity;}) - brdEligConfig.xUnits // return min value that isn't 0
-                brdEligConfig.x = d3.scale.linear().domain([brdEligMin,brdEligMax])
-                brdEligConfig.minHeight = 250
-                brdEligConfig.aspectRatio = 5
-                brdEligConfig.margins = {top: 10, left: 40, right: 30, bottom: 60}
-                brdEligConfig.colors = ["#1976d2"] 
-                var brdEligChart = dchelpers.getBrushBarChart(brdEligConfig)
-                brdEligChart
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .zoomOutRestrict(false)
-
 
                 //board
                 var boardConfig = {}

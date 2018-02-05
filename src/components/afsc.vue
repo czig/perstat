@@ -99,6 +99,14 @@ export default {
 			type:String,
 			required: false
 		},
+        minHeight: {
+            type: Number,
+            required: false
+        },
+        aspectRatio: {
+            type: Number,
+            required: false
+        }
 	},
 	data(){
 		return {
@@ -297,8 +305,12 @@ export default {
         afscConfig.id = 'afsc';
         afscConfig.dim = this.Dim[0];
         afscConfig.group = this.Group[0];
-        afscConfig.minHeight = 200 
-        afscConfig.aspectRatio = 1.8;
+        console.log('minheight:')
+        console.log(this.minHeight)
+        console.log('aspectration:')
+        console.log(this.aspectRatio)
+        afscConfig.minHeight = this.minHeight || 200 
+        afscConfig.aspectRatio = this.aspectRatio || 1.8;
         afscConfig.margins = {top: 0, left: 20, right: 30, bottom: 20}
         afscConfig.colors = d3.scale.category10()
         var afscGraph = dchelpers.getRowChart(afscConfig)

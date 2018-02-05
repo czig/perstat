@@ -76,28 +76,32 @@
                     </div -->
                 </div>
                 <div class="row">
-                    <div id="year" class="col-3">
-                        <div id="dc-year-rowchart">
-                            <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-year-rowchart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                    <div id="cat" class="col-3">
-                        <div id="dc-cat-rowchart">
-                            <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-cat-rowchart')">Reset</button>
-                            </h3>
+                    <div class="col-4">
+                        <div class="row">
+                            <div id="year" class="col-12">
+                                <div id="dc-year-rowchart">
+                                    <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-year-rowchart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div id="cat" class="col-12">
+                                <div id="dc-cat-rowchart">
+                                    <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-cat-rowchart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <template class="AFSC-SECTION">
-                        <div  v-if="!startAfsc" class="col-6"> 
+                        <div  v-if="!startAfsc" class="col-8"> 
                             <h3>
                                 AFSC 
                                 <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
@@ -107,7 +111,7 @@
                                     >Reset</button>
                             </h3>
                         </div>
-                        <div v-else class="col-6">
+                        <div v-else class="col-8">
                             <afsc
                                 :ndx="ndx"
                                 :ylabel="ylabel"
@@ -117,6 +121,8 @@
                                 :reduceInitial = "retentionInitial"
                                 dataVar="AFSC"
                                 removeBin = "I"
+                                :minHeight = "250"
+                                :aspectRatio = "2.5"
                             >
                             </afsc>
                         </div>
@@ -390,8 +396,8 @@
                     return "20" + d.FY;
                 })
                 yearConfig.group = yearConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                yearConfig.minHeight = 100 
-                yearConfig.aspectRatio = 2
+                yearConfig.minHeight = 80 
+                yearConfig.aspectRatio = 4 
                 yearConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 yearConfig.colors = d3.scale.category10()
                 var yearChart = dchelpers.getRowChart(yearConfig)
@@ -408,7 +414,7 @@
                 })
                 catConfig.group = catConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 catConfig.minHeight = 100 
-                catConfig.aspectRatio = 1.4
+                catConfig.aspectRatio = 3 
                 catConfig.margins = {top: 10, left: 40, right: 20, bottom: 20}
                 catConfig.colors = d3.scale.category10()
                 var catChart = dchelpers.getRowChart(catConfig)
