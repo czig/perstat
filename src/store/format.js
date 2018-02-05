@@ -1307,10 +1307,15 @@ export default {
         "33": "[31-33] AMN",
         "34": "SRA",
         "35": "SSG",
+        "E5": "SSG",
         "36": "TSG",
+        "E6": "TSG",
         "37": "MSG",
+        "E7": "MSG",
         "38": "SMS",
-        "39": "CMS"
+        "E8": "SMS",
+        "39": "CMS",
+        "E9": "CMS"
     }
     ,gradeOrder : {
 	    "COL": 6,
@@ -1374,4 +1379,21 @@ export default {
         "Not Complete": 1
 
 	},
+    enlRecommendFormat: {
+        "NR": "Not Recommended",
+        "NN": "Not Rated",
+        "NA": "N/A",
+        "PR": "Promote",
+        "MP": "Must Promote",
+        "PN": "Promote Now"
+    },
+    enlRecommendOrder: {
+        "Not Recommended": 5,
+        "Not Rated": 4,
+        "N/A": 3,
+        "Promote": 2,
+        "Must Promote": 1,
+        "Promote Now": 0
+    }
+
 }

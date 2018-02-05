@@ -121,7 +121,7 @@ export default {
 		getShadow(){
 			if (this.focus)
 				return {
-					'box-shadow': '1px 1px 1px 1px ' + this.colorGiven,
+					'box-shadow': '0 1px 0 ' + this.colorGiven + ',0px 2px 6px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.24)',
 				}
 			else return {}
 		},
@@ -213,8 +213,8 @@ input[type="text"].form-control{
     transform: translateY(-50%);
     margin-bottom: 0px;
     box-sizing: border-box;
-    background-color:rgba(0, 0, 0, 0);
-    box-shadow:2px 2px 3px 3px #d6d6d6;
+    background-color: #ffffff;
+    box-shadow:0px 1px 3px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.24);
 }
 
 .md-form{
