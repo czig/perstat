@@ -195,7 +195,8 @@ export default {
 	            return temp + xes + ' - ' + formats.AFSC1[temp];
 	        });
 
-            this.Group[0] = this.removeEmptyBins(this.Dim[0].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+            this.Group[0] = this.removeEmptyBins(this.Dim[0].group()
+                .reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial)); 
 
             //AFSC2 - With Labels
             xes = Array(4).join("X")
@@ -204,7 +205,8 @@ export default {
 	            return temp + xes + ' - ' + formats.AFSC2[temp];
 	        });
 
-            this.Group[1] = this.removeEmptyBins(this.Dim[1].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+            this.Group[1] = this.removeEmptyBins(this.Dim[1].group()
+                .reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
 			
 			//AFSC3 WITH LABELS
 			xes = Array(3).join("X")
@@ -213,7 +215,8 @@ export default {
 	            return temp + xes + ' - ' + formats.AFSC3[temp];
 	        });
 
-            this.Group[2] = this.removeEmptyBins(this.Dim[2].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+            this.Group[2] = this.removeEmptyBins(this.Dim[2].group()
+                .reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
 
             //AFSC4 WITH LABELS
             this.Dim[3] = this.Dim[2];
@@ -226,7 +229,8 @@ export default {
 	            return temp  + ' - ' + formats.AFSC6[temp];
 	        });
 
-            this.Group[4] = this.removeEmptyBins(this.Dim[4].group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+            this.Group[4] = this.removeEmptyBins(this.Dim[4].group()
+                .reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
 
            	//AFSC6
            	this.Dim[5] = this.Dim[4];
@@ -281,7 +285,8 @@ export default {
 			return d[this.dataVar];
 		})
 		//console.log(afscDim.group().top(Infinity))
-        var afscGrp = this.removeEmptyBins(afscDim.group().reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
+        var afscGrp = this.removeEmptyBins(afscDim.group()
+            .reduce(this.reduceAdd,this.reduceRemove,this.reduceInitial));
         var afscChart = dc.selectMenu('#dc-afsc-select');
         afscChart
                 .dimension(afscDim)
@@ -310,7 +315,7 @@ export default {
             })
 
         //afscGraph.transitionDuration(1500)
-                 //.fixedBarHeight(38)
+            //.fixedBarHeight(38)
         //On Filter change Dim/Group from Vue Method
         afscGraph.on('filtered', (chart,filter)=> {
         	if (filter && (!this.Freeze)){

@@ -18,21 +18,20 @@ TODO: Prevent typed text to overflow in the 'close-icon'
 	<div :class="'col-' + size">
 		<div class="md-form">
 			<div  style="position:relative;top: 10px;">
-				
 		        <div class='searchTip' :style="getColor">
 		            <span v-show="searchVar.length>0">
 		                {{ label }}
 		            </span>
 		        </div>
-		        <input type="text"  class="form-control" v-model="searchVar" :placeholder="label" @keydown.enter.stop.prevent="action"
-		        @focus="focus = true" @blur="focus = false" :style="[getShadow,getBorderBottom]"
-	   			> 
-		        <div v-show="searchVar.length>0" 
+		        <input 	type="text"  class="form-control" v-model="searchVar" :placeholder="label"
+										@keydown.enter.stop.prevent="action" @focus="focus = true" @blur="focus = false"
+										:style="[getShadow,getBorderBottom]">
+		        <div v-show="searchVar.length>0"
 		             class='searchRemove'
 		             @click="searchVar=''">
-		            <i class="close-icon" @mouseenter="hover=true" @mouseleave="hover=false" :style="[getBackground, getIconShadow,]"></i>
+		            <i 	class="close-icon" @mouseenter="hover=true" @mouseleave="hover=false"
+										:style="[getBackground, getIconShadow,]"></i>
 		        </div>
-		       
 		    </div>
 		</div>
 	</div>
@@ -100,10 +99,16 @@ export default {
 		getBackground(){
 			if (this.msieversion())
 				return {
-				background: '-ms-linear-gradient(-45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' +  this.colorGiven + ' 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' + this.colorGiven + ' 56%,transparent 56%, transparent 100%)'
+				background: '-ms-linear-gradient(-45deg, transparent 0%, transparent 46%,' +
+										this.colorGiven + ' 46%,' + this.colorGiven +
+										' 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%,' +
+										this.colorGiven + ' 46%,' + this.colorGiven + ' 56%,transparent 56%, transparent 100%)'
 				}
 			else return {
-				background: '-webkit-linear-gradient(-45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' +  this.colorGiven + ' 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%,' +  this.colorGiven + ' 46%,' + this.colorGiven + ' 56%,transparent 56%, transparent 100%)'
+				background: '-webkit-linear-gradient(-45deg, transparent 0%, transparent 46%,' +
+										this.colorGiven + ' 46%,' +  this.colorGiven +
+										' 56%,transparent 56%, transparent 100%), -webkit-linear-gradient(45deg, transparent 0%, transparent 46%,' +
+										this.colorGiven + ' 46%,' + this.colorGiven + ' 56%,transparent 56%, transparent 100%)'
 				}
 		},
 		getIconShadow(){
@@ -116,7 +121,7 @@ export default {
 		getShadow(){
 			if (this.focus)
 				return {
-					'box-shadow': '0 1px 0 0 ' + this.colorGiven,
+					'box-shadow': '1px 1px 1px 1px ' + this.colorGiven,
 				}
 			else return {}
 		},
@@ -149,12 +154,13 @@ export default {
 		    var trident = ua.indexOf('Trident/');
 		    var edge = ua.indexOf('Edge/');
 
-		    if (msie > 0 || trident > 0 || edge > 0 || !! navigator.userAgent.match(/Trident.*rv\:11\./))  
+		    if (msie > 0 || trident > 0 || edge > 0 || !!
+							navigator.userAgent.match(/Trident.*rv\:11\./))
 		       return true
 		    return false;
 		}
 	},
-}	
+}
 
 </script>
 
@@ -162,7 +168,7 @@ export default {
 
 .searchTip{
     position: absolute;
-    top: -85%;
+    top: -90%;
     left: 0;
     padding-left: 5px;
     font-size: 10px;
@@ -208,8 +214,9 @@ input[type="text"].form-control{
     margin-bottom: 0px;
     box-sizing: border-box;
     background-color:rgba(0, 0, 0, 0);
-    box-shadow:3px 3px 3px 3px #d6d6d6;
+    box-shadow:2px 2px 3px 3px #d6d6d6;
 }
+
 .md-form{
 	margin-bottom: 0;
 }
