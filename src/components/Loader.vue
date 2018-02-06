@@ -11,9 +11,9 @@
     border-radius: 50%;
     width: 120px;
     height: 120px;
-    position: fixed;
+    position: absolute;
     margin: auto;
-    top: 40%;
+    top: 50%;
     left: 45%;
     animation: spin 2s linear infinite;
 }
