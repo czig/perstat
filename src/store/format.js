@@ -1314,6 +1314,7 @@ export default {
         "E7": "MSG",
         "38": "SMS",
         "E8": "SMS",
+        "e8": "SMS", //temporary fix for enlisted promotions
         "39": "CMS",
         "E9": "CMS"
     }
@@ -1377,7 +1378,6 @@ export default {
     pmeOrder : {
         "Complete": 0,
         "Not Complete": 1
-
 	},
     enlRecommendFormat: {
         "NR": "Not Recommended",
@@ -1394,6 +1394,30 @@ export default {
         "Promote": 2,
         "Must Promote": 1,
         "Promote Now": 0
+    },
+    careerFieldFormat: {
+        "4":"INTERNATIONAL AFFAIRS",
+        "6":"MEDICAL",
+        "7":"HISTORY AND MUSEUM",
+        "8":"SECURITY",
+        "9":"SPECIAL INVESTIGATIONS",
+        "B":"PUBLIC AFFAIRS",
+        "C":"FINANCIAL MANAGEMENT",
+        "D":"CIVIL ENGINEER",
+        "E":"COMMUNICATIONS AND INFORMATION",
+        "G":"INTELLIGENCE",
+        "H":"CHAPLAIN",
+        "J":"LEGAL",
+        "K":"SCIENTIST AND ENGINEER",
+        "L":"SAFETY",
+        "N":"LOGISTICS",
+        "Q":"CONTRACTING",
+        "R":"PROGRAM MANAGEMENT",
+        "S":"OPERATIONS",
+        "T":"AUDIT",
+        "U":"FORCE SUPPORT",
+        "W":"WEATHER",
+        "X":"ART OFFICER",
+        "Z":"UNKNOWN"
     }
-
 }

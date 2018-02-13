@@ -328,15 +328,6 @@ import searchBox from '@/components/searchBox'
                     })
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
-                        chart.selectAll('rect.bar')
-                            .classed('stack-deselected', function(d) {
-                                //d.x is majcom and d.layer is assigned or stp
-                                return chart.filter() && chart.filters().indexOf(d.x) === -1
-                            })
-                            .on('click', function(d) {
-                                chart.filter(d.x)
-                                dc.redrawAll()
-                            })
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })

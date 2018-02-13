@@ -25,6 +25,7 @@ module.exports = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'check_portal': '"SANE"',
       'axios_url': '"http://localhost:5005/api"',
+      'axios_url_civ_inv': '"http://localhost:5005/api/civilian_inv_post"',
       'axios_url_enl_promo': '"http://localhost:5005/api/enlisted_promo_post"',
       'axios_url_enl_ret': '"http://localhost:5005/api/enlisted_ret_post"',
       'axios_url_enl_man': '"http://localhost:5005/api/enlisted_post"',
