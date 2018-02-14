@@ -77,7 +77,7 @@ export default {
 	data(){
 		return {
 			searchVar: this.value,
-			bLabel: this.buttonLabel ? this.buttonLabel : "Submit",
+			bLabel: this.buttonLabel ? this.buttonLabel : "Search",
 			bIf: this.button ? true : false,
 			colorGiven: this.color ? this.color : "#4d8bf9",
 			buttonColor: this.btnColor ? this.btnColor : this.color,

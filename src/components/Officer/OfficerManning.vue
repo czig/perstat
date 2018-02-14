@@ -120,6 +120,8 @@
                         label="Search Installation"
                         @sub="submit(searchBase,'dc-base-barchart')"
                         button="true"
+                        color="#dfaf00"
+                        btnColor="#dfaf00"
                     ></searchBox>
                     <!-- <form class="form-inline">
                         <div class="form-group">
@@ -414,14 +416,13 @@ import searchBox from '@/components/searchBox'
                 baseConfig.minHeight = 400
                 baseConfig.aspectRatio = 5
                 baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
-                baseConfig.colors = ["#1976d2"]
+                baseConfig.colors = ["#dfaf00"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
                     .elasticX(true)
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
-                    .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')

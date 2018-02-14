@@ -53,6 +53,26 @@ var getRowChart = (config)=>{
   })
   return chart
 }
+var getPieChart = (config)=>{
+    config = updateChartConfig(config)
+    var chart = dc.pieChart("#dc-"+config.id+"-piechart")
+    chart
+      .width(config.width)
+      .minHeight(config.minHeight)
+      .height(config.height)
+      .radius(config.radius)
+      .innerRadius(config.innerRadius)
+      .externalLabels(config.externalLabels)
+      .externalRadiusPadding(config.externalRadiusPadding)
+      .drawPaths(true)
+      .minAngleForLabel(0)
+      .dimension(config.dim)
+      .group(config.group)
+      .on('preRedraw', function(c){
+        preRedraw(c, config)
+      })
+    return chart
+}
 
 var updateChartConfig = (config)=>{
   var layout_length = document.getElementById(config.id).className.match(/col\-(\d+)/)[1]
@@ -86,5 +106,6 @@ module.exports = {
   getRowChart: getRowChart,
   updateChartConfig: updateChartConfig,
   preRedraw: preRedraw,
-  getBrushBarChart: getBrushBarChart
+  getBrushBarChart: getBrushBarChart,
+  getPieChart: getPieChart
 }

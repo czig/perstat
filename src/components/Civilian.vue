@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class="col">Civilian Inventory</h1>
+            <h1 class="col">Civilian</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
@@ -11,6 +11,10 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
+                    <div class="col-auto">
+                        Inventory:        
+                        <span id="inv"></span>
+                    </div>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" 
@@ -19,30 +23,52 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-auto">
-                        Inventory:        
-                        <span id="inv"></span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div id="grade" class="col-4">
-                        <div id="dc-grade-rowchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-grade-rowchart')">Reset</button>
-                            </h3>
+                    <div class="col-4">
+                        <div class="row">
+                            <div id="grade" class="col-12">
+                                <div id="dc-grade-rowchart">
+                                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-grade-rowchart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div id="careerField" class="col-8">
-                        <div id="dc-careerField-barchart">
-                            <h3>Career Field <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-careerField-barchart')">Reset</button>
-                            </h3>
+                    <div class="col-8">
+                        <div class="row">
+                            <div id="careerField" class="col-12">
+                                <div id="dc-careerField-barchart">
+                                    <h3>Career Field <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-careerField-barchart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div id="age" class="col-6">
+                                <div id="dc-age-piechart">
+                                    <h3>Age <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-age-piechart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div id="gender" class="col-6">
+                                <div id="dc-gender-piechart">
+                                    <h3>Gender <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-gender-piechart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,6 +106,8 @@
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
+                                color="#dfaf00"
+                                btnColor="#dfaf00"
                             ></searchBox>
                         </div>
                     </div>
@@ -236,12 +264,11 @@ import { store } from '@/store/store'
                 careerFieldConfig.group = careerFieldConfig.dim.group().reduceSum(function(d) {return d.count;})
                 careerFieldConfig.minHeight = 260
                 careerFieldConfig.aspectRatio = 5
-                careerFieldConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
-                careerFieldConfig.colors = ["#1976d2"]
+                careerFieldConfig.margins = {top: 30, left: 40, right: 30, bottom: 110}
+                careerFieldConfig.colors = ["#108b52"]
                 var careerFieldChart = dchelpers.getOrdinalBarChart(careerFieldConfig)
                 careerFieldChart
                     .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
@@ -264,6 +291,50 @@ import { store } from '@/store/store'
                 gradeChart
                     .cap(10)
                     .othersLabel("Other")
+
+                //age piechart
+                var ageConfig = {}
+                ageConfig.id = 'age'
+                ageConfig.dim = this.ndx.dimension(function(d) {
+                    return d.age + '-' + String(+d.age + 9);
+                })
+                ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.count;})
+                ageConfig.minHeight = 150 
+                ageConfig.aspectRatio = 2 
+                ageConfig.radius = 100
+                ageConfig.innerRadius = 20
+                ageConfig.externalLabels = 20 
+                ageConfig.externalRadiusPadding = 30
+                var ageChart = dchelpers.getPieChart(ageConfig)
+                ageChart
+                    .slicesCap(4)
+//                    .on('pretransition',function(chart) {
+//                        chart.selectAll('text.pie-slice').text(function(d) {
+//                            return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) *100) + '%';
+//                        })
+//                    })
+
+                //gender piechart
+                var genderConfig = {}
+                genderConfig.id = 'gender'
+                genderConfig.dim = this.ndx.dimension(function(d) {
+                    return d.gender;
+                })
+                genderConfig.group = genderConfig.dim.group().reduceSum(function(d) {return d.count;})
+                genderConfig.minHeight = 150 
+                genderConfig.aspectRatio = 2 
+                genderConfig.radius = 70 
+                genderConfig.innerRadius = 0
+                genderConfig.externalLabels = 0 
+                genderConfig.externalRadiusPadding = 0
+                var genderChart = dchelpers.getPieChart(genderConfig)
+                genderChart
+                    .slicesCap(2)
+//                    .on('pretransition',function(chart) {
+//                        chart.selectAll('text.pie-slice').text(function(d) {
+//                            return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) *100) + '%';
+//                        })
+//                    })
 
                 //Majcom
                 var majcomConfig = {}
@@ -293,11 +364,10 @@ import { store } from '@/store/store'
                 baseConfig.minHeight = 400
                 baseConfig.aspectRatio = 5
                 baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
-                baseConfig.colors = ["#1976d2"]
+                baseConfig.colors = ["#dfaf00"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
                     .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
