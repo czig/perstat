@@ -164,7 +164,8 @@
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
-                                color="#2f9146"
+                                color="#dfaf00"
+                                btnColor="#dfaf00"
                             ></searchBox>
                         </div>
                     </div>
@@ -466,7 +467,7 @@
                 baseConfig.minHeight = 240 
                 baseConfig.aspectRatio = 4
                 baseConfig.margins = {top: 10, left: 45, right: 30, bottom: 120}
-                baseConfig.colors = ["#198632"]
+                baseConfig.colors = ["#dfaf00"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
 //                baseChart.stack(baseConfig.group, 'Inv',)
                 baseChart
@@ -474,7 +475,6 @@
                     .valueAccessor((d) => {
                         return d.value[this.selected];
                     })
-                    .ordinalColors(["#198632"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
