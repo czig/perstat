@@ -318,9 +318,9 @@ import searchBox from '@/components/searchBox'
                 majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJCOM_T12C]})
                 var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = 300
-                majcomConfig.aspectRatio = 5
-                majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
+                majcomConfig.minHeight = 200
+                majcomConfig.aspectRatio = 4.2
+                majcomConfig.margins = {top: 10, left: 45, right: 30, bottom: 80}
                 majcomConfig.colors = ["#1976d2"]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
@@ -413,9 +413,9 @@ import searchBox from '@/components/searchBox'
                 baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
                 var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = 400
-                baseConfig.aspectRatio = 5
-                baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
+                baseConfig.minHeight = 240
+                baseConfig.aspectRatio = 4
+                baseConfig.margins = {top: 10, left: 45, right: 30, bottom: 120}
                 baseConfig.colors = ["#dfaf00"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart

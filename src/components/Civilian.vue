@@ -50,12 +50,12 @@
                                 </div>
                             </div>
                             <div id="age" class="col-6">
-                                <div id="dc-age-piechart">
+                                <div id="dc-age-rowchart">
                                     <h3>Age <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
                                             style="display: none"
-                                            @click="resetChart('dc-age-piechart')">Reset</button>
+                                            @click="resetChart('dc-age-rowchart')">Reset</button>
                                     </h3>
                                 </div>
                             </div>
@@ -262,9 +262,9 @@ import { store } from '@/store/store'
                     return formats.careerFieldFormat[d.career_field];
                 })
                 careerFieldConfig.group = careerFieldConfig.dim.group().reduceSum(function(d) {return d.count;})
-                careerFieldConfig.minHeight = 260
-                careerFieldConfig.aspectRatio = 5
-                careerFieldConfig.margins = {top: 30, left: 40, right: 30, bottom: 110}
+                careerFieldConfig.minHeight = 200
+                careerFieldConfig.aspectRatio = 3
+                careerFieldConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
                 careerFieldConfig.colors = ["#108b52"]
                 var careerFieldChart = dchelpers.getOrdinalBarChart(careerFieldConfig)
                 careerFieldChart
@@ -285,14 +285,14 @@ import { store } from '@/store/store'
                 gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.count;})
                 gradeConfig.minHeight = 400 
                 gradeConfig.aspectRatio = 1
-                gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                gradeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
                 gradeConfig.colors = d3.scale.category10()
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .cap(10)
                     .othersLabel("Other")
 
-                //age piechart
+                //age
                 var ageConfig = {}
                 ageConfig.id = 'age'
                 ageConfig.dim = this.ndx.dimension(function(d) {
@@ -300,19 +300,14 @@ import { store } from '@/store/store'
                 })
                 ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.count;})
                 ageConfig.minHeight = 150 
-                ageConfig.aspectRatio = 2 
-                ageConfig.radius = 100
-                ageConfig.innerRadius = 20
-                ageConfig.externalLabels = 20 
-                ageConfig.externalRadiusPadding = 30
-                var ageChart = dchelpers.getPieChart(ageConfig)
+                ageConfig.aspectRatio = 2
+                ageConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
+                var c = d3.rgb("violet")
+                ageConfig.colors = d3.scale.ordinal().range([c.brighter(0.5).toString(), c.toString(),c.darker(0.5).toString(),c.darker(1).toString()])
+                var ageChart = dchelpers.getRowChart(ageConfig)
                 ageChart
-                    .slicesCap(4)
-//                    .on('pretransition',function(chart) {
-//                        chart.selectAll('text.pie-slice').text(function(d) {
-//                            return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) *100) + '%';
-//                        })
-//                    })
+                    .ordering((d)=>{ return d.key })
+
 
                 //gender piechart
                 var genderConfig = {}
@@ -323,13 +318,14 @@ import { store } from '@/store/store'
                 genderConfig.group = genderConfig.dim.group().reduceSum(function(d) {return d.count;})
                 genderConfig.minHeight = 150 
                 genderConfig.aspectRatio = 2 
-                genderConfig.radius = 70 
+                genderConfig.radius = 80 
                 genderConfig.innerRadius = 0
                 genderConfig.externalLabels = 0 
                 genderConfig.externalRadiusPadding = 0
                 var genderChart = dchelpers.getPieChart(genderConfig)
                 genderChart
                     .slicesCap(2)
+                    //uncomment following if showing percentages is necessary
 //                    .on('pretransition',function(chart) {
 //                        chart.selectAll('text.pie-slice').text(function(d) {
 //                            return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) *100) + '%';
@@ -342,9 +338,9 @@ import { store } from '@/store/store'
                 majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.majcom]})
                 var majcomPercent = majcomConfig.dim.group().reduceSum(function(d) {return d.count;})
                 majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = 300
-                majcomConfig.aspectRatio = 5
-                majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
+                majcomConfig.minHeight = 200
+                majcomConfig.aspectRatio = 4.2
+                majcomConfig.margins = {top: 10, left: 45, right: 30, bottom: 80}
                 majcomConfig.colors = ["#1976d2"]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
@@ -361,9 +357,9 @@ import { store } from '@/store/store'
                 baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.mpf]})
                 var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.count;})
                 baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = 400
-                baseConfig.aspectRatio = 5
-                baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
+                baseConfig.minHeight = 240
+                baseConfig.aspectRatio = 4
+                baseConfig.margins = {top: 10, left: 45, right: 30, bottom: 120}
                 baseConfig.colors = ["#dfaf00"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
@@ -415,8 +411,7 @@ import { store } from '@/store/store'
     cursor:pointer;
 }
 .fade-enter-active {
-    transition: all 0.5s;
-}
+    transition: all 0.5s; }
 .fade-leave-active {
     transition: all 0.2s;
 }

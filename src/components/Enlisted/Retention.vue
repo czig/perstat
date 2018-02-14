@@ -429,9 +429,9 @@
                 majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJ]})
                 var majcomInv = majcomConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 majcomConfig.group = this.removeEmptyBins(majcomInv)
-                majcomConfig.minHeight = 300
-                majcomConfig.aspectRatio = 5
-                majcomConfig.margins = {top: 10, left: 40, right: 30, bottom: 100}
+                majcomConfig.minHeight = 200
+                majcomConfig.aspectRatio = 4.2
+                majcomConfig.margins = {top: 10, left: 45, right: 30, bottom: 80}
                 majcomConfig.colors = ["#1976d2"]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
@@ -463,9 +463,9 @@
                 baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
                 var baseGroup = baseConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 baseConfig.group = this.removeEmptyBins(baseGroup)
-                baseConfig.minHeight = 400
-                baseConfig.aspectRatio = 5
-                baseConfig.margins = {top: 30, left: 110, right: 30, bottom: 200}
+                baseConfig.minHeight = 240 
+                baseConfig.aspectRatio = 4
+                baseConfig.margins = {top: 10, left: 45, right: 30, bottom: 120}
                 baseConfig.colors = ["#198632"]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
 //                baseChart.stack(baseConfig.group, 'Inv',)

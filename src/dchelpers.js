@@ -60,7 +60,7 @@ var getPieChart = (config)=>{
       .width(config.width)
       .minHeight(config.minHeight)
       .height(config.height)
-      .radius(config.radius)
+      .radius(config.radius || config.height/2)
       .innerRadius(config.innerRadius)
       .externalLabels(config.externalLabels)
       .externalRadiusPadding(config.externalRadiusPadding)
@@ -98,6 +98,9 @@ var preRedraw = (chart, config) => {
   else if (/\-barchart$/.test(chart.anchorName())){
     chart.yAxis().tickFormat(d3.format("d")).ticks(3)
     chart.rescale()
+  }
+  else if (/\-piechart$/.test(chart.anchorName())){
+    chart.radius(config.radius || newHeight/2)
   }
 }
 
