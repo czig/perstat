@@ -1419,5 +1419,25 @@ export default {
         "W":"WEATHER",
         "X":"ART OFFICER",
         "Z":"UNKNOWN"
+    },
+    civGradeOrder: {
+        "EXEC": 0,
+        "GS-02": 1,
+        "GS-03": 2,
+        "GS-04": 3,
+        "GS-05": 4,
+        "GS-06": 5,
+        "GS-07": 6,
+        "GS-08": 7,
+        "GS-09": 8,
+        "GS-10": 9,
+        "GS-11": 10,
+        "GS-12": 11,
+        "GS-13": 12,
+        "GS-14": 13,
+        "GS-15": 14,
+        "NSPS-02": 15,
+        "WAGE GROUP": 16
+        
     }
 }

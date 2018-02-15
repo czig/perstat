@@ -144,6 +144,8 @@
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
                                 button="true"
+                                :color="majcomColor"
+                                :btnColor="majcomColor"
                             ></searchBox>
                            
                         </div>
@@ -164,8 +166,8 @@
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
-                                color="#dfaf00"
-                                btnColor="#dfaf00"
+                                :color="baseColor"
+                                :btnColor="baseColor"
                             ></searchBox>
                         </div>
                     </div>
@@ -177,6 +179,7 @@
 
 <script>
 	import dchelpers from '@/dchelpers'
+    import chartSpecs from '@/chartSpecs'
 	import axios from 'axios'
 	import formats from '@/store/format'
     import afsc from '@/components/afsc'
@@ -194,6 +197,8 @@
                 startAfsc:false,
                 loaded: false,
                 asDate: 'Undetermined',
+                baseColor: chartSpecs.baseChart.color,
+                majcomColor: chartSpecs.majcomChart.color
             }
         },
         components:{
@@ -430,10 +435,10 @@
                 majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJ]})
                 var majcomInv = majcomConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 majcomConfig.group = this.removeEmptyBins(majcomInv)
-                majcomConfig.minHeight = 200
-                majcomConfig.aspectRatio = 4.2
-                majcomConfig.margins = {top: 10, left: 45, right: 30, bottom: 80}
-                majcomConfig.colors = ["#1976d2"]
+                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
+                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
+                majcomConfig.margins = chartSpecs.majcomChart.margins 
+                majcomConfig.colors = [chartSpecs.majcomChart.color]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
                     .elasticX(true)
@@ -464,10 +469,10 @@
                 baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
                 var baseGroup = baseConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 baseConfig.group = this.removeEmptyBins(baseGroup)
-                baseConfig.minHeight = 240 
-                baseConfig.aspectRatio = 4
-                baseConfig.margins = {top: 10, left: 45, right: 30, bottom: 120}
-                baseConfig.colors = ["#dfaf00"]
+                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
+                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                baseConfig.margins = chartSpecs.baseChart.margins 
+                baseConfig.colors = [chartSpecs.baseChart.color]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
 //                baseChart.stack(baseConfig.group, 'Inv',)
                 baseChart

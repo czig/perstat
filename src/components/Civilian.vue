@@ -49,7 +49,7 @@
                                     </h3>
                                 </div>
                             </div>
-                            <div id="age" class="col-6">
+                            <div id="age" class="col-4">
                                 <div id="dc-age-rowchart">
                                     <h3>Age <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
@@ -59,13 +59,23 @@
                                     </h3>
                                 </div>
                             </div>
-                            <div id="gender" class="col-6">
+                            <div id="gender" class="col-4">
                                 <div id="dc-gender-piechart">
                                     <h3>Gender <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
                                             style="display: none"
                                             @click="resetChart('dc-gender-piechart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
+                            <div id="prior" class="col-4">
+                                <div id="dc-prior-rowchart">
+                                    <h3>Prior Military Service <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-prior-rowchart')">Reset</button>
                                     </h3>
                                 </div>
                             </div>
@@ -87,6 +97,8 @@
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
                                 button="true"
+                                :color="majcomColor"
+                                :btnColor="majcomColor"
                             ></searchBox>
                         </div>
                     </div>
@@ -106,8 +118,8 @@
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
-                                color="#dfaf00"
-                                btnColor="#dfaf00"
+                                :color="baseColor"
+                                :btnColor="baseColor"
                             ></searchBox>
                         </div>
                     </div>
@@ -119,6 +131,7 @@
 
 <script>
 import dchelpers from '@/dchelpers'
+import chartSpecs from '@/chartSpecs'
 import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
@@ -132,8 +145,9 @@ import { store } from '@/store/store'
                 data: [],
                 searchMajcom: "",
                 searchBase: "",
-                loaded: false 
-
+                loaded: false,
+                baseColor: chartSpecs.baseChart.color,
+                majcomColor: chartSpecs.majcomChart.color
             }
         },
         computed: {
@@ -200,7 +214,6 @@ import { store } from '@/store/store'
         },
         mounted() {
             console.log('mounted')
-
             
             //TEST AXIOS CALL:
             axios.post(axios_url_civ_inv).then(response => {
@@ -280,7 +293,7 @@ import { store } from '@/store/store'
                 var gradeConfig = {};
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return d.grade.substr(0,2);
+                    return d.grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.count;})
                 gradeConfig.minHeight = 400 
@@ -289,21 +302,22 @@ import { store } from '@/store/store'
                 gradeConfig.colors = d3.scale.category10()
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
-                    .cap(10)
-                    .othersLabel("Other")
+                .ordering(d=>{
+                    return formats.civGradeOrder[d.key]
+                })
 
                 //age
                 var ageConfig = {}
                 ageConfig.id = 'age'
                 ageConfig.dim = this.ndx.dimension(function(d) {
-                    return d.age + '-' + String(+d.age + 9);
+                    return d.AgeGroup + '-' + String(+d.AgeGroup + 9);
                 })
                 ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.count;})
                 ageConfig.minHeight = 150 
                 ageConfig.aspectRatio = 2
                 ageConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
-                var c = d3.rgb("violet")
-                ageConfig.colors = d3.scale.ordinal().range([c.brighter(0.5).toString(), c.toString(),c.darker(0.5).toString(),c.darker(1).toString()])
+                var c = d3.rgb("coral")
+                ageConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var ageChart = dchelpers.getRowChart(ageConfig)
                 ageChart
                     .ordering((d)=>{ return d.key })
@@ -313,7 +327,7 @@ import { store } from '@/store/store'
                 var genderConfig = {}
                 genderConfig.id = 'gender'
                 genderConfig.dim = this.ndx.dimension(function(d) {
-                    return d.gender;
+                    return d.Gender;
                 })
                 genderConfig.group = genderConfig.dim.group().reduceSum(function(d) {return d.count;})
                 genderConfig.minHeight = 150 
@@ -332,16 +346,30 @@ import { store } from '@/store/store'
 //                        })
 //                    })
 
+                //prior military service
+                var priorConfig = {}
+                priorConfig.id = 'prior'
+                priorConfig.dim = this.ndx.dimension(function(d) {
+                    return d.prior_mil;
+                })
+                priorConfig.group = priorConfig.dim.group().reduceSum(function(d) {return d.count;})
+                priorConfig.minHeight = 120 
+                priorConfig.aspectRatio = 3
+                priorConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
+                var c = d3.rgb("violet")
+                priorConfig.colors = d3.scale.ordinal().range([c.brighter(0.5).toString(), c.toString(),c.darker(0.5).toString(),c.darker(1).toString()])
+                var priorChart = dchelpers.getRowChart(priorConfig)
+
                 //Majcom
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.majcom]})
                 var majcomPercent = majcomConfig.dim.group().reduceSum(function(d) {return d.count;})
                 majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = 200
-                majcomConfig.aspectRatio = 4.2
-                majcomConfig.margins = {top: 10, left: 45, right: 30, bottom: 80}
-                majcomConfig.colors = ["#1976d2"]
+                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
+                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
+                majcomConfig.margins = chartSpecs.majcomChart.margins 
+                majcomConfig.colors = [chartSpecs.majcomChart.color]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
                     .elasticX(true)
@@ -357,10 +385,10 @@ import { store } from '@/store/store'
                 baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.mpf]})
                 var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.count;})
                 baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = 240
-                baseConfig.aspectRatio = 4
-                baseConfig.margins = {top: 10, left: 45, right: 30, bottom: 120}
-                baseConfig.colors = ["#dfaf00"]
+                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
+                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                baseConfig.margins = chartSpecs.baseChart.margins 
+                baseConfig.colors = [chartSpecs.baseChart.color]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
                     .elasticX(true)

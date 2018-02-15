@@ -68,6 +68,8 @@
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
                                 button="true"
+                                :color="majcomColor"
+                                :btnColor="majcomColor"
                             ></searchBox>
                         </div>
                     </div>
@@ -109,8 +111,8 @@
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
-                                color="#dfaf00"
-                                btnColor="#dfaf00"
+                                :color="baseColor"
+                                :btnColor="baseColor"
                             ></searchBox>
                             <!-- <form class="form-inline">
                                 <div class="form-group">
@@ -128,6 +130,7 @@
 
 <script>
 import dchelpers from '@/dchelpers'
+import chartSpecs from '@/chartSpecs'
 import axios from 'axios'
 import formats from '@/store/format'
 import Loader from '@/components/Loader'
@@ -141,7 +144,9 @@ import searchBox from '@/components/searchBox'
                 selected: "percent",
                 searchMajcom: "",
                 searchBase: "",
-                loaded: false
+                loaded: false,
+                baseColor: chartSpecs.baseChart.color,
+                majcomColor: chartSpecs.majcomChart.color
             }
         },
         computed: {
@@ -294,10 +299,10 @@ import searchBox from '@/components/searchBox'
                 majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJCOM_T12C]})
                 var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = 200
-                majcomConfig.aspectRatio = 4.2
-                majcomConfig.margins = {top: 10, left: 45, right: 30, bottom: 80}
-                majcomConfig.colors = ["#1976d2"]
+                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
+                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
+                majcomConfig.margins = chartSpecs.majcomChart.margins 
+                majcomConfig.colors = [chartSpecs.majcomChart.color]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
                     .elasticX(true)
@@ -390,10 +395,10 @@ import searchBox from '@/components/searchBox'
                 baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
                 var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = 240 
-                baseConfig.aspectRatio = 4
-                baseConfig.margins = {top: 10, left: 45, right: 30, bottom: 120}
-                baseConfig.colors = ["#dfaf00"]
+                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
+                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                baseConfig.margins = chartSpecs.baseChart.margins 
+                baseConfig.colors = [chartSpecs.baseChart.color]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
                     .elasticX(true)
