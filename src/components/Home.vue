@@ -29,7 +29,7 @@
                 <div class="card hoverable click" @click="$router.push('/ad_manning')">
                     <img class="card-img-top" src="../../static/ad_manning.jpg" height="200px">
                     <div class="card-body">
-                        <h4 class="card-title">AD Manning</h4>
+                        <h4 class="card-title">TF Inventory</h4>
                     </div>
                 </div>
             </div>
@@ -60,6 +60,49 @@
                 </div>
             </div>
             <div class="col-4">
+                <div class="card hoverable click">
+                    <img class="card-img-top" src="../../static/assignments.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 style="color:transparent" class="card-title">A</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card hoverable click" >
+                    <img class="card-img-top" src="../../static/joint.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 style="color:transparent" class="card-title">A</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="row mt-3">
+            <div class="col-4">
+                <div class="card hoverable click" >
+                     <img class="card-img-top" src="../../static/careww.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 style="color:transparent" class="card-title">A</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card hoverable click" >
+                    <img class="card-img-top" src="../../static/firstcontact.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 style="color:transparent" class="card-title">A</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card hoverable click" >
+                    <img class="card-img-top" src="../../static/it.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 style="color:transparent" class="card-title">A</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <!-- <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/assignments')">
                     <img class="card-img-top" src="../../static/assignments.jpg" height="200px">
                     <div class="card-body">
@@ -100,7 +143,7 @@
                         <h4 class="card-title">IT</h4>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div> 
 </template>

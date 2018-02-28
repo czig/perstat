@@ -1,7 +1,13 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class="col">AD Manning</h1>
+            <h1 style="font-weight:bold" class="col">TF Inventory
+                <span> 
+                    <h5 style="color:red">
+                        Reserve/Guard will be incorporated in the near future
+                    </h5>
+                </span>
+            </h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
@@ -10,52 +16,36 @@
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
-                <div class="row pt-2"> 
-                    <div id="radioSelect" class="col form-group">
-                       <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Percentage</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Assigned</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Authorized</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">STP</span>
-                        </label>
-                    </div>
-                    <div class="col"></div>
+                <div class="row">
                     <div class="col-auto">
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                @click="resetAll">Reset All</button>
+                        Inventory:
+                        <span id="inv"></span>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-auto">
-                        Assigned:
-                        <span id="asgn"></span>
+                    <div class="col-4">
+                        <div class="row">
+                            <div id="type" class="col-12">
+                                <div id="dc-type-rowchart">
+                                    <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm btn-rounded reset" 
+                                            style="display: none"
+                                            @click="resetChart('dc-type-rowchart')">Reset</button>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-auto">
-                        STP:
-                        <span id="stp"></span>
-                    </div>
-                    <div class="col-auto">
-                        Authorized:
-                        <span id="auth"></span>
-                    </div>
-                    <div class="col-auto">
-                        Manning Percent:
-                        <span id="percent"></span>
+                    <div id="grade" class="col-8">
+                        <div id="dc-grade-barchart">
+                            <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-grade-barchart')">Reset</button>
+                            </h3>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -78,24 +68,23 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="grade" class="col-4">
-                        <div id="dc-grade-rowchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <div id="base" class="col-12">
+                        <div id="dc-base-barchart">
+                            <h3>Base <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
-                                    @click="resetChart('dc-grade-rowchart')">Reset</button>
+                                    @click="resetChart('dc-base-barchart')">Reset</button>
                             </h3>
-                        </div>
-                    </div>
-                    <div id="afscGroup" class="col-8">
-                        <div id="dc-afscGroup-barchart">
-                            <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-afscGroup-barchart')">Reset</button>
-                            </h3>
+                            <searchBox
+                                v-model:value="searchBase"
+                                size="3"
+                                label="Search Installation"
+                                @sub="submit(searchBase,'dc-base-barchart')"
+                                button="true"
+                                :color="baseColor"
+                                :btnColor="baseColor"
+                            ></searchBox>
                         </div>
                     </div>
                 </div>
@@ -106,6 +95,7 @@
 
 <script>
 import dchelpers from '@/dchelpers'
+import chartSpecs from '@/chartSpecs'
 import axios from 'axios'
 import formats from '@/store/format'
 import Loader from '@/components/Loader'
@@ -117,8 +107,12 @@ import searchBox from '@/components/searchBox'
             return {
                 data: [],
                 searchMajcom: '',
+                searchBase: '',
                 selected: "percent",
-                loaded: false
+                ylabel: 'Inventory',
+                loaded: false,
+                baseColor: chartSpecs.baseChart.color,
+                majcomColor: chartSpecs.majcomChart.color
             }
         },
         computed: {
@@ -131,20 +125,6 @@ import searchBox from '@/components/searchBox'
           allGroup: function(){
             return this.ndx.groupAll()
           },
-          ylabel: function() {
-            if (this.selected === "percent") {
-                return "Manning Percent (%)"
-            }
-            else if (this.selected === "asgn") {
-                return "Assigned"
-            }
-            else if (this.selected === "stp") {
-                return "STP"
-            }
-            else {
-                return "Authorized"
-            }
-          }
         },
         methods: {
           resetAll: (event)=>{
@@ -228,34 +208,8 @@ import searchBox from '@/components/searchBox'
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
+                console.log(this.data[0])
                 //reduce functions
-                function manningAdd(p,v) {
-                    p.asgn = p.asgn + +v.ASGNCURR
-                    p.auth = p.auth + +v.AUTHCURR
-                    p.stp = p.stp + +v.STP
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
-                    return p
-                }
-                function manningRemove(p,v) {
-                    p.asgn = p.asgn - +v.ASGNCURR
-                    p.auth = p.auth - +v.AUTHCURR
-                    p.stp = p.stp - +v.STP
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
-                    return p
-                }
-                function manningInitial() {
-                    return {
-                        asgn: 0,
-                        auth: 0,
-                        stp: 0,
-                        percent: 0,
-                        stpPercent: 0,
-                    }
-                }
 
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
@@ -268,101 +222,115 @@ import searchBox from '@/components/searchBox'
                     }
                 }
 
+                //type 
+                var typeConfig = {};
+                typeConfig.id = 'type'
+                typeConfig.dim = this.ndx.dimension(function (d) {
+                    return formats.type[d.type];
+                })
+                typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.count;})
+                typeConfig.minHeight = 200 
+                typeConfig.aspectRatio = 3
+                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
+                typeConfig.colors = d3.scale.category10()
+                var typeChart = dchelpers.getRowChart(typeConfig)   
+
                 //Location
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJCOM_T12C]})
-                var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.maj]})
+                var majcomPercent = majcomConfig.dim.group().reduceSum(function(d){
+                    return +d.count 
+                })
                 majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = 300
-                majcomConfig.aspectRatio = 5
-                majcomConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
-                majcomConfig.colors = ["#1976d2"]
+                 majcomConfig.group = removeEmptyBins(majcomPercent)
+                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
+                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
+                majcomConfig.margins = chartSpecs.majcomChart.margins 
+                majcomConfig.colors = [chartSpecs.majcomChart.color]
                 var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
                 majcomChart
                     .elasticX(true)
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
 
+                //base(mpf)
+                var baseConfig = {}
+                baseConfig.id = 'base'
+                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.mpf]})
+                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return +d.count;})
+                baseConfig.group = removeEmptyBins(basePercent)
+                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
+                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                baseConfig.margins = chartSpecs.baseChart.margins 
+                baseConfig.colors = [chartSpecs.baseChart.color]
+                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
+                baseChart
+                    .elasticX(true)
+                    .on('pretransition', function(chart) {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
+
                 //Number Display for Auth, Asgn, STP - show total for filtered content
-                var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })
-                var authND = dc.numberDisplay("#auth")
-                authND.group(auth)
+                var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                var invND = dc.numberDisplay("#inv")
+                invND.group(inv)
                     .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) { return d;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.ASGNCURR})
-                var asgnND = dc.numberDisplay("#asgn")
-                asgnND.group(asgn)
-                    .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                    })
-                var stp = this.ndx.groupAll().reduceSum(function(d) { return +d.STP})
-                var stpND = dc.numberDisplay("#stp")
-                stpND.group(stp)
-                    .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                    })
-                var percentGroup = this.ndx.groupAll().reduce(manningAdd,manningRemove,manningInitial)
-                var percentND = dc.numberDisplay("#percent")
-                percentND.group(percentGroup)
-                    .formatNumber(d3.format("r"))
-                    .valueAccessor(function(d) {return d.percent})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
-                    })
-                    
-                //grade
-                
-                var gradeConfig = {};
-                gradeConfig.id = 'grade';
-                gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.gradeFormat[d.GRADE];
+
+
+                 //grade
+                var gradeConfig = {}
+                gradeConfig.id = 'grade'
+                gradeConfig.dim = this.ndx.dimension(function(d){
+                    return formats.gradeFormat[d.grade];
                 })
-                gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                gradeConfig.minHeight = 200 
-                gradeConfig.aspectRatio = 2
-                gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                gradeConfig.colors = d3.scale.category10()
-                var gradeChart = dchelpers.getRowChart(gradeConfig)
+                gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return +d.count;})
+                gradeConfig.minHeight = 200
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
+                gradeConfig.colors = ["#108b52"]
+                var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
-                    .valueAccessor((d)=> {
-                        return d.value[this.selected];
-                    })
-                    .ordering(function(d){
-                      return formats.gradeOrder[d.key]
-                    })                                    
-                
-                //afscGroup
-                var afscGroupConfig = {}
-                afscGroupConfig.id = 'afscGroup'
-                afscGroupConfig.dim = this.ndx.dimension(function(d){return formats.afscGroupFormat[d.AFSC_GROUP]})
-                afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                afscGroupConfig.minHeight = 200 
-                afscGroupConfig.aspectRatio = 3 
-                afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 110}
-                afscGroupConfig.colors = ["#108b52"] 
-                var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
-                afscGroupChart
-                    .valueAccessor((d)=> {
-                        return d.value[this.selected];
-                    })
+                    .elasticX(true)
                     .on('pretransition', function(chart) {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
+                    .yAxis().tickFormat(function(v) {return v + "%";})
+
+                gradeChart
+                    .ordering(function(d){
+                      return formats.gradeOrder[d.key]
+                    })  
+                // //grade
+                
+                // var gradeConfig = {};
+                // gradeConfig.id = 'grade';
+                // gradeConfig.dim = this.ndx.dimension(function (d) {
+                //     return formats.gradeFormat[d.grade];
+                // })
+                // gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d){
+                //     return +d.count 
+                // })
+                // gradeConfig.minHeight = 200 
+                // gradeConfig.aspectRatio = 2
+                // gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                // gradeConfig.colors = d3.scale.category10()
+                // var gradeChart = dchelpers.getRowChart(gradeConfig)
+                // gradeChart
+                //     .ordering(function(d){
+                //       return formats.gradeOrder[d.key]
+                //     })                                    
+                
+                
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

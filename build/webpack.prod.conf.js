@@ -49,6 +49,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       //PROD BUILD - HIS MUST be run for PROD DEPLOYMENT
       //'check_portal': '"INSANE"',
       'axios_url': '"https://starsraw.afpc.randolph.af.mil/"',
+      'axios_url_civ_inv': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_civilian_inv.json"',
       'axios_url_enl_promo': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_enlisted_promo.json"',
       'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ENL_RET.js"',
       'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ENL.js"',

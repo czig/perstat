@@ -293,7 +293,7 @@ import { store } from '@/store/store'
                 var gradeConfig = {};
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return d.grade;
+                    return formats.gradeFormat[d.grade];
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.count;})
                 gradeConfig.minHeight = 400 
@@ -350,7 +350,7 @@ import { store } from '@/store/store'
                 var priorConfig = {}
                 priorConfig.id = 'prior'
                 priorConfig.dim = this.ndx.dimension(function(d) {
-                    return d.prior_mil;
+                    return formats.prior_mil[d.prior_mil];
                 })
                 priorConfig.group = priorConfig.dim.group().reduceSum(function(d) {return d.count;})
                 priorConfig.minHeight = 120 

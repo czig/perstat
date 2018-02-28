@@ -1316,7 +1316,24 @@ export default {
         "E8": "SMS",
         "e8": "SMS", //temporary fix for enlisted promotions
         "39": "CMS",
-        "E9": "CMS"
+        "E9": "CMS",
+        "51": "EXEC",
+        "52": "GS-02",
+        "53": "GS-03",
+        "54": "GS-04",
+        "55": "GS-05",
+        "56": "GS-06",
+        "57": "GS-07",
+        "58": "GS-08",
+        "59": "GS-09",
+        "60": "GS-10",
+        "61": "GS-11",
+        "62": "GS-12",
+        "63": "GS-13",
+        "64": "GS-14",
+        "65": "GS-15",
+        "66": "NSPS-02",
+        "67": "WAGE GROUP"
     }
     ,gradeOrder : {
 	    "COL": 6,
@@ -1335,7 +1352,24 @@ export default {
 	    "A1C": 33,
 	    "AMN": 32,
 	    "AB": 31,
-	    "[31-33] AMN": 30
+	    "[31-33] AMN": 30,
+	    "EXEC": 40,
+        "GS-02": 41,
+        "GS-03": 42,
+        "GS-04": 43,
+        "GS-05": 44,
+        "GS-06": 45,
+        "GS-07": 46,
+        "GS-08": 47,
+        "GS-09": 48,
+        "GS-10": 49,
+        "GS-11": 50,
+        "GS-12": 51,
+        "GS-13": 52,
+        "GS-14": 53,
+        "GS-15": 54,
+        "NSPS-02": 55,
+        "WAGE GROUP": 56
 	},
 	zoneFormat : {
         "A": "APZ",
@@ -1346,7 +1380,6 @@ export default {
         "APZ": 2,
         "IPZ": 1,
         "BPZ": 0
-
 	},
 	recommendFormat : {
         "D": "Definitely Promote",
@@ -1437,7 +1470,17 @@ export default {
         "GS-14": 13,
         "GS-15": 14,
         "NSPS-02": 15,
-        "WAGE GROUP": 16
-        
+        "WAGE GROUP": 16 
+    },
+    prior_mil:{
+    	"1" : "MIL SVC, NOT RET",
+    	"2" : "RETIRED OFFICER",
+    	"3" : "RETIRED ENLISTED",
+    	"4" : "NO MILITARY CREDIT"
+    },
+    type: {
+    	"E" : "Enlisted",
+    	"O" : "Officer",
+    	"C" : "Civilian"
     }
 }
