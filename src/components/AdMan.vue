@@ -216,7 +216,7 @@ import searchBox from '@/components/searchBox'
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value[this.selected] != 0
+                                return d.value != 0
                             })
                         }
                     }
@@ -292,7 +292,7 @@ import searchBox from '@/components/searchBox'
                 gradeConfig.dim = this.ndx.dimension(function(d){
                     return formats.gradeFormat[d.grade];
                 })
-                gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return +d.count;})
+                gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.count;}))
                 gradeConfig.minHeight = 200
                 gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}

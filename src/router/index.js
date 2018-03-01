@@ -21,7 +21,7 @@ export default new Router({
       component: Home
     },
     {
-      path: '/ad_manning',
+      path: '/tf_inv',
       name: 'adMan',
       component: AdMan 
     },
