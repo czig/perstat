@@ -71,6 +71,7 @@
                     <div class="col-8">
                         <div class="row">
                             <template class="AFSC-SECTION col-12">
+
                                 <div v-if="!startAfsc" class="col-12"> 
                                     <h3>
                                         AFSC 
@@ -81,8 +82,10 @@
                                             >Reset</button>
                                     </h3>
                                 </div>
+                               
                                 <div v-else class="col-12">
-                                    <afsc
+                                     
+                                    <afsc 
                                         :ndx="ndx"
                                         :ylabel="ylabel"
                                         :selected="selected"
@@ -94,7 +97,9 @@
                                         :aspectRatio="3"
                                     >
                                     </afsc>
+                                    
                                 </div>
+                               
                             </template>
                             <div id="recommend" class="col-12">
                                 <div id="dc-recommend-rowchart">
@@ -503,9 +508,12 @@ import { store } from '@/store/store'
                     .ordering(function(d) {
                         return formats.gradeOrder[d.key.substring(0,3)] + d.key.substring(3,7)
                     })
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-board-barchart')
+                        })
                     })
 
 
@@ -561,4 +569,5 @@ import { store } from '@/store/store'
 .fade-enter-to, .fade-leave {
     opacity: 1;
 }
+
 </style>

@@ -74,6 +74,35 @@ var getPieChart = (config)=>{
     return chart
 }
 
+var getGeoChart = (config)=>{
+    config = updateChartConfig(config)
+    config.scale = config.width * 0.65
+    config.width = config.scale * 0.9
+    config.height = config.scale / 2.1
+    var chart = dc.geoChoroplethChart("#dc-"+config.id+"-geoChoroplethChart")
+    chart
+      .width(config.width)
+      .height(config.height)
+      .transitionDuration(1000)
+      .dimension(config.dim)
+      .group(config.group)
+      .colors(config.colors)
+      .colorDomain(config.colorDomain)
+      .colorAccessor(function(d){ if (d) return d[config.colorAccessor];})
+      .projection(    
+                      d3.geo.albersUsa()
+                      .scale(config.scale)
+                      .translate([config.width / 2, config.height / 2])
+                  )
+      .overlayGeoJson(config.features, config.geoName, function(d) {
+                        return d.properties.name;
+                    })
+      .on('preRedraw', function(c){
+        preRedraw(c, config)
+      })
+    return chart
+}
+
 var updateChartConfig = (config)=>{
   var layout_length = document.getElementById(config.id).className.match(/col\-(\d+)/)[1]
   var documentWidth = document.documentElement.clientWidth
@@ -102,6 +131,10 @@ var preRedraw = (chart, config) => {
   else if (/\-piechart$/.test(chart.anchorName())){
     chart.radius(config.radius || newHeight/2)
   }
+  else if (/\-geoChoroplethChart$/.test(chart.anchorName())){
+    // chart.width(config.scale * 0.8)
+    //      .height(config.scale/2)
+  }
 }
 
 module.exports = {
@@ -110,5 +143,6 @@ module.exports = {
   updateChartConfig: updateChartConfig,
   preRedraw: preRedraw,
   getBrushBarChart: getBrushBarChart,
-  getPieChart: getPieChart
+  getPieChart: getPieChart,
+  getGeoChart: getGeoChart
 }

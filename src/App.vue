@@ -24,9 +24,15 @@ export default {
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
     transform: rotate(-45deg);
+    cursor: pointer;
+    cursor: hand;
+    pointer-events: auto;
+
   }
 
 div[id*="-rowchart"] g.row text{
     fill: black;
 }
+
+
 </style>

@@ -49,10 +49,12 @@ TODO: Find A way to load component (With Data) Without v-if
             style="visibility: hidden"
             @click="resetAfsc">Reset</button>
     </h3>
-    <div id="afsc" class="col-12">
-	    <div id="dc-afsc-rowchart">
-	    </div>
-	</div>
+    <transition name="expandMid">
+        <div v-show="anim" id="afsc" class="col-12" key="1">
+    	    <div id="dc-afsc-rowchart">
+    	    </div>
+    	</div>
+    </transition>
 </div>
 
 
@@ -116,6 +118,7 @@ export default {
 	        Freeze: false,
 	        Current: 1,
 	        currOrd: '1st',
+            anim: false
 		}
 	},
 	computed:{
@@ -332,6 +335,9 @@ export default {
         afscGraph.on('filtered', (chart,filter)=> {
         	if (filter && (!this.Freeze)){
                 var len = this.searchAfsc.length;
+                this.anim=false;
+                setTimeout(()=>{ this.anim=true; }, 800);
+                
                 this.addDigit(filter.substring(len,len+1))
             }
         });
@@ -347,7 +353,7 @@ export default {
             })
         })
         */  
-
+        this.anim=true;
         dc.renderAll()
         dc.redrawAll()
 	}
@@ -363,5 +369,27 @@ export default {
 
 	#dc-afsc-select{
 		padding-left: 0;
+        //height: 400px;
 	}
+
+    .expandMid-enter-active, .expandMid-leave-active {
+      //transition: all 2s ease;
+      animation: bounce-in 1.1s;
+      //max-height: 600px;
+      overflow: hidden;
+    }
+    .expandMid-enter, .expandMid-leave-to {
+      //animation: bounce-in .8s reverse;
+      //max-height: 0;
+    }
+
+    @keyframes bounce-in {
+      0% {
+        transform: scaleY(0);
+      }
+      
+      100% {
+        transform: scaleY(1);
+      }
+    }
 </style>

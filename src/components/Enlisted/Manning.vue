@@ -310,9 +310,12 @@ import searchBox from '@/components/searchBox'
                         return d.value[this.selected]
                     })
                     .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-majcom-barchart')
+                        })
                     })
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
@@ -384,9 +387,12 @@ import searchBox from '@/components/searchBox'
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-afscGroup-barchart')
+                        })
                     })
 
                 //base(mpf)
@@ -405,9 +411,12 @@ import searchBox from '@/components/searchBox'
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-base-barchart')
+                        })
                     })
 
                 // after DOM updated redraw to make chart widths update

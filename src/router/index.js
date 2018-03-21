@@ -5,8 +5,7 @@ import AdMan from '@/components/AdMan'
 import Officer from '@/components/Officer/Officer'
 import Enlisted from '@/components/Enlisted/Enlisted'
 import Civilian from '@/components/Civilian'
-import Assignments from '@/components/Assignments'
-import Joint from '@/components/Joint'
+import Assignments from '@/components/Assignments/Assignments'
 import Care from '@/components/Care'
 import FirstContact from '@/components/FirstContact'
 import IT from '@/components/IT'
@@ -46,11 +45,6 @@ export default new Router({
       component: Assignments 
     },
     {
-      path: '/joint',
-      name: 'joint',
-      component: Joint 
-    },
-    {
       path: '/care',
       name: 'care',
       component: Care 
@@ -65,6 +59,7 @@ export default new Router({
       name: 'it',
       component: IT 
     },
+
     { path: '*', redirect: '/' }
   ],
   scrollBehavior (to, from, savedPosition) {

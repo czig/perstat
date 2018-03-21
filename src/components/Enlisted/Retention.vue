@@ -446,7 +446,7 @@
                         return d.value[this.selected];
                     })
                     .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', function(chart) {
+                    .on('pretransition',  (chart)=> {
                         chart.selectAll('rect.bar')
                             .classed('stack-deselected', function(d) {
                                 //d.x is majcom and d.layer is assigned or stp
@@ -458,8 +458,13 @@
                             })
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-majcom-barchart')
+                        })
 
                     })
+
+                    
                 
         
 
@@ -480,9 +485,12 @@
                     .valueAccessor((d) => {
                         return d.value[this.selected];
                     })
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-base-barchart')
+                        })
                     })
 
                 //Call The AFSC Component HERE

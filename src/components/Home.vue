@@ -26,7 +26,7 @@
         </div>
         <div class="row mt-3">
             <div class="col-4">
-                <div class="card hoverable click" @click="$router.push('/ad_manning')">
+                <div class="card hoverable click" @click="$router.push('/tf_inv')">
                     <img class="card-img-top" src="../../static/ad_manning.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">TF Inventory</h4>
@@ -51,19 +51,19 @@
             </div>
         </div>
         <div class="row mt-3">
-            <div class="col-4" style="visibility:hidden">
-                <div class="card hoverable click">
-                    <img class="card-img-top" src="../../static/assignments.jpg" height="200px">
-                    <div class="card-body">
-                        <h4 style="color:transparent" class="card-title">A</h4>
-                    </div>
-                </div>
-            </div>
             <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/civilian')">
                     <img class="card-img-top" src="../../static/civilian.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Civilian</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card hoverable click" @click="$router.push('/assignments')">
+                    <img class="card-img-top" src="../../static/assignments.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 class="card-title">Assignments</h4>
                     </div>
                 </div>
             </div>

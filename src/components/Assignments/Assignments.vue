@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class="col">Officer</h1>
+            <h1 class="col">Assignments</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
@@ -9,10 +9,10 @@
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" @click="dynamicComponent='off-manning'" data-toggle="tab">Manning</a>
+                <a class="nav-link active" @click="dynamicComponent='offTOS'" data-toggle="tab">Average TOS</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='off-promo'" data-toggle="tab">Promotions</a>
+                <a class="nav-link" @click="dynamicComponent='join'" data-toggle="tab">Join Spouse</a>
             </li>
         </ul>
         <transition name="fade" mode="out-in">
@@ -22,14 +22,14 @@
 </template>
 
 <script>
-import OfficerManning from '@/components/Officer/OfficerManning'
-import OfficerPromo from '@/components/Officer/OfficerPromo'
+import offTOS from '@/components/Assignments/OfficerTos'
+import Join from '@/components/Assignments/Joint'
 import { store } from '@/store/store'
 
 export default {
     data() {
         return {
-           dynamicComponent: "off-manning" 
+           dynamicComponent: "offTOS" 
         }
     },
     computed:{
@@ -38,8 +38,8 @@ export default {
         },
     },
     components: {
-        'off-manning': OfficerManning,
-        'off-promo': OfficerPromo,
+        offTOS,
+        Join
     }
 }
 </script>

@@ -282,9 +282,12 @@ import { store } from '@/store/store'
                 var careerFieldChart = dchelpers.getOrdinalBarChart(careerFieldConfig)
                 careerFieldChart
                     .elasticX(true)
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-careerField-barchart')
+                        })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
@@ -374,9 +377,12 @@ import { store } from '@/store/store'
                 majcomChart
                     .elasticX(true)
                     .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-majcom-barchart')
+                        })
                     })
 
                 //base(mpf)
@@ -392,9 +398,12 @@ import { store } from '@/store/store'
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
                     .elasticX(true)
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-base-barchart')
+                        })
                     })
 
 

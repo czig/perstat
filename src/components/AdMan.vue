@@ -21,6 +21,12 @@
                         Inventory:
                         <span id="inv"></span>
                     </div>
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="resetAll">Reset All</button>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-4">
@@ -180,6 +186,7 @@ import searchBox from '@/components/searchBox'
                 //console.log(response)
                 store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
+                console.log(axiosData)
                 var objData = makeObject(axiosData)
                 this.data = objData
                 this.loaded = true
@@ -252,9 +259,12 @@ import searchBox from '@/components/searchBox'
                 majcomChart
                     .elasticX(true)
                     .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-majcom-barchart')
+                        })
                     })
 
                 //base(mpf)
@@ -270,9 +280,12 @@ import searchBox from '@/components/searchBox'
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
                     .elasticX(true)
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-base-barchart')
+                        })
                     })
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
@@ -294,15 +307,18 @@ import searchBox from '@/components/searchBox'
                 })
                 gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.count;}))
                 gradeConfig.minHeight = 200
-                gradeConfig.aspectRatio = 3
+                gradeConfig.aspectRatio = 2.6
                 gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
                 gradeConfig.colors = ["#108b52"]
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .elasticX(true)
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-grade-barchart')
+                        })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
@@ -384,4 +400,5 @@ import searchBox from '@/components/searchBox'
 .fade-enter-to, .fade-leave {
     opacity: 1;
 }
+
 </style>

@@ -310,7 +310,7 @@ import { store } from '@/store/store'
                     })
                     .elasticX(true)
                     .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('rect.bar')
                             .classed('stack-deselected', function(d) {
                                 //d.x is compCat and d.layer is assigned or selRate
@@ -322,9 +322,13 @@ import { store } from '@/store/store'
                             })
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-compCat-barchart')
+                        })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
+                    
                     
                 //grade
                 var gradeConfig = {};
@@ -420,9 +424,12 @@ import { store } from '@/store/store'
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-occupGroup-barchart')
+                        })
                     })
                     .gap(20)
 
@@ -447,9 +454,12 @@ import { store } from '@/store/store'
                     .ordering(function(d) {
                         return formats.gradeOrder[d.key.substring(0,3)] + d.key.substring(3,8)
                     })
-                    .on('pretransition', function(chart) {
+                    .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-board-barchart')
+                        })
                     })
 
                 // after DOM updated redraw to make chart widths update
