@@ -1555,6 +1555,7 @@ export default {
     	"09":"Connecticut"
     },
     geoCSAb:{
+    	"03":"JPN",
     	"01":"AL",
     	"02":"AK",
     	"04":"AZ",

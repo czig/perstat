@@ -63,10 +63,54 @@
                     </div>
             	</div>
                 <div class="row">
+                    
+                        <div id="base" class="col-12">
+                            <transition name="expand" key="1">
+                            <div id="dc-base-barchart" v-show="baseLen<=50&&loaded">
+                                <h3>Base <span style="font-size: 14pt; opacity: 0.87;">Count {{ baseLen  }}  </span>
+                                <button type="button" 
+                                        class="btn btn-danger btn-sm btn-rounded reset" 
+                                        style="display: none"
+                                        @click="resetChart('dc-base-barchart')">Reset</button>
+                                </h3>
+                                <searchBox
+                                    v-model:value="searchBase"
+                                    size="3"
+                                    label="Search Installation"
+                                    @sub="submit(searchBase,'dc-base-barchart')"
+                                    button="true"
+                                    :color="baseColor"
+                                    :btnColor="baseColor"
+                                ></searchBox>
+                            </div>
+                             </transition>
+                        </div>
+                   
+                </div>
+                <div class="row">
                     <div id="us" class="col-6">
                         <div id="dc-us-geoChoroplethChart">
+                            <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Count</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
+                            </h3>
                         </div>
                     </div>
+                    <div id="jp" class="col-6">
+                        <div id="dc-jp-geoChoroplethChart">
+                            <h3>OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Count</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-jp-geoChoroplethChart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    
                 </div>
             </div>
         </transition-group>    
@@ -76,15 +120,22 @@
 <script>
 import dchelpers from '@/dchelpers'
 import axios from 'axios'
+import chartSpecs from '@/chartSpecs'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
+import searchBox from '@/components/searchBox'
 
 	export default {
         data() {
             return {
-                loaded: false 
+                loaded: false,
+                searchBase: '',
+                baseColor: chartSpecs.baseChart.color,
+                baseDim: {},
+                baseGroup: {},
+                baseLen: 0
             }
         },
         computed: {
@@ -94,6 +145,18 @@ import { store } from '@/store/store'
           allGroup: function(){
             return this.ndx.groupAll()
           },
+          // baseLen: function(){
+          //   dc.chartRegistry.list().filter(chart=>{
+          //       return chart.anchorName() == 'dc-base-barchart'
+          //   }).forEach(chart=>{
+          //       return chart.group().all().length
+          //   })
+          // },
+          // baseGroupLen: function(){
+          //    if (this.baseGroup && this.baseGroup.all())
+          //        return this.baseGroup.all().length
+          //    else return 0
+          // },
         },
         methods: {
           resetAll: (event)=>{
@@ -126,11 +189,37 @@ import { store } from '@/store/store'
                 }
             })
             dc.redrawAll()
+          },
+          tosAdd(p,v) {
+            p.months = p.months + +v.months
+            p.cnt = p.cnt + +v.cnt
+            //if divide by 0, set to 0, and if NaN, set to zero
+            p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt
+            return p
+          },
+          tosRemove(p,v) {
+            p.months = p.months - +v.months
+            p.cnt = p.cnt - +v.cnt
+            //if divide by 0, set to 0, and if NaN, set to zero
+            p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt
+            return p
+          },
+          tosInitial() {
+            return {
+                months: 0,
+                cnt: 0,
+                average: 0,
+            }
+          },
+          setBase(){
+            this.baseDim = this.ndx.dimension(function(d){return d.DLOC});
+            this.baseGroup = this.baseDim.group().reduce(this.tosAdd, this.tosRemove, this.tosInitial)
           }
         },
         components: {
             'autocomplete': AutoComplete,
-            'loader': Loader
+            'loader': Loader,
+            searchBox
         },
         created: function(){
         	console.log('created')
@@ -334,7 +423,7 @@ import { store } from '@/store/store'
                 gradeConfig.group = gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
                 gradeConfig.minHeight = 280
                 gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
+                gradeConfig.margins = {top: 30, left: 40, right: 30, bottom: 50}
                 gradeConfig.colors = ["#1976d2"]
 
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
@@ -356,6 +445,43 @@ import { store } from '@/store/store'
                       return formats.gradeOrder[d.key]
                     }) 
 
+                //base(mpf)
+                var baseConfig = {}
+                baseConfig.id = 'base'
+                this.setBase();
+                baseConfig.dim = this.ndx.dimension(function(d){return d.DLOC});
+                var basePercent = baseConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                baseConfig.group = removeEmptyBins(basePercent)
+                baseConfig.minHeight = chartSpecs.baseChart.minHeight
+                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                baseConfig.margins = chartSpecs.baseChart.margins 
+                baseConfig.colors = [chartSpecs.baseChart.color]
+                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
+                baseChart
+                    .valueAccessor((d) => {
+                        return d.value.cnt
+                    })
+                    .elasticX(true)
+                    .on('pretransition', (chart)=> {
+                        this.baseLen = chart.group().all().length
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-base-barchart')
+                        })
+                    })
+
+                //Number Display for Auth, Asgn, STP - show total for filtered content
+                var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                var invND = dc.numberDisplay("#inv")
+                invND.group(inv)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+
+                //CONUS 
                 var usConfig = {}
                 usConfig.id = 'us';
                 usConfig.dim = this.ndx.dimension(function(d){
@@ -367,14 +493,19 @@ import { store } from '@/store/store'
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2
 
-                usConfig.colors =["#ccc", "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
+                usConfig.colors =[  "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
                 usConfig.colorDomain = [7000, 8000]
                 usConfig.colorAccessor = 'cnt'
             
                 var statesJson = require('../../assets/geo.json')
                 console.log(statesJson)
-                usConfig.features = statesJson.features
+                usConfig.json = statesJson
                 usConfig.geoName = "state"
+                usConfig.propName = 'name'
+
+                usConfig.projection =   d3.geo.albersUsa()
+                usConfig.size = [0.6 , 0.9, 2.1];
+                                          
 
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
@@ -384,6 +515,146 @@ import { store } from '@/store/store'
                         return "State: " + d.key + "\n Count: " + myCount;
                     });
 
+                var jpConfig = {}
+                jpConfig.id = 'jp';
+                jpConfig.dim = this.ndx.dimension(function(d){
+                     return formats.geoCSAb[d.st];
+                })
+                jpConfig.group = jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                
+                jpConfig.size = [0.3 , 2.5, 0.8];
+                jpConfig.minHeight = 200
+                jpConfig.aspectRatio = 2
+
+                jpConfig.colors =["#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
+                jpConfig.colorAccessor = 'cnt'
+            
+                var jpJson = require('../../assets/oconus.json')
+                console.log(jpJson)
+                jpConfig.json = jpJson
+                jpConfig.geoName = "state"
+                jpConfig.propName = "adm0_a3"
+
+                var center = d3.geo.centroid(jpConfig.json)
+                console.log(center)
+                center[1] -= 13
+                console.log(center)
+                jpConfig.projection =   d3.geo.mercator()
+                                          .center(center)
+
+                                          
+
+                var jpChart = dchelpers.getGeoChart(jpConfig)
+
+                // var guamJson = require('../../assets/guam.json')
+                // jpChart.overlayGeoJson(guamJson.features, "guam", function(d) {
+                //         return d.properties.name_conv;
+                //     });
+
+                jpChart.title(function(d) {
+                        var myCount = 0;
+                        if (d.value)
+                            myCount = d.value.cnt;
+                        return d.key + "\n Count: " + myCount;
+                    });
+
+                jpChart.on('pretransition', (chart)=> {
+                    var color = 'orange'
+                    chart.select('svg').append('g').attr("class", "divider")
+                    var divider = chart.select('.divider')
+                    var dividerStroke = 3
+
+                    divider
+                         .append("line")
+                         .attr("x1", jpConfig.width * 0.25)
+                         .attr("y1", 0)
+                         .attr("x2", jpConfig.width * 0.25)
+                         .attr("y2", jpConfig.height * 0.2)
+                         .attr("stroke-width", dividerStroke)
+                         .attr("stroke", color);
+
+                    divider
+                         .append("line")
+                         .attr("x1", jpConfig.width * 0.25)
+                         .attr("y1", jpConfig.height * 0.2)
+                         .attr("x2", jpConfig.width * 0.15)
+                         .attr("y2", jpConfig.height * 0.5)
+                         .attr("stroke-width", dividerStroke)
+                         .attr("stroke", color);
+
+                    divider
+                         .append("line")
+                         .attr("x1", 0)
+                         .attr("y1", jpConfig.height * 0.5)
+                         .attr("x2", jpConfig.width * 0.15)
+                         .attr("y2", jpConfig.height * 0.5)
+                         .attr("stroke-width", dividerStroke)
+                         .attr("stroke", color);   
+
+                    divider
+                         .append("line")
+                         .attr("x1", jpConfig.width * 0.43)
+                         .attr("y1", jpConfig.height * 0.20)
+                         .attr("x2", jpConfig.width * 0.25)
+                         .attr("y2", jpConfig.height * 0.2)
+                         .attr("stroke-width", dividerStroke)
+                         .attr("stroke", color);  
+
+                    divider
+                         .append("line")
+                         .attr("x1", jpConfig.width * 0.43)
+                         .attr("y1", jpConfig.height * 0.20)
+                         .attr("x2", jpConfig.width * 0.43)
+                         .attr("y2", jpConfig.height * 0.55)
+                         .attr("stroke-width", dividerStroke)
+                         .attr("stroke", color);  
+
+                    divider
+                         .append("line")
+                         .attr("x1", jpConfig.width * 0.6)
+                         .attr("y1", jpConfig.height * 0.8)
+                         .attr("x2", jpConfig.width * 0.43)
+                         .attr("y2", jpConfig.height * 0.55)
+                         .attr("stroke-width", dividerStroke)
+                         .attr("stroke", color);  
+
+                    divider
+                         .append("line")
+                         .attr("x1", jpConfig.width * 0.6)
+                         .attr("y1", jpConfig.height * 0.8)
+                         .attr("x2", jpConfig.width * 0.43)
+                         .attr("y2", jpConfig.height * 0.55)
+                         .attr("stroke-width", dividerStroke)
+                         .attr("stroke", color);  
+
+                    chart.select('svg').append('g').attr("class", "textLabels")
+                    var textLabels = chart.select('.textLabels')
+                    var textStroke = 0.5
+                    textLabels
+                        .append("text")
+                        .attr("x", jpConfig.width * 0.05)
+                        .attr("y", jpConfig.height * 0.05)
+                        .attr("stroke-width", textStroke)               
+                        .attr("stroke", color) 
+                        .text('PACAF');
+
+                    textLabels
+                        .append("text")
+                        .attr("x", jpConfig.width * 0.05)
+                        .attr("y", jpConfig.height * 0.8)
+                        .attr("stroke-width", textStroke)               
+                        .attr("stroke", color) 
+                        .text('Alaska & Hawaii');
+
+                    textLabels
+                        .append("text")
+                        .attr("x", jpConfig.width * 0.7)
+                        .attr("y", jpConfig.height * 0.8)
+                        .attr("stroke-width", textStroke)               
+                        .attr("stroke", color) 
+                        .text('Europe');
+                       
+                })
                 // var geoDim = this.ndx.dimension(function(d){
                 //     return formats.geoCSAb[d.st];
                 // })
@@ -461,6 +732,17 @@ import { store } from '@/store/store'
 
 </script>
 
+<style src="../../../node_modules/dc/dc.css">
+</style>
+
 <style scoped>
-	
+	.expand-enter-active, .expand-leave-active {
+      transition: all 0.8s ease;
+      max-height: 500px;
+      overflow: hidden;
+    }
+    .expand-enter, .expand-leave-to {
+      max-height: 0;
+      opacity: 0;
+    }
 </style>

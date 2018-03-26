@@ -76,9 +76,9 @@ var getPieChart = (config)=>{
 
 var getGeoChart = (config)=>{
     config = updateChartConfig(config)
-    config.scale = config.width * 0.65
-    config.width = config.scale * 0.9
-    config.height = config.scale / 2.1
+    config.scale = config.width * config.size[0]
+    config.width = config.scale * config.size[1]
+    config.height = config.scale / config.size[2]
     var chart = dc.geoChoroplethChart("#dc-"+config.id+"-geoChoroplethChart")
     chart
       .width(config.width)
@@ -87,19 +87,25 @@ var getGeoChart = (config)=>{
       .dimension(config.dim)
       .group(config.group)
       .colors(config.colors)
-      .colorDomain(config.colorDomain)
       .colorAccessor(function(d){ if (d) return d[config.colorAccessor];})
+      //Resize the geo map 
       .projection(    
-                      d3.geo.albersUsa()
-                      .scale(config.scale)
-                      .translate([config.width / 2, config.height / 2])
+                      config.projection.scale(config.scale)
+                                       .translate([config.width / 2, config.height / 2])
                   )
-      .overlayGeoJson(config.features, config.geoName, function(d) {
-                        return d.properties.name;
-                    })
-      .on('preRedraw', function(c){
-        preRedraw(c, config)
-      })
+      //Hook the geo map
+      .overlayGeoJson(config.json.features, config.geoName, function(d) {
+                        return d.properties[config.propName];
+                    });
+
+    //Fix Color Range upon render/redraw
+    chart.on("preRender", function(chart) {
+      chart.colorDomain(d3.extent(chart.group().all(), function(d){return d.value.cnt}));
+      console.log(chart.group().all())
+    });
+    chart.on("preRedraw", function(chart) {
+      chart.colorDomain(d3.extent(chart.group().all(), function(d){return d.value.cnt}));
+    });
     return chart
 }
 
@@ -132,8 +138,7 @@ var preRedraw = (chart, config) => {
     chart.radius(config.radius || newHeight/2)
   }
   else if (/\-geoChoroplethChart$/.test(chart.anchorName())){
-    // chart.width(config.scale * 0.8)
-    //      .height(config.scale/2)
+    
   }
 }
 
