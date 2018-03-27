@@ -3,14 +3,6 @@
 		<transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
-            	<div class="row pt-2"> 
-                    <div class="col"></div>
-                    <div class="col-auto">
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                @click="resetAll">Reset All</button>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-auto">
                         Personnel:        
@@ -24,8 +16,13 @@
                         Average TOS: 
                         <span id="average"></span>
                     </div>
+                    <div class="col"></div>
+                    <div class="col-auto">
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="resetAll">Reset All</button>
+                    </div>
                 </div>
-                <br>
                 <div class="row">
 		            <div id="tour" class="col-4">
 		                <div id="dc-tour-rowchart">
@@ -63,29 +60,28 @@
                     </div>
             	</div>
                 <div class="row">
-                    
                         <div id="base" class="col-12">
-                            <transition name="expand" key="1">
-                            <div id="dc-base-barchart" v-show="baseLen<=50&&loaded">
-                                <h3>Base <span style="font-size: 14pt; opacity: 0.87;">Count {{ baseLen  }}  </span>
-                                <button type="button" 
+                                <div id="dc-base-select">
+                                </div>
+                                <h3>Base <span style="font-size: 14pt; opacity: 0.87;">Count </span>
+                                <button v-if="baseHasFilter" type="button"
                                         class="btn btn-danger btn-sm btn-rounded reset" 
-                                        style="display: none"
-                                        @click="resetChart('dc-base-barchart')">Reset</button>
+                                        @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
                                 </h3>
                                 <searchBox
                                     v-model:value="searchBase"
                                     size="3"
                                     label="Search Installation"
-                                    @sub="submit(searchBase,'dc-base-barchart')"
+                                    @sub="submit(searchBase,'dc-base-select')"
                                     button="true"
                                     :color="baseColor"
                                     :btnColor="baseColor"
                                 ></searchBox>
+                            <transition name="expand" key="1">
+                            <div id="dc-base-barchart" v-show="loaded&&baseLen<=50&&baseLen>0">
                             </div>
                              </transition>
                         </div>
-                   
                 </div>
                 <div class="row">
                     <div id="us" class="col-6">
@@ -108,9 +104,6 @@
                             </h3>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    
                 </div>
             </div>
         </transition-group>    
@@ -135,7 +128,8 @@ import searchBox from '@/components/searchBox'
                 baseColor: chartSpecs.baseChart.color,
                 baseDim: {},
                 baseGroup: {},
-                baseLen: 0
+                baseLen: 0,
+                baseHasFilter: false,
             }
         },
         computed: {
@@ -232,7 +226,7 @@ import searchBox from '@/components/searchBox'
             axios.post(axios_url_off_tos).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
-                console.log(axiosData)
+                //console.log(axiosData)
                 var objData = makeObject(axiosData)
                 console.log(objData)
                 this.data = objData
@@ -255,10 +249,9 @@ import searchBox from '@/components/searchBox'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    var k = getRandomInt(56)+1
-                    if (k < 10)
-                        obj.st = '0' + k;
-                    else obj.st = k + '';
+                    obj.CS2 = formats.geoCSAb[obj.CS]
+                    if (obj.CS2 === undefined)
+                        obj.CS2 = 'AA'
                     output.push(obj);
                 }
                 return output;
@@ -274,7 +267,7 @@ import searchBox from '@/components/searchBox'
                     p.months = p.months + +v.months
                     p.cnt = p.cnt + +v.cnt
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt
+                    p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt || 0
                     return p
                 }
 
@@ -282,7 +275,7 @@ import searchBox from '@/components/searchBox'
                     p.months = p.months - +v.months
                     p.cnt = p.cnt - +v.cnt
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt
+                    p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt || 0
                     return p
                 }
 
@@ -446,6 +439,16 @@ import searchBox from '@/components/searchBox'
                     }) 
 
                 //base(mpf)
+                var baseSelDim = this.ndx.dimension((d)=>{return d.DLOC});
+                //console.log(afscDim.group().top(Infinity))
+                var baseSelGrp = removeEmptyBins(baseSelDim.group().reduceSum(function(d) { return +d.cnt }));
+                var baseSelect = dc.selectMenu('#dc-base-select')
+                baseSelect
+                    .dimension(baseSelDim)
+                    .group(baseSelGrp)       
+                    .numberVisible(10)
+                    .controlsUseVisibility(true);
+
                 var baseConfig = {}
                 baseConfig.id = 'base'
                 this.setBase();
@@ -464,12 +467,26 @@ import searchBox from '@/components/searchBox'
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         this.baseLen = chart.group().all().length
+                        if (chart.hasFilter() || baseSelect.hasFilter()) 
+                            this.baseHasFilter = true;
+                        else this.baseHasFilter = false;
                         chart.selectAll('g.x text')
+                        .classed('disabled', this.baseLen > 50 || this.baseLen ==0 )
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
                             this.submit(d, 'dc-base-barchart')
                         })
                     })
+
+                baseChart.on('filtered', (chart)=>{
+                    this.baseLen = chart.group().all().length
+                })
+
+                baseSelect.on('filtered', (chart)=>{
+                    if (chart.hasFilter() || baseChart.hasFilter()) 
+                        this.baseHasFilter = true;
+                    else this.baseHasFilter = false;
+                })
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
@@ -485,9 +502,9 @@ import searchBox from '@/components/searchBox'
                 var usConfig = {}
                 usConfig.id = 'us';
                 usConfig.dim = this.ndx.dimension(function(d){
-                    return formats.geoCSAb[d.st];
+                    return d.CS2;
                 })
-                usConfig.group = usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 
                 usConfig.scale = 700;
                 usConfig.minHeight = 200
@@ -498,15 +515,13 @@ import searchBox from '@/components/searchBox'
                 usConfig.colorAccessor = 'cnt'
             
                 var statesJson = require('../../assets/geo.json')
-                console.log(statesJson)
                 usConfig.json = statesJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name'
 
-                usConfig.projection =   d3.geo.albersUsa()
+                usConfig.projection = d3.geo.albersUsa()
                 usConfig.size = [0.6 , 0.9, 2.1];
                                           
-
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
                         var myCount = 0;
@@ -518,10 +533,11 @@ import searchBox from '@/components/searchBox'
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
-                     return formats.geoCSAb[d.st];
+                     return d.CS2;
                 })
-                jpConfig.group = jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                
+                jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
+                // jpConfig.dim = usConfig.dim
+                // jpConfig.group = usConfig.group
                 jpConfig.size = [0.3 , 2.5, 0.8];
                 jpConfig.minHeight = 200
                 jpConfig.aspectRatio = 2
@@ -530,26 +546,16 @@ import searchBox from '@/components/searchBox'
                 jpConfig.colorAccessor = 'cnt'
             
                 var jpJson = require('../../assets/oconus.json')
-                console.log(jpJson)
                 jpConfig.json = jpJson
                 jpConfig.geoName = "state"
-                jpConfig.propName = "adm0_a3"
+                jpConfig.propName = "iso_a2"
 
                 var center = d3.geo.centroid(jpConfig.json)
-                console.log(center)
                 center[1] -= 13
-                console.log(center)
                 jpConfig.projection =   d3.geo.mercator()
                                           .center(center)
-
-                                          
-
+        
                 var jpChart = dchelpers.getGeoChart(jpConfig)
-
-                // var guamJson = require('../../assets/guam.json')
-                // jpChart.overlayGeoJson(guamJson.features, "guam", function(d) {
-                //         return d.properties.name_conv;
-                //     });
 
                 jpChart.title(function(d) {
                         var myCount = 0;
@@ -559,6 +565,8 @@ import searchBox from '@/components/searchBox'
                     });
 
                 jpChart.on('pretransition', (chart)=> {
+                    // console.log(chart.group().all())
+                    //console.log(usChart.filters())
                     var color = 'orange'
                     chart.select('svg').append('g').attr("class", "divider")
                     var divider = chart.select('.divider')
@@ -736,11 +744,25 @@ import searchBox from '@/components/searchBox'
 </style>
 
 <style scoped>
-	.expand-enter-active, .expand-leave-active {
+    #dc-base-select >>> .dc-select-menu{
+        display:none;
+    }
+
+    .disabled{
+        fill:white;
+    }
+	.expand-enter-active {
       transition: all 0.8s ease;
-      max-height: 500px;
+      max-height: 300px;
       overflow: hidden;
     }
+
+    .expand-leave-active {
+      transition: all 0.4s ease;
+      max-height: 300px;
+      overflow: hidden;
+    }
+
     .expand-enter, .expand-leave-to {
       max-height: 0;
       opacity: 0;

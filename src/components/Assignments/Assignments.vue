@@ -15,6 +15,20 @@
                 <a class="nav-link" @click="dynamicComponent='join'" data-toggle="tab">Join Spouse</a>
             </li>
         </ul>
+        <div class="row" v-if="dynamicComponent=='offTOS' || dynamicComponent=='enlTOS'">
+            <div class="centered">
+                <button :class="['btn',
+                        dynamicComponent=='offTOS'?'btn-dark-green':'btn-mdb-color','btn-md','myBtn']"
+                        @click.prevent.cancel="dynamicComponent='offTOS'">
+                        Officer 
+                </button>
+                <button :class="['btn',
+                        dynamicComponent=='enlTOS'?'btn-dark-green':'btn-mdb-color','btn-md','myBtn']"
+                        @click.prevent.cancel="dynamicComponent='enlTOS'">
+                        Enlisted  
+                </button>
+            </div>
+        </div>
         <transition name="fade" mode="out-in">
             <component :is="dynamicComponent"></component>
         </transition>
@@ -23,6 +37,7 @@
 
 <script>
 import offTOS from '@/components/Assignments/OfficerTos'
+import enlTOS from '@/components/Assignments/OfficerTos'
 import Join from '@/components/Assignments/Joint'
 import { store } from '@/store/store'
 
@@ -39,12 +54,20 @@ export default {
     },
     components: {
         offTOS,
+        enlTOS,
         Join
     }
 }
 </script>
 
 <style scoped>
+.active{
+    border-color:red;
+}
+.centered{
+    float: none;
+    margin: 0 auto;
+}
 .nav-tabs .nav-link{
     color:black;
 }
