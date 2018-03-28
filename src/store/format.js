@@ -1413,14 +1413,16 @@ export default {
         "Not Complete": 1
 	},
     enlRecommendFormat: {
-        "NR": "Not Recommended",
-        "NN": "Not Rated",
+        "RD": "Redacted",
+        "NR": "Not Rated",
+        "NN": "Not Recommended",
         "NA": "N/A",
         "PR": "Promote",
         "MP": "Must Promote",
         "PN": "Promote Now"
     },
     enlRecommendOrder: {
+        "Redacted": 6,
         "Not Recommended": 5,
         "Not Rated": 4,
         "N/A": 3,
