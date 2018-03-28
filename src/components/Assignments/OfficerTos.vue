@@ -78,7 +78,7 @@
                                     :btnColor="baseColor"
                                 ></searchBox>
                             <transition name="expand" key="1">
-                            <div id="dc-base-barchart" v-show="loaded&&baseLen<=50&&baseLen>0">
+                            <div id="dc-base-barchart" v-show="loaded&&showBase">
                             </div>
                              </transition>
                         </div>
@@ -126,10 +126,17 @@ import searchBox from '@/components/searchBox'
                 loaded: false,
                 searchBase: '',
                 baseColor: chartSpecs.baseChart.color,
-                baseDim: {},
-                baseGroup: {},
                 baseLen: 0,
                 baseHasFilter: false,
+                showBase: false
+            }
+        },
+        watch: {
+            baseLen: function(val){
+                if (val > 0 && val < 51){
+                    //this.showBase = true;
+                    setTimeout(()=>{ this.showBase = true; }, 500);
+                }else this.showBase = false;
             }
         },
         computed: {
@@ -139,18 +146,6 @@ import searchBox from '@/components/searchBox'
           allGroup: function(){
             return this.ndx.groupAll()
           },
-          // baseLen: function(){
-          //   dc.chartRegistry.list().filter(chart=>{
-          //       return chart.anchorName() == 'dc-base-barchart'
-          //   }).forEach(chart=>{
-          //       return chart.group().all().length
-          //   })
-          // },
-          // baseGroupLen: function(){
-          //    if (this.baseGroup && this.baseGroup.all())
-          //        return this.baseGroup.all().length
-          //    else return 0
-          // },
         },
         methods: {
           resetAll: (event)=>{
@@ -184,31 +179,6 @@ import searchBox from '@/components/searchBox'
             })
             dc.redrawAll()
           },
-          tosAdd(p,v) {
-            p.months = p.months + +v.months
-            p.cnt = p.cnt + +v.cnt
-            //if divide by 0, set to 0, and if NaN, set to zero
-            p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt
-            return p
-          },
-          tosRemove(p,v) {
-            p.months = p.months - +v.months
-            p.cnt = p.cnt - +v.cnt
-            //if divide by 0, set to 0, and if NaN, set to zero
-            p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt
-            return p
-          },
-          tosInitial() {
-            return {
-                months: 0,
-                cnt: 0,
-                average: 0,
-            }
-          },
-          setBase(){
-            this.baseDim = this.ndx.dimension(function(d){return d.DLOC});
-            this.baseGroup = this.baseDim.group().reduce(this.tosAdd, this.tosRemove, this.tosInitial)
-          }
         },
         components: {
             'autocomplete': AutoComplete,
@@ -451,7 +421,6 @@ import searchBox from '@/components/searchBox'
 
                 var baseConfig = {}
                 baseConfig.id = 'base'
-                this.setBase();
                 baseConfig.dim = this.ndx.dimension(function(d){return d.DLOC});
                 var basePercent = baseConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
                 baseConfig.group = removeEmptyBins(basePercent)
@@ -466,12 +435,17 @@ import searchBox from '@/components/searchBox'
                     })
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                             .attr('fill','white')
                         this.baseLen = chart.group().all().length
                         if (chart.hasFilter() || baseSelect.hasFilter()) 
                             this.baseHasFilter = true;
                         else this.baseHasFilter = false;
+                        setTimeout(()=>{ 
+                            chart.selectAll('g.x text')
+                                 .attr('fill','black') 
+                        }, 500);
                         chart.selectAll('g.x text')
-                        .classed('disabled', this.baseLen > 50 || this.baseLen ==0 )
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
                             this.submit(d, 'dc-base-barchart')
@@ -594,14 +568,14 @@ import searchBox from '@/components/searchBox'
                          .append("line")
                          .attr("x1", 0)
                          .attr("y1", jpConfig.height * 0.5)
-                         .attr("x2", jpConfig.width * 0.15)
+                         .attr("x2", jpConfig.width * 0.152)
                          .attr("y2", jpConfig.height * 0.5)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);   
 
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.43)
+                         .attr("x1", jpConfig.width * 0.432)
                          .attr("y1", jpConfig.height * 0.20)
                          .attr("x2", jpConfig.width * 0.25)
                          .attr("y2", jpConfig.height * 0.2)
@@ -613,7 +587,7 @@ import searchBox from '@/components/searchBox'
                          .attr("x1", jpConfig.width * 0.43)
                          .attr("y1", jpConfig.height * 0.20)
                          .attr("x2", jpConfig.width * 0.43)
-                         .attr("y2", jpConfig.height * 0.55)
+                         .attr("y2", jpConfig.height * 0.552)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);  
 
@@ -766,5 +740,17 @@ import searchBox from '@/components/searchBox'
     .expand-enter, .expand-leave-to {
       max-height: 0;
       opacity: 0;
+    }
+
+    .fade-enter-active {
+        transition: all 0.5s; }
+    .fade-leave-active {
+        transition: all 0.2s;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+    }
+    .fade-enter-to, .fade-leave {
+        opacity: 1;
     }
 </style>

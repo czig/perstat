@@ -567,4 +567,16 @@ import { store } from '@/store/store'
       max-height: 0;
       opacity: 0;
     }
+
+    .fade-enter-active {
+        transition: all 0.5s; }
+    .fade-leave-active {
+        transition: all 0.2s;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+    }
+    .fade-enter-to, .fade-leave {
+        opacity: 1;
+    }
 </style>
