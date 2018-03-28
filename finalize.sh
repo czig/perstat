@@ -1,6 +1,6 @@
 #!/bin/bash
 
-npm run build;
+yarn run build;
 mv ./fonts ./dist/static/.;
 rm ./dist/static/js/*.map;
 rm ./dist/static/*.png;
