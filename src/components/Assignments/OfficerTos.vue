@@ -18,6 +18,9 @@
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="resetAll">Reset All</button>
@@ -212,6 +215,7 @@ import searchBox from '@/components/searchBox'
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -219,12 +223,66 @@ import searchBox from '@/components/searchBox'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    obj.CS2 = formats.geoCSAb[obj.CS]
-                    if (obj.CS2 === undefined)
-                        obj.CS2 = 'AA'
-                    output.push(obj);
+
+                    var obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
+                    output.push(obj2);
                 }
                 return output;
+            }
+
+            var locFormat = {
+                '1' : 'CONUS',
+                '2' : 'OCONUS',
+            }
+
+            var locFormatOrder = {
+                'CONUS' : 0,
+                'OCONUS': 1,
+            }
+
+            var locStFormat = {
+                'S' : 'OS SHORT',
+                'L' : 'OS LONG',
+                'C' : 'CONUS'
+            }
+
+            var locStFormatOrder = {
+                'CONUS' : 0,
+                'OS SHORT': 1,
+                'OS LONG': 2,
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.MAJCOM_Assign_Type = locFormat[given.LOC]
+                obj.Tour = locStFormat[given.LOC_ST]
+                obj.Grade = formats.gradeFormat[given.grd]
+                obj.Base = given.DLOC;
+
+                obj.Country_State = formats.geoCSAb[given.CS]
+
+                obj.Total_Months = given.months
+                obj.Inventory = given.cnt
+                obj.Average_TOS = obj.Total_Months/obj.Inventory === Infinity ? 0 : obj.Total_Months/obj.Inventory || 0
+
+                // if (obj.CS2 === undefined)
+                //     obj.CS2 = 'AA'
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
 
             var renderCharts = () => {
@@ -234,16 +292,16 @@ import searchBox from '@/components/searchBox'
 
                 //reduce functions
                 function tosAdd(p,v) {
-                    p.months = p.months + +v.months
-                    p.cnt = p.cnt + +v.cnt
+                    p.months = p.months + +v.Total_Months
+                    p.cnt = p.cnt + +v.Inventory
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt || 0
                     return p
                 }
 
                 function tosRemove(p,v) {
-                    p.months = p.months - +v.months
-                    p.cnt = p.cnt - +v.cnt
+                    p.months = p.months - +v.Total_Months
+                    p.cnt = p.cnt - +v.Inventory
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt || 0
                     return p
@@ -270,7 +328,7 @@ import searchBox from '@/components/searchBox'
 
                 //Number Display for cnt
                 var count = this.ndx.groupAll().reduceSum(function(d) { 
-                	return +d.cnt 
+                	return +d.Inventory 
                	})
                 var countND = dc.numberDisplay("#count")
                 countND.group(count)
@@ -284,7 +342,7 @@ import searchBox from '@/components/searchBox'
 
                 //Number Display for months
                 var months = this.ndx.groupAll().reduceSum(function(d) { 
-                	return +d.months 
+                	return +d.Total_Months 
                	})
                 var monthsND = dc.numberDisplay("#months")
                 monthsND.group(months)
@@ -305,22 +363,13 @@ import searchBox from '@/components/searchBox'
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number </span>"
                 })
-               
-                var locFormat = {
-                	'1' : 'CONUS',
-                	'2' : 'OCONUS',
-                }
-
-                var locFormatOrder = {
-                	'CONUS' : 0,
-                	'OCONUS': 1,
-                }
+          
 
                 //Rowchart for tour
                 var tourConfig = {};
                 tourConfig.id = 'tour';
                 tourConfig.dim = this.ndx.dimension(function (d) {
-                    return locFormat[d.LOC];
+                    return d.MAJCOM_Assign_Type;
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
@@ -340,24 +389,11 @@ import searchBox from '@/components/searchBox'
                       return locFormatOrder[d.key]
                     })        
 
-
-                var locStFormat = {
-                	'S' : 'OS SHORT',
-                	'L' : 'OS LONG',
-                	'C' : 'CONUS'
-                }
-
-                var locStFormatOrder = {
-                	'CONUS' : 0,
-                	'OS SHORT': 1,
-                	'OS LONG': 2,
-                }
-
                 //Rowchart for tour
                 var tourStConfig = {};
                 tourStConfig.id = 'tour_st';
                 tourStConfig.dim = this.ndx.dimension(function (d) {
-                    return locStFormat[d.LOC_ST];
+                    return d.Tour;
                 })
 
                 tourStConfig.group = tourStConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
@@ -381,7 +417,7 @@ import searchBox from '@/components/searchBox'
                 var gradeConfig = {}
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function(d){
-                    return formats.gradeFormat[d.grd];
+                    return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
                 gradeConfig.minHeight = 280
@@ -409,9 +445,9 @@ import searchBox from '@/components/searchBox'
                     }) 
 
                 //base(mpf)
-                var baseSelDim = this.ndx.dimension((d)=>{return d.DLOC});
+                var baseSelDim = this.ndx.dimension((d)=>{return d.Base});
                 //console.log(afscDim.group().top(Infinity))
-                var baseSelGrp = removeEmptyBins(baseSelDim.group().reduceSum(function(d) { return +d.cnt }));
+                var baseSelGrp = removeEmptyBins(baseSelDim.group().reduceSum(function(d) { return +d.Inventory }));
                 var baseSelect = dc.selectMenu('#dc-base-select')
                 baseSelect
                     .dimension(baseSelDim)
@@ -421,7 +457,7 @@ import searchBox from '@/components/searchBox'
 
                 var baseConfig = {}
                 baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.DLOC});
+                baseConfig.dim = this.ndx.dimension(function(d){return d.Base});
                 var basePercent = baseConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
                 baseConfig.group = removeEmptyBins(basePercent)
                 baseConfig.minHeight = chartSpecs.baseChart.minHeight
@@ -463,7 +499,7 @@ import searchBox from '@/components/searchBox'
                 })
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
-                var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory })
                 var invND = dc.numberDisplay("#inv")
                 invND.group(inv)
                     .formatNumber(d3.format("d"))
@@ -476,7 +512,7 @@ import searchBox from '@/components/searchBox'
                 var usConfig = {}
                 usConfig.id = 'us';
                 usConfig.dim = this.ndx.dimension(function(d){
-                    return d.CS2;
+                    return d.Country_State;
                 })
                 usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 
@@ -507,7 +543,7 @@ import searchBox from '@/components/searchBox'
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
-                     return d.CS2;
+                     return d.Country_State;
                 })
                 jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 // jpConfig.dim = usConfig.dim
@@ -635,8 +671,8 @@ import searchBox from '@/components/searchBox'
                         .attr("stroke-width", textStroke)               
                         .attr("stroke", color) 
                         .text('Europe');
-                       
                 })
+
                 // var geoDim = this.ndx.dimension(function(d){
                 //     return formats.geoCSAb[d.st];
                 // })
@@ -681,6 +717,21 @@ import searchBox from '@/components/searchBox'
                 //             myCount = d.value.cnt;
                 //         return "State: " + d.key + "\n Count: " + myCount;
                 //     });
+
+                 //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = tourConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT Officer_Average_TOS' + ' ' + store.state.asDate + myFilters + ' .csv');
+                });
 
             	// after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

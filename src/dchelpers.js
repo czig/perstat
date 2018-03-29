@@ -101,7 +101,7 @@ var getGeoChart = (config)=>{
     //Fix Color Range upon render/redraw
     chart.on("preRender", function(chart) {
       chart.colorDomain(d3.extent(chart.group().all(), function(d){return d.value.cnt}));
-      console.log(chart.group().all())
+      //console.log(chart.group().all())
     });
     chart.on("preRedraw", function(chart) {
       chart.colorDomain(d3.extent(chart.group().all(), function(d){return d.value.cnt}));

@@ -44,6 +44,9 @@
                     </div>
                     
                     <div class="col-auto">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button> 
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">Reset All</button>
@@ -113,6 +116,7 @@
                         </div>
                         <div v-else class="col-8">
                             <afsc
+                                v-model:value="sa"
                                 :ndx="ndx"
                                 :ylabel="ylabel"
                                 :selected="selected"
@@ -194,6 +198,7 @@
                 selected:'RR',
                 searchMajcom: "",
                 searchBase: "",
+                sa: "",
                 startAfsc:false,
                 loaded: false,
                 asDate: 'Undetermined',
@@ -271,18 +276,18 @@
             dc.redrawAll()
           },
           retentionAdd(p,v) {
-            p.I = p.I + +v.INV
-            p.E = p.E + +v.ELIG
-            p.K = p.K + +v.KEEP
+            p.I = p.I + +v.Inventory
+            p.E = p.E + +v.Eligible
+            p.K = p.K + +v.Keep
             //if divide by 0, set to 0, and if NaN, set to zero
             p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
             p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
             return p
           },
           retentionRemove(p,v) {
-            p.I = p.I - +v.INV
-            p.E = p.E - +v.ELIG
-            p.K = p.K - +v.KEEP
+            p.I = p.I - +v.Inventory
+            p.E = p.E - +v.Eligible
+            p.K = p.K - +v.Keep
             //if divide by 0, set to 0, and if NaN, set to zero
             p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
             p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
@@ -329,6 +334,7 @@
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -336,9 +342,40 @@
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    output.push(obj);
+                    obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
+                    output.push(obj2);
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.MAJCOM = formats.majFormat[given.MAJ]
+                obj.AFSC = given.AFSC
+                obj.MPF = formats.mpfFormat[given.MPF]
+                obj.Year = "20" + given.FY
+                obj.Category = formats.catFormat[given.CAT]
+                obj.Inventory = given.INV
+                obj.Eligible  = given.ELIG
+                obj.Keep = given.KEEP
+                obj.Keep_Rate = obj.Keep/obj.Inventory === Infinity ? 0 : Math.round((obj.Keep/obj.Inventory)*1000)/10 || 0;
+                obj.Reenlistment_Rate = obj.Keep/obj.Eligible === Infinity ? 0 : Math.round((obj.Keep/obj.Eligible)*1000)/10 || 0;
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
             
             var renderCharts = () => {
@@ -399,7 +436,7 @@
                 var yearConfig = {};
                 yearConfig.id = 'year';
                 yearConfig.dim = this.ndx.dimension(function (d) {
-                    return "20" + d.FY;
+                    return d.Year;
                 })
                 yearConfig.group = yearConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 yearConfig.minHeight = 80 
@@ -416,7 +453,7 @@
                 var catConfig = {};
                 catConfig.id = 'cat';
                 catConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.catFormat[d.CAT];
+                    return d.Category;
                 })
                 catConfig.group = catConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 catConfig.minHeight = 100 
@@ -432,7 +469,7 @@
                 //Majcom
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJ]})
+                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM })
                 var majcomInv = majcomConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 majcomConfig.group = this.removeEmptyBins(majcomInv)
                 majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
@@ -471,7 +508,7 @@
                 //base(mpf)
                 var baseConfig = {}
                 baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
+                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
                 var baseGroup = baseConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
                 baseConfig.group = this.removeEmptyBins(baseGroup)
                 baseConfig.minHeight = chartSpecs.baseChart.minHeight 
@@ -495,6 +532,31 @@
 
                 //Call The AFSC Component HERE
                 this.startAfsc = true;
+
+                //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = majcomConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        console.log(d.anchorName().toUpperCase())
+                        if (d.anchorName().toUpperCase().includes('AFSC')){
+                            //console.log('AFSC Filter: ' + this.sa)
+                            if (d.anchorName().toUpperCase().includes('ROW') && this.sa){
+                                if (this.sa.length < 6){
+                                    var num = 6 - this.sa.length;
+                                    var txt = Array(num).join("X")
+                                    myFilters += ' (AFSC_' + this.sa + txt + ')'
+                                }   else myFilters += ' (' + this.sa + ')'
+                            }
+                        }else if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT Enlisted_Retention' + ' ' + store.state.asDate + myFilters + '.csv');
+                });
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

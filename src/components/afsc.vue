@@ -43,7 +43,7 @@ TODO: Find A way to load component (With Data) Without v-if
     <h3>
         AFSC 
         <span v-if="Current>1">[ {{afscFilter}} ] </span>
-        <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+        <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
         <button type="button" 
             class="btn btn-danger btn-sm btn-rounded reset" 
             style="visibility: hidden"
@@ -69,6 +69,10 @@ import { store } from '@/store/store'
 
 export default {
 	props:{
+        value: {
+            type: String, 
+            required: false
+        },
 		ndx:{
 			type: Object,
             required: true
@@ -137,6 +141,9 @@ export default {
 				store.state.resetAfsc = false;
 			}
 		},
+        searchAfsc: function(val){
+            this.$emit('input', val);
+        },
 	},
 	methods:{
 		addDigit(val){
@@ -313,10 +320,10 @@ export default {
         afscConfig.id = 'afsc';
         afscConfig.dim = this.Dim[0];
         afscConfig.group = this.Group[0];
-        console.log('minheight:')
-        console.log(this.minHeight)
-        console.log('aspectration:')
-        console.log(this.aspectRatio)
+        // console.log('minheight:')
+        // console.log(this.minHeight)
+        // console.log('aspectration:')
+        // console.log(this.aspectRatio)
         afscConfig.minHeight = this.minHeight || 200 
         afscConfig.aspectRatio = this.aspectRatio || 1.8;
         afscConfig.margins = {top: 0, left: 20, right: 30, bottom: 20}
@@ -337,9 +344,10 @@ export default {
                 var len = this.searchAfsc.length;
                 this.anim=false;
                 setTimeout(()=>{ this.anim=true; }, 800);
-                
                 this.addDigit(filter.substring(len,len+1))
             }
+            if (this.Freeze)
+                this.$emit('input', filter);
         });
 
         /*

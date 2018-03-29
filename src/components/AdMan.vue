@@ -207,26 +207,38 @@ import searchBox from '@/components/searchBox'
 
                 for (i=0; i < data.length; i++) {
                     obj = {};
-                    obj2 = {};
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    obj2.File_Type = formats.type[obj.type]
-                    obj2.Grade = formats.gradeFormat[obj.grade]
-                    obj2.MAJCOM = formats.majFormat[obj.maj]
-                    obj2.MPF = formats.mpfFormat[obj.mpf]
-                    obj2.Inventory = obj.count
-
-                    for (var key in obj2) {
-                        if (obj2[key] === undefined){
-                            console.log('Empty Value of ' + key)
-                            console.log(obj)
-                            obj2[key] = "UNKNOWN"
-                        }
-                    }
+                    var obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
                     output.push(obj2);
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.File_Type = formats.type[given.type]
+                obj.Grade = formats.gradeFormat[given.grade]
+                obj.MAJCOM = formats.majFormat[given.maj]
+                obj.MPF = formats.mpfFormat[given.mpf]
+                obj.Inventory = given.count
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
 
             var renderCharts = () => {
