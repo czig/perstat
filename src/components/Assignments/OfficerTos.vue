@@ -198,7 +198,7 @@ import searchBox from '@/components/searchBox'
                 var axiosData = response.data.data
                 //console.log(axiosData)
                 var objData = makeObject(axiosData)
-                console.log(objData)
+                //console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()

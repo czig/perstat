@@ -23,11 +23,10 @@ export default {
 <style>
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;
-    transform: rotate(-45deg);
+    transform: translate(-10,0)rotate(-45deg);
     cursor: pointer;
     cursor: hand;
     pointer-events: auto;
-
   }
 
 div[id*="-rowchart"] g.row text{
