@@ -136,7 +136,7 @@ import searchBox from '@/components/searchBox'
         },
         watch: {
             baseLen: function(val){
-                if (val > 0 && val < 51){
+                if (val > 0 && val < 60){
                     //this.showBase = true;
                     setTimeout(()=>{ this.showBase = true; }, 500);
                 }else this.showBase = false;
@@ -537,7 +537,7 @@ import searchBox from '@/components/searchBox'
                         var myCount = 0;
                         if (d.value)
                             myCount = d.value.cnt;
-                        return "State: " + d.key + "\n Count: " + myCount;
+                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Count: " + myCount;
                     });
 
                 var jpConfig = {}
@@ -571,7 +571,7 @@ import searchBox from '@/components/searchBox'
                         var myCount = 0;
                         if (d.value)
                             myCount = d.value.cnt;
-                        return d.key + "\n Count: " + myCount;
+                        return formats.geoCS1[d.key] + "\n Count: " + myCount;
                     });
 
                 jpChart.on('pretransition', (chart)=> {
