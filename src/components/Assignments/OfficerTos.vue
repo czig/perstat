@@ -4,16 +4,16 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row">
-                    <div class="col-auto">
+                    <!-- <div class="col-auto">
                         Personnel:        
                         <span id="count"></span>
                     </div>
                     <div class="col-auto">
                         Total TOS: 
                         <span id="months"></span>
-                    </div>
+                    </div> -->
                     <div class="col-auto">
-                        Average TOS: 
+                        Average Time on Station for the last 5 years: 
                         <span id="average"></span>
                     </div>
                     <div class="col"></div>
@@ -30,7 +30,7 @@
 		            <div id="tour" class="col-4">
 		                <div id="dc-tour-rowchart">
 		                    <h3>Majcom Assign Type <span style="font-size: 14pt; opacity: 0.87;">
-		                    	Average
+		                    	Avg. TOS
 		                    </span>
 		                    <button type="button" 
 		                            class="btn btn-danger btn-sm btn-rounded reset" 
@@ -42,7 +42,7 @@
             		<div id="tour_st" class="col-3">
 		                <div id="dc-tour_st-rowchart">
 		                    <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
-		                    	Average
+		                    	Avg. TOS
 		                    </span>
 		                    <button type="button" 
 		                            class="btn btn-danger btn-sm btn-rounded reset" 
@@ -53,7 +53,7 @@
             		</div>
             		<div id="grade" class="col-5">
                         <div id="dc-grade-barchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">Count</span>
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
@@ -66,7 +66,7 @@
                         <div id="base" class="col-12">
                                 <div id="dc-base-select">
                                 </div>
-                                <h3>Base <span style="font-size: 14pt; opacity: 0.87;">Count </span>
+                                <h3>Base <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
                                 <button v-if="baseHasFilter" type="button"
                                         class="btn btn-danger btn-sm btn-rounded reset" 
                                         @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
@@ -89,7 +89,7 @@
                 <div class="row">
                     <div id="us" class="col-6">
                         <div id="dc-us-geoChoroplethChart">
-                            <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Count</span>
+                            <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
@@ -99,7 +99,7 @@
                     </div>
                     <div id="jp" class="col-6">
                         <div id="dc-jp-geoChoroplethChart">
-                            <h3>OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Count</span>
+                            <h3>OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
@@ -295,7 +295,7 @@ import searchBox from '@/components/searchBox'
                     p.months = p.months + +v.Total_Months
                     p.cnt = p.cnt + +v.Inventory
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt || 0
+                    p.average = p.months/p.cnt === Infinity ? 0 : +((p.months/p.cnt).toFixed(2)) || 0
                     return p
                 }
 
@@ -303,7 +303,7 @@ import searchBox from '@/components/searchBox'
                     p.months = p.months - +v.Total_Months
                     p.cnt = p.cnt - +v.Inventory
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.average = p.months/p.cnt === Infinity ? 0 : p.months/p.cnt || 0
+                    p.average = p.months/p.cnt === Infinity ? 0 : +((p.months/p.cnt).toFixed(2)) || 0
                     return p
                 }
 
@@ -320,7 +320,7 @@ import searchBox from '@/components/searchBox'
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value['cnt'] != 0
+                                return d.value['average'] != 0
                             })
                         }
                     }
@@ -361,7 +361,7 @@ import searchBox from '@/components/searchBox'
                     .formatNumber(d3.format(".2f"))
                     .valueAccessor(function(d) { return d.average})
                     .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number </span>"
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number months</span>"
                 })
           
 
@@ -383,7 +383,7 @@ import searchBox from '@/components/searchBox'
 
                 tourChart
                     .valueAccessor((d)=> {
-                        return d.value.cnt;
+                        return d.value.average;
                     })
                     .ordering(function(d){
                       return locFormatOrder[d.key]
@@ -407,7 +407,7 @@ import searchBox from '@/components/searchBox'
 
                 tourStChart
                     .valueAccessor((d)=> {
-                        return d.value.cnt;
+                        return d.value.average;
                     })
                     .ordering(function(d){
                       return locStFormatOrder[d.key]
@@ -429,7 +429,7 @@ import searchBox from '@/components/searchBox'
 
                 gradeChart
                     .valueAccessor((d) => {
-                        return d.value.cnt
+                        return d.value.average
                     })
                     .elasticX(true)
                     .ordinalColors(["#1976d2","#ff4500"])
@@ -467,7 +467,7 @@ import searchBox from '@/components/searchBox'
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
                     .valueAccessor((d) => {
-                        return d.value.cnt
+                        return d.value.average
                     })
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
@@ -480,7 +480,7 @@ import searchBox from '@/components/searchBox'
                         setTimeout(()=>{ 
                             chart.selectAll('g.x text')
                                  .attr('fill','black') 
-                        }, 500);
+                        }, 2000);
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
@@ -521,8 +521,7 @@ import searchBox from '@/components/searchBox'
                 usConfig.aspectRatio = 2
 
                 usConfig.colors =[  "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
-                usConfig.colorDomain = [7000, 8000]
-                usConfig.colorAccessor = 'cnt'
+                usConfig.colorAccessor = 'average'
             
                 var statesJson = require('../../assets/geo.json')
                 usConfig.json = statesJson
@@ -535,9 +534,12 @@ import searchBox from '@/components/searchBox'
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
                         var myCount = 0;
-                        if (d.value)
+                        var myAverage = 0;
+                        if (d.value){
                             myCount = d.value.cnt;
-                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Count: " + myCount;
+                            myAverage = d.value.average;
+                        }
+                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
                     });
 
                 var jpConfig = {}
@@ -552,8 +554,8 @@ import searchBox from '@/components/searchBox'
                 jpConfig.minHeight = 200
                 jpConfig.aspectRatio = 2
 
-                jpConfig.colors =["#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
-                jpConfig.colorAccessor = 'cnt'
+                jpConfig.colors =[  "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
+                jpConfig.colorAccessor = 'average'
             
                 var jpJson = require('../../assets/oconus.json')
                 jpConfig.json = jpJson
@@ -569,9 +571,12 @@ import searchBox from '@/components/searchBox'
 
                 jpChart.title(function(d) {
                         var myCount = 0;
-                        if (d.value)
+                        var myAverage = 0;
+                        if (d.value){
                             myCount = d.value.cnt;
-                        return formats.geoCS1[d.key] + "\n Count: " + myCount;
+                            myAverage = d.value.average;
+                        }
+                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
                     });
 
                 jpChart.on('pretransition', (chart)=> {

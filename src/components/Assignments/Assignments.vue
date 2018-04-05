@@ -63,6 +63,18 @@ export default {
 </script>
 
 <style scoped>
+
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
+
+#radioSelect{
+    margin-bottom: 0px;
+}
+
 .active{
     border-color:red;
 }

@@ -4,6 +4,18 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
+                    <div id="radioSelect" class="col form-group">
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="count" v-model="selected" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Number of Marriages</span>
+                        </label>
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radio" type="radio" id="radio2" value="percent" v-model="selected" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Match Percentage</span>
+                        </label>
+                    </div>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" 
@@ -14,37 +26,37 @@
             	<div class="row">
 	                <div v-show="select.length > 1" class="row">
 	                    	<div class="col-auto">
-		                        Count:
+		                        Marriages (Mil to Mil):
 		                        <span id="count"></span>
 		                    </div>
-		                    <div class="col-auto">
+		                    <!-- <div class="col-auto">
 		                        Match:
 		                        <span id="match"></span>
-		                    </div>
+		                    </div> -->
 		                    <div class="col-auto">
-		                        Percent:
+		                        Matched:
 		                        <span id="percent"></span>
 		                    </div>
 	                </div>
 	                <div v-show="select.length <= 1" class="row">
 	                    	<div class="col-auto">
-		                        Count:
+		                      Marriages (Mil to Mil):
 		                        <span id="count2"></span>
 		                    </div>
-		                    <div class="col-auto">
+		                    <!-- <div class="col-auto">
 		                        Match:
 		                        <span id="match2"></span>
-		                    </div>
+		                    </div> -->
 		                    <div class="col-auto">
-		                        Percent:
-		                        <span id="percent2"></span>
+		                        Matched:
+                                <span id="percent2"></span>
 		                    </div>
 	                </div>
                 </div>
                 <div class="row">
                 	<div id="grp" class="col-3">
                                 <div id="dc-grp-rowchart">
-                                    <h3>Type <span style="font-size: 14pt; opacity: 0.87;">Percent</span>
+                                    <h3> Join Type <span style="font-size: 14pt; opacity: 0.87;"> {{ ylabel }} </span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
                                             style="display: none"
@@ -53,11 +65,11 @@
                                 </div>
                     </div>
 					<div class="col-4">
-						<h3>Grade 
+						<h3> Pairing by Grade 
 							<button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    v-show="select"
-                                    @click="select='';resetChart('dc-gradeA-barchart')">Reset</button> 
+                                    v-show="gradeHasFilter"
+                                    @click="gradeHasFilter=false;select='';resetChart('dc-gradeA-barchart');resetChart('dc-bar-barchart')">Reset</button> 
 
                         </h3>
                         <div class="well">
@@ -90,7 +102,7 @@
 			        <div  id="bar" class="col-5">
 			        		<transition name="expandMid">
 	                        <div id="dc-bar-barchart" v-show="select.length > 1" key="1">
-	                            <h3>Paired <span style="font-size: 14pt; opacity: 0.87;"> Count </span>
+	                            <h3>Paired <span style="font-size: 14pt; opacity: 0.87;"> {{ ylabel }} </span>
 	                            <button type="button" 
 	                                    class="btn btn-danger btn-sm btn-rounded reset" 
 	                                    style="display: none"
@@ -119,7 +131,9 @@ import { store } from '@/store/store'
 				loaded: false,
 				select: '',
 				grp: 1,
+                selected: 'count',
 				gradeADim: {},
+                gradeHasFilter: false,
 				gradeAGroup: {all:function(){return ''}},
 				grades: [],
 				gradesAll: [ "(01) 2LT", "(02) 1LT", "(03) CPT", "(04) MAJ", "(05) LTC", "(E1) AB", "(E2) AMN", "(E3) A1C", "(E4) SRA", "(E5) SSG", "(E6) TSG", "(E7) MSG", "(E8) SMS" ],
@@ -141,7 +155,11 @@ import { store } from '@/store/store'
 		        	}
 			    },
 			    deep: true
-			}
+			},
+            select(val){
+                if (val)
+                    this.gradeHasFilter=true;
+            }
 		},
 		computed: {
 	        ndx: function(){
@@ -155,7 +173,15 @@ import { store } from '@/store/store'
 	        },
 	        gradeALen: function(){
 	        	return this.gradeAGroup.all()
-	        }
+	        },
+             ylabel: function() {
+                if (this.selected === "percent") {
+                    return "Match (%)"
+                }
+                else if (this.selected === "count") {
+                    return "# Marriages"
+                }
+            }
         },
         methods: {
         	selectGrd(g){
@@ -163,6 +189,7 @@ import { store } from '@/store/store'
         		this.submit(g, 'dc-gradeA-barchart');
         	},
           	resetAll(event){
+                this.gradeHasFilter=false;
           		this.selectGrd('')
 	            dc.filterAll()
 	            dc.redrawAll()
@@ -175,6 +202,11 @@ import { store } from '@/store/store'
 	            })
 	            dc.redrawAll()
 	        },
+            radioButton: () => {
+                setTimeout(function() {
+                    dc.redrawAll()
+                },10)
+            },
 	        submit: (text,id) => {
 	            dc.chartRegistry.list().filter(chart=>{
 	                return chart.anchorName() == id 
@@ -406,10 +438,13 @@ import { store } from '@/store/store'
                 barChart
                     .elasticX(true)
                     .valueAccessor((d) => {
-                        return d.value['count']
+                        return d.value[this.selected]
                     })
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
+                        if (chart.hasFilter() || gradeAChart.hasFilter()) 
+                            this.baseHasFilter = true;
+
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
@@ -430,6 +465,10 @@ import { store } from '@/store/store'
                 gradeAConfig.colors = [chartSpecs.majcomChart.color]
                 var gradeAChart = dchelpers.getOrdinalBarChart(gradeAConfig)
                 
+                gradeAChart.on('pretransition', (chart)=> {
+                    if (chart.hasFilter() || barChart.hasFilter()) 
+                        this.baseHasFilter = true;
+                })
                  //grp 
                 var grp = {
                 	'1' : 'Enlisted - Enlisted',
@@ -457,7 +496,7 @@ import { store } from '@/store/store'
 
                 grpChart
                     .valueAccessor((d) => {
-                        return d.value['percent']
+                        return d.value[this.selected]
                     })
                     .ordering((d)=>{
                     	return grpOrder[d.key]
@@ -579,4 +618,16 @@ import { store } from '@/store/store'
     .fade-enter-to, .fade-leave {
         opacity: 1;
     }
+
+    .custom-control.custom-radio{
+        padding-left:20px;
+        padding-right:10px;
+        margin-right: 0;
+        cursor:pointer;
+    }
+    #radioSelect{
+        margin-bottom: 0px;
+        padding-left: 0;
+    }
+
 </style>
