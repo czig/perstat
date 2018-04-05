@@ -223,7 +223,7 @@ import { store } from '@/store/store'
         mounted() {
             console.log('mounted')       
             //TEST AXIOS CALL:
-            axios.post(axios_url_joint).then(response => {
+            axios.post(axios_url_join_spouse).then(response => {
             	store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
                 var objData = makeObject(axiosData)

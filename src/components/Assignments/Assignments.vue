@@ -39,7 +39,7 @@
 
 <script>
 import offTOS from '@/components/Assignments/OfficerTos'
-import enlTOS from '@/components/Assignments/OfficerTos'
+import enlTOS from '@/components/Assignments/EnlistedTos'
 import Join from '@/components/Assignments/Joint'
 import { store } from '@/store/store'
 

@@ -196,7 +196,7 @@ import searchBox from '@/components/searchBox'
             console.log('mounted')
 
             //TEST AXIOS CALL:
-            axios.post(axios_url_off_tos).then(response => {
+            axios.post(axios_url_enl_tos).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
                 //console.log(axiosData)

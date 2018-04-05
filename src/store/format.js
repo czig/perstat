@@ -1065,6 +1065,7 @@ export default {
 		"C":"CAREER"
 	},
 	majFormat : {
+		"** ERROR **":"UNKOWN",
 		"**":"UNKOWN",	
 		" ":"UNKNOWN",
 		"02":"AFIA",
