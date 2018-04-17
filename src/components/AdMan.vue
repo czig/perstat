@@ -1,17 +1,21 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 style="font-weight:bold" class="col"> {{ pageName }}
+            <h1 class="col"> {{ pageName }}
+
                 <span> 
-                    <h5 style="color:red">
-                        Reserve/Guard will be incorporated in the near future
-                    </h5>
                 </span>
             </h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
             </div>
+        </div>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            Reserve/Guard will be incorporated in the near future
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
@@ -185,6 +189,7 @@ import searchBox from '@/components/searchBox'
         },
         mounted() {
             console.log('mounted')       
+            $('[data-toggle="tooltip"]').tooltip({delay: {"show":100, "hide":100}})
             //TEST AXIOS CALL:
             axios.post(axios_url_adman).then(response => {
                 //console.log(response)

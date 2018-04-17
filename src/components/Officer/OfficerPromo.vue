@@ -36,6 +36,7 @@
                     <div id="grade" class="col-4">
                         <div id="dc-grade-rowchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <!--<font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>-->
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
@@ -123,6 +124,7 @@ import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
     export default {
         data() {
@@ -195,7 +197,8 @@ import { store } from '@/store/store'
         },
         components: {
             'autocomplete': AutoComplete,
-            'loader': Loader
+            'loader': Loader,
+            FontAwesomeIcon
         },
         created: function(){
           console.log('created')
