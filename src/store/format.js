@@ -1503,7 +1503,8 @@ export default {
         "GS-14": 53,
         "GS-15": 54,
         "NSPS-02": 55,
-        "WAGE GROUP": 56
+        "WAGE GROUP": 56,
+        "UNKNOWN": 100,
 	},
 	zoneFormat : {
         "A": "APZ",
@@ -2323,7 +2324,7 @@ export default {
 		"AG":"ANTIGUA AND BARBUDA",
 		"AI":"ANGUILLA",
 		"AJ":"AZERBAIJAN - FORMERLY UR",
-		"AL":"ALBANIA",
+		"ALB":"ALBANIA",
 		"AM":"ARMENIA",
 		"AN":"ANDORRA",
 		"AO":"ANGOLA",
@@ -2820,6 +2821,7 @@ export default {
 		"VN":"VN", 
 		"ZA":"ZA", 
 		"ZM":"ZM", 
+		"AL":"ALB",
     	"01":"AL",
     	"02":"02",
     	"04":"AZ",
