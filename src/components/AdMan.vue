@@ -490,13 +490,12 @@ import searchBox from '@/components/searchBox'
                                             majcomDim.filterFunction(function(d) {
                                                 return newChart.filters.includes(d)
                                             })
+                                            console.log(newChart.filters)
+                                            dc.redrawAll()
                                         }
                                         else {
-                                            d3.select("#majcom-up-level")
-                                                .style("visibility","hidden");
+                                            newChart.filterAll();
                                         }
-                                        console.log(newChart.filters)
-                                        dc.redrawAll()
                                     })
 
                     var svg = d3.select("#majcom-chart-wrapper")
@@ -514,6 +513,9 @@ import searchBox from '@/components/searchBox'
                         .data(newChart.data,key)
                         .enter()
                         .append("rect")
+                        .attr("id", function(d) {
+                            return d.key
+                        })
                         .attr("x", function(d,i) {
                             return xScale(d.key)
                         })
@@ -631,6 +633,9 @@ import searchBox from '@/components/searchBox'
 
                     bars.enter()
                         .append("rect")
+                        .attr("id", function(d) {
+                            return d.key
+                        })
                         .attr("x", function(d,i) {
                             return xScale(d.key);
                         })
@@ -692,6 +697,7 @@ import searchBox from '@/components/searchBox'
                                 })
                                 dc.redrawAll()
                             }
+                            console.log(newChart.filters)
                         });
 
                     bars.transition()
