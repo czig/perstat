@@ -39,26 +39,26 @@ export default new Router({
       name: 'civilian',
       component: Civilian 
     },
-    {
-      path: '/assignments',
-      name: 'assignments',
-      component: Assignments 
-    },
-    {
-      path: '/care',
-      name: 'care',
-      component: Care 
-    },
-    {
-      path: '/first_contact',
-      name: 'firstContact',
-      component: FirstContact 
-    },
-    {
-      path: '/it',
-      name: 'it',
-      component: IT 
-    },
+    // {
+    //   path: '/assignments',
+    //   name: 'assignments',
+    //   component: Assignments 
+    // },
+    // {
+    //   path: '/care',
+    //   name: 'care',
+    //   component: Care 
+    // },
+    // {
+    //   path: '/first_contact',
+    //   name: 'firstContact',
+    //   component: FirstContact 
+    // },
+    // {
+    //   path: '/it',
+    //   name: 'it',
+    //   component: IT 
+    // },
 
     { path: '*', redirect: '/' }
   ],
