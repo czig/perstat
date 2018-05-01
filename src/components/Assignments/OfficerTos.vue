@@ -473,14 +473,19 @@ import searchBox from '@/components/searchBox'
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                              .attr('fill','white')
-                        this.baseLen = chart.group().all().length
+                        var len = chart.group().all().length
+                        this.baseLen = len
                         if (chart.hasFilter() || baseSelect.hasFilter()) 
                             this.baseHasFilter = true;
                         else this.baseHasFilter = false;
+                        console.log(len)
+                        var timer = 2500;
+                        if (len > 0 && len < 60)
+                            timer = 0
                         setTimeout(()=>{ 
                             chart.selectAll('g.x text')
                                  .attr('fill','black') 
-                        }, 2000);
+                        }, timer);
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{

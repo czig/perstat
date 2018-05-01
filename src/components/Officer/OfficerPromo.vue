@@ -32,6 +32,12 @@
                         <span id="selRate"></span>
                     </div>
                 </div>
+                <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                    Data prefiltered to IPZ Zone Promotion Rate
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="row">
                     <div id="grade" class="col-4">
                         <div id="dc-grade-rowchart">
@@ -131,8 +137,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
             return {
                 data: [],
                 selected: "percent",
-                loaded: false 
-
+                loaded: false,
+                showAlert: true,
             }
         },
         computed: {
@@ -415,6 +421,11 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                       return formats.zoneOrder[d.key]
                     })                                    
 
+                zoneChart.filter('IPZ')
+
+                zoneChart.on("filtered", (d)=>{
+                    this.showAlert = false;
+                })
                 //recommend
                 var recommendConfig = {};
                 recommendConfig.id = 'recommend'
@@ -574,4 +585,5 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 .fade-enter-to, .fade-leave {
     opacity: 1;
 }
+
 </style>
