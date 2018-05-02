@@ -5,44 +5,23 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div class="col form-group">
-                        
-                            <label class="custom-control custom-radio" >
-                                <input class="custom-control-input" name="radio" type="radio" id="radio1" value="I" v-model="selected" @click="radioButton">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Inventory</span>
-                            </label>
-                
-                        
-                            <label class="custom-control custom-radio">
-                                <input class="custom-control-input" name="group2" type="radio" id="radio2" value="E" v-model="selected" @click="radioButton">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Eligible</span>
-                            </label>
-                       
-                        
-                            <label class="custom-control custom-radio">
-                                <input class="custom-control-input" name="group3" type="radio" id="radio3" value="K" v-model="selected" @click="radioButton">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Keep</span>
-                            </label>
-                       
-                       
-                            <label class="custom-control custom-radio">
-                               <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
-                               <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Reenlistment Rate</span>
-                            </label>
-                      
-                      
-                            <label class="custom-control custom-radio">
-                                <input class="custom-control-input" name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
-                                <span class="custom-control-indicator"></span>
-                                <span class="custom-control-description">Keep Rate</span>
-                            </label>
-                       
+                    <div class="col" id="category">
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="1st" type="radio" value="1ST TERM" v-model="category" @click="singleSubmit('1ST TERM', 'dc-cat-rowchart')">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">1ST TERM</span>
+                        </label>
+                        <label class="custom-control custom-radio">
+                            <input class="custom-control-input" name="2nd" type="radio" value="2ND TERM" v-model="category" @click="singleSubmit('2ND TERM', 'dc-cat-rowchart')">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">2ND TERM</span>
+                        </label>
+                        <label class="custom-control custom-radio">
+                            <input class="custom-control-input" name="career" type="radio" value="CAREER" v-model="category" @click="singleSubmit   ('CAREER', 'dc-cat-rowchart')">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">CAREER</span>
+                        </label>
                     </div>
-                    
                     <div class="col-auto">
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect" 
@@ -50,6 +29,20 @@
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">Reset All</button>
+                    </div>
+                </div>
+                <div class="row pt-2"> 
+                    <div class="col">
+                        <label class="custom-control custom-radio">
+                           <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
+                           <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Reenlistment Rate</span>
+                        </label>
+                        <label class="custom-control custom-radio">
+                            <input class="custom-control-input" name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Keep Rate</span>
+                        </label>
                     </div>
                 </div>
                 <div class="row">
@@ -82,16 +75,12 @@
                     <div class="col-4">
                         <div class="row">
                             <div id="year" class="col-12">
-                                <div id="dc-year-rowchart">
+                                <div id="dc-year-barchart">
                                     <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
-                                            @click="resetChart('dc-year-rowchart')">Reset</button>
                                     </h3>
                                 </div>
                             </div>
-                            <div id="cat" class="col-12">
+                            <div v-show="false" id="cat" class="col-12">
                                 <div id="dc-cat-rowchart">
                                     <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
                                     <button type="button" 
@@ -203,7 +192,8 @@
                 loaded: false,
                 asDate: 'Undetermined',
                 baseColor: chartSpecs.baseChart.color,
-                majcomColor: chartSpecs.majcomChart.color
+                majcomColor: chartSpecs.majcomChart.color,
+                category: '1ST TERM',
             }
         },
         components:{
@@ -272,6 +262,15 @@
                 if (filterArray.length != mainArray.length) {
                     chart.filter([filterArray])
                 }
+            })
+            dc.redrawAll()
+          },
+          singleSubmit: (text,id) => {
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id
+            }).forEach(chart=>{
+                chart.filterAll()
+                chart.filter(text)
             })
             dc.redrawAll()
           },
@@ -349,7 +348,6 @@
                 }
                 return output;
             }
-
             var formatData = (given) =>{
                 var obj = {}
 
@@ -442,13 +440,33 @@
                 yearConfig.minHeight = 80 
                 yearConfig.aspectRatio = 4 
                 yearConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                yearConfig.colors = d3.scale.category10()
-                var yearChart = dchelpers.getRowChart(yearConfig)
+                yearConfig.minHeight = 310
+                yearConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 30}
+                yearConfig.colors = [chartSpecs.baseChart.color]
+                var yearChart = dchelpers.getOrdinalBarChart(yearConfig)
+//                baseChart.stack(baseConfig.group, 'Inv',)
                 yearChart
-                    .valueAccessor((d)=> {
+                    .elasticX(true)
+                    .valueAccessor((d) => {
                         return d.value[this.selected];
                     })
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.singleSubmit(d, 'dc-year-barchart')
+                        })
 
+                        chart.selectAll("rect.bar").on("click", function (d) {
+                            chart.filter(null)
+                                 .filter(d.data.key)
+                                 .redrawGroup();
+                        });
+                    })
+                yearChart.barPadding(0.2)
+                yearChart.filter('2018')
+                //this.singleSubmit('2018', 'dc-year-barchart')
                 //CAT
                 var catConfig = {};
                 catConfig.id = 'cat';
@@ -466,6 +484,7 @@
                         return d.value[this.selected];
                     })
 
+                catChart.filter('1ST TERM')
                 //Majcom
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
@@ -615,12 +634,15 @@
     opacity: 1;
 }
 
-/*.custom-control-input:checked~.custom-control-indicator {
+#category .custom-control-input:checked~.custom-control-indicator {
     background-color: rgb(18, 153, 60);
 }
 
-.custom-control-input:focus~.custom-control-indicator {
+#category .custom-control-input:focus~.custom-control-indicator {
     box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(18, 153, 60,.25);
-}*/
+}
 
+#category{
+    margin-top: .5rem;
+}
 </style>
