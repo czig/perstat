@@ -473,14 +473,19 @@ import searchBox from '@/components/searchBox'
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                              .attr('fill','white')
-                        this.baseLen = chart.group().all().length
+                        var len = chart.group().all().length
+                        this.baseLen = len
                         if (chart.hasFilter() || baseSelect.hasFilter()) 
                             this.baseHasFilter = true;
                         else this.baseHasFilter = false;
+                        console.log(len)
+                        var timer = 2500;
+                        if (len > 0 && len < 60)
+                            timer = 0
                         setTimeout(()=>{ 
                             chart.selectAll('g.x text')
                                  .attr('fill','black') 
-                        }, 2000);
+                        }, timer);
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
@@ -520,7 +525,7 @@ import searchBox from '@/components/searchBox'
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2
 
-                usConfig.colors =[  "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
+                usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
                 usConfig.colorAccessor = 'average'
             
                 var statesJson = require('../../assets/geo.json')
@@ -554,7 +559,7 @@ import searchBox from '@/components/searchBox'
                 jpConfig.minHeight = 200
                 jpConfig.aspectRatio = 2
 
-                jpConfig.colors =[  "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"]
+                jpConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
                 jpConfig.colorAccessor = 'average'
             
                 var jpJson = require('../../assets/oconus.json')

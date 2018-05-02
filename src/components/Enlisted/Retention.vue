@@ -614,4 +614,13 @@
 .fade-enter-to, .fade-leave {
     opacity: 1;
 }
+
+/*.custom-control-input:checked~.custom-control-indicator {
+    background-color: rgb(18, 153, 60);
+}
+
+.custom-control-input:focus~.custom-control-indicator {
+    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(18, 153, 60,.25);
+}*/
+
 </style>
