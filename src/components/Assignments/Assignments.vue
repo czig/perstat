@@ -14,6 +14,10 @@
             <li class="nav-item">
                 <a class="nav-link" @click="dynamicComponent='join'" data-toggle="tab">Join Spouse</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" @click="dynamicComponent='stem'" data-toggle="tab">STEM</a>
+            </li>
+
         </ul>
         <div class="row" v-if="dynamicComponent=='offTOS' || dynamicComponent=='enlTOS'">
             <div class="centered">
@@ -39,6 +43,7 @@
 import offTOS from '@/components/Assignments/OfficerTos'
 import enlTOS from '@/components/Assignments/OfficerTos'
 import Join from '@/components/Assignments/Joint'
+import stem from '@/components/Assignments/stem'
 import { store } from '@/store/store'
 
 export default {
@@ -55,7 +60,8 @@ export default {
     components: {
         offTOS,
         enlTOS,
-        Join
+        Join,
+        stem
     }
 }
 </script>

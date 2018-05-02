@@ -1454,7 +1454,19 @@ export default {
         "W":"WEATHER",
         "X":"ART OFFICER",
         "Z":"UNKNOWN"
-    },
+	},
+	edLevelOrder: {
+		"UNKNOWN/NOT VERIFIED": 0,
+		"UNKNOWN": 1,
+		"NO HIGH SCHOOL DIPL": 2,
+		"HS DIPL/CERT/GED/HS SENIOR": 3,
+		"COLLEGE CREDIT (12+ SH)": 4,
+		"AA": 5,
+		"BA/BS": 6,
+		"MA/MS": 7,
+		"PROF DEG": 8,
+		"PHD": 9
+	},
     civGradeOrder: {
         "EXEC": 0,
         "GS-02": 1,
@@ -1556,7 +1568,7 @@ export default {
     	"08":"Colorado",
     	"09":"Connecticut",
     	'KR':"South Korea"
-    },
+	},
     geoCSAb:{
     	"AE":"AE", 
 		"AF":"AF", 
