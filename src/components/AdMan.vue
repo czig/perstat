@@ -101,9 +101,9 @@
                         </div>
                     </div>
                 </div>
-                <div class ="row">
-                    <div id="majcom-chart-wrapper" class="col-12"></div>
-                </div>
+                <!--<div class ="row">-->
+                    <!--<div id="majcom-chart-wrapper" class="col-12"></div>-->
+                <!--</div>-->
             </div>
         </transition-group>
     </div>
@@ -380,6 +380,7 @@ import searchBox from '@/components/searchBox'
                     FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
+                /*
                 //make majcom bar chart
                 var margin = {top: 10, bottom: 100, left: 70, right:30}
                 var w = document.documentElement.clientWidth*0.90 - margin.left - margin.right
@@ -847,6 +848,7 @@ import searchBox from '@/components/searchBox'
 
                 dc.chartRegistry.register(newChart)
                 console.log(dc.chartRegistry.list())
+                */
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
