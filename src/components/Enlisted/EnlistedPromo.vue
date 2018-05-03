@@ -33,20 +33,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-auto">
-                        Test Score (E5-E7 Eligibles): 
-                        <span id="testEligE57ND"></span>
-                    </div>
-                    <div class="col-auto">
-                        Test Score (E8-E9 Eligibles): 
-                        <span id="testEligE89ND"></span>
-                    </div>
-                    <div class="col-auto">
-                        Board Score (E8-E9 Eligibles): 
-                        <span id="brdEligND"></span>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-4">
                         <div class="row">
                             <div id="grade" class="col-12">
@@ -223,19 +209,6 @@ import { store } from '@/store/store'
                 p.Selects += +v.Selects
                 //if divide by 0, set to 0, and if NaN, set to zero
                 p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
-                //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                if ((/E[5-7]/).test(v.Board.substr(6,8))) {
-                    p.eligE57 += +v.Eligible 
-                    p.testEligWghtSumE57 += (v.Test_Sco_Eligible*v.Eligible)
-                } else {
-                    p.eligE89 += +v.Eligible 
-                    p.testEligWghtSumE89 += (v.Test_Sco_Eligible*v.Eligible)
-                    p.brdEligWghtSum += (v.Brd_Sco_Eligible*v.Eligible)
-                }
-                // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
-                p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
-                p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
-                p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
                 return p
             },
             promoRemove: (p,v) => {
@@ -243,19 +216,6 @@ import { store } from '@/store/store'
                 p.Selects -= +v.Selects
                 //if divide by 0, set to 0, and if NaN, set to zero
                 p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
-                //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                if ((/E[5-7]/).test(v.Board.substr(6,8))) {
-                    p.eligE57 -= +v.Eligible 
-                    p.testEligWghtSumE57 -= (v.Test_Sco_Eligible*v.Eligible)
-                } else {
-                    p.eligE89 -= +v.Eligible 
-                    p.testEligWghtSumE89 -= (v.Test_Sco_Eligible*v.Eligible)
-                    p.brdEligWghtSum -= (v.Brd_Sco_Eligible*v.Eligible)
-                }
-                // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
-                p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
-                p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
-                p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
                 return p
             },
             promoInitial: () => {
@@ -263,14 +223,6 @@ import { store } from '@/store/store'
                     Eligible: 0,
                     Selects: 0,
                     percent: 0,
-                    eligE57: 0,
-                    eligE89: 0,
-                    testEligWghtSumE57: 0,
-                    testEligWghtSumE89: 0,
-                    brdEligWghtSum: 0,
-                    testEligE57: 0,
-                    testEligE89: 0,
-                    brdElig: 0
                 }
             }
         },
@@ -333,30 +285,6 @@ import { store } from '@/store/store'
                 obj.Selects = +given.Selects
                 obj.Promotion_Rate = obj.Selects/obj.Eligible === Infinity ? 0 : Math.round((obj.Selects/obj.Eligible)*1000)/10 || 0
 
-                var e57 = null
-                var e57Sum = null
-                var e89 = null
-                var e89Sum = null
-                var brd = null
-
-                if ((/E[5-7]/).test(given.board.substr(6,8))) {
-                    e57 = obj.Eligible
-                    e57Sum = +given.Test_Sco_Eligible*obj.Eligible
-                } else {
-                    e89 = obj.Eligible 
-                    e89Sum = +given.Test_Sco_Eligible*obj.Eligible
-                    brd = +given.Brd_Sco_Eligible*obj.Eligible
-                }
-                // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
-                obj.Board2 = formats.gradeFormat[given.board.substring(6,8)] + given.board.substring(2,6)
-                obj.Test_Sco_Eligible = given.Test_Sco_Eligible
-                obj.Brd_Sco_Eligible = given.Brd_Sco_Eligible
-
-
-                obj.Test_Score_E5_E7_Eligibles = e57Sum/e57 || 0
-                obj.Test_Score_E8_E9_Eligibles = e89Sum/e89 || 0
-                obj.Board_Score_E8_E9_Eligibles = brd/e89 || 0
-
                 return obj;
             }
 
@@ -382,20 +310,6 @@ import { store } from '@/store/store'
                     p.Selects += +v.Selects
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
-                    //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                    if ((/E[5-7]/).test(v.Board.substr(6,8))) {
-                        p.eligE57 += +v.Eligible 
-                        p.testEligWghtSumE57 += (v.Test_Sco_Eligible*v.Eligible)
-                    } else {
-                        p.eligE89 += +v.Eligible 
-                        p.testEligWghtSumE89 += (v.Test_Sco_Eligible*v.Eligible)
-                        p.brdEligWghtSum += (v.Brd_Sco_Eligible*v.Eligible)
-                    }
-                    //console.log('TEEEEEESSSSSTTTTTTT')
-                    // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
-                    p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
-                    p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
-                    p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
                     return p
                 }
                 function promoRemove(p,v) {
@@ -403,19 +317,6 @@ import { store } from '@/store/store'
                     p.Selects -= +v.Selects
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
-                    //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                    if ((/E[5-7]/).test(v.Board.substr(6,8))) {
-                        p.eligE57 -= +v.Eligible 
-                        p.testEligWghtSumE57 -= (v.Test_Sco_Eligible*v.Eligible)
-                    } else {
-                        p.eligE89 -= +v.Eligible 
-                        p.testEligWghtSumE89 -= (v.Test_Sco_Eligible*v.Eligible)
-                        p.brdEligWghtSum -= (v.Brd_Sco_Eligible*v.Eligible)
-                    }
-                    // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
-                    p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
-                    p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
-                    p.brdElig = p.brdEligWghtSum/p.eligE89 || 0
                     return p
                 }
                 function promoInitial() {
@@ -423,14 +324,6 @@ import { store } from '@/store/store'
                         Eligible: 0,
                         Selects: 0,
                         percent: 0,
-                        eligE57: 0,
-                        eligE89: 0,
-                        testEligWghtSumE57: 0,
-                        testEligWghtSumE89: 0,
-                        brdEligWghtSum: 0,
-                        testEligE57: 0,
-                        testEligE89: 0,
-                        brdElig: 0
                     }
                 }
                 //remove empty function (es6 syntax to keep correct scope)
@@ -467,30 +360,8 @@ import { store } from '@/store/store'
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
-                var testEligE57ND = dc.numberDisplay("#testEligE57ND")
-                testEligE57ND.group(numberGroup)
-                    .formatNumber(d3.format("f"))
-                    .valueAccessor(function(d) {return d.testEligE57;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>",
-                    })
-                var testEligE89ND = dc.numberDisplay("#testEligE89ND")
-                testEligE89ND.group(numberGroup)
-                    .formatNumber(d3.format("f"))
-                    .valueAccessor(function(d) {return d.testEligE89;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>",
-                    })
-                var brdEligND = dc.numberDisplay("#brdEligND")
-                brdEligND.group(numberGroup)
-                    .formatNumber(d3.format("f"))
-                    .valueAccessor(function(d) {return d.brdElig;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>",
-                    })
 
-
-            //board, aca43, look, prom_rec, eligible, test_sco_eligible, selects, test_sco_select, select_rate, brd_sco_eligible, brd_sco_select
+            //board, aca43, look, prom_rec, eligible, selects, select_rate, 
                     
                 //grade
                 var gradeConfig = {};
@@ -552,7 +423,7 @@ import { store } from '@/store/store'
                 //board
                 var boardConfig = {}
                 boardConfig.id = 'board'
-                boardConfig.dim = this.ndx.dimension(function(d){ return d.Board2 })
+                boardConfig.dim = this.ndx.dimension(function(d){ return d.Board })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 boardConfig.group = removeEmptyBins(boardGroup)
                 boardConfig.minHeight = 250
