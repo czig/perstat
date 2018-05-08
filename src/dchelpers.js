@@ -88,6 +88,7 @@ var getGeoChart = (config)=>{
       .group(config.group)
       .colors(config.colors)
       .colorAccessor(function(d){ if (d) return d['average'];})
+      .useViewBoxResizing(true)
       //Resize the geo map 
       .projection(    
                       config.projection.scale(config.scale)
@@ -146,9 +147,6 @@ var preRedraw = (chart, config) => {
   }
   else if (/\-piechart$/.test(chart.anchorName())){
     chart.radius(config.radius || newHeight/2)
-  }
-  else if (/\-geoChoroplethChart$/.test(chart.anchorName())){
-    
   }
 }
 
