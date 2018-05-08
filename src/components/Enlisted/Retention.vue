@@ -1,6 +1,6 @@
 
 <template>
-	<div>
+    <div>
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
@@ -17,7 +17,7 @@
                             <span class="custom-control-description">2ND TERM</span>
                         </label>
                         <label class="custom-control custom-radio">
-                            <input class="custom-control-input" name="career" type="radio" value="CAREER" v-model="category" @click="singleSubmit   ('CAREER', 'dc-cat-rowchart')">
+                            <input class="custom-control-input" name="career" type="radio" value="CAREER" v-model="category" @click="singleSubmit('CAREER', 'dc-cat-rowchart')">
                             <span class="custom-control-indicator"></span>
                             <span class="custom-control-description">CAREER</span>
                         </label>
@@ -167,20 +167,20 @@
                 </div>
             </div>
         </transition-group>
-	</div>
+    </div>
 </template>
 
 <script>
-	import dchelpers from '@/dchelpers'
+    import dchelpers from '@/dchelpers'
     import chartSpecs from '@/chartSpecs'
-	import axios from 'axios'
-	import formats from '@/store/format'
+    import axios from 'axios'
+    import formats from '@/store/format'
     import afsc from '@/components/afsc'
     import { store } from '@/store/store'
     import Loader from '@/components/Loader'
     import searchBox from '@/components/searchBox'
 
-	export default {
+    export default {
         data() {
             return {
                 data: [],
@@ -228,10 +228,12 @@
         },
         methods: {
           resetAll(){
+            this.category = '1ST TERM';
+            this.selected = 'RR';
             store.state.resetAfsc = true;
             dc.filterAll();
-            //dc.redrawAll();
-            //resetAfsc Calls dc.redrawAll()
+            this.singleSubmit('2018', 'dc-year-barchart')
+            this.singleSubmit('1ST TERM', 'dc-cat-rowchart')
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
