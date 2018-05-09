@@ -3,7 +3,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-4">
-                    <p class='no-marg'>For more information, questions or concerns please contact:</p>
+                    <h5 class="title mb-2 mt-3 font-bold">AFPC PERS-STAT</h5>
+                    <!-- <p class='no-marg'>For more information, questions or concerns please contact:</p>
                     <h5 class="title mb-2 mt-3 font-bold">AFPC DSYD</h5>
                     <div class="row">
                     <div class="col-2">
@@ -18,7 +19,7 @@
                     <p class='no-marg'>312-665-3540</p>
                     <p class='no-marg'>210-565-3540</p>
                     </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="col-md-4">
                     <h5 class="title mb-2 mt-3 font-bold">Links</h5>

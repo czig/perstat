@@ -76,7 +76,7 @@
                         <div class="row">
                             <div id="year" class="col-12">
                                 <div id="dc-year-barchart">
-                                    <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                    <h3>Year [{{year}}]<span style="font-size: 14pt; opacity: 0.87;"> &nbsp {{ylabel}}</span>
                                     </h3>
                                 </div>
                             </div>
@@ -194,6 +194,7 @@
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color,
                 category: '1ST TERM',
+                year: '2018'
             }
         },
         components:{
@@ -230,6 +231,7 @@
           resetAll(){
             this.category = '1ST TERM';
             this.selected = 'RR';
+            this.year = '2018'
             store.state.resetAfsc = true;
             dc.filterAll();
             this.singleSubmit('2018', 'dc-year-barchart')
@@ -447,7 +449,7 @@
                 yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 30}
                 yearConfig.colors = [chartSpecs.baseChart.color]
                 var yearChart = dchelpers.getOrdinalBarChart(yearConfig)
-//                baseChart.stack(baseConfig.group, 'Inv',)
+
                 yearChart
                     .elasticX(true)
                     .valueAccessor((d) => {
@@ -457,13 +459,13 @@
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
+                            this.year = d
                             this.singleSubmit(d, 'dc-year-barchart')
                         })
 
-                        chart.selectAll("rect.bar").on("click", function (d) {
-                            chart.filter(null)
-                                 .filter(d.data.key)
-                                 .redrawGroup();
+                        chart.selectAll("rect.bar").on("click", (d)=>{
+                            this.year = d.data.key
+                            this.singleSubmit(d.data.key, 'dc-year-barchart')
                         });
                     })
                 yearChart.barPadding(0.2)

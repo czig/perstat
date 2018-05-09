@@ -5,20 +5,22 @@
 	        <loader v-show="!loaded" key="loader"></loader>
 	        <div v-show="loaded" key="content">
 		        <div class="row pt-2">
-		        	<div class="col-auto">
-                        EFMP Assignment:
-                        <span id="efmp"></span>
-                    </div>
-                    <div class="col-auto">
-                        Humanitarian Assignment:
-                        <span id="hum"></span>
-                    </div>
-                    <div class="col-auto">
-                        Expedited Transfer:
-                        <span id="exp"></span>
-                    </div>
-                    <div class="col">
-                    	
+		        	<div class="col" id="category">
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="1st" type="radio" value="EFMP ASSIGNMENT" v-model="category" @click="singleSubmit('EFMP ASSIGNMENT', 'dc-type-rowchart')">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">EFMP Assignment</span>
+                        </label>
+                        <label class="custom-control custom-radio">
+                            <input class="custom-control-input" name="2nd" type="radio" value="HUMANITARIAN ASSIGNMENT" v-model="category" @click="singleSubmit('HUMANITARIAN ASSIGNMENT', 'dc-type-rowchart')">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Humanitarian Assignment</span>
+                        </label>
+                        <label class="custom-control custom-radio">
+                            <input class="custom-control-input" name="career" type="radio" value="EXPEDITED TRANSFER" v-model="category" @click="singleSubmit('EXPEDITED TRANSFER', 'dc-type-rowchart')">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Expedited Transfer</span>
+                        </label>
                     </div>
 		        	<div class="col-auto">
                         <button type="button" id="download"
@@ -29,6 +31,12 @@
                                 @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">Reset All</button>
                     </div>
 		        </div> 
+		        <div class="row">
+		        	<div class="col-auto">
+                        Assignment Actions:
+                        <span id="cnt"></span>
+                    </div>
+		        </div>
 		        <div class="row">
                     <div class="col-3" id="year">
                     	<div id="dc-year-barchart">
@@ -60,7 +68,9 @@
 	                        </h3>
                     	</div>
                     </div>
-                    <!-- <div class="col-6" id="type">
+                </div>
+                <div v-show="false" class="row">
+                	<div class="col-6" id="type">
                     	<div id="dc-type-rowchart">
                     		<h3>Type <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
@@ -69,7 +79,7 @@
 	                                @click="resetChart('dc-type-rowchart')">Reset</button>
 	                        </h3>
                     	</div>
-                    </div> -->
+                    </div>
                 </div>
                 <div class="row">
                     <div id="majcom" class="col-12">
@@ -131,6 +141,7 @@ import searchBox from '@/components/searchBox'
 export default {
     data() {
     	return {
+    		category:'EFMP ASSIGNMENT',
     		searchMajcom: "",
             searchBase: "",
             loaded: false,
@@ -147,9 +158,10 @@ export default {
       	},
     },
     methods: {
-      resetAll: (event)=>{
+      resetAll(event){
+      	this.category = 'EFMP ASSIGNMENT'
         dc.filterAll()
-        dc.redrawAll()
+        this.singleSubmit('EFMP ASSIGNMENT' , 'dc-type-rowchart')
       },
       resetChart: (id)=>{
         dc.chartRegistry.list().filter(chart=>{
@@ -164,6 +176,15 @@ export default {
             dc.redrawAll()
         },10)
       },
+      singleSubmit: (text,id) => {
+            dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id
+            }).forEach(chart=>{
+                chart.filterAll()
+                chart.filter(text)
+            })
+            dc.redrawAll()
+          },
       submit: (text,id) => {
         dc.chartRegistry.list().filter(chart=>{
             return chart.anchorName() == id 
@@ -341,20 +362,21 @@ export default {
             yearChart.barPadding(0.2)
 
             //TYPE
-            // var typeConfig = {};
-            // typeConfig.id = 'type';
-            // typeConfig.dim = this.ndx.dimension(function (d) {
-            //     return d.Type;
-            // })
-            // typeConfig.group = typeConfig.dim.group().reduceSum((d)=>{
-            // 	return d.Cnt
-            // })
-            // typeConfig.minHeight = 300 
-            // typeConfig.aspectRatio = 2
-            // typeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-            // typeConfig.colors = d3.scale.category10()
-            // var typeChart = dchelpers.getRowChart(typeConfig)
+            var typeConfig = {};
+            typeConfig.id = 'type';
+            typeConfig.dim = this.ndx.dimension(function (d) {
+                return d.Type;
+            })
+            typeConfig.group = typeConfig.dim.group().reduceSum((d)=>{
+            	return d.Cnt
+            })
+            typeConfig.minHeight = 300 
+            typeConfig.aspectRatio = 2
+            typeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+            typeConfig.colors = d3.scale.category10()
+            var typeChart = dchelpers.getRowChart(typeConfig)
 
+            typeChart.filter(this.category)
             //Marital marital
             var maritalConfig = {};
             maritalConfig.id = 'marital';
@@ -496,5 +518,14 @@ export default {
 </script>
 
 <style scoped>
-	
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
+
+.form-group{
+    align-content: center;
+}
 </style>

@@ -88,7 +88,7 @@ var getGeoChart = (config)=>{
       .group(config.group)
       .colors(config.colors)
       .colorAccessor(function(d){ if (d) return d['average'];})
-      .useViewBoxResizing(true)
+      //.useViewBoxResizing(true)
       //Resize the geo map 
       .projection(    
                       config.projection.scale(config.scale)

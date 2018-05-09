@@ -1,6 +1,6 @@
 <template>
-	<div class="container">
-		<transition-group name="fade" mode="out-in">
+    <div class="container">
+        <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row">
@@ -27,31 +27,31 @@
                     </div>
                 </div>
                 <div class="row">
-		            <div id="tour" class="col-4">
-		                <div id="dc-tour-rowchart">
-		                    <h3>Majcom Assign Type <span style="font-size: 14pt; opacity: 0.87;">
-		                    	Avg. TOS
-		                    </span>
-		                    <button type="button" 
-		                            class="btn btn-danger btn-sm btn-rounded reset" 
-		                            style="display: none"
-		                            @click="resetChart('dc-tour-rowchart')">Reset</button>
-		                    </h3>
-                		</div>
-            		</div>
-            		<div id="tour_st" class="col-3">
-		                <div id="dc-tour_st-rowchart">
-		                    <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
-		                    	Avg. TOS
-		                    </span>
-		                    <button type="button" 
-		                            class="btn btn-danger btn-sm btn-rounded reset" 
-		                            style="display: none"
-		                            @click="resetChart('dc-tour_st-rowchart')">Reset</button>
-		                    </h3>
-                		</div>
-            		</div>
-            		<div id="grade" class="col-5">
+                    <div id="tour" class="col-4">
+                        <div id="dc-tour-rowchart">
+                            <h3>Majcom Assign Type <span style="font-size: 14pt; opacity: 0.87;">
+                                Avg. TOS
+                            </span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-tour-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="tour_st" class="col-3">
+                        <div id="dc-tour_st-rowchart">
+                            <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
+                                Avg. TOS
+                            </span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-tour_st-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="grade" class="col-5">
                         <div id="dc-grade-barchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
@@ -61,7 +61,7 @@
                             </h3>
                         </div>
                     </div>
-            	</div>
+                </div>
                 <div class="row">
                         <div id="base" class="col-12">
                                 <div id="dc-base-select">
@@ -110,7 +110,7 @@
                 </div>
             </div>
         </transition-group>    
-	</div>
+    </div>
 </template>
 
 <script>
@@ -123,7 +123,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 
-	export default {
+    export default {
         data() {
             return {
                 loaded: false,
@@ -189,7 +189,7 @@ import searchBox from '@/components/searchBox'
             searchBox
         },
         created: function(){
-        	console.log('created')
+            console.log('created')
 
         },
         mounted() {
@@ -286,7 +286,7 @@ import searchBox from '@/components/searchBox'
             }
 
             var renderCharts = () => {
-            	dc.dataCount(".dc-data-count")
+                dc.dataCount(".dc-data-count")
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
@@ -320,7 +320,7 @@ import searchBox from '@/components/searchBox'
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value['cnt'] != 0
+                                return d.value['average'] != 0
                             })
                         }
                     }
@@ -328,13 +328,13 @@ import searchBox from '@/components/searchBox'
 
                 //Number Display for cnt
                 var count = this.ndx.groupAll().reduceSum(function(d) { 
-                	return +d.Inventory 
-               	})
+                    return +d.Inventory 
+                })
                 var countND = dc.numberDisplay("#count")
                 countND.group(count)
                     .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) { 
-                    	return d;
+                        return d;
                     })
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
@@ -342,13 +342,13 @@ import searchBox from '@/components/searchBox'
 
                 //Number Display for months
                 var months = this.ndx.groupAll().reduceSum(function(d) { 
-                	return +d.Total_Months 
-               	})
+                    return +d.Total_Months 
+                })
                 var monthsND = dc.numberDisplay("#months")
                 monthsND.group(months)
                     .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) { 
-                    	return d;
+                        return d;
                     })
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
@@ -373,8 +373,8 @@ import searchBox from '@/components/searchBox'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 100
-                tourConfig.aspectRatio = 2.6
+                tourConfig.minHeight = 140
+                tourConfig.aspectRatio = 2.7
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
 
@@ -398,7 +398,7 @@ import searchBox from '@/components/searchBox'
 
                 tourStConfig.group = tourStConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
                 tourStConfig.minHeight = 200 
-                tourStConfig.aspectRatio = 2
+                tourStConfig.aspectRatio = 2.6
                 tourStConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourStConfig.colors = d3.scale.category10()
 
@@ -435,9 +435,9 @@ import searchBox from '@/components/searchBox'
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-	                        .attr('transform', 'translate(-8,0)rotate(-45)')
-	                        .on('click', (d)=>{
-	                            this.submit(d, 'dc-grade-barchart')
+                            .attr('transform', 'translate(-8,0)rotate(-45)')
+                            .on('click', (d)=>{
+                                this.submit(d, 'dc-grade-barchart')
                         })
                     })
                     .ordering(function(d){
@@ -479,7 +479,7 @@ import searchBox from '@/components/searchBox'
                             this.baseHasFilter = true;
                         else this.baseHasFilter = false;
                         console.log(len)
-                        var timer = 2000;
+                        var timer = 2500;
                         if (len > 0 && len < 60)
                             timer = 0
                         setTimeout(()=>{ 
@@ -526,7 +526,6 @@ import searchBox from '@/components/searchBox'
                 usConfig.aspectRatio = 2
 
                 usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                usConfig.colorDomain = [7000, 8000]
                 usConfig.colorAccessor = 'average'
             
                 var statesJson = require('../../assets/geo.json')
@@ -540,9 +539,12 @@ import searchBox from '@/components/searchBox'
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
                         var myCount = 0;
-                        if (d.value)
-                            myCount = d.value.average;
-                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Count: " + myCount;
+                        var myAverage = 0;
+                        if (d.value){
+                            myCount = d.value.cnt;
+                            myAverage = d.value.average;
+                        }
+                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
                     });
 
                 var jpConfig = {}
@@ -574,9 +576,12 @@ import searchBox from '@/components/searchBox'
 
                 jpChart.title(function(d) {
                         var myCount = 0;
-                        if (d.value)
-                            myCount = d.value.average;
-                        return formats.geoCS1[d.key] + "\n Count: " + myCount;
+                        var myAverage = 0;
+                        if (d.value){
+                            myCount = d.value.cnt;
+                            myAverage = d.value.average;
+                        }
+                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
                     });
 
                 jpChart.on('pretransition', (chart)=> {
@@ -738,7 +743,7 @@ import searchBox from '@/components/searchBox'
                     FileSaver.saveAs(blob, 'PERSTAT Officer_Average_TOS' + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
-            	// after DOM updated redraw to make chart widths update
+                // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
                 })
@@ -781,7 +786,7 @@ import searchBox from '@/components/searchBox'
     .disabled{
         fill:white;
     }
-	.expand-enter-active {
+    .expand-enter-active {
       transition: all 0.8s ease;
       max-height: 300px;
       overflow: hidden;
