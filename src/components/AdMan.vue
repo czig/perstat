@@ -18,8 +18,8 @@
             </button>
         </div>
         <transition-group name="fade" mode="out-in">
-            <loader v-show="!loaded" key="loader"></loader>
-            <div v-show="loaded" key="content">
+            <loader v-show="!loaded" id="loader" key="loader"></loader>
+            <div v-show="loaded" id="content" key="content">
                 <div class="row">
                     <div class="col-auto">
                         Inventory:
@@ -101,6 +101,9 @@
                         </div>
                     </div>
                 </div>
+                <!--<div class ="row">-->
+                    <!--<div id="majcom-chart-wrapper" class="col-12"></div>-->
+                <!--</div>-->
             </div>
         </transition-group>
     </div>
@@ -286,7 +289,6 @@ import searchBox from '@/components/searchBox'
                     return +d.Inventory 
                 })
                 majcomConfig.group = removeEmptyBins(majcomPercent)
-                 majcomConfig.group = removeEmptyBins(majcomPercent)
                 majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
                 majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
                 majcomConfig.margins = chartSpecs.majcomChart.margins 
@@ -378,6 +380,476 @@ import searchBox from '@/components/searchBox'
                     FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
+                /*
+                //make majcom bar chart
+                var margin = {top: 10, bottom: 100, left: 70, right:30}
+                var w = document.documentElement.clientWidth*0.90 - margin.left - margin.right
+                var h = 300 - margin.top - margin.bottom 
+
+                var key = function(d) {
+                    return d.key;
+                }
+
+                var majcomDim = this.ndx.dimension(function(d) {return d.MAJCOM;})
+                var majcomGroup = majcomDim.group().reduceSum(function(d) {
+                    return +d.Inventory;
+                })
+                var majcomShow = removeEmptyBins(majcomGroup).all()
+                var minMax = d3.extent(majcomShow, d => d.value)
+                var minVal = minMax[0]
+                var maxVal = minMax[1]
+                var xScale = d3.scale.ordinal()
+                                .domain(majcomShow.map(function(d) {return d.key}))
+                                .rangeRoundBands([0,w],0.1);
+                var yScale = d3.scale.linear()
+                                .domain([0, maxVal])
+                                .range([h,0])
+
+                var xAxis = d3.svg.axis()
+                                .scale(xScale)
+                                .orient("bottom");
+                var yAxis = d3.svg.axis()
+                                .scale(yScale)
+                                .orient("left")
+                                .ticks(5);
+
+                var newChart = {}
+                newChart.id = "majcom-chart"
+                newChart.anchorName = function() {
+                    return newChart.id
+                }
+                newChart.dimension = majcomDim
+                newChart.group = majcomGroup
+                newChart.lastBar = 30
+                newChart.dataAll = function() {
+                    return removeEmptyBins(majcomGroup).all().sort((a,b) => b.value-a.value);
+                }
+                newChart.dataAdd = []
+                newChart.level = 0
+                newChart.maxLevel = function() {
+                    return Math.floor((newChart.dataAll().length-1)/newChart.lastBar);
+                }
+                newChart.xAxis = xAxis
+                newChart.yAxis = yAxis
+                newChart.filters = []
+                //newChart.filterAll = function() {
+                //    d3.select("#majcom-chart")
+                //        .selectAll("rect")
+                //        .attr("fill","steelblue")
+                //        .attr("opacity",1);
+                //    d3.select("#majcom-chart-reset")
+                //        .style("visibility","hidden");
+                //    d3.select("#majcom-up-level")
+                //        .style("visibility","hidden");
+                //    d3.select("#slider")
+                //        .property("disabled",false)
+                //        .style('cursor','pointer')
+                //        .style('opacity',1);
+                //    newChart.dataAdd = []
+                //    newChart.filters = []
+                //    newChart.dimension.filterAll()
+                //    newChart.level = 0
+                //    dc.redrawAll()
+                //}
+                //newChart.filterPartial = function() {
+                //    d3.select("#majcom-chart")
+                //        .selectAll("rect")
+                //        .attr("fill","steelblue")
+                //        .attr("opacity",1);
+                //    d3.select("#majcom-chart-reset")
+                //      .style("visibility","visible");
+                //    d3.select("#majcom-up-level")
+                //        .style("visibility","hidden");
+                //    d3.select("#slider")
+                //        .property("disabled",true)
+                //        .style("cursor","default")
+                //        .style("opacity", 0.5);
+                //    newChart.filters = []
+                //    newChart.dimension.filterAll()
+                //    newChart.level = 0
+                //    dc.redrawAll()
+                //}
+                newChart.filterAll = function(all){
+                     //all is boolean. true for all, false for partial
+                     var all = all == undefined ? true : all 
+                     d3.select("#majcom-chart")
+                        .selectAll("rect")
+                        .attr("fill","steelblue")
+                        .attr("opacity",1);
+                    d3.select("#majcom-chart-reset")
+                        .style("visibility",  all ? "hidden" : "visible");
+                    d3.select("#majcom-up-level")
+                        .style("visibility","hidden");
+                    d3.select("#slider")
+                        .property("disabled", !all)
+                        .style('cursor',  all ? 'pointer' : "default")
+                        .style('opacity', all ? 1 : 0.5);
+                    if (all){
+                        newChart.dataAdd = []
+                    }
+                    newChart.filters = []
+                    newChart.dimension.filterAll()
+                    newChart.level = 0
+                    dc.redrawAll()
+                }
+                newChart.updateData = function() {
+                    newChart.data = newChart.dataAll().slice(newChart.lastBar*newChart.level,newChart.lastBar*(newChart.level+1))
+                    newChart.nextData = newChart.dataAll().slice(newChart.lastBar*(newChart.level+1))
+                    newChart.data = newChart.dataAdd.concat(newChart.data).sort((a,b) => b.value-a.value)
+                    var inOthers = newChart.dataAdd.every(d => newChart.nextData.includes(d)) ? 1 : 0
+                    newChart.data.push({key: "Others", value: d3.sum(newChart.nextData.map(d => d.value))-inOthers*d3.sum(newChart.dataAdd.map(d => d.value))})
+                    newChart.data = newChart.data.filter(d => d.value != 0)
+                }
+                newChart.updateFilters = function(d) {
+                    if (d.key == "Others") {
+                        if (newChart.filters.includes("Others")) {
+                            //remove filters if clicking others again with Others currently in filter
+                            newChart.filters = []
+                        } 
+                        d3.select("#majcom-up-level")
+                            .style("visibility","visible");
+                        //if we are filtering, store filtered data for showing next redraw
+                        //newChart.dataAdd = []
+                        //for (let i=0; i<newChart.filters.length; i++) {
+                        //    var temp = newChart.data.filter((g) => {
+                        //        return g.key == newChart.filters[i];
+                        //    })
+                        //    newChart.dataAdd.push(temp[0])
+                        //}
+                        newChart.dataAdd = newChart.data.filter(g=>newChart.filters.includes(g.key))
+                        console.log('filters after others:')
+                        console.log(newChart.filters)
+                        console.log('data to bring to next level:')
+                        console.log(newChart.dataAdd)
+                        //add filters for next set of items
+                        newChart.filters = newChart.filters.concat(newChart.nextData.map(g=>g.key))
+                        //newChart.nextData.map(function(g) {
+                        //    newChart.filters.push(g.key);
+                        //})
+                        newChart.level += 1
+                    } else {
+                        if (newChart.filters.includes("Others")) {
+                            //Others is in filters or at last level so reset filters so we can apply the one we clicked 
+                            newChart.filters = []    
+                        } else if (newChart.level == newChart.maxLevel() && newChart.data.every(d=>newChart.filters.includes(d.key))) {
+                            //reset filters if at the max level and all data elements are currently filtered 
+                            newChart.filters = []
+                        }
+                    }
+                    // if clicked item already filtered, remove filter    
+                    if (newChart.filters.includes(d.key)) {
+                        var index1 = newChart.filters.indexOf(d.key)
+                        newChart.filters.splice(index1,1)
+                    }
+                    //if clicked item not filtered, add filter
+                    else {
+                        newChart.filters.push(d.key)
+                    }
+                    //if no filters and top level, full reset chart
+                    if (newChart.filters.length == 0 && newChart.level == 0) {
+                        newChart.filterAll(newChart.dataAdd.length == 0)
+                        //if (newChart.dataAdd.length == 0) {
+                        //    newChart.filterAll()
+                        //} else {
+                        //    newChart.filterAll(false)
+                        //}
+                    }
+                    // if we have some filters or not at top level, apply the filters 
+                    else {
+                        //apply filters for current level if not top level
+                        if (newChart.filters.length == 0 && newChart.level != 0) {
+                            //only reset to current level, so add filters for current level 
+                            newChart.filters = newChart.filters.concat(newChart.data.map(d => d.key))
+                            //newChart.data.map(function(d) {
+                            //    newChart.filters.push(d.key);
+                            //})
+                        } 
+                        console.log('filters at end:')
+                        console.log(newChart.filters)
+                        d3.select("#majcom-chart-reset")
+                          .style("visibility","visible");
+                        d3.select("#slider")
+                            .property("disabled",true)
+                            .style("cursor","default")
+                            .style("opacity", 0.5);
+                        majcomDim.filterFunction(d => newChart.filters.includes(d))
+                        dc.redrawAll()
+                    }
+                }
+                newChart.render = function() {
+                    //clear any svg elements before rebuilding
+                    d3.select("#majcom-svg").remove();
+                    //set title
+                    var btnUp = d3.select("#majcom-chart-wrapper")
+                                    .append("div")
+                                    .attr("id","majcom-title")
+                                    .classed("row",true)
+                                    .append("h3")
+                                    .classed("col-12",true)
+                                    .text("MAJCOM Chart")
+                                    .append("button")
+                                    .attr("id","majcom-up-level")
+                                    .text("Move Up")
+                                    .classed("btn btn-success btn-sm",true)
+                                    .style("visibility","hidden")
+                                    .on("click", function() {
+                                        newChart.level = Math.max(newChart.level-1, 0)
+                                        console.log('moved up')
+                                        newChart.updateData()
+
+                                        newChart.dimension.filterAll()
+                                        //if (newChart.level > 0) {
+                                            if (newChart.filters.includes("Others")) {
+                                                //reset filters because none selected
+                                                newChart.dataAdd = []
+                                                newChart.filters = [] 
+                                            } else {
+                                                //Keep current filtered data to show on next level
+                                                //for (let i=0; i<newChart.filters.length; i++) {
+                                                //    var temp = newChart.nextData.filter((g) => {
+                                                //        return g.key == newChart.filters[i];
+                                                //    })
+                                                //    newChart.dataAdd.push(temp[0])
+
+                                                //    console.log('data to keep:')
+                                                //    console.log(temp[0])
+                                                //}
+                                                newChart.dataAdd = newChart.nextData.filter(g => newChart.filters.includes(g.key))
+                                                console.log('dataAdd: ')
+                                                console.log(newChart.dataAdd)
+                                            }
+                                            if (newChart.level == 0) {
+                                                //if top level, always remove all filters, but if no extra data to add, do a full reset
+                                                newChart.filterAll(newChart.dataAdd.length == 0)
+                                            }
+                                            else {
+                                                //newChart.data.map(function(d) {
+                                                  //  newChart.filters.push(d.key);
+                                                //})
+                                                newChart.filters = newChart.filters.concat(newChart.data.map(d => d.key))
+                                                majcomDim.filterFunction(d => newChart.filters.includes(d))
+                                            }
+                                            console.log(newChart.filters)
+                                            dc.redrawAll();
+                                        //}
+                                        //else {
+                                        //    newChart.filterAll();
+                                        //}
+                                    })
+
+                    var btnReset = d3.select("#majcom-title")
+                                    .selectAll("h3")
+                                    .append("button")
+                                    .attr("id","majcom-chart-reset")
+                                    .text("Reset")
+                                    .classed("btn btn-danger btn-sm reset",true)
+                                    .style("visibility","hidden")
+                                    .on("click", function() {
+                                        newChart.filterAll()
+                                    });
+
+                    var sliderContainer = d3.select("#majcom-title")
+                                            .selectAll("h3")
+                                            .append("div")
+                                            .attr("id","slider-container")
+                                            .style("display","inline-block");
+
+                    sliderContainer.append("label")
+                       .attr("id","slider-label")
+                       .text("Number of bars: " + Number(newChart.lastBar + 1))
+                       .style("font-size","12px");
+
+                    sliderContainer.append("input")
+                                   .attr("id", "slider")
+                                   .attr("type","range")
+                                   .classed("form-control",true)
+                                   .attr("min",2)
+                                   .attr("max",newChart.dataAll().length)
+                                   .attr("step",1)
+                                   .attr("value",newChart.lastBar)
+                                   .style('cursor','pointer')
+                                   .on("input", function() {
+                                        newChart.lastBar = this.value
+                                        d3.select('#slider-label')
+                                          .text('Number of Bars: ' + Math.min(+this.value+1,Number(d3.select('#slider').attr('max'))));
+                                        newChart.redraw() 
+                                   })
+                                   ;
+
+                    var svg = d3.select("#majcom-chart-wrapper")
+                                .append("svg")
+                                .attr("id","majcom-svg")
+                                .attr("width",w + margin.left + margin.right)
+                                .attr("height",h + margin.top + margin.bottom)
+                                .append("g")
+                                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                                
+                    //create data first time before drawing bars
+                    newChart.updateData()
+
+                    var firstBars = svg.append("g")
+                        .attr("id", "majcom-chart")
+                        .attr("clip-path", "url(#majcom-chart-area)")
+                        .selectAll("rect")
+                        .data(newChart.data,key)
+                        .enter()
+                        .append("rect")
+                        .attr("id", function(d) {
+                            return d.key.replace(/[^a-z0-9]/gi,'');
+                        })
+                        .attr("x", function(d,i) {
+                            return xScale(d.key)
+                        })
+                        .attr("y", function(d) {
+                            return yScale(d.value);
+                        })
+                        .attr("width", xScale.rangeBand())
+                        .attr("height", function(d) {
+                            return h-yScale(d.value);
+                        })
+                        .attr("fill", function(d) {
+                            if (newChart.filters.includes(d.key)) {
+                               return "steelblue"; 
+                            } 
+                            else if (newChart.filters.length == 0){
+                               return "steelblue"; 
+                            }
+                            else {
+                                return "gray";
+                            }
+                        }) 
+                        .on("click", function(d) {
+                            newChart.updateFilters(d);
+                        })
+                        .append("title")
+                        .text(function(d) {
+                            return d.key + ': ' + d.value;
+                        })
+                        ;
+
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform","translate(0," + h + ")")
+                        .call(xAxis)
+                        .selectAll("text")
+                        .style("text-anchor","end")
+                        .attr("transform","translate(-8,3)rotate(-45)");
+
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis);
+
+                    svg.append("clipPath")
+                        .attr("id","majcom-chart-area")
+                        .append("rect")
+                        .attr("x",0)
+                        .attr("y",0)
+                        .attr("width",w)
+                        .attr("height",h);
+
+                    newChart.svg = svg
+                }
+                newChart.redraw = function() {
+                    d3.select("#majcom-up-level")
+                        .style("visibility", newChart.level <= 0 ? "hidden" : "visible");
+
+                    var w = document.getElementById("majcom-chart-wrapper").offsetWidth - margin.left - margin.right 
+
+                    d3.select("#majcom-svg").attr("width",w + margin.left + margin.right)
+                                .attr("height",h + margin.top + margin.bottom);
+
+                    d3.select("#majcom-chart-area").selectAll("rect")
+                                                   .attr("width",w)
+                                                   .attr("height",h);
+
+                    newChart.updateData()
+
+                    //update number in slider to reflect length of data
+                    d3.select('#slider-label')
+                      .text('Number of Bars: ' + newChart.data.length);
+
+                    var minMax = d3.extent(newChart.data, d=>d.value)
+                    var minVal = minMax[0]
+                    var maxVal = minMax[1]
+                    xScale.domain(newChart.data.map(d => d.key))
+                            .rangeRoundBands([0,w],0.1);
+                    yScale.domain([0,maxVal])
+                            .range([h,0]);
+
+                    var bars = d3.select("#" + newChart.id).selectAll("rect")
+                                .data(newChart.data,key);
+
+                    //TODO: use cool enter transition when clicking others 
+                    bars.enter()
+                        .append("rect")
+                        .attr("id", function(d) {
+                            return d.key.replace(/[^a-z0-9]/gi,'');
+                        })
+                        .attr("y", h)
+                        .on("click", function(d,i) {
+                            newChart.updateFilters(d);
+                        })
+                        .append("title")
+                        .text(function(d) {
+                            return d.key + ': ' + d.value;
+                        })
+                        ;
+
+                    bars.select("title")
+                        .text(function(d) {
+                            return d.key + ': ' + d.value;
+                        });
+
+                    bars.attr("fill", function(d) {
+                            if (newChart.filters.includes(d.key)) {
+                               return "steelblue"; 
+                            } 
+                            else if (newChart.filters.length == 0){
+                               return "steelblue"; 
+                            }
+                            else {
+                                return "gray";
+                            }
+                        }) 
+                        .transition()
+                        .duration(800)
+                        .attr("x", function(d,i) {
+                            return xScale(d.key);
+                        })
+                        .attr("width", xScale.rangeBand())
+                        .attr("y", function(d) {
+                            return yScale(d.value);
+                        })
+                        .attr("height", function(d) {
+                            return h-yScale(d.value);
+                        })
+                        ;
+
+                    bars.exit()
+                        .transition()
+                        .duration(800)
+                        .attr("y", h)
+                        .remove();
+
+
+                    newChart.svg.select(".x.axis")
+                                  .transition()
+                                  .duration(800)
+                                  .call(newChart.xAxis)
+                                  .selectAll("text")
+                                  .style("text-anchor","end")
+                                  .attr("transform","translate(-8,3)rotate(-45)");
+
+                    newChart.svg.select(".y.axis")
+                                  .transition()
+                                  .duration(800)
+                                  .call(newChart.yAxis);
+                }
+
+                dc.chartRegistry.register(newChart)
+                console.log(dc.chartRegistry.list())
+                */
+
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
@@ -410,6 +882,23 @@ import searchBox from '@/components/searchBox'
 </script>
 
 <style src="../../node_modules/dc/dc.css">
+</style>
+<style>
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: sans-serif; 
+    font-size: 11px;
+    transform: translate(-18,0) rotate(45deg);
+}
+rect:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
 </style>
 <style scoped>
 #base >>> text{

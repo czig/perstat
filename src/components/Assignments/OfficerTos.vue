@@ -373,8 +373,8 @@ import searchBox from '@/components/searchBox'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 100
-                tourConfig.aspectRatio = 2.6
+                tourConfig.minHeight = 140
+                tourConfig.aspectRatio = 2.7
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
 
@@ -398,7 +398,7 @@ import searchBox from '@/components/searchBox'
 
                 tourStConfig.group = tourStConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
                 tourStConfig.minHeight = 200 
-                tourStConfig.aspectRatio = 2
+                tourStConfig.aspectRatio = 2.6
                 tourStConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourStConfig.colors = d3.scale.category10()
 
