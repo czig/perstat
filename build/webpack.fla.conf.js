@@ -14,6 +14,10 @@ const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
   : config.build.env
 
+var fla = '';
+if (process.env.PROD_TYPE)
+  fla = process.env.PROD_TYPE;
+
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
@@ -34,19 +38,18 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     new webpack.DefinePlugin({
       
-      //PROD BUILD - HIS MUST be run for PROD DEPLOYMENT
-      //'check_portal': '"INSANE"',
+      //FLA BUILD - HIS MUST be run for PROD DEPLOYMENT
       'axios_url': '"https://starsraw.afpc.randolph.af.mil/"',
-      'axios_url_civ_inv': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_civilian_inv.json"',
-      'axios_url_enl_promo': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_enlisted_promo.json"',
-      'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ENL_RET.js"',
-      'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ENL.js"',
-      'axios_url_off_pro': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_off_promo.json"',
-      'axios_url_off_man': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_OFF.js"',
-      'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ALL.js"',
-      'axios_url_off_tos': '"https://starsraw.afpc.randolph.af.mil/perstat_json/officer_tos.js"',
-      'axios_url_enl_tos': '"https://starsraw.afpc.randolph.af.mil/perstat_json/enlisted_tos.js"',
-      'axios_url_join_spouse': '"https://starsraw.afpc.randolph.af.mil/perstat_json/join_spouse.js"',     
+      'axios_url_civ_inv': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/ps_civilian_inv.json"',
+      'axios_url_enl_promo': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/ps_enlisted_promo.json"',
+      'axios_url_enl_ret': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/PS_ENL_RET.js"',
+      'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/PS_ENL.js"',
+      'axios_url_off_pro': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/ps_off_promo.json"',
+      'axios_url_off_man': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/PS_OFF.js"',
+      'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/PS_ALL.js"',
+      'axios_url_off_tos': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/officer_tos.js"',
+      'axios_url_enl_tos': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/enlisted_tos.js"',
+      'axios_url_join_spouse': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/join_spouse.js"',  
     }),
     // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
     new webpack.optimize.UglifyJsPlugin({

@@ -31,7 +31,7 @@ module.exports = merge(baseWebpackConfig, {
       'axios_url_enl_man': '"http://localhost:5005/api/enlisted_post"',
       'axios_url_off_pro': '"http://localhost:5005/api/officer_promo"',
       'axios_url_off_man': '"http://localhost:5005/api/officer_post"',
-      'axios_url_joint': '"http://localhost:5005/api/joint"',
+      'axios_url_join_spouse': '"http://localhost:5005/api/join_spouse"',  
       'axios_url_off_tos': '"http://localhost:5005/api/officer_tos"',
       'axios_url_enl_tos': '"http://localhost:5005/api/enlisted_tos"',
       'axios_url_adman': '"http://localhost:5005/api/admanning_post"',

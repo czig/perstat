@@ -1,68 +1,67 @@
 <template>
-	<div class="container">
-		<div class="col-md-12" align="center">
-		<h1>STEM DEGREES</h1>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-auto">
-                STEM:
-                <span id="stemTotal"></span>
-            </div>
-            <div class="col-auto">
-                NON STEM:
-                <span id="nonStemTotal"></span>
-            </div>
-        </div> 
-        <br>     
-        <div class='row'>
-            <div id="grade" class="col-4">
-                <div id="dc-grade-rowchart">
-                    <h3>STEM BY GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
-                    <button type="button"
-                            class="btn btn-danger btn-sm btn-rounded reset"
-                            style="display: none"
-                            @click="resetChart('dc-grade-rowchart')">Reset
-                    </button>
-                    </h3>
+    <div class="container">
+        <transition-group name="fade" mode="out-in">
+            <loader v-show="!loaded" key="loader"></loader>
+            <div v-show="loaded" key="content">
+                <div class="row">
+                    <div class="col-auto">
+                        STEM:
+                        <span id="stemTotal"></span>
+                    </div>
+                    <div class="col-auto">
+                        NON STEM:
+                        <span id="nonStemTotal"></span>
+                    </div>
+                    <div class="col"></div>
+                    <div class="col-auto" align="right">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="resetAll">Reset All</button>
+                    </div>  
+                </div>  
+                <div class='row'>
+                    <div id="grade" class="col-6">
+                        <div id="dc-grade-rowchart">
+                            <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-grade-rowchart')">Reset
+                            </button>
+                            </h3>
+                        </div>
+                    </div>            
+                    <div id="edlevel" class="col-6">
+                        <div id="dc-edlevel-barchart">
+                            <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-edlevel-barchart')">Reset
+                            </button>
+                            </h3>
+                        </div>
+                    </div>
                 </div>
-            </div>            
-            <div id="compare" class="col-4">
-                <div id="dc-compare-piechart">
-                    <h3>OFFICER/ENLISTED <span style="font-size: 14pt; opacity: 0.87;"></span>
-                    <button type="button" 
-                            class="btn btn-danger btn-sm btn-rounded reset" 
-                            style="display: none"
-                            @click="resetChart('dc-compare-piechart')">Reset</button>
-                    </h3>
-                </div>
-            </div>
-            <div id="edlevel" class="col-4">
-                <div id="dc-edlevel-barchart">
-                    <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
-                    <button type="button"
-                            class="btn btn-danger btn-sm btn-rounded reset"
-                            style="display: none"
-                            @click="resetChart('dc-edlevel-barchart')">Reset
-                    </button>
-                    </h3>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class='row'>
-            <div id="degree" class="col-12">
-                <div id="dc-degree-barchart">
-                    <h3>DEGREE <span style="font-size: 14pt; opacity: 0.87;"></span>
-                    <button type="button"
-                            class="btn btn-danger btn-sm btn-rounded reset"
-                            style="display: none"
-                            @click="resetChart('dc-degree-barchart')">Reset
-                    </button>
-                    </h3>
-                </div>
-            </div>
-        </div>    
+                <br>
+                <div class='row'>
+                    <div id="degree" class="col-12">
+                        <div id="dc-degree-barchart">
+                            <h3>DEGREE <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-degree-barchart')">Reset
+                            </button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>    
+            </div>    
+        </transition-group>    
 	</div>
 </template>
 
@@ -81,7 +80,8 @@
 		data() {
 			return {
 					data: [],
-					loaded: false
+                    loaded: false,
+                    selected: "enlisted"
 			}
 		},
 
@@ -110,6 +110,12 @@
             })
             dc.redrawAll()
           },
+          
+          radioButton: () => {
+            setTimeout(function() {
+                dc.redrawAll()
+            },10)
+          },
           submit: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id 
@@ -137,8 +143,7 @@
 		},
 
 		created: function() { 
-			console.log('created')
-		
+			console.log('created')		
 		},
 
 		mounted() {
@@ -148,9 +153,7 @@
             axios.post(axios_url_stem).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
-                console.log(invData)
                 var objData = makeObject(invData)
-                console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -161,6 +164,7 @@
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -168,9 +172,39 @@
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    output.push(obj);
+                    obj2 = {};
+                    obj2 = formatData(obj)
+                    output.push(obj2);
+ 
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+            obj.count = given.count
+            obj.deg = given.deg
+            obj.edlevel = given.edlevel
+
+            var grdType = ""
+
+            if (given.grd > '30') {
+                obj.grd = formats.gradeFormat[given.grd];
+            } else {
+                obj.grd = "error";
+            }
+
+            console.log(grdType)
+
+            obj.stem = given.stem
+            obj.tafms = given.tafms
+            obj.type = given.type
+            obj.nonStemCount = +given.count - +given.stem
+            obj.totalCount = given.count
+            obj.stem = given.stem
+
+                return obj;
             }
 
             var renderCharts = () => {
@@ -178,8 +212,33 @@
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
+                //reduce functions
+                function stemAdd(p,v) {
+                    p.stemCount = p.stemCount + +v.stem
+                    p.totalCount = p.totalCount + +v.count
+                    //if divide by 0, set to 0, and if NaN, set to zero
+                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : +((p.stemCount/p.totalCount).toFixed(2)) || 0
+                    return p
+                }
+
+                function stemRemove(p,v) {
+                    p.stemCount = p.stemCount - +v.stem
+                    p.totalCount = p.totalCount - +v.count
+                    //if divide by 0, set to 0, and if NaN, set to zero
+                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : +((p.stemCount/p.totalCount).toFixed(2)) || 0
+                    return p
+                }
+
+                function stemInitial() {
+                    return {
+                        stemCount: 0,
+                        totalCount: 0,
+                        stemPercent: 0,
+                    }
+                }                                    
+
                 //remove empty function (es6 syntax to keep correct scope)
-                var removeEmptyBins = (source_group) => {
+/*                 var removeEmptyBins = (source_group) => {
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
@@ -188,37 +247,23 @@
                         }
                     }
                 }
-
-                //Officer/Enlisted Compare piechart
-                var compareConfig = {}
-                compareConfig.id = 'compare'
-                compareConfig.dim = this.ndx.dimension(function(d) {
-                    return d.type;
-                })
-                compareConfig.group = compareConfig.dim.group().reduceSum(function(d) {return d.count;})
-                compareConfig.minHeight = 150 
-                compareConfig.aspectRatio = 2 
-                compareConfig.radius = 80 
-                compareConfig.innerRadius = 0
-                compareConfig.externalLabels = 0 
-                compareConfig.externalRadiusPadding = 0
-                var compareChart = dchelpers.getPieChart(compareConfig)
-                compareChart
-                    .slicesCap(2)
-
+ */
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
                 edLevelConfig.dim = this.ndx.dimension(function(d){
                     return d.edlevel;
                 })
-                edLevelConfig.group = edLevelConfig.dim.group().reduceSum(function(d) {return d.count;})
-                edLevelConfig.minHeight = 200
+                edLevelConfig.group = edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
-                edLevelConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
+                edLevelConfig.margins = {top: 10, left: 100, right: 30, bottom: 130}
                 edLevelConfig.colors = ["#108b52"]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
+                    .valueAccessor((d) => {
+                        return d.value.stemCount
+                    })                                
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
@@ -239,13 +284,16 @@
                 degreeConfig.dim = this.ndx.dimension(function(d){
                     return d.deg;
                 })
-                degreeConfig.group = degreeConfig.dim.group().reduceSum(function(d) {return d.stem;})
-                degreeConfig.minHeight = 200
+                degreeConfig.group = degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                degreeConfig.minHeight = 400
                 degreeConfig.aspectRatio = 3
-                degreeConfig.margins = {top: 10, left: 45, right: 30, bottom: 150}
+                degreeConfig.margins = {top: 10, left: 150, right: 30, bottom: 200}
                 degreeConfig.colors = ["#333cff"]
                 var degreeChart = dchelpers.getOrdinalBarChart(degreeConfig)
                 degreeChart
+                    .valueAccessor((d) => {
+                        return d.value.stemCount
+                    })                
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
@@ -257,28 +305,46 @@
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
+                //remove empty function (es6 syntax to keep correct scope)
+                var removeError = (source_group) => {
+                    return {
+                        all: () => {
+                            return source_group.all().filter((d) => {
+                                return d.key != "error"
+                            })
+                        }
+                    }
+                }
+                    
+
                 //Grade Rowchart
                 
-                var gradeConfig = {}
+                var gradeConfig = {}                    
                 gradeConfig.id = 'grade'
 
                 gradeConfig.dim = this.ndx.dimension(function(d){
-                    return formats.gradeFormat[d.grd];
+                    return d.grd;
                 })
-                gradeConfig.dim.filter(function(d) {return d == '31'});
-
-                gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.stem;})
-                gradeConfig.minHeight = 280
+                var grdgroup = gradeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                gradeConfig.group = removeError(grdgroup)
+                gradeConfig.minHeight = 300
                 gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 40, right: 30, bottom: 50}
+                gradeConfig.margins = {top: 30, left: 40, right: 30, bottom: 20}
                 gradeConfig.colors = d3.scale.category10()
 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 
                 gradeChart
+                    .valueAccessor((d) => {
+                        return d.value.stemCount
+                    })                
                      .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     }) 
+
+                //Filters data to count Enlisted only
+                var filtering = this.ndx.dimension(function(d) { return d.type; });
+                filtering.filter("E")                    
  
 
                 //Number Display for STEM, NON STEM, and overall total - show total for filtered content
@@ -291,16 +357,7 @@
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
 
-                var total = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
-                var totalND = dc.numberDisplay("#total")
-                totalND.group(total)
-                    .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) { return d;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                    })
-
-                var nonStemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                var nonStemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.nonStemCount })
                 var nonStemTotalND = dc.numberDisplay("#nonStemTotal")
                 nonStemTotalND.group(nonStemTotal)
                     .formatNumber(d3.format("d"))
@@ -308,6 +365,22 @@
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
+
+                //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = gradeConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT Enlisted_STEM' + ' ' + store.state.asDate + myFilters + ' .csv');
+                });
+                    
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

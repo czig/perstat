@@ -17,6 +17,9 @@
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="resetAll">Reset All</button>
@@ -230,6 +233,7 @@ import { store } from '@/store/store'
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -237,9 +241,38 @@ import { store } from '@/store/store'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    output.push(obj);
+                    obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
+                    output.push(obj2);
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.Grade = formats.gradeFormat[given.grade]
+                obj.MAJCOM = formats.majFormat[given.majcom]
+                obj.Career_Field = formats.careerFieldFormat[given.career_field]
+                obj.Age_Group = given.AgeGroup + '-' + String(+given.AgeGroup + 9);
+                obj.MPF = formats.mpfFormat[given.mpf]
+                obj.Gender = given.Gender
+                obj.Prior_Military = formats.prior_mil[given.prior_mil]
+                obj.Inventory = given.count
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
 
             var renderCharts = () => {
@@ -259,7 +292,7 @@ import { store } from '@/store/store'
                 }
 
                 //Number Display for sel, elig, sel rate - show total for filtered content
-                var numberGroup = this.ndx.groupAll().reduceSum(function(d) {return d.count;})
+                var numberGroup = this.ndx.groupAll().reduceSum(function(d) {return d.Inventory;})
                 var invND = dc.numberDisplay("#inv")
                 invND.group(numberGroup)
                     .formatNumber(d3.format("d"))
@@ -272,9 +305,9 @@ import { store } from '@/store/store'
                 var careerFieldConfig = {}
                 careerFieldConfig.id = 'careerField'
                 careerFieldConfig.dim = this.ndx.dimension(function(d){
-                    return formats.careerFieldFormat[d.career_field];
+                    return d.Career_Field;
                 })
-                careerFieldConfig.group = careerFieldConfig.dim.group().reduceSum(function(d) {return d.count;})
+                careerFieldConfig.group = careerFieldConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 careerFieldConfig.minHeight = 200
                 careerFieldConfig.aspectRatio = 3
                 careerFieldConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
@@ -296,9 +329,9 @@ import { store } from '@/store/store'
                 var gradeConfig = {};
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.gradeFormat[d.grade];
+                    return d.Grade;
                 })
-                gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.count;})
+                gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 gradeConfig.minHeight = 400 
                 gradeConfig.aspectRatio = 1
                 gradeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
@@ -313,9 +346,9 @@ import { store } from '@/store/store'
                 var ageConfig = {}
                 ageConfig.id = 'age'
                 ageConfig.dim = this.ndx.dimension(function(d) {
-                    return d.AgeGroup + '-' + String(+d.AgeGroup + 9);
+                    return d.Age_Group;
                 })
-                ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.count;})
+                ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 ageConfig.minHeight = 150 
                 ageConfig.aspectRatio = 2
                 ageConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
@@ -332,7 +365,7 @@ import { store } from '@/store/store'
                 genderConfig.dim = this.ndx.dimension(function(d) {
                     return d.Gender;
                 })
-                genderConfig.group = genderConfig.dim.group().reduceSum(function(d) {return d.count;})
+                genderConfig.group = genderConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 genderConfig.minHeight = 150 
                 genderConfig.aspectRatio = 2 
                 genderConfig.radius = 80 
@@ -353,9 +386,9 @@ import { store } from '@/store/store'
                 var priorConfig = {}
                 priorConfig.id = 'prior'
                 priorConfig.dim = this.ndx.dimension(function(d) {
-                    return formats.prior_mil[d.prior_mil];
+                    return d.Prior_Military;
                 })
-                priorConfig.group = priorConfig.dim.group().reduceSum(function(d) {return d.count;})
+                priorConfig.group = priorConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 priorConfig.minHeight = 120 
                 priorConfig.aspectRatio = 3
                 priorConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
@@ -366,8 +399,8 @@ import { store } from '@/store/store'
                 //Majcom
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.majcom]})
-                var majcomPercent = majcomConfig.dim.group().reduceSum(function(d) {return d.count;})
+                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM })
+                var majcomPercent = majcomConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 majcomConfig.group = removeEmptyBins(majcomPercent)
                 majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
                 majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
@@ -388,8 +421,8 @@ import { store } from '@/store/store'
                 //base(mpf)
                 var baseConfig = {}
                 baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.mpf]})
-                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.count;})
+                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
+                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 baseConfig.group = removeEmptyBins(basePercent)
                 baseConfig.minHeight = chartSpecs.baseChart.minHeight 
                 baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
@@ -406,6 +439,20 @@ import { store } from '@/store/store'
                         })
                     })
 
+                //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = majcomConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT Civilian_Inventory' + ' ' + store.state.asDate + myFilters + ' .csv');
+                });
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

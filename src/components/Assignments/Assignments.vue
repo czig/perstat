@@ -20,17 +20,19 @@
 
         </ul>
         <div class="row" v-if="dynamicComponent=='offTOS' || dynamicComponent=='enlTOS'">
-            <div class="centered">
-                <button :class="['btn',
-                        dynamicComponent=='offTOS'?'btn-dark-green':'btn-mdb-color','btn-md','myBtn']"
-                        @click.prevent.cancel="dynamicComponent='offTOS'">
-                        Officer 
-                </button>
-                <button :class="['btn',
-                        dynamicComponent=='enlTOS'?'btn-dark-green':'btn-mdb-color','btn-md','myBtn']"
-                        @click.prevent.cancel="dynamicComponent='enlTOS'">
-                        Enlisted  
-                </button>
+            <div class="padded">
+                <div id="radioSelect" class="col form-group">
+                    <label class="custom-control custom-radio" >
+                        <input class="custom-control-input" name="radio" type="radio" id="radio1" value="offTOS" v-model="dynamicComponent">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Officer</span>
+                    </label>
+                    <label class="custom-control custom-radio" >
+                        <input class="custom-control-input" name="radio" type="radio" id="radio2" value="enlTOS" v-model="dynamicComponent">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Enlisted</span>
+                    </label>
+                </div>
             </div>
         </div>
         <transition name="fade" mode="out-in">
@@ -41,9 +43,9 @@
 
 <script>
 import offTOS from '@/components/Assignments/OfficerTos'
-import enlTOS from '@/components/Assignments/OfficerTos'
+import enlTOS from '@/components/Assignments/EnlistedTos'
 import Join from '@/components/Assignments/Joint'
-import stem from '@/components/Assignments/stem'
+import stem from '@/components/Assignments/MainStem'
 import { store } from '@/store/store'
 
 export default {
@@ -67,8 +69,24 @@ export default {
 </script>
 
 <style scoped>
+
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
+
+#radioSelect{
+    margin-bottom: 0px;
+}
+
 .active{
     border-color:red;
+}
+.padded{
+    margin-left: 10px;
+    margin-top: 10px;
 }
 .centered{
     float: none;
@@ -89,5 +107,8 @@ export default {
 }
 .fade-leave-to{
     opacity: 0;
+}
+.custom-control-description{
+    font-weight: bold;
 }
 </style>

@@ -1,17 +1,21 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 style="font-weight:bold" class="col">TF Inventory
+            <h1 class="col"> {{ pageName }}
+
                 <span> 
-                    <h5 style="color:red">
-                        Reserve/Guard will be incorporated in the near future
-                    </h5>
                 </span>
             </h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
             </div>
+        </div>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            Reserve/Guard will be incorporated in the near future
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
@@ -23,6 +27,9 @@
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="resetAll">Reset All</button>
@@ -118,7 +125,8 @@ import searchBox from '@/components/searchBox'
                 ylabel: 'Inventory',
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
-                majcomColor: chartSpecs.majcomChart.color
+                majcomColor: chartSpecs.majcomChart.color,
+                pageName: 'TF_Inventory',
             }
         },
         computed: {
@@ -181,12 +189,13 @@ import searchBox from '@/components/searchBox'
         },
         mounted() {
             console.log('mounted')       
+            $('[data-toggle="tooltip"]').tooltip({delay: {"show":100, "hide":100}})
             //TEST AXIOS CALL:
             axios.post(axios_url_adman).then(response => {
                 //console.log(response)
                 store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
-                console.log(axiosData)
+                //console.log(axiosData)
                 var objData = makeObject(axiosData)
                 this.data = objData
                 this.loaded = true
@@ -198,6 +207,7 @@ import searchBox from '@/components/searchBox'
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -205,9 +215,35 @@ import searchBox from '@/components/searchBox'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    output.push(obj);
+                    var obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
+                    output.push(obj2);
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.File_Type = formats.type[given.type]
+                obj.Grade = formats.gradeFormat[given.grade]
+                obj.MAJCOM = formats.majFormat[given.maj]
+                obj.MPF = formats.mpfFormat[given.mpf]
+                obj.Inventory = given.count
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
 
             var renderCharts = () => {
@@ -215,7 +251,7 @@ import searchBox from '@/components/searchBox'
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
-                console.log(this.data[0])
+                //console.log(this.data[0])
                 //reduce functions
 
                 //remove empty function (es6 syntax to keep correct scope)
@@ -233,9 +269,9 @@ import searchBox from '@/components/searchBox'
                 var typeConfig = {};
                 typeConfig.id = 'type'
                 typeConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.type[d.type];
+                    return d.File_Type;
                 })
-                typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.count;})
+                typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
                 typeConfig.minHeight = 200 
                 typeConfig.aspectRatio = 3
                 typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
@@ -245,9 +281,9 @@ import searchBox from '@/components/searchBox'
                 //Location
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.maj]})
+                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
                 var majcomPercent = majcomConfig.dim.group().reduceSum(function(d){
-                    return +d.count 
+                    return +d.Inventory 
                 })
                 majcomConfig.group = removeEmptyBins(majcomPercent)
                  majcomConfig.group = removeEmptyBins(majcomPercent)
@@ -261,17 +297,17 @@ import searchBox from '@/components/searchBox'
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-majcom-barchart')
-                        })
+                             .attr('transform', 'translate(-8,0)rotate(-45)')
+                             .on('click', (d)=>{
+                                this.submit(d, 'dc-majcom-barchart')
+                             })
                     })
 
                 //base(mpf)
                 var baseConfig = {}
                 baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.mpf]})
-                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return +d.count;})
+                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
+                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
                 baseConfig.group = removeEmptyBins(basePercent)
                 baseConfig.minHeight = chartSpecs.baseChart.minHeight 
                 baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
@@ -282,14 +318,14 @@ import searchBox from '@/components/searchBox'
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-base-barchart')
-                        })
+                             .attr('transform', 'translate(-9,0)rotate(-45)')
+                             .on('click', (d)=>{
+                                 this.submit(d, 'dc-base-barchart')
+                             })
                     })
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
-                var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory })
                 var invND = dc.numberDisplay("#inv")
                 invND.group(inv)
                     .formatNumber(d3.format("d"))
@@ -303,9 +339,9 @@ import searchBox from '@/components/searchBox'
                 var gradeConfig = {}
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function(d){
-                    return formats.gradeFormat[d.grade];
+                    return d.Grade;
                 })
-                gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.count;}))
+                gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 gradeConfig.minHeight = 200
                 gradeConfig.aspectRatio = 2.6
                 gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
@@ -326,27 +362,21 @@ import searchBox from '@/components/searchBox'
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  
-                // //grade
-                
-                // var gradeConfig = {};
-                // gradeConfig.id = 'grade';
-                // gradeConfig.dim = this.ndx.dimension(function (d) {
-                //     return formats.gradeFormat[d.grade];
-                // })
-                // gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d){
-                //     return +d.count 
-                // })
-                // gradeConfig.minHeight = 200 
-                // gradeConfig.aspectRatio = 2
-                // gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                // gradeConfig.colors = d3.scale.category10()
-                // var gradeChart = dchelpers.getRowChart(gradeConfig)
-                // gradeChart
-                //     .ordering(function(d){
-                //       return formats.gradeOrder[d.key]
-                //     })                                    
-                
-                
+
+                //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = typeConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
+                });
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
@@ -382,6 +412,13 @@ import searchBox from '@/components/searchBox'
 <style src="../../node_modules/dc/dc.css">
 </style>
 <style scoped>
+#base >>> text{
+    font: 8px sans-serif;
+}
+
+text.baseText{
+    font: 8px sans-serif;
+}
 .custom-control.custom-radio{
     padding-left:20px;
     padding-right:10px;

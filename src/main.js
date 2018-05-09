@@ -25,6 +25,13 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/mdbootstrap/css/mdb.min.css'
 
+import fontawesome from '@fortawesome/fontawesome'
+import faSpinner from '@fortawesome/fontawesome-free-solid/faSpinner'
+import faQuestionCircle from '@fortawesome/fontawesome-free-solid/faQuestionCircle'
+import faInfoCircle from '@fortawesome/fontawesome-free-solid/faInfoCircle'
+
+fontawesome.library.add(faSpinner,faQuestionCircle, faInfoCircle)
+
 import { store } from '@/store/store'
 
 /* eslint-disable no-new */

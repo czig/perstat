@@ -6,6 +6,9 @@
                 <div class="row pt-2"> 
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="resetAll">Reset All</button>
@@ -86,6 +89,7 @@
                                 <div v-else class="col-12">
                                      
                                     <afsc 
+                                        v-model:value="sa"
                                         :ndx="ndx"
                                         :ylabel="ylabel"
                                         :selected="selected"
@@ -149,6 +153,7 @@ import { store } from '@/store/store'
                 data: [],
                 selected: "percent",
                 startAfsc: false,
+                sa: '',
                 loaded: false
             }
         },
@@ -219,7 +224,7 @@ import { store } from '@/store/store'
                 //if divide by 0, set to 0, and if NaN, set to zero
                 p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
                 //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                if ((/E[5-7]/).test(v.Board.substr(6,8))) {
                     p.eligE57 += +v.Eligible 
                     p.testEligWghtSumE57 += (v.Test_Sco_Eligible*v.Eligible)
                 } else {
@@ -239,7 +244,7 @@ import { store } from '@/store/store'
                 //if divide by 0, set to 0, and if NaN, set to zero
                 p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
                 //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                if ((/E[5-7]/).test(v.Board.substr(6,8))) {
                     p.eligE57 -= +v.Eligible 
                     p.testEligWghtSumE57 -= (v.Test_Sco_Eligible*v.Eligible)
                 } else {
@@ -299,6 +304,7 @@ import { store } from '@/store/store'
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -306,9 +312,63 @@ import { store } from '@/store/store'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    output.push(obj);
+                    obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
+                    output.push(obj2);
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.Grade = formats.gradeFormat[given.board.substring(6,8)]
+                obj.Look = given.look.trim()
+                obj.Recommendation = formats.enlRecommendFormat[given.Prom_rec]
+                obj.Board = given.board
+                obj.ACA43 = given.ACA43
+
+                obj.Eligible = +given.Eligible
+                obj.Selects = +given.Selects
+                obj.Promotion_Rate = obj.Selects/obj.Eligible === Infinity ? 0 : Math.round((obj.Selects/obj.Eligible)*1000)/10 || 0
+
+                var e57 = null
+                var e57Sum = null
+                var e89 = null
+                var e89Sum = null
+                var brd = null
+
+                if ((/E[5-7]/).test(given.board.substr(6,8))) {
+                    e57 = obj.Eligible
+                    e57Sum = +given.Test_Sco_Eligible*obj.Eligible
+                } else {
+                    e89 = obj.Eligible 
+                    e89Sum = +given.Test_Sco_Eligible*obj.Eligible
+                    brd = +given.Brd_Sco_Eligible*obj.Eligible
+                }
+                // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
+                obj.Board2 = formats.gradeFormat[given.board.substring(6,8)] + given.board.substring(2,6)
+                obj.Test_Sco_Eligible = given.Test_Sco_Eligible
+                obj.Brd_Sco_Eligible = given.Brd_Sco_Eligible
+
+
+                obj.Test_Score_E5_E7_Eligibles = e57Sum/e57 || 0
+                obj.Test_Score_E8_E9_Eligibles = e89Sum/e89 || 0
+                obj.Board_Score_E8_E9_Eligibles = brd/e89 || 0
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
 
             var renderCharts = () => {
@@ -323,7 +383,7 @@ import { store } from '@/store/store'
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
                     //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                    if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                    if ((/E[5-7]/).test(v.Board.substr(6,8))) {
                         p.eligE57 += +v.Eligible 
                         p.testEligWghtSumE57 += (v.Test_Sco_Eligible*v.Eligible)
                     } else {
@@ -331,6 +391,7 @@ import { store } from '@/store/store'
                         p.testEligWghtSumE89 += (v.Test_Sco_Eligible*v.Eligible)
                         p.brdEligWghtSum += (v.Brd_Sco_Eligible*v.Eligible)
                     }
+                    //console.log('TEEEEEESSSSSTTTTTTT')
                     // get weighted average of avg test score and avg brd score for eligibles by dividing by eligibles
                     p.testEligE57 = p.testEligWghtSumE57/p.eligE57 || 0
                     p.testEligE89 = p.testEligWghtSumE89/p.eligE89 || 0
@@ -343,7 +404,7 @@ import { store } from '@/store/store'
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.Selects/p.Eligible === Infinity ? 0 : Math.round((p.Selects/p.Eligible)*1000)/10 || 0
                     //find number of eligibles and weighted sum of test scores for e5-e7 and e8-e9 separately
-                    if ((/E[5-7]/).test(v.board.substr(6,8))) {
+                    if ((/E[5-7]/).test(v.Board.substr(6,8))) {
                         p.eligE57 -= +v.Eligible 
                         p.testEligWghtSumE57 -= (v.Test_Sco_Eligible*v.Eligible)
                     } else {
@@ -435,7 +496,7 @@ import { store } from '@/store/store'
                 var gradeConfig = {};
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.gradeFormat[d.board.substring(6,8)];
+                    return d.Grade
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 gradeConfig.minHeight = 150 
@@ -455,7 +516,7 @@ import { store } from '@/store/store'
                 var lookConfig = {};
                 lookConfig.id = 'look'
                 lookConfig.dim = this.ndx.dimension(function (d) {
-                    return d.look.trim();
+                    return d.Look;
                 })
                 lookConfig.group = lookConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 lookConfig.minHeight = 150 
@@ -472,7 +533,7 @@ import { store } from '@/store/store'
                 var recommendConfig = {};
                 recommendConfig.id = 'recommend'
                 recommendConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.enlRecommendFormat[d.Prom_rec];
+                    return d.Recommendation;
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 recommendConfig.minHeight = 150 
@@ -491,7 +552,7 @@ import { store } from '@/store/store'
                 //board
                 var boardConfig = {}
                 boardConfig.id = 'board'
-                boardConfig.dim = this.ndx.dimension(function(d){return formats.gradeFormat[d.board.substring(6,8)] + d.board.substring(2,6);})
+                boardConfig.dim = this.ndx.dimension(function(d){ return d.Board2 })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 boardConfig.group = removeEmptyBins(boardGroup)
                 boardConfig.minHeight = 250
@@ -516,6 +577,30 @@ import { store } from '@/store/store'
                         })
                     })
 
+                //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = boardConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        console.log(d.anchorName().toUpperCase())
+                        if (d.anchorName().toUpperCase().includes('AFSC')){
+                            //console.log('AFSC Filter: ' + this.sa)
+                            if (d.anchorName().toUpperCase().includes('ROW') && this.sa){
+                                if (this.sa.length < 6){
+                                    var num = 6 - this.sa.length;
+                                    var txt = Array(num).join("X")
+                                    myFilters += ' (AFSC_' + this.sa + txt + ')'
+                                }   else myFilters += ' (' + this.sa + ')'
+                            }
+                        }else if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT Enlisted_Promotion' + ' ' + store.state.asDate + myFilters + '.csv');
+                });
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

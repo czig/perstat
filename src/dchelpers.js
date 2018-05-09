@@ -87,7 +87,7 @@ var getGeoChart = (config)=>{
       .dimension(config.dim)
       .group(config.group)
       .colors(config.colors)
-      .colorAccessor(function(d){ if (d) return d[config.colorAccessor];})
+      .colorAccessor(function(d){ if (d) return d['average'];})
       //Resize the geo map 
       .projection(    
                       config.projection.scale(config.scale)
@@ -98,13 +98,23 @@ var getGeoChart = (config)=>{
                         return d.properties[config.propName];
                     });
 
+
     //Fix Color Range upon render/redraw
     chart.on("preRender", function(chart) {
-      chart.colorDomain(d3.extent(chart.group().all(), function(d){return d.value.cnt}));
-      console.log(chart.group().all())
+      var range = d3.extent(chart.group().all(), function(d){return d.value['average']});
+      var diff = range[1]-range[0];
+      // range[0] += diff/4;
+      // range[1] -= diff/4;
+      chart.colorDomain(range);
+      console.log(range)
     });
     chart.on("preRedraw", function(chart) {
-      chart.colorDomain(d3.extent(chart.group().all(), function(d){return d.value.cnt}));
+      var range = d3.extent(chart.group().all(), function(d){return d.value['average']});
+      var diff = range[1]-range[0];
+      // range[0] += diff/4;
+      // range[1] -= diff/4;
+      chart.colorDomain(range);
+      console.log(range)
     });
     return chart
 }

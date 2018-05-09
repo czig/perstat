@@ -26,8 +26,10 @@
                     <span class="custom-control-description">STP</span>
                 </label>
             </div>
-            <div class="col"></div>
             <div class="col-auto">
+                <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
                 <button type="button" 
                         class="btn btn-danger btn-rounded btn-sm waves-effect" 
                         @click="resetAll">Reset All</button>
@@ -261,6 +263,7 @@ import searchBox from '@/components/searchBox'
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -268,9 +271,38 @@ import searchBox from '@/components/searchBox'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    output.push(obj);
+                    obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
+                    output.push(obj2);
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.Grade = formats.gradeFormat[given.GRADE]
+                obj.MAJCOM = formats.majFormat[given.MAJCOM_T12C]
+                obj.AFSC_Group = formats.afscGroupFormat[given.AFSC_GROUP]
+                obj.MPF = formats.mpfFormat[given.MPF]
+                obj.Assigned = +given.ASGNCURR
+                obj.Authorized = +given.AUTHCURR
+                obj.STP = given.STP
+                obj.PERCENT_ASSIGNED = obj.Assigned/obj.Authorized === Infinity ? 0 : Math.round((obj.Assigned/obj.Authorized)*1000)/10 || 0;
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
 
             var renderCharts = () => {
@@ -280,8 +312,8 @@ import searchBox from '@/components/searchBox'
 
                 //reduce functions
                 function manningAdd(p,v) {
-                    p.asgn = p.asgn + +v.ASGNCURR
-                    p.auth = p.auth + +v.AUTHCURR
+                    p.asgn = p.asgn + +v.Assigned
+                    p.auth = p.auth + +v.Authorized
                     p.stp = p.stp + +v.STP
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
@@ -289,8 +321,8 @@ import searchBox from '@/components/searchBox'
                     return p
                 }
                 function manningRemove(p,v) {
-                    p.asgn = p.asgn - +v.ASGNCURR
-                    p.auth = p.auth - +v.AUTHCURR
+                    p.asgn = p.asgn - +v.Assigned
+                    p.auth = p.auth - +v.Authorized
                     p.stp = p.stp - +v.STP
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
@@ -320,7 +352,7 @@ import searchBox from '@/components/searchBox'
                 //Majcom
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return formats.majFormat[d.MAJCOM_T12C]})
+                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
                 var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 majcomConfig.group = removeEmptyBins(majcomPercent)
                 majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
@@ -343,7 +375,7 @@ import searchBox from '@/components/searchBox'
                     })
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
-                var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.AUTHCURR })
+                var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.Authorized })
                 var authND = dc.numberDisplay("#auth")
                 authND.group(auth)
                     .formatNumber(d3.format("d"))
@@ -351,7 +383,7 @@ import searchBox from '@/components/searchBox'
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.ASGNCURR})
+                var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.Assigned})
                 var asgnND = dc.numberDisplay("#asgn")
                 asgnND.group(asgn)
                     .formatNumber(d3.format("d"))
@@ -380,7 +412,7 @@ import searchBox from '@/components/searchBox'
                 var gradeConfig = {};
                 gradeConfig.id = 'grade';
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.gradeFormat[d.GRADE];
+                    return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 gradeConfig.minHeight = 200 
@@ -399,7 +431,7 @@ import searchBox from '@/components/searchBox'
                 //afscGroup
                 var afscGroupConfig = {}
                 afscGroupConfig.id = 'afscGroup'
-                afscGroupConfig.dim = this.ndx.dimension(function(d){return formats.afscGroupFormat[d.AFSC_GROUP]})
+                afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_Group})
                 afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 afscGroupConfig.minHeight = 200 
                 afscGroupConfig.aspectRatio = 3 
@@ -421,7 +453,7 @@ import searchBox from '@/components/searchBox'
                 //base(mpf)
                 var baseConfig = {}
                 baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return formats.mpfFormat[d.MPF]})
+                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
                 var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 baseConfig.group = removeEmptyBins(basePercent)
                 baseConfig.minHeight = chartSpecs.baseChart.minHeight 
@@ -441,6 +473,21 @@ import searchBox from '@/components/searchBox'
                             this.submit(d, 'dc-base-barchart')
                         })
                     })
+
+                //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = majcomConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT Officer_Manning' + ' ' + store.state.asDate + myFilters + ' .csv');
+                });
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

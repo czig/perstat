@@ -6,6 +6,9 @@
                 <div class="row pt-2"> 
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="resetAll">Reset All</button>
@@ -29,10 +32,17 @@
                         <span id="selRate"></span>
                     </div>
                 </div>
+                <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                    Data prefiltered to IPZ Zone Promotion Rate
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="row">
                     <div id="grade" class="col-4">
                         <div id="dc-grade-rowchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <!--<font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>-->
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
@@ -120,14 +130,15 @@ import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
     export default {
         data() {
             return {
                 data: [],
                 selected: "percent",
-                loaded: false 
-
+                loaded: false,
+                showAlert: true,
             }
         },
         computed: {
@@ -192,7 +203,8 @@ import { store } from '@/store/store'
         },
         components: {
             'autocomplete': AutoComplete,
-            'loader': Loader
+            'loader': Loader,
+            FontAwesomeIcon
         },
         created: function(){
           console.log('created')
@@ -207,7 +219,14 @@ import { store } from '@/store/store'
             axios.post(axios_url_off_pro).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var promoData = response.data.data
-                this.data = promoData
+                var formattedData = []
+                var obj = {}
+                promoData.forEach((d)=>{
+                    obj = formatData(d)
+                    formattedData.push(obj)
+                })
+                //console.log(formattedData   )
+                this.data = formattedData
                 this.loaded = true
                 renderCharts()
             }).catch(console.error)
@@ -217,6 +236,7 @@ import { store } from '@/store/store'
                 var i = 0
                 var k = 0
                 var obj = null
+                var obj2 = null
                 var output = [];
 
                 for (i=0; i < data.length; i++) {
@@ -224,9 +244,40 @@ import { store } from '@/store/store'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-                    output.push(obj);
+                    obj2 = {};
+                    obj2 = formatData(obj)
+                    obj2 = testData(obj2, obj)
+                    output.push(obj2);
                 }
                 return output;
+            }
+
+            var formatData = (given) =>{
+                var obj = {}
+
+                obj.Grade = formats.gradeFormat[given.Board_ID.substring(1,3)]
+                obj.Competitive_Category = formats.compCatFormat[given.Compcat]
+                obj.Zone = formats.zoneFormat[given.Zone]
+                obj.Recomendation = formats.recommendFormat[given.Promo_Recomendation];
+                obj.PME = formats.pmeFormat[given.PME_Complete]
+                obj.Board = formats.gradeFormat[given.Board_ID.substring(1,3)] + "20" + given.Board_ID.substring(3,6)
+                obj.Occupation = given.Occupation
+                obj.Select = +given.num_select
+                obj.Eligible = +given.num_eligible
+                obj.Percent =  obj.Select/obj.Eligible === Infinity ? 0 : Math.round((obj.Select/obj.Eligible)*1000)/10 || 0;
+
+                return obj;
+            }
+
+            var testData = (formatted, original) =>{
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
             }
 
             var renderCharts = () => {
@@ -236,15 +287,15 @@ import { store } from '@/store/store'
 
                 //reduce functions
                 function promoAdd(p,v) {
-                    p.elig = p.elig + +v.num_eligible
-                    p.sel = p.sel + +v.num_select
+                    p.elig = p.elig + +v.Eligible
+                    p.sel = p.sel + +v.Select
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
                     return p
                 }
                 function promoRemove(p,v) {
-                    p.elig = p.elig - +v.num_eligible
-                    p.sel = p.sel - +v.num_select
+                    p.elig = p.elig - +v.Eligible
+                    p.sel = p.sel - +v.Select
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
                     return p
@@ -296,7 +347,7 @@ import { store } from '@/store/store'
                 var compCatConfig = {}
                 compCatConfig.id = 'compCat'
                 compCatConfig.dim = this.ndx.dimension(function(d){
-                    return formats.compCatFormat[d.Compcat];
+                    return d.Competitive_Category;
                 })
                 compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 compCatConfig.minHeight = 260
@@ -334,7 +385,7 @@ import { store } from '@/store/store'
                 var gradeConfig = {};
                 gradeConfig.id = 'grade'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.gradeFormat[d.Board_ID.substring(1,3)];
+                    return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 gradeConfig.minHeight = 150 
@@ -354,7 +405,7 @@ import { store } from '@/store/store'
                 var zoneConfig = {};
                 zoneConfig.id = 'zone'
                 zoneConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.zoneFormat[d.Zone];
+                    return d.Zone;
                 })
                 zoneConfig.group = zoneConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 zoneConfig.minHeight = 150 
@@ -370,11 +421,16 @@ import { store } from '@/store/store'
                       return formats.zoneOrder[d.key]
                     })                                    
 
+                zoneChart.filter('IPZ')
+
+                zoneChart.on("filtered", (d)=>{
+                    this.showAlert = false;
+                })
                 //recommend
                 var recommendConfig = {};
                 recommendConfig.id = 'recommend'
                 recommendConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.recommendFormat[d.Promo_Recomendation];
+                    return d.Recomendation;
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 recommendConfig.minHeight = 150 
@@ -394,7 +450,7 @@ import { store } from '@/store/store'
                 var pmeConfig = {};
                 pmeConfig.id = 'pmeSelect'
                 pmeConfig.dim = this.ndx.dimension(function (d) {
-                    return formats.pmeFormat[d.PME_Complete];
+                    return d.PME;
                 })
                 pmeConfig.group = pmeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 pmeConfig.minHeight = 150 
@@ -436,7 +492,7 @@ import { store } from '@/store/store'
                 //board
                 var boardConfig = {}
                 boardConfig.id = 'board'
-                boardConfig.dim = this.ndx.dimension(function(d){return formats.gradeFormat[d.Board_ID.substring(1,3)] + "20" + d.Board_ID.substring(3,6) })
+                boardConfig.dim = this.ndx.dimension(function(d){return  d.Board})
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 boardConfig.group = removeEmptyBins(boardGroup)
                 boardConfig.minHeight = 250
@@ -461,6 +517,21 @@ import { store } from '@/store/store'
                             this.submit(d, 'dc-board-barchart')
                         })
                     })
+
+                //Download Raw Data button
+                d3.select('#download')
+                .on('click', ()=>{
+                    var data = occupGroupConfig.dim.top(Infinity);
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
+
+                    var myFilters = '';
+                    dc.chartRegistry.list().forEach((d)=>{
+                        if (d.filters()[0])
+                            myFilters += ' (' + d.filters() + ')'
+                    })
+
+                    FileSaver.saveAs(blob, 'PERSTAT Officer_Promotion' + ' ' + store.state.asDate + myFilters + ' .csv');
+                });
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
@@ -514,4 +585,5 @@ import { store } from '@/store/store'
 .fade-enter-to, .fade-leave {
     opacity: 1;
 }
+
 </style>

@@ -196,7 +196,7 @@ import searchBox from '@/components/searchBox'
             console.log('mounted')
 
             //TEST AXIOS CALL:
-            axios.post(axios_url_off_tos).then(response => {
+            axios.post(axios_url_enl_tos).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
                 //console.log(axiosData)
@@ -320,7 +320,7 @@ import searchBox from '@/components/searchBox'
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value['average'] != 0
+                                return d.value['cnt'] != 0
                             })
                         }
                     }
@@ -479,7 +479,7 @@ import searchBox from '@/components/searchBox'
                             this.baseHasFilter = true;
                         else this.baseHasFilter = false;
                         console.log(len)
-                        var timer = 2500;
+                        var timer = 2000;
                         if (len > 0 && len < 60)
                             timer = 0
                         setTimeout(()=>{ 
@@ -526,6 +526,7 @@ import searchBox from '@/components/searchBox'
                 usConfig.aspectRatio = 2
 
                 usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
+                usConfig.colorDomain = [7000, 8000]
                 usConfig.colorAccessor = 'average'
             
                 var statesJson = require('../../assets/geo.json')
@@ -539,12 +540,9 @@ import searchBox from '@/components/searchBox'
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
                         var myCount = 0;
-                        var myAverage = 0;
-                        if (d.value){
-                            myCount = d.value.cnt;
-                            myAverage = d.value.average;
-                        }
-                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
+                        if (d.value)
+                            myCount = d.value.average;
+                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Count: " + myCount;
                     });
 
                 var jpConfig = {}
@@ -576,12 +574,9 @@ import searchBox from '@/components/searchBox'
 
                 jpChart.title(function(d) {
                         var myCount = 0;
-                        var myAverage = 0;
-                        if (d.value){
-                            myCount = d.value.cnt;
-                            myAverage = d.value.average;
-                        }
-                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
+                        if (d.value)
+                            myCount = d.value.average;
+                        return formats.geoCS1[d.key] + "\n Count: " + myCount;
                     });
 
                 jpChart.on('pretransition', (chart)=> {
