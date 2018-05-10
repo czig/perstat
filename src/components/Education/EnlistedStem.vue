@@ -345,7 +345,7 @@
                 //Filters data to count Enlisted only
                 var filtering = this.ndx.dimension(function(d) { return d.type; });
                 filtering.filter("E")                    
- 
+
 
                 //Number Display for STEM, NON STEM, and overall total - show total for filtered content
                 var stemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.stem })
@@ -361,7 +361,7 @@
                 var nonStemTotalND = dc.numberDisplay("#nonStemTotal")
                 nonStemTotalND.group(nonStemTotal)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) { return d - stemTotal.value(stemTotal);})
+                    .valueAccessor(function(d) { return d;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
