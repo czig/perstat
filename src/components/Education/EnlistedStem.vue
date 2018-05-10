@@ -150,7 +150,7 @@
 			console.log('mounted')
 
 			//test AXIOS Call:
-            axios.post(axios_url_stem).then(response => {
+            axios.post(axios_url_enl_stem).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
                 var objData = makeObject(invData)

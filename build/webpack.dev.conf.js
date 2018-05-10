@@ -35,7 +35,10 @@ module.exports = merge(baseWebpackConfig, {
       'axios_url_off_tos': '"http://localhost:5005/api/officer_tos"',
       'axios_url_enl_tos': '"http://localhost:5005/api/enlisted_tos"',
       'axios_url_adman': '"http://localhost:5005/api/admanning_post"',
-      'axios_url_education': '"http://localhost:5005/api/education"'
+      'axios_url_off_stem': '"http://localhost:5005/api/officer_stem"',
+      'axios_url_enl_stem': '"http://localhost:5005/api/enlisted_stem"',
+
+      
 
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage

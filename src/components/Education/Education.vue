@@ -36,7 +36,7 @@
 
 <script>
 import offStem from '@/components/Education/OfficerStem'
-import enlStem from '@/components/Education/EnlistedStem' 
+import enlStem from '@/components/Education/EnlistedStem'
 import { store } from '@/store/store'
 
 export default {
