@@ -136,7 +136,7 @@ import searchBox from '@/components/searchBox'
         },
         watch: {
             baseLen: function(val){
-                if (val > 0 && val < 60){
+                if (val > 0 && val < 100){
                     //this.showBase = true;
                     setTimeout(()=>{ this.showBase = true; }, 500);
                 }else this.showBase = false;
@@ -480,7 +480,7 @@ import searchBox from '@/components/searchBox'
                         else this.baseHasFilter = false;
                         console.log(len)
                         var timer = 2500;
-                        if (len > 0 && len < 60)
+                        if (len > 0 && len < 100)
                             timer = 0
                         setTimeout(()=>{ 
                             chart.selectAll('g.x text')

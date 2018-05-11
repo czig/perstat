@@ -210,6 +210,7 @@ export default {
 
         //TEST AXIOS CALL:
         axios.post(axios_url_efmp).then(response => {
+            console.log('FLA DEPLOY');
         	var axiosData = response.data.data
         	store.state.asDate = response.data.ASOFDATE
             var objData = makeObject(axiosData)

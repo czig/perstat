@@ -7,6 +7,7 @@ var getOrdinalBarChart = (config)=>{
       .margins(config.margins)
       .dimension(config.dim)
       .group(config.group)
+      .barPadding(0.15)
       .x(d3.scale.ordinal())
       .xUnits(dc.units.ordinal)
       .elasticY(true)
@@ -47,6 +48,7 @@ var getRowChart = (config)=>{
   .elasticX(true)
   .dimension(config.dim)
   .group(config.group)
+  //.gap(config.height/100)
   .colors(config.colors)
   .on('preRedraw', function(c){
     preRedraw(c, config)
