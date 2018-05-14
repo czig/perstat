@@ -6,6 +6,7 @@ import Officer from '@/components/Officer/Officer'
 import Enlisted from '@/components/Enlisted/Enlisted'
 import Civilian from '@/components/Civilian'
 import Assignments from '@/components/Assignments/Assignments'
+import Education from '@/components/Education/Education'
 import Care from '@/components/Care'
 import FirstContact from '@/components/FirstContact'
 import IT from '@/components/IT'
@@ -58,6 +59,11 @@ export default new Router({
       path: '/it',
       name: 'it',
       component: IT 
+    },
+    {
+      path: '/education',
+      name: 'education',
+      component: Education 
     },
 
     { path: '*', redirect: '/' }

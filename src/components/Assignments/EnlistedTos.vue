@@ -29,7 +29,7 @@
                 <div class="row">
                     <div id="tour" class="col-4">
                         <div id="dc-tour-rowchart">
-                            <h3>Majcom Assign Type <span style="font-size: 14pt; opacity: 0.87;">
+                            <h3>MAJCOM Assign Type <span style="font-size: 14pt; opacity: 0.87;">
                                 Avg. TOS
                             </span>
                             <button type="button" 

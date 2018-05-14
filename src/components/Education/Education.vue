@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class="col">Assignments</h1>
+            <h1 class="col">Education</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
@@ -9,25 +9,19 @@
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" @click="dynamicComponent='offTOS'" data-toggle="tab">Average TOS</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='join'" data-toggle="tab">Join Spouse</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='efmp'" data-toggle="tab">EFMP/Humi</a>
+                <a class="nav-link active" @click="dynamicComponent='offStem'" data-toggle="tab">STEM</a>
             </li>
         </ul>
-        <div class="row" v-if="dynamicComponent=='offTOS' || dynamicComponent=='enlTOS'">
+        <div class="row" v-if="dynamicComponent=='offStem' || dynamicComponent=='enlStem'">
             <div class="padded">
                 <div id="radioSelect" class="col form-group">
                     <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radio" type="radio" id="radio1" value="offTOS" v-model="dynamicComponent">
+                        <input class="custom-control-input" name="radio" type="radio" id="radio1" value="offStem" v-model="dynamicComponent">
                         <span class="custom-control-indicator"></span>
                         <span class="custom-control-description">Officer</span>
                     </label>
                     <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radio" type="radio" id="radio2" value="enlTOS" v-model="dynamicComponent">
+                        <input class="custom-control-input" name="radio" type="radio" id="radio2" value="enlStem" v-model="dynamicComponent">
                         <span class="custom-control-indicator"></span>
                         <span class="custom-control-description">Enlisted</span>
                     </label>
@@ -41,17 +35,14 @@
 </template>
 
 <script>
-import offTOS from '@/components/Assignments/OfficerTos'
-import enlTOS from '@/components/Assignments/EnlistedTos'
-import Join from '@/components/Assignments/Joint'
-import efmp from '@/components/Assignments/EFMP'
-
+import offStem from '@/components/Education/OfficerStem'
+import enlStem from '@/components/Education/EnlistedStem'
 import { store } from '@/store/store'
 
 export default {
     data() {
         return {
-           dynamicComponent: "offTOS" 
+           dynamicComponent: "offStem" 
         }
     },
     computed:{
@@ -60,10 +51,8 @@ export default {
         },
     },
     components: {
-        offTOS,
-        enlTOS,
-        Join,
-        efmp
+        offStem,
+        enlStem
     }
 }
 </script>
