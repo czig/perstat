@@ -108,16 +108,26 @@ var getGeoChart = (config)=>{
       var diff = range[1]-range[0];
       // range[0] += diff/4;
       // range[1] -= diff/4;
-      chart.colorDomain(range);
+       console.log(range + ' - ' + diff)
+      if (diff == 0){
+        range[0]-=3;
+        range[1]+=2;
+      }
       console.log(range)
+      chart.colorDomain(range);
     });
     chart.on("preRedraw", function(chart) {
       var range = d3.extent(chart.group().all(), function(d){return d.value['average']});
       var diff = range[1]-range[0];
       // range[0] += diff/4;
       // range[1] -= diff/4;
-      chart.colorDomain(range);
+      console.log(range + ' - ' + diff)
+      if (diff == 0){
+        range[0]-=4;
+        range[1]+=2;
+      }
       console.log(range)
+      chart.colorDomain(range);
     });
     return chart
 }

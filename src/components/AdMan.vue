@@ -129,7 +129,7 @@ import searchBox from '@/components/searchBox'
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color,
-                pageName: 'TF_Inventory',
+                pageName: 'Total Force Inventory',
             }
         },
         computed: {

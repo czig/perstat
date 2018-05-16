@@ -23,10 +23,16 @@
                                 @click="resetAll">Reset All</button>
                     </div>
                 </div>
+                <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                    Data excludes CMSgt and Senior Officers
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             	<div class="row">
 	                <div v-show="select.length > 1" class="row">
 	                    	<div class="col-auto">
-		                        Marriages (Mil to Mil):
+		                        Marriages (RegAF to RegAF):
 		                        <span id="count"></span>
 		                    </div>
 		                    <!-- <div class="col-auto">
@@ -40,7 +46,7 @@
 	                </div>
 	                <div v-show="select.length <= 1" class="row">
 	                    	<div class="col-auto">
-		                      Marriages (Mil to Mil):
+		                      Marriages (RegAF to RegAF):
 		                        <span id="count2"></span>
 		                    </div>
 		                    <!-- <div class="col-auto">
@@ -65,7 +71,7 @@
                                 </div>
                     </div>
 					<div class="col-4">
-						<h3> Pairing by Grade 
+						<h3> Grade 
 							<button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     v-show="gradeHasFilter"
@@ -102,7 +108,7 @@
 			        <div  id="bar" class="col-5">
 			        		<transition name="expandMid">
 	                        <div id="dc-bar-barchart" v-show="select.length > 1" key="1">
-	                            <h3>Paired <span style="font-size: 14pt; opacity: 0.87;"> {{ ylabel }} </span>
+	                            <h3> {{this.select}} <span style="font-size: 14pt; opacity: 0.87;"> {{ ylabel }} </span>
 	                            <button type="button" 
 	                                    class="btn btn-danger btn-sm btn-rounded reset" 
 	                                    style="display: none"
@@ -128,6 +134,7 @@ import { store } from '@/store/store'
 	export default {
 		data(){
 			return {
+                showAlert: true,
 				loaded: false,
 				select: '',
 				grp: 1,
@@ -179,7 +186,7 @@ import { store } from '@/store/store'
                     return "Match (%)"
                 }
                 else if (this.selected === "count") {
-                    return "# Marriages"
+                    return "Joined With"
                 }
             }
         },
