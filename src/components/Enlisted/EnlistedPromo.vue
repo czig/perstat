@@ -457,9 +457,9 @@ import { store } from '@/store/store'
                     var myFilters = '';
                     dc.chartRegistry.list().forEach((d)=>{
                         console.log(d.anchorName().toUpperCase())
-                        if (d.anchorName().toUpperCase().includes('AFSC')){
+                        if (_.includes(d.anchorName().toUpperCase(),'AFSC')){
                             //console.log('AFSC Filter: ' + this.sa)
-                            if (d.anchorName().toUpperCase().includes('ROW') && this.sa){
+                            if (_.includes(d.anchorName().toUpperCase(),'ROW') && this.sa){
                                 if (this.sa.length < 6){
                                     var num = 6 - this.sa.length;
                                     var txt = Array(num).join("X")

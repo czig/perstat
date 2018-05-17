@@ -49,7 +49,11 @@ const webpackConfig = merge(baseWebpackConfig, {
       'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/PS_ALL.js"',
       'axios_url_off_tos': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/officer_tos.js"',
       'axios_url_enl_tos': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/enlisted_tos.js"',
-      'axios_url_join_spouse': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/join_spouse.js"',  
+      'axios_url_join_spouse': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/join_spouse.js"', 
+      'axios_url_efmp': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/EFMP.js"',    
+      'axios_url_off_stem': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/officer_stem.js"',
+      'axios_url_enl_stem': '"https://starsraw.afpc.randolph.af.mil/FLA/perstat_json/enlisted_stem.js"',
+
     }),
     // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
     new webpack.optimize.UglifyJsPlugin({

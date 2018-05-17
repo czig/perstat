@@ -83,7 +83,7 @@
                 <div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
-                            <h3>Base <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
@@ -129,7 +129,7 @@ import searchBox from '@/components/searchBox'
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color,
-                pageName: 'TF_Inventory',
+                pageName: 'Total Force Inventory',
             }
         },
         computed: {

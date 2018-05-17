@@ -1,6 +1,6 @@
 <template>
-	<div class="container">
-		<transition-group name="fade" mode="out-in">
+    <div class="container">
+        <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row">
@@ -13,7 +13,7 @@
                         <span id="months"></span>
                     </div> -->
                     <div class="col-auto">
-                        Average Time on Station for the last 5 years: 
+                        Average Time on Station for the last 4 years: 
                         <span id="average"></span>
                     </div>
                     <div class="col"></div>
@@ -27,31 +27,31 @@
                     </div>
                 </div>
                 <div class="row">
-		            <div id="tour" class="col-4">
-		                <div id="dc-tour-rowchart">
-		                    <h3>Majcom Assign Type <span style="font-size: 14pt; opacity: 0.87;">
-		                    	Avg. TOS
-		                    </span>
-		                    <button type="button" 
-		                            class="btn btn-danger btn-sm btn-rounded reset" 
-		                            style="display: none"
-		                            @click="resetChart('dc-tour-rowchart')">Reset</button>
-		                    </h3>
-                		</div>
-            		</div>
-            		<div id="tour_st" class="col-3">
-		                <div id="dc-tour_st-rowchart">
-		                    <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
-		                    	Avg. TOS
-		                    </span>
-		                    <button type="button" 
-		                            class="btn btn-danger btn-sm btn-rounded reset" 
-		                            style="display: none"
-		                            @click="resetChart('dc-tour_st-rowchart')">Reset</button>
-		                    </h3>
-                		</div>
-            		</div>
-            		<div id="grade" class="col-5">
+                    <div id="tour" class="col-4">
+                        <div id="dc-tour-rowchart">
+                            <h3>Assign Area <span style="font-size: 14pt; opacity: 0.87;">
+                                Avg. TOS
+                            </span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-tour-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="tour_st" class="col-3">
+                        <div id="dc-tour_st-rowchart">
+                            <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
+                                Avg. TOS
+                            </span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-tour_st-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="grade" class="col-5">
                         <div id="dc-grade-barchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
@@ -61,12 +61,12 @@
                             </h3>
                         </div>
                     </div>
-            	</div>
+                </div>
                 <div class="row">
                         <div id="base" class="col-12">
                                 <div id="dc-base-select">
                                 </div>
-                                <h3>Base <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
+                                <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
                                 <button v-if="baseHasFilter" type="button"
                                         class="btn btn-danger btn-sm btn-rounded reset" 
                                         @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
@@ -74,7 +74,7 @@
                                 <searchBox
                                     v-model:value="searchBase"
                                     size="3"
-                                    label="Search Base"
+                                    label="Enter Installation"
                                     @sub="submit(searchBase,'dc-base-select')"
                                     button="true"
                                     :color="baseColor"
@@ -110,7 +110,7 @@
                 </div>
             </div>
         </transition-group>    
-	</div>
+    </div>
 </template>
 
 <script>
@@ -123,7 +123,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 
-	export default {
+    export default {
         data() {
             return {
                 loaded: false,
@@ -136,7 +136,7 @@ import searchBox from '@/components/searchBox'
         },
         watch: {
             baseLen: function(val){
-                if (val > 0 && val < 60){
+                if (val > 0 && val < 100){
                     //this.showBase = true;
                     setTimeout(()=>{ this.showBase = true; }, 500);
                 }else this.showBase = false;
@@ -189,7 +189,7 @@ import searchBox from '@/components/searchBox'
             searchBox
         },
         created: function(){
-        	console.log('created')
+            console.log('created')
 
         },
         mounted() {
@@ -201,7 +201,8 @@ import searchBox from '@/components/searchBox'
                 var axiosData = response.data.data
                 //console.log(axiosData)
                 var objData = makeObject(axiosData)
-                //console.log(objData)
+                //console.log('MADE It')
+                console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -226,7 +227,7 @@ import searchBox from '@/components/searchBox'
 
                     var obj2 = {};
                     obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
+                    // obj2 = testData(obj2, obj)
                     output.push(obj2);
                 }
                 return output;
@@ -262,7 +263,21 @@ import searchBox from '@/components/searchBox'
                 obj.Grade = formats.gradeFormat[given.grd]
                 obj.Base = given.DLOC;
 
-                obj.Country_State = formats.geoCSAb[given.CS]
+                obj.State = ''
+                obj.Country = ''
+
+                if (given.CS.match(/^\d*$/) && given.CS != '02' && given.CS != '15' ){
+                    if (formats.geoState[given.CS])
+                        obj.State = formats.geoState[given.CS]
+                }
+                else {
+                    if (formats.geoCSAb[given.CS])
+                        obj.Country = formats.geoCSAb[given.CS]
+                    else obj.Country = given.CS
+                }
+
+                
+                //obj.Country_State = formats.geoCSAb[given.CS]
 
                 obj.Total_Months = given.months
                 obj.Inventory = given.cnt
@@ -286,7 +301,7 @@ import searchBox from '@/components/searchBox'
             }
 
             var renderCharts = () => {
-            	dc.dataCount(".dc-data-count")
+                dc.dataCount(".dc-data-count")
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
@@ -320,7 +335,7 @@ import searchBox from '@/components/searchBox'
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value['cnt'] != 0
+                                return d.value['average'] != 0
                             })
                         }
                     }
@@ -328,13 +343,13 @@ import searchBox from '@/components/searchBox'
 
                 //Number Display for cnt
                 var count = this.ndx.groupAll().reduceSum(function(d) { 
-                	return +d.Inventory 
-               	})
+                    return +d.Inventory 
+                })
                 var countND = dc.numberDisplay("#count")
                 countND.group(count)
                     .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) { 
-                    	return d;
+                        return d;
                     })
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
@@ -342,13 +357,13 @@ import searchBox from '@/components/searchBox'
 
                 //Number Display for months
                 var months = this.ndx.groupAll().reduceSum(function(d) { 
-                	return +d.Total_Months 
-               	})
+                    return +d.Total_Months 
+                })
                 var monthsND = dc.numberDisplay("#months")
                 monthsND.group(months)
                     .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) { 
-                    	return d;
+                        return d;
                     })
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
@@ -373,8 +388,8 @@ import searchBox from '@/components/searchBox'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 100
-                tourConfig.aspectRatio = 2.6
+                tourConfig.minHeight = 140
+                tourConfig.aspectRatio = 2.7
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
 
@@ -398,7 +413,7 @@ import searchBox from '@/components/searchBox'
 
                 tourStConfig.group = tourStConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
                 tourStConfig.minHeight = 200 
-                tourStConfig.aspectRatio = 2
+                tourStConfig.aspectRatio = 2.6
                 tourStConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourStConfig.colors = d3.scale.category10()
 
@@ -435,9 +450,9 @@ import searchBox from '@/components/searchBox'
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-	                        .attr('transform', 'translate(-8,0)rotate(-45)')
-	                        .on('click', (d)=>{
-	                            this.submit(d, 'dc-grade-barchart')
+                            .attr('transform', 'translate(-8,0)rotate(-45)')
+                            .on('click', (d)=>{
+                                this.submit(d, 'dc-grade-barchart')
                         })
                     })
                     .ordering(function(d){
@@ -479,8 +494,8 @@ import searchBox from '@/components/searchBox'
                             this.baseHasFilter = true;
                         else this.baseHasFilter = false;
                         console.log(len)
-                        var timer = 2000;
-                        if (len > 0 && len < 60)
+                        var timer = 3500;
+                        if (len > 0 && len < 100)
                             timer = 0
                         setTimeout(()=>{ 
                             chart.selectAll('g.x text')
@@ -517,7 +532,7 @@ import searchBox from '@/components/searchBox'
                 var usConfig = {}
                 usConfig.id = 'us';
                 usConfig.dim = this.ndx.dimension(function(d){
-                    return d.Country_State;
+                    return d.State;
                 })
                 usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 
@@ -526,7 +541,6 @@ import searchBox from '@/components/searchBox'
                 usConfig.aspectRatio = 2
 
                 usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                usConfig.colorDomain = [7000, 8000]
                 usConfig.colorAccessor = 'average'
             
                 var statesJson = require('../../assets/geo.json')
@@ -537,18 +551,28 @@ import searchBox from '@/components/searchBox'
                 usConfig.projection = d3.geo.albersUsa()
                 usConfig.size = [0.6 , 0.9, 2.1];
                                           
+
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
-                        var myCount = 0;
-                        if (d.value)
-                            myCount = d.value.average;
-                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Count: " + myCount;
-                    });
+                    var myCount = 0;
+                    var myAverage = 0;
+                    if (d.value){
+                        myCount = d.value.cnt;
+                        myAverage = d.value.average;
+                    }
+                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
+                });
+
+                usChart.colorCalculator(function (d) { 
+                    if (d && d.average)
+                        return d.average ? usChart.colors()(d.average) : '#ccc'; 
+                    else return '#ccc'
+                })
 
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
-                     return d.Country_State;
+                     return d.Country;
                 })
                 jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 // jpConfig.dim = usConfig.dim
@@ -574,11 +598,20 @@ import searchBox from '@/components/searchBox'
 
                 jpChart.title(function(d) {
                         var myCount = 0;
-                        if (d.value)
-                            myCount = d.value.average;
-                        return formats.geoCS1[d.key] + "\n Count: " + myCount;
+                        var myAverage = 0;
+                        if (d.value){
+                            myCount = d.value.cnt;
+                            myAverage = d.value.average;
+                        }
+                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
                     });
 
+                jpChart.colorCalculator(function (d) { 
+                    if (d && d.average)
+                        return d.average ? jpChart.colors()(d.average) : '#ccc'; 
+                    else return '#ccc'
+                })
+                
                 jpChart.on('pretransition', (chart)=> {
                     // console.log(chart.group().all())
                     //console.log(usChart.filters())
@@ -653,28 +686,28 @@ import searchBox from '@/components/searchBox'
                     chart.select('svg').append('g').attr("class", "textLabels")
                     var textLabels = chart.select('.textLabels')
                     var textStroke = 0.5
-                    textLabels
+                     textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.05)
                         .attr("y", jpConfig.height * 0.05)
-                        .attr("stroke-width", textStroke)               
-                        .attr("stroke", color) 
-                        .text('PACAF');
+                        .attr("fill", color) 
+                        .attr("font-weight", 'bold')  
+                        .text('Pacific');
 
                     textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.05)
                         .attr("y", jpConfig.height * 0.8)
-                        .attr("stroke-width", textStroke)               
-                        .attr("stroke", color) 
+                        .attr("fill", color) 
+                        .attr("font-weight", 'bold') 
                         .text('Alaska & Hawaii');
 
                     textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.7)
                         .attr("y", jpConfig.height * 0.8)
-                        .attr("stroke-width", textStroke)               
-                        .attr("stroke", color) 
+                        .attr("fill", color) 
+                        .attr("font-weight", 'bold') 
                         .text('Europe');
                 })
 
@@ -738,7 +771,7 @@ import searchBox from '@/components/searchBox'
                     FileSaver.saveAs(blob, 'PERSTAT Officer_Average_TOS' + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
-            	// after DOM updated redraw to make chart widths update
+                // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
                 })
@@ -774,6 +807,10 @@ import searchBox from '@/components/searchBox'
 </style>
 
 <style scoped>
+    #base >>> text{
+        font: 8px sans-serif;
+    }
+
     #dc-base-select >>> .dc-select-menu{
         display:none;
     }
@@ -781,7 +818,7 @@ import searchBox from '@/components/searchBox'
     .disabled{
         fill:white;
     }
-	.expand-enter-active {
+    .expand-enter-active {
       transition: all 0.8s ease;
       max-height: 300px;
       overflow: hidden;
@@ -808,5 +845,9 @@ import searchBox from '@/components/searchBox'
     }
     .fade-enter-to, .fade-leave {
         opacity: 1;
+    }
+
+    .dc-chart >>> g.state >>> path {
+        fill: #ededed;
     }
 </style>
