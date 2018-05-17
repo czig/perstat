@@ -1,7 +1,27 @@
 import Vue from 'vue'
 import afsc from '@/components/afsc'
+import { mount } from 'avoriaz'
+import sinon from 'sinon'
 
 describe('afsc.vue', () => {
+    let documentStub;
+
+    //create stub for document object before each test
+    beforeEach(function() {
+        //stubbed function will return dummy object with required properties
+        var dummy = {
+            id: 'afsc',
+            className: 'col-8'
+        }
+        //stub getElementById calls on document object
+        documentStub = sinon.stub(document,'getElementById')
+        documentStub.withArgs('afsc').returns(dummy)
+    })
+
+    afterEach(function() {
+        documentStub.restore();
+    })
+
 	var data1 = [
 		{AFSC: '11111', cat:1, value: 11, value1: 111},
 		{AFSC: '22222', cat:2, value: 22, value1: 222}
@@ -75,6 +95,7 @@ describe('afsc.vue', () => {
   it('should render correct contents', () => {
     const Constructor = Vue.extend(afsc)
     const vm = new Constructor({ propsData: props1 }).$mount()
+    const wrapper = mount(afsc, { propsData: props1 })
 
     expect(vm.Group[0].all()[0].key.substr(0,5)).to.equal('1XXXX')
     expect(vm.Group[1].all()[0].key.substr(0,5)).to.equal('11XXX')

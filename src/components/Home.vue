@@ -26,7 +26,7 @@
         </div>
         <div class="row mt-3">
             <div class="col-4">
-                <div class="card hoverable click" @click="$router.push('/tf_inv')">
+                <div id="tf-card" class="card hoverable click" @click="$router.push('/tf_inv')">
                     <img class="card-img-top" src="../../static/ad_manning.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">TF Inventory</h4>
