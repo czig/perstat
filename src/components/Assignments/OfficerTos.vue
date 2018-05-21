@@ -5,7 +5,7 @@
             <div v-show="loaded" key="content">
                 <div class="row">
                     <!-- <div class="col-auto">
-                        Personnel:        
+                        Personnel:      AAAAAA  
                         <span id="count"></span>
                     </div>
                     <div class="col-auto">
@@ -13,7 +13,7 @@
                         <span id="months"></span>
                     </div> -->
                     <div class="col-auto">
-                        Average Time on Station for the last 5 years: 
+                        Average Time on Station for the last 4 years: 
                         <span id="average"></span>
                     </div>
                     <div class="col"></div>
@@ -29,7 +29,7 @@
                 <div class="row">
 		            <div id="tour" class="col-4">
 		                <div id="dc-tour-rowchart">
-		                    <h3>Majcom Assign Type <span style="font-size: 14pt; opacity: 0.87;">
+		                    <h3>Assign Area <span style="font-size: 14pt; opacity: 0.87;">
 		                    	Avg. TOS
 		                    </span>
 		                    <button type="button" 
@@ -62,11 +62,11 @@
                         </div>
                     </div>
             	</div>
-                <div class="row">
+                 <div class="row">
                         <div id="base" class="col-12">
                                 <div id="dc-base-select">
                                 </div>
-                                <h3>Base <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
+                                <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
                                 <button v-if="baseHasFilter" type="button"
                                         class="btn btn-danger btn-sm btn-rounded reset" 
                                         @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
@@ -74,7 +74,7 @@
                                 <searchBox
                                     v-model:value="searchBase"
                                     size="3"
-                                    label="Search Base"
+                                    label="Enter Installation"
                                     @sub="submit(searchBase,'dc-base-select')"
                                     button="true"
                                     :color="baseColor"
@@ -85,6 +85,12 @@
                             </div>
                              </transition>
                         </div>
+                </div>
+                <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                    Please select from maps below to display Installation graph
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="row">
                     <div id="us" class="col-6">
@@ -201,7 +207,8 @@ import searchBox from '@/components/searchBox'
                 var axiosData = response.data.data
                 //console.log(axiosData)
                 var objData = makeObject(axiosData)
-                //console.log(objData)
+                //console.log('MADE It')
+                console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -226,7 +233,7 @@ import searchBox from '@/components/searchBox'
 
                     var obj2 = {};
                     obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
+                    // obj2 = testData(obj2, obj)
                     output.push(obj2);
                 }
                 return output;
@@ -262,7 +269,21 @@ import searchBox from '@/components/searchBox'
                 obj.Grade = formats.gradeFormat[given.grd]
                 obj.Base = given.DLOC;
 
-                obj.Country_State = formats.geoCSAb[given.CS]
+                obj.State = ''
+                obj.Country = ''
+
+                if (given.CS.match(/^\d*$/) && given.CS != '02' && given.CS != '15' ){
+                    if (formats.geoState[given.CS])
+                        obj.State = formats.geoState[given.CS]
+                }
+                else {
+                    if (formats.geoCSAb[given.CS])
+                        obj.Country = formats.geoCSAb[given.CS]
+                    else obj.Country = given.CS
+                }
+
+                
+                //obj.Country_State = formats.geoCSAb[given.CS]
 
                 obj.Total_Months = given.months
                 obj.Inventory = given.cnt
@@ -479,7 +500,7 @@ import searchBox from '@/components/searchBox'
                             this.baseHasFilter = true;
                         else this.baseHasFilter = false;
                         console.log(len)
-                        var timer = 2500;
+                        var timer = 3500;
                         if (len > 0 && len < 60)
                             timer = 0
                         setTimeout(()=>{ 
@@ -517,7 +538,7 @@ import searchBox from '@/components/searchBox'
                 var usConfig = {}
                 usConfig.id = 'us';
                 usConfig.dim = this.ndx.dimension(function(d){
-                    return d.Country_State;
+                    return d.State;
                 })
                 usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 
@@ -536,21 +557,28 @@ import searchBox from '@/components/searchBox'
                 usConfig.projection = d3.geo.albersUsa()
                 usConfig.size = [0.6 , 0.9, 2.1];
                                           
+
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
-                        var myCount = 0;
-                        var myAverage = 0;
-                        if (d.value){
-                            myCount = d.value.cnt;
-                            myAverage = d.value.average;
-                        }
-                        return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
-                    });
+                    var myCount = 0;
+                    var myAverage = 0;
+                    if (d.value){
+                        myCount = d.value.cnt;
+                        myAverage = d.value.average;
+                    }
+                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
+                });
+
+                usChart.colorCalculator(function (d) { 
+                    if (d && d.average)
+                        return d.average ? usChart.colors()(d.average) : '#ccc'; 
+                    else return '#ccc'
+                })
 
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
-                     return d.Country_State;
+                     return d.Country;
                 })
                 jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 // jpConfig.dim = usConfig.dim
@@ -583,6 +611,12 @@ import searchBox from '@/components/searchBox'
                         }
                         return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
                     });
+
+                jpChart.colorCalculator(function (d) { 
+                    if (d && d.average)
+                        return d.average ? jpChart.colors()(d.average) : '#ccc'; 
+                    else return '#ccc'
+                })
 
                 jpChart.on('pretransition', (chart)=> {
                     // console.log(chart.group().all())
@@ -658,28 +692,28 @@ import searchBox from '@/components/searchBox'
                     chart.select('svg').append('g').attr("class", "textLabels")
                     var textLabels = chart.select('.textLabels')
                     var textStroke = 0.5
-                    textLabels
+                     textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.05)
                         .attr("y", jpConfig.height * 0.05)
-                        .attr("stroke-width", textStroke)               
-                        .attr("stroke", color) 
-                        .text('PACAF');
+                        .attr("fill", color) 
+                        .attr("font-weight", 'bold')  
+                        .text('Pacific');
 
                     textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.05)
                         .attr("y", jpConfig.height * 0.8)
-                        .attr("stroke-width", textStroke)               
-                        .attr("stroke", color) 
+                        .attr("fill", color) 
+                        .attr("font-weight", 'bold') 
                         .text('Alaska & Hawaii');
 
                     textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.7)
                         .attr("y", jpConfig.height * 0.8)
-                        .attr("stroke-width", textStroke)               
-                        .attr("stroke", color) 
+                        .attr("fill", color) 
+                        .attr("font-weight", 'bold') 
                         .text('Europe');
                 })
 
@@ -779,6 +813,10 @@ import searchBox from '@/components/searchBox'
 </style>
 
 <style scoped>
+    #base >>> text{
+        font: 8px sans-serif;
+    }
+
     #dc-base-select >>> .dc-select-menu{
         display:none;
     }
@@ -813,5 +851,9 @@ import searchBox from '@/components/searchBox'
     }
     .fade-enter-to, .fade-leave {
         opacity: 1;
+    }
+
+    .dc-chart >>> g.state >>> path {
+        fill: #ededed;
     }
 </style>

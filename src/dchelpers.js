@@ -7,6 +7,7 @@ var getOrdinalBarChart = (config)=>{
       .margins(config.margins)
       .dimension(config.dim)
       .group(config.group)
+      .barPadding(0.15)
       .x(d3.scale.ordinal())
       .xUnits(dc.units.ordinal)
       .elasticY(true)
@@ -47,6 +48,7 @@ var getRowChart = (config)=>{
   .elasticX(true)
   .dimension(config.dim)
   .group(config.group)
+  //.gap(config.height/100)
   .colors(config.colors)
   .on('preRedraw', function(c){
     preRedraw(c, config)
@@ -106,16 +108,26 @@ var getGeoChart = (config)=>{
       var diff = range[1]-range[0];
       // range[0] += diff/4;
       // range[1] -= diff/4;
-      chart.colorDomain(range);
+       console.log(range + ' - ' + diff)
+      if (diff == 0){
+        range[0]-=3;
+        range[1]+=2;
+      }
       console.log(range)
+      chart.colorDomain(range);
     });
     chart.on("preRedraw", function(chart) {
       var range = d3.extent(chart.group().all(), function(d){return d.value['average']});
       var diff = range[1]-range[0];
       // range[0] += diff/4;
       // range[1] -= diff/4;
-      chart.colorDomain(range);
+      console.log(range + ' - ' + diff)
+      if (diff == 0){
+        range[0]-=4;
+        range[1]+=2;
+      }
       console.log(range)
+      chart.colorDomain(range);
     });
     return chart
 }

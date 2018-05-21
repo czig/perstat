@@ -156,7 +156,7 @@
                             <searchBox
                                 v-model:value="searchBase"
                                 size="3"
-                                label="Search Installation"
+                                label="Search MPF"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
                                 :color="baseColor"

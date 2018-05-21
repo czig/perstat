@@ -105,7 +105,7 @@
                 <div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
-                            <h3>Base <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"></span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
@@ -114,7 +114,7 @@
                             <searchBox
                                 v-model:value="searchBase"
                                 size="3"
-                                label="Search Installation"
+                                label="Search MPF"
                                 @sub="submit(searchBase,'dc-base-barchart')"
                                 button="true"
                                 :color="baseColor"
@@ -210,6 +210,7 @@ export default {
 
         //TEST AXIOS CALL:
         axios.post(axios_url_efmp).then(response => {
+            console.log('FLA DEPLOY');
         	var axiosData = response.data.data
         	store.state.asDate = response.data.ASOFDATE
             var objData = makeObject(axiosData)

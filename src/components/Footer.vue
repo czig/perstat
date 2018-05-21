@@ -35,7 +35,7 @@
                     <ul>
                       <router-link class="footer-link" to="/enlisted" tag="li"><a class="nav-link">Enlisted</a></router-link>
                       <router-link class="footer-link" to="/civilian" tag="li"><a class="nav-link">Civilian</a></router-link>
-                      <!-- <router-link class="footer-link" to="/assignments" tag="li"><a class="nav-link">Assignments</a></router-link> -->
+                      <router-link class="footer-link" to="/assignments" tag="li"><a class="nav-link">Assignments</a></router-link>
                       <!-- 
                       <router-link class="footer-link" to="/joint" tag="li"><a class="nav-link">Joint</a></router-link>
                       <router-link class="footer-link" to="/care" tag="li"><a class="nav-link">Care</a></router-link>
