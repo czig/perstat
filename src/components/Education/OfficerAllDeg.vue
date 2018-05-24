@@ -193,7 +193,6 @@
 
             obj.tafms = given.tafms
             obj.type = given.type
-            //obj.nonStemCount = +given.count - +given.stem
             //obj.totalCount = given.count
             obj.stem = given.stem
             //obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
@@ -232,23 +231,23 @@
                 }                  
 
                 //remove empty function (es6 syntax to keep correct scope)
-/*                 var removeEmptyBins = (source_group) => {
+                var removeEmptyBins = (source_group) => {
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value != 0
+                                return d.value.allCount != 0
                             })
                         }
                     }
                 }
- */
+
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
                 edLevelConfig.dim = this.ndx.dimension(function(d){
                     return d.edlevel;
                 })
-                edLevelConfig.group = edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                edLevelConfig.group = removeEmptyBins(edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
                 edLevelConfig.margins = {top: 10, left: 100, right: 30, bottom: 130}
@@ -263,7 +262,7 @@
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-edLevel-barchart')
+                            this.submit(d, 'dc-edlevel-barchart')
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
@@ -278,7 +277,7 @@
                 degreeConfig.dim = this.ndx.dimension(function(d){
                     return d.deg;
                 })
-                degreeConfig.group = degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                degreeConfig.group = removeEmptyBins(degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
                 degreeConfig.minHeight = 400
                 degreeConfig.aspectRatio = 3
                 degreeConfig.margins = {top: 10, left: 150, right: 30, bottom: 200}

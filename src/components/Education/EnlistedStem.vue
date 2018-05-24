@@ -254,23 +254,22 @@
                 }                                    
 
                 //remove empty function (es6 syntax to keep correct scope)
-/*                 var removeEmptyBins = (source_group) => {
+                var removeEmptyBins = (source_group) => {
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value != 0
+                                return d.value.stemCount != 0
                             })
                         }
                     }
                 }
- */
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
                 edLevelConfig.dim = this.ndx.dimension(function(d){
                     return d.edlevel;
                 })
-                edLevelConfig.group = edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                edLevelConfig.group = removeEmptyBins(edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
                 edLevelConfig.margins = {top: 10, left: 100, right: 30, bottom: 130}
@@ -285,7 +284,7 @@
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-edLevel-barchart')
+                            this.submit(d, 'dc-edlevel-barchart')
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
@@ -300,7 +299,7 @@
                 degreeConfig.dim = this.ndx.dimension(function(d){
                     return d.deg;
                 })
-                degreeConfig.group = degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                degreeConfig.group = removeEmptyBins(degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
                 degreeConfig.minHeight = 400
                 degreeConfig.aspectRatio = 3
                 degreeConfig.margins = {top: 10, left: 150, right: 30, bottom: 200}
@@ -385,7 +384,7 @@
                 var percentGroup = this.ndx.groupAll().reduce(stemAdd,stemRemove,stemInitial)
                 var percentND = dc.numberDisplay("#totalPercent")
                 percentND.group(percentGroup)
-                    .formatNumber(d3.format("r"))
+                    .formatNumber(d3.format(".1f"))
                     .valueAccessor(function(d) {return d.stemPercent})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
