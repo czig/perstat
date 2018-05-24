@@ -1,19 +1,21 @@
 <template>
     <div class="container">
-        <div class="row">
-            <h1 class="col">Education</h1>
-            <div class="col-4 text-right" style="margin-top:15px;">
-                        Data as of: 
-                        <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
+        <div class="row" v-if="dynamicComponent=='offStem' || dynamicComponent=='enlStem'">
+            <div class="padded">
+                <div id="category" class="col form-group">
+                    <label class="custom-control custom-radio" >
+                        <input class="custom-control-input" name="radioType" type="radio" id="radio1" value="offStem" v-model="dynamicComponent">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Officer</span>
+                    </label>
+                    <label class="custom-control custom-radio" >
+                        <input class="custom-control-input" name="radioType" type="radio" id="radio2" value="enlStem" v-model="dynamicComponent">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Enlisted</span>
+                    </label>
+                </div>
             </div>
         </div>
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link active" @click="dynamicComponent='allDeg'" data-toggle="tab">All Degrees</a>
-            </li>            <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='stem'" data-toggle="tab">STEM</a>
-            </li>
-        </ul>
         <transition name="fade" mode="out-in">
             <component :is="dynamicComponent"></component>
         </transition>
@@ -21,14 +23,15 @@
 </template>
 
 <script>
-import stem from '@/components/Education/Stem'
-import allDeg from '@/components/Education/AllDegrees'
+import offStem from '@/components/Education/OfficerStem'
+import enlStem from '@/components/Education/EnlistedStem'
+//import allDeg from '@/components/Education/OfficerDeg'
 import { store } from '@/store/store'
 
 export default {
     data() {
         return {
-           dynamicComponent: "allDeg" 
+           dynamicComponent: "offStem" 
         }
     },
     computed:{
@@ -37,8 +40,8 @@ export default {
         },
     },
     components: {
-        stem,
-        allDeg
+        offStem,
+        enlStem
     }
 }
 </script>

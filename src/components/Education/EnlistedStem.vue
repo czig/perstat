@@ -3,7 +3,29 @@
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
-                <div class="row">
+                <div class="row pt-2" >
+                <div id="radioSelect" class="col form-group">
+                    <label class="custom-control custom-radio" >
+                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Percentage</span>
+                    </label>
+                    <label class="custom-control custom-radio" >
+                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="stemCount" v-model="displayType" @click="radioButton">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description">Count</span>
+                    </label>
+                </div>     
+                <div class="col-auto" align="right">
+                    <button type="button" id="download"
+                            class="btn btn-info btn-rounded btn-sm waves-effect" 
+                            >Download Raw Data</button>
+                    <button type="button" 
+                            class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                            @click="resetAll">Reset All</button>
+                </div>      
+                </div>       
+                <div class="row pt-2">
                     <div class="col-auto">
                         STEM:
                         <span id="stemTotal"></span>
@@ -12,15 +34,11 @@
                         NON STEM:
                         <span id="nonStemTotal"></span>
                     </div>
+                    <div class="col-auto">
+                        PERCENT:
+                        <span id="totalPercent"></span>
+                    </div>                    
                     <div class="col"></div>
-                    <div class="col-auto" align="right">
-                        <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect" 
-                                >Download Raw Data</button>
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                @click="resetAll">Reset All</button>
-                    </div>  
                 </div>  
                 <div class='row'>
                     <div id="grade" class="col-6">
@@ -81,7 +99,7 @@
 			return {
 					data: [],
                     loaded: false,
-                    selected: "enlisted"
+                    displayType: "stemPercent"
 			}
 		},
 
@@ -195,8 +213,6 @@
                 obj.grd = "error";
             }
 
-            console.log(grdType)
-
             obj.stem = given.stem
             obj.tafms = given.tafms
             obj.type = given.type
@@ -217,7 +233,7 @@
                     p.stemCount = p.stemCount + +v.stem
                     p.totalCount = p.totalCount + +v.count
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : +((p.stemCount/p.totalCount).toFixed(2)) || 0
+                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
@@ -225,7 +241,7 @@
                     p.stemCount = p.stemCount - +v.stem
                     p.totalCount = p.totalCount - +v.count
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : +((p.stemCount/p.totalCount).toFixed(2)) || 0
+                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
@@ -238,23 +254,22 @@
                 }                                    
 
                 //remove empty function (es6 syntax to keep correct scope)
-/*                 var removeEmptyBins = (source_group) => {
+                var removeEmptyBins = (source_group) => {
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value != 0
+                                return d.value.stemCount != 0
                             })
                         }
                     }
                 }
- */
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
                 edLevelConfig.dim = this.ndx.dimension(function(d){
                     return d.edlevel;
                 })
-                edLevelConfig.group = edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                edLevelConfig.group = removeEmptyBins(edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
                 edLevelConfig.margins = {top: 10, left: 100, right: 30, bottom: 130}
@@ -262,14 +277,14 @@
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
                     .valueAccessor((d) => {
-                        return d.value.stemCount
-                    })                                
+                        return d.value[this.displayType]
+                    })                
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-edLevel-barchart')
+                            this.submit(d, 'dc-edlevel-barchart')
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
@@ -284,7 +299,7 @@
                 degreeConfig.dim = this.ndx.dimension(function(d){
                     return d.deg;
                 })
-                degreeConfig.group = degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
+                degreeConfig.group = removeEmptyBins(degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
                 degreeConfig.minHeight = 400
                 degreeConfig.aspectRatio = 3
                 degreeConfig.margins = {top: 10, left: 150, right: 30, bottom: 200}
@@ -292,7 +307,7 @@
                 var degreeChart = dchelpers.getOrdinalBarChart(degreeConfig)
                 degreeChart
                     .valueAccessor((d) => {
-                        return d.value.stemCount
+                        return d.value[this.displayType]
                     })                
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
@@ -336,7 +351,7 @@
                 
                 gradeChart
                     .valueAccessor((d) => {
-                        return d.value.stemCount
+                        return d.value[this.displayType]
                     })                
                      .ordering(function(d){
                       return formats.gradeOrder[d.key]
@@ -365,6 +380,16 @@
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
+
+                var percentGroup = this.ndx.groupAll().reduce(stemAdd,stemRemove,stemInitial)
+                var percentND = dc.numberDisplay("#totalPercent")
+                percentND.group(percentGroup)
+                    .formatNumber(d3.format(".1f"))
+                    .valueAccessor(function(d) {return d.stemPercent})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
+                    })
+                    
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -435,5 +460,13 @@
 }
 .fade-enter-to, .fade-leave {
     opacity: 1;
+}
+
+.form-group {
+    padding-left: 10px;
+}
+
+#grade {
+    padding-left: 8px;
 }
 </style>
