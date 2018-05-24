@@ -377,7 +377,7 @@ import searchBox from '@/components/searchBox'
                 var percentGroup = this.ndx.groupAll().reduce(manningAdd,manningRemove,manningInitial)
                 var percentND = dc.numberDisplay("#percent")
                 percentND.group(percentGroup)
-                    .formatNumber(d3.format("r"))
+                    .formatNumber(d3.format(".1f"))
                     .valueAccessor(function(d) {return d.percent})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
@@ -408,13 +408,14 @@ import searchBox from '@/components/searchBox'
                 var afscGroupConfig = {}
                 afscGroupConfig.id = 'afscGroup'
                 afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_Group})
-                afscGroupConfig.group = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                afscGroupConfig.group = removeEmptyBins(afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial))
                 afscGroupConfig.minHeight = 200 
                 afscGroupConfig.aspectRatio = 3 
                 afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 120}
                 afscGroupConfig.colors = ["#108b52"] 
                 var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
                 afscGroupChart
+                    .elasticX(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
