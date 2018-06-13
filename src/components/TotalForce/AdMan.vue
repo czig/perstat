@@ -1,22 +1,5 @@
 <template>
     <div class="container">
-        <div class="row">
-            <h1 class="col"> {{ pageName }}
-
-                <span> 
-                </span>
-            </h1>
-            <div class="col-4 text-right" style="margin-top:15px;">
-                        Data as of: 
-                        <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
-            </div>
-        </div>
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            Reserve/Guard will be incorporated in the near future
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
@@ -233,7 +216,7 @@ import searchBox from '@/components/searchBox'
                 obj.Grade = formats.gradeFormat[given.grade]
                 obj.MAJCOM = formats.majFormat[given.maj]
                 obj.MPF = formats.mpfFormat[given.mpf]
-                obj.Inventory = given.count
+                obj.Inventory = given.freq
 
                 return obj;
             }
@@ -881,9 +864,9 @@ import searchBox from '@/components/searchBox'
     }
 </script>
 
-<style src="../../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css">
 </style>
-<style>
+<style scoped>
 .axis line,
 .axis path {
     fill: none;

@@ -25,7 +25,7 @@
                     <h5 class="title mb-2 mt-3 font-bold">Links</h5>
                     <ul>
                       <router-link class="footer-link" to="/" tag="li"><a class="nav-link">Home</a></router-link>
-                      <router-link class="footer-link" to="/tf_inv" tag="li"><a class="nav-link">TF Inventory</a></router-link>
+                      <router-link class="footer-link" to="/tf" tag="li"><a class="nav-link">TF Inventory</a></router-link>
                       <router-link class="footer-link" to="/officer" tag="li"><a class="nav-link">Officer</a></router-link>
                     
                     </ul>

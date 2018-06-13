@@ -17,7 +17,7 @@ TODO: Prevent typed text to overflow in the 'close-icon'
 <div class="row" style="margin-top:13px">
 	<div :class="'col-' + size">
 		<div class="md-form">
-			<div  style="position:relative;top: 10px;">
+			<div  style="position:relative;top: 0px;">
 		        <div class='searchTip' :style="getColor">
 		            <span v-show="searchVar.length>0">
 		                {{ label }}
@@ -35,7 +35,7 @@ TODO: Prevent typed text to overflow in the 'close-icon'
 		    </div>
 		</div>
 	</div>
-	<div class="col-auto" style="top:-3px">
+	<div class="col-auto" style="top:10px">
 		<button v-if="bIf" class="btn btn-primary btn-sm" @click="action" :style="getBackgroundColor"> {{ bLabel }} </button>
 	</div>
 </div>
