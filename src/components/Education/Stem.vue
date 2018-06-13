@@ -70,13 +70,6 @@ export default {
     float: none;
     margin: 0 auto;
 }
-.nav-tabs .nav-link{
-    color:black;
-}
-.nav-tabs .nav-link.active{
-    font-weight:bold;
-    color:teal;
-}
 .fade-enter{
     opacity: 0;
 }

@@ -545,20 +545,9 @@
 
 </script>
 
-<style src="@/../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css">
 </style>
 <style scoped>
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
-}
-.fade-enter-active {
-    transition: all 0.5s; }
-.fade-leave-active {
-    transition: all 0.2s;
-}
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }

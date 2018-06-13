@@ -56,7 +56,7 @@
 
 <script></script>
 
-<style>
+<style scoped>
     a, a:active, a:focus, button, button:active, button:focus {
         outline: none;
     }

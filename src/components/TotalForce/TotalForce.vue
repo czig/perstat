@@ -63,17 +63,6 @@ export default {
     margin-bottom: 0px;
 }
 
-.active{
-    border-color:red;
-}
-.padded{
-    margin-left: 10px;
-    margin-top: 10px;
-}
-.centered{
-    float: none;
-    margin: 0 auto;
-}
 .nav-tabs .nav-link{
     color:black;
 }
@@ -81,6 +70,7 @@ export default {
     font-weight:bold;
     color:teal;
 }
+
 .fade-enter{
     opacity: 0;
 }
@@ -94,20 +84,5 @@ export default {
     font-weight: bold;
 }
 
-#category .custom-control-input:checked~.custom-control-indicator {
-    background-color: rgb(18, 153, 60);
-}
-
-#category .custom-control-input:focus~.custom-control-indicator {
-    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(18, 153, 60,.25);
-}
-
-#category{
-    margin-top: .5rem;
-}
-
-.form-group {
-    margin-bottom: 0;
-}
 </style>
 

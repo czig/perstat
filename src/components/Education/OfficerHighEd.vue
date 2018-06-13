@@ -5,26 +5,31 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                <div id="radioSelect" class="col form-group">
-<!--                     <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Percentage</span>              
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="totalCount" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Count</span>
-                    </label>
- -->                </div>     
-                <div class="col-auto" align="right">
-                    <button type="button" id="download"
-                            class="btn btn-info btn-rounded btn-sm waves-effect" 
-                            >Download Raw Data</button>
-                    <button type="button" 
-                            class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                            @click="searchCore='';resetAll()">Reset All</button>
-                </div>      
+    <!--                <div id="radioSelect" class="col form-group">
+                         <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Percentage</span>              
+                        </label>
+                        <label class="custom-control custom-radio" >
+                            <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="totalCount" v-model="displayType" @click="radioButton">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Count</span>
+                        </label>
+                  </div>  -->  
+                    <div class="col-6">
+                        TOTAL:
+                        <span id="totalCount"></span>
+                    </div>
+   
+                    <div class="col-6" align="right">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="searchCore='';resetAll()">Reset All</button>
+                    </div>      
                 </div>       
 <!--                 <div id="stats" class="row">
                     <div class="col-auto">
@@ -36,8 +41,8 @@
                         <span id="totalPercent"></span>
                     </div>
                     <div class="col"></div>
-                </div>  
- -->                <div class='row'>
+                </div>  -->
+                <div class='row'>
                     <div id="fyr" class="col-6">
                         <div id="dc-fyr-barchart">
                             <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
@@ -74,6 +79,17 @@
                             </h3>
                         </div>
                     </div> 
+                    <div id="stemCompare" class="col-6">
+                        <div id="dc-stemcompare-rowchart">
+                            <h3>STEM/NON-STEM <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-stemcompare-rowchart')">Reset
+                            </button>
+                            </h3>
+                        </div>
+                    </div> 
                 </div>
                 <br>
                 <div class='row'>
@@ -87,7 +103,7 @@
                             </button>
                             </h3>
                             <searchBox
-                                v-model:value="searchCore"
+                                v-model="searchCore"
                                 size="3"
                                 label="Search CORE"
                                 @sub="submit(searchCore,'dc-core-barchart')"
@@ -546,20 +562,9 @@
 
 </script>
 
-<style src="@/../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css">
 </style>
 <style scoped>
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
-}
-.fade-enter-active {
-    transition: all 0.5s; }
-.fade-leave-active {
-    transition: all 0.2s;
-}
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
