@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import AdMan from '@/components/AdMan'
+import TotalForce from '@/components/TotalForce/TotalForce'
 import Officer from '@/components/Officer/Officer'
 import Enlisted from '@/components/Enlisted/Enlisted'
 import Civilian from '@/components/Civilian'
@@ -21,9 +21,9 @@ export default new Router({
       component: Home
     },
     {
-      path: '/tf_inv',
-      name: 'adMan',
-      component: AdMan 
+      path: '/totalforce',
+      name: 'totalforce',
+      component: TotalForce
     },
     {
       path: '/officer',

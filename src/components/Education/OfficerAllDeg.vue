@@ -193,7 +193,6 @@
 
             obj.tafms = given.tafms
             obj.type = given.type
-            //obj.totalCount = given.count
             obj.stem = given.stem
             //obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
 
@@ -208,7 +207,6 @@
                 //reduce functions
                 function stemAdd(p,v) {
                     p.allCount = p.allCount + +v.count
-                    //p.totalCount = p.totalCount + +v.count
                     //if divide by 0, set to 0, and if NaN, set to zero
                     //p.allPercent = p.allCount/p.totalCount === Infinity ? 0 : Math.round((p.allCount/p.totalCount)*1000/10) || 0
                     return p
@@ -216,7 +214,6 @@
 
                 function stemRemove(p,v) {
                     p.allCount = p.allCount - +v.count
-                    //p.totalCount = p.totalCount - +v.count
                     //if divide by 0, set to 0, and if NaN, set to zero
                     //p.allPercent = p.allCount/p.totalCount === Infinity ? 0 : Math.round((p.allCount/p.totalCount)*1000/10) || 0
                     return p
@@ -225,7 +222,6 @@
                 function stemInitial() {
                     return {
                         allCount: 0,
-                        //totalCount: 0,
                         //allPercent: 0,
                     }
                 }                  
