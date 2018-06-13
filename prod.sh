@@ -6,6 +6,10 @@ rm ./dist/static/*.png;
 rm ./dist/static/*.jpg;
 rm ./dist/static/*.JPG;
 
+cd ../ps_prod;
+git pull origin master;
+cd ../perstat/dist;
+
 rm -rf ../ps_prod/static;
 rm -rf ../ps_prod/index.html;
 

@@ -609,7 +609,7 @@ import searchBox from '@/components/searchBox'
                             myCount = d.value.cnt;
                             myAverage = d.value.average;
                         }
-                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
+                        return formats.countryLong[d.key] + "\n Average TOS: " + myAverage;
                     });
 
                 jpChart.colorCalculator(function (d) { 
@@ -766,6 +766,26 @@ import searchBox from '@/components/searchBox'
                 d3.select('#download')
                 .on('click', ()=>{
                     var data = tourConfig.dim.top(Infinity);
+                    console.log(data)
+                    data.forEach(d=>{
+                        if (d.Country=="02"){
+                            d.Country='';
+                            d.State='AK';
+                        }
+                        if (d.Country=="15"){
+                            d.Country='';
+                            d.State='HI';
+                        }
+
+                        if (d.State)
+                            d.Country_State= formats.stateLong[d.State].toUpperCase();
+                        else if (d.Country)
+                            d.Country_State= formats.countryLong[d.Country].toUpperCase();
+                        else d.Country_State = ''
+
+                        delete d.State;
+                        delete d.Country;  
+                    })
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                     var myFilters = '';
