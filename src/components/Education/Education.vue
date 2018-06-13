@@ -22,7 +22,7 @@
 </template>
 
 <script>
- import highEd from '@/components/Education/HighEdLevel' 
+  import highEd from '@/components/Education/HighEdLevel'  
 /* import allDeg from '@/components/Education/AllDegrees' */
 import { store } from '@/store/store'
 
@@ -38,7 +38,7 @@ export default {
         },
     },
     components: {
-        highEd
+         highEd 
 /*         stem,
         allDeg
  */    }

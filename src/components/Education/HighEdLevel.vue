@@ -49,11 +49,43 @@ export default {
 </style>
 <style scoped>
 
+
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
+
+#radioSelect{
+    margin-bottom: 0px;
+}
+
+.active{
+    border-color:red;
+}
 .padded{
     margin-left: 10px;
     margin-top: 10px;
 }
 
+.centered{
+    float: none;
+    margin: 0 auto;
+}
+.nav-tabs .nav-link{
+    color:black;
+}
+.nav-tabs .nav-link.active{
+    font-weight:bold;
+    color:teal;
+}
+.fade-enter{
+    opacity: 0;
+}
+.fade-enter-active, .fade-leave-active{
+    transition: all 0.5s;
+}
 .fade-leave-to{
     opacity: 0;
 }

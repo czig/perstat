@@ -79,17 +79,6 @@
                             </h3>
                         </div>
                     </div> 
-                    <div id="stemCompare" class="col-6">
-                        <div id="dc-stemcompare-rowchart">
-                            <h3>STEM/NON-STEM <span style="font-size: 14pt; opacity: 0.87"></span>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-stemcompare-rowchart')">Reset
-                            </button>
-                            </h3>
-                        </div>
-                    </div> 
                 </div>
                 <br>
                 <div class='row'>
@@ -565,6 +554,18 @@
 <style src="../../../node_modules/dc/dc.css">
 </style>
 <style scoped>
+
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
+.fade-enter-active {
+    transition: all 0.5s; }
+.fade-leave-active {
+    transition: all 0.2s;
+}
 .fade-enter, .fade-leave-to {
     opacity: 0;
 }
