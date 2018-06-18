@@ -89,7 +89,7 @@
                             </button>
                             </h3>
                             <searchBox
-                                v-model:value="searchCAFSC"
+                                v-model="searchCAFSC"
                                 size="3"
                                 label="Search CAFSC"
                                 @sub="submit(searchCAFSC,'dc-cafsc-barchart')"
@@ -346,7 +346,7 @@
                 fyrConfig.minHeight = 80 
                 fyrConfig.aspectRatio = 4 
                 fyrConfig.margins = {top: 10, left: 50, right: 30, bottom: 45}
-                fyrConfig.minHeight = 310
+                fyrConfig.minHeight = 300
                 fyrConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
                 fyrConfig.colors = [chartSpecs.baseChart.color]
                 var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
@@ -432,7 +432,7 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 280
+                gradeConfig.minHeight = 300
                 gradeConfig.aspectRatio = 5
                 gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
                 gradeConfig.colors = d3.scale.category10()
