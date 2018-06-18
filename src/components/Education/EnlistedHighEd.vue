@@ -29,43 +29,13 @@
                     </div>      
                 </div>       
                 <div class='row'>
-                    <div id="fyr" class="col-6">
+                    <div id="fyr" class="col-4">
                         <div id="dc-fyr-barchart">
                             <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
-<!--                             <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-fyr-barchart')">Reset
-                            </button>
- -->                            </h3>
+                            </h3>
                         </div>
                     </div>
-                    <div id="offgroup" class="col-6">
-<!--                         <div id="dc-offgroup-barchart">
-                            <h3>GROUP<span style="font-size: 14pt; opacity: 0.87"></span>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-offgroup-barchart')">Reset
-                            </button>
-                            </h3>
-                        </div>
- -->                    </div>
-                </div>
-                <br>
-                <div class='row'>
-                    <div id="grade" class="col-6">
-                        <div id="dc-grade-rowchart">
-                            <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-grade-rowchart')">Reset
-                            </button>
-                            </h3>
-                        </div>
-                    </div> 
-                    <div id="edlevel" class="col-6">
+                    <div id="edlevel" class="col-8">
                         <div id="dc-edlevel-barchart">
                             <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -79,7 +49,18 @@
                 </div>
                 <br>
                 <div class='row'>
-                    <div id="cafsc" class="col-12">
+                    <div id="grade" class="col-4">
+                        <div id="dc-grade-rowchart">
+                            <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-grade-rowchart')">Reset
+                            </button>
+                            </h3>
+                        </div>
+                    </div> 
+                    <div id="cafsc" class="col-8">
                         <div id="dc-cafsc-barchart">
                             <h3>CAFSC<span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -345,7 +326,7 @@
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
                 fyrConfig.minHeight = 80 
                 fyrConfig.aspectRatio = 4 
-                fyrConfig.margins = {top: 10, left: 50, right: 30, bottom: 45}
+                fyrConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
                 fyrConfig.minHeight = 300
                 fyrConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
                 fyrConfig.colors = [chartSpecs.baseChart.color]
@@ -369,32 +350,7 @@
                     })
                 fyrChart.barPadding(0.2)
                 fyrChart.filter('2018')
- 
-                //Group Barchart
-/*                 var groupConfig = {}
-                groupConfig.id = 'offgroup'
-                groupConfig.dim = this.ndx.dimension(function(d){
-                    return d.group;
-                })
-                var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
-                groupConfig.group = removeError(groupGroup)
-                groupConfig.minHeight = 300
-                groupConfig.aspectRatio = 3
-                groupConfig.margins = {top: 10, left: 40, right: 20, bottom: 45}
-                groupConfig.colors = ["#108b52"]
-                var groupChart = dchelpers.getOrdinalBarChart(groupConfig)
-                    .valueAccessor(function(d) {return d.value.totalCount;})               
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-offgroup-barchart')
-                        })
-                    })
-                    .yAxis().tickFormat(function(v) {return v + "%";})
- */ 
- 
+  
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
@@ -405,7 +361,7 @@
                 edLevelConfig.group = removeError(edLevelGroup)
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
-                edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 60}
+                edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
                 edLevelConfig.colors = ["#108b52"]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
@@ -434,7 +390,7 @@
                 gradeConfig.group = removeError(gradegroup)
                 gradeConfig.minHeight = 300
                 gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
+                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 60}
                 gradeConfig.colors = d3.scale.category10()
 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
@@ -456,7 +412,7 @@
                 cafscConfig.group = removeError(cafscGroup)
                 cafscConfig.minHeight = 400
                 cafscConfig.aspectRatio = 3
-                cafscConfig.margins = {top: 10, left: 20, right: 20, bottom: 200}
+                cafscConfig.margins = {top: 10, left: 50, right: 30, bottom: 200}
                 cafscConfig.colors = ["#333cff"]
                 var cafscChart = dchelpers.getOrdinalBarChart(cafscConfig)
                 cafscChart
