@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import adman from '@/components/TotalForce/AdMan'
+ import adman from '@/components/TotalForce/AdMan'
 import ang from '@/components/TotalForce/ANGMan'
-import afr from '@/components/TotalForce/AFRMan'
-/*import afr from '@/components/TF/AFR' */
+import afr from '@/components/TotalForce/AFRMan' 
+
 import { store } from '@/store/store'
 
 export default {
@@ -43,9 +43,9 @@ export default {
         },
     },
     components: {
-        adman,
+         adman,
         ang,
-        afr
+        afr 
     }
 }
 </script>
