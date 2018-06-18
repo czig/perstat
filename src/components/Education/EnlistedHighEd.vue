@@ -6,17 +6,7 @@
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
                 <div id="radioSelect" class="col form-group">
-<!--                     <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Percentage</span>              
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="totalCount" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Count</span>
-                    </label>
- -->                </div>     
+                </div>     
                 <div class="col-auto" align="right">
                     <button type="button" id="download"
                             class="btn btn-info btn-rounded btn-sm waves-effect" 
@@ -26,18 +16,7 @@
                             @click="searchCore='';resetAll()">Reset All</button>
                 </div>      
                 </div>       
-<!--                 <div id="stats" class="row">
-                    <div class="col-auto">
-                        TOTAL:
-                        <span id="totalCount"></span>
-                    </div>
-                    <div class="col-auto">
-                        PERCENT:
-                        <span id="totalPercent"></span>
-                    </div>
-                    <div class="col"></div>
-                </div>  
- -->                <div class='row'>
+                <div class='row'>
                     <div id="fyr" class="col-6">
                         <div id="dc-fyr-barchart">
                             <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
@@ -207,9 +186,9 @@
             axios.post(axios_url_high_ed_level).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
-                console.log(invData)
+                //console.log(invData)
                 var objData = makeObject(invData)
-                console.log(objData)
+                //console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()

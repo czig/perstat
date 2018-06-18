@@ -5,18 +5,6 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-    <!--                <div id="radioSelect" class="col form-group">
-                         <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Percentage</span>              
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="totalCount" v-model="displayType" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Count</span>
-                        </label>
-                  </div>  -->  
                     <div class="col-6">
                         TOTAL:
                         <span id="totalCount"></span>
