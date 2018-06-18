@@ -63,6 +63,8 @@ export default {
     margin-bottom: 0px;
 }
 
+
+
 .nav-tabs .nav-link{
     color:black;
 }
@@ -70,7 +72,6 @@ export default {
     font-weight:bold;
     color:teal;
 }
-
 .fade-enter{
     opacity: 0;
 }

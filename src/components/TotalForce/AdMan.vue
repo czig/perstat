@@ -54,7 +54,7 @@
                                     @click="resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchMajcom"
+                                v-model="searchMajcom"
                                 size="3"
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
@@ -73,7 +73,7 @@
                                     @click="resetChart('dc-base-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchBase"
+                                v-model="searchBase"
                                 size="3"
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
@@ -260,7 +260,7 @@ import searchBox from '@/components/searchBox'
                 typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
                 typeConfig.minHeight = 200 
                 typeConfig.aspectRatio = 3
-                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
+                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 25}
                 typeConfig.colors = d3.scale.category10()
                 var typeChart = dchelpers.getRowChart(typeConfig)   
 
