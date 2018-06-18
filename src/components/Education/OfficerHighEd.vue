@@ -253,8 +253,8 @@
                 obj.core = given.core;
             }
 
-            if (given.grade < '11' && given.grade >= '01') {
-                obj.grade = formats.gradeFormat[given.grade];
+            if (given.grd < '11' && given.grd >= '01') {
+                obj.grade = formats.gradeFormat[given.grd];
             } else {
                 obj.grade = "error";
             }
@@ -263,7 +263,7 @@
             obj.fyr = given.fyr
             obj.type = given.type
             obj.stem = given.stem
-            obj.nonstem = given.nonstem
+            obj.nonstem = given.non_stem
             //obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
 
                 return obj;

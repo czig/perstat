@@ -236,8 +236,8 @@
                 obj.cafsc = given.cafsc;
             }
 
-            if (given.grade < '40' && given.grade >= '30') {
-                obj.grade = formats.gradeFormat[given.grade];
+            if (given.grd < '40' && given.grd >= '30') {
+                obj.grade = formats.gradeFormat[given.grd];
             } else {
                 obj.grade = "error";
             }
@@ -246,7 +246,7 @@
             obj.fyr = given.fyr
             obj.type = given.type
             obj.stem = given.stem
-            obj.nonstem = given.nonstem
+            obj.nonstem = given.non_stem
             //obj.totalCount = given.count
             //obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
 

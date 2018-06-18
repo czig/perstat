@@ -312,7 +312,7 @@ import searchBox from '@/components/searchBox'
                 typeConfig.colors = d3.scale.category10()
                 var typeChart = dchelpers.getRowChart(typeConfig)   
 
-                //Location
+                //MAJCOM
                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
