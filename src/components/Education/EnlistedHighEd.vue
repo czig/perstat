@@ -336,7 +336,7 @@
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
                 edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
-                edLevelConfig.colors = ["#108b52"]
+                edLevelConfig.colors = ["#800000"]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
                     .valueAccessor(function(d) {return d.value.totalCount;})               
@@ -389,7 +389,7 @@
                 cafscConfig.minHeight = 400
                 cafscConfig.aspectRatio = 3
                 cafscConfig.margins = {top: 10, left: 50, right: 30, bottom: 200}
-                cafscConfig.colors = ["#333cff"]
+                cafscConfig.colors = ["#186d19"]
                 var cafscChart = dchelpers.getOrdinalBarChart(cafscConfig)
                 cafscChart
                     .valueAccessor(function(d) {return d.value.totalCount;})

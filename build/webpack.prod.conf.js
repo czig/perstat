@@ -54,6 +54,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       'axios_url_angman': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_off_enl_ang.js"',
       'axios_url_afrman': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_off_enl_ar.js"',      
       'axios_url_high_ed_level': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_high_ed_level.js"',
+      'axios_url_prom_year_group': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_prom_year_group.js"',
 
     }),
     // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
