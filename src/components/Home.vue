@@ -67,6 +67,14 @@
                     </div>
                 </div>
             </div>
+            <div class="col-4">
+                <div class="card hoverable click" @click="$router.push('/education')">
+                    <img class="card-img-top" src="../../static/education.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 class="card-title">Education</h4>
+                    </div>
+                </div>
+            </div>
             
             <!-- <div class="col-4">
                 <div class="card hoverable click" @click="$router.push('/assignments')">

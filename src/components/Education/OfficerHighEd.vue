@@ -30,12 +30,7 @@
                     <div id="fyr" class="col-6">
                         <div id="dc-fyr-barchart">
                             <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
-<!--                             <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-fyr-barchart')">Reset
-                            </button>
- -->                            </h3>
+                            </h3>
                         </div>
                     </div>
                     <div id="offgroup" class="col-6">
@@ -119,7 +114,6 @@
 			return {
 					data: [],
                     loaded: false,
-                    //displayType: "stemPercent",
                     fyr: '2018',
                     searchCore: "",
 			}
@@ -142,7 +136,6 @@
             dc.filterAll()
             //dc.redrawAll()
             this.fyr = '2018'
-            //this.displayType = 'stemPercent'
             this.singleSubmit('2018', 'dc-fyr-barchart')
           },
           resetChart: (id)=>{
@@ -164,12 +157,12 @@
                 dc.redrawAll()
             },
 
-          radioButton: () => {
+/*           radioButton: () => {
             setTimeout(function() {
                 dc.redrawAll()
             },10)
           },
-          submit: (text,id) => {
+ */          submit: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id 
             }).forEach(chart=>{
@@ -207,9 +200,9 @@
             axios.post(axios_url_high_ed_level).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
-                console.log(invData)
+                //console.log(invData)
                 var objData = makeObject(invData)
-                console.log(objData)
+                //console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -230,7 +223,6 @@
                     }
                     obj2 = {};
                     obj2 = formatData(obj)
-                    //obj2 = testData(obj2, obj)
                     output.push(obj2); 
                 }
                 return output;
@@ -264,20 +256,8 @@
             obj.type = given.type
             obj.stem = given.stem
             obj.nonstem = given.non_stem
-            //obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
 
                 return obj;
-            }
-
-            var testData = (formatted, original) =>{
-                for (var key in formatted) {
-                    if (formatted[key] === ''){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
-                        formatted[key] = "UNKNOWN"
-                    }
-                }
-                return formatted;
             }
 
             var renderCharts = () => {
@@ -287,26 +267,18 @@
 
                 //reduce functions
                 function highEdAdd(p,v) {
-                    //p.stemCount = p.stemCount + +v.stem
                     p.totalCount = p.totalCount + +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
                 function highEdRemove(p,v) {
-                    //p.stemCount = p.stemCount - +v.stem
                     p.totalCount = p.totalCount - +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
                 function highEdInitial() {
                     return {
-                        stemCount: 0,
                         totalCount: 0
-                        //stemPercent: 0,
                     }
                 }                  
 
@@ -431,8 +403,8 @@
                 gradeConfig.minHeight = 300
                 gradeConfig.aspectRatio = 5
                 gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
-                gradeConfig.colors = d3.scale.category10()
-
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 
                 gradeChart
@@ -480,8 +452,7 @@
                     })
 
                     FileSaver.saveAs(blob, 'PERSTAT High Education' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });
-                    
+                });                   
 
                 //Filters data to count Officer only
                 var filtering = this.ndx.dimension(function(d) { return d.type; });
