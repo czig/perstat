@@ -12,7 +12,15 @@ var majcomChart = {
     color: "#1976d2"
 }
 
+var coreChart = {
+    minHeight: 260,
+    aspectRatio: 3.2,
+    margins: {top: 10, left: 45, right: 30, bottom: 80},
+    color: "#2ca25f"
+}
+
 module.exports = {
     baseChart,
-    majcomChart
+    majcomChart,
+    coreChart
 }
