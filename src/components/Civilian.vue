@@ -307,7 +307,7 @@ import { store } from '@/store/store'
                 careerFieldConfig.dim = this.ndx.dimension(function(d){
                     return d.Career_Field;
                 })
-                careerFieldConfig.group = careerFieldConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
+                careerFieldConfig.group = removeEmptyBins(careerFieldConfig.dim.group().reduceSum(function(d) {return d.Inventory;}))
                 careerFieldConfig.minHeight = 200
                 careerFieldConfig.aspectRatio = 3
                 careerFieldConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}

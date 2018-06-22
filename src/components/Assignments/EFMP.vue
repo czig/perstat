@@ -399,9 +399,9 @@ export default {
             gradeConfig.dim = this.ndx.dimension(function (d) {
                 return d.Grade;
             })
-            gradeConfig.group = gradeConfig.dim.group().reduceSum((d)=>{
+            gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
             	return d.Cnt
-            })
+            }))
             gradeConfig.minHeight = 270
             gradeConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
             gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 60}

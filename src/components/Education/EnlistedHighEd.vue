@@ -1,31 +1,14 @@
+
 <template>
     <div class="container">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                <div id="radioSelect" class="col form-group">
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Percentage</span>              
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="stemCount" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Count</span>
-                    </label>
-                </div>     
-                <div class="col-auto" align="right">
-                    <button type="button" id="download"
-                            class="btn btn-info btn-rounded btn-sm waves-effect" 
-                            >Download Raw Data</button>
-                    <button type="button" 
-                            class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                            @click="resetAll">Reset All</button>
-                </div>      
-                </div>       
-                <div id="stats" class="row">
+                    <div class="col-auto">
+                        TOTAL:
+                        <span id="totalCount"></span>
+                    </div>
                     <div class="col-auto">
                         STEM:
                         <span id="stemTotal"></span>
@@ -34,25 +17,23 @@
                         NON STEM:
                         <span id="nonStemTotal"></span>
                     </div>
-                    <div class="col-auto">
-                        PERCENT:
-                        <span id="totalPercent"></span>
-                    </div>
-                    <div class="col"></div>
-                </div>  
+                    <div class="col-6" align="right">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="searchCore='';resetAll()">Reset All</button>
+                    </div>      
+                </div>       
                 <div class='row'>
-                    <div id="grade" class="col-6">
-                        <div id="dc-grade-rowchart">
-                            <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-grade-rowchart')">Reset
-                            </button>
+                    <div id="fyr" class="col-4">
+                        <div id="dc-fyr-barchart">
+                            <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
                             </h3>
                         </div>
-                    </div>            
-                    <div id="edlevel" class="col-6">
+                    </div>
+                    <div id="edlevel" class="col-8">
                         <div id="dc-edlevel-barchart">
                             <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -66,18 +47,38 @@
                 </div>
                 <br>
                 <div class='row'>
-                    <div id="degree" class="col-12">
-                        <div id="dc-degree-barchart">
-                            <h3>DEGREE <span style="font-size: 14pt; opacity: 0.87;"></span>
+                    <div id="grade" class="col-4">
+                        <div id="dc-grade-rowchart">
+                            <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="display: none"
-                                    @click="resetChart('dc-degree-barchart')">Reset
+                                    @click="resetChart('dc-grade-rowchart')">Reset
                             </button>
                             </h3>
                         </div>
+                    </div> 
+                    <div id="cafsc" class="col-8">
+                        <div id="dc-cafsc-barchart">
+                            <h3>CAFSC<span style="font-size: 14pt; opacity: 0.87"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-cafsc-barchart')">Reset
+                            </button>
+                            </h3>
+                            <searchBox
+                                v-model="searchCAFSC"
+                                size="3"
+                                label="Search CAFSC"
+                                @sub="submit(searchCAFSC,'dc-cafsc-barchart')"
+                                button="true"
+                                color="#1976d2"
+                                btnColor="cafscColor"
+                            ></searchBox>
+                        </div>
                     </div>
-                </div>    
+                </div>
             </div>    
         </transition-group>    
 	</div>
@@ -99,7 +100,8 @@
 			return {
 					data: [],
                     loaded: false,
-                    displayType: "stemPercent"
+                    fyr: '2018',
+                    searchCAFSC: "",
 			}
 		},
 
@@ -116,10 +118,11 @@
 		},
 
         methods: {
-          resetAll: (event)=>{
+           resetAll(){
             dc.filterAll()
             dc.redrawAll()
-
+            this.fyr = '2018'
+            this.singleSubmit('2018', 'dc-fyr-barchart')
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -129,7 +132,17 @@
             })
             dc.redrawAll()
           },
-          
+
+            singleSubmit: (text,id) => {
+                dc.chartRegistry.list().filter(chart=>{
+                    return chart.anchorName() == id
+                }).forEach(chart=>{
+                    chart.filterAll()
+                    chart.filter(text)
+                })
+                dc.redrawAll()
+            },
+
           radioButton: () => {
             setTimeout(function() {
                 dc.redrawAll()
@@ -158,7 +171,8 @@
 
 		components: {
 			'AutoComplete': AutoComplete,
-			'Loader': Loader
+            'Loader': Loader,
+            searchBox
 		},
 
 		created: function() { 
@@ -169,10 +183,12 @@
 			console.log('mounted')
 
 			//test AXIOS Call:
-            axios.post(axios_url_off_stem).then(response => {
+            axios.post(axios_url_high_ed_level).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
+                //console.log(invData)
                 var objData = makeObject(invData)
+                //console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -202,21 +218,30 @@
                 var obj = {}
 
             obj.count = given.count
-            obj.deg = given.deg
-            obj.edlevel = given.edlevel
-
-            if (given.grd < '11') {
-                obj.grd = formats.gradeFormat[given.grd];
+            
+            if (given.edlevel == null || given.edlevel == '') {
+                obj.edlevel = 'error';
             } else {
-                obj.grd = "error";
+                obj.edlevel = given.edlevel;
             }
 
-            obj.tafms = given.tafms
+            if (given.cafsc == null || given.cafsc == '') {
+                obj.cafsc = 'error';
+            } else {
+                obj.cafsc = given.cafsc;
+            }
+
+            if (given.grd < '40' && given.grd >= '30') {
+                obj.grade = formats.gradeFormat[given.grd];
+            } else {
+                obj.grade = "error";
+            }
+
+            obj.group = given.grp
+            obj.fyr = given.fyr
             obj.type = given.type
-            obj.nonStemCount = +given.count - +given.stem
-            obj.totalCount = given.count
             obj.stem = given.stem
-            obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
+            obj.nonstem = given.non_stem
 
                 return obj;
             }
@@ -227,27 +252,19 @@
                   .group(this.allGroup)
 
                 //reduce functions
-                function stemAdd(p,v) {
-                    p.stemCount = p.stemCount + +v.stem
+                function highEdAdd(p,v) {
                     p.totalCount = p.totalCount + +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
-                function stemRemove(p,v) {
-                    p.stemCount = p.stemCount - +v.stem
+                function highEdRemove(p,v) {
                     p.totalCount = p.totalCount - +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
-                function stemInitial() {
+                function highEdInitial() {
                     return {
-                        stemCount: 0,
-                        totalCount: 0,
-                        stemPercent: 0,
+                        totalCount: 0
                     }
                 }                  
 
@@ -256,28 +273,73 @@
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value.stemCount != 0
+                                return d.value.totalCount != 0
                             })
                         }
                     }
                 }
 
+                //remove empty function (es6 syntax to keep correct scope)
+                var removeError = (source_group) => {
+                    return {
+                        all: () => {
+                            return source_group.all().filter((d) => {
+                                return d.key != "error"
+                            })
+                        }
+                    }
+                }                
+
+                //YEAR
+                 d3.selectAll("#row1")
+                var fyrConfig = {};
+                fyrConfig.id = 'fyr';
+                fyrConfig.dim = this.ndx.dimension(function (d) {
+                    return d.fyr;
+                })
+                fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
+                fyrConfig.minHeight = 80 
+                fyrConfig.aspectRatio = 4 
+                fyrConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
+                fyrConfig.minHeight = 300
+                fyrConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                fyrConfig.colors = [chartSpecs.baseChart.color]
+                var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
+
+                fyrChart
+                    .elasticX(true)
+                    .valueAccessor(function(d) {return d.value.totalCount;})
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.fyr = d
+                            this.singleSubmit(d, 'dc-fyr-barchart')
+                        })
+
+                        chart.selectAll("rect.bar").on("click", (d)=>{
+                            this.fyr = d.data.key
+                            this.singleSubmit(d.data.key, 'dc-fyr-barchart')
+                        });
+                    })
+                fyrChart.barPadding(0.2)
+                fyrChart.filter('2018')
+  
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
                 edLevelConfig.dim = this.ndx.dimension(function(d){
                     return d.edlevel;
                 })
-                edLevelConfig.group = removeEmptyBins(edLevelConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
+                var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
+                edLevelConfig.group = removeError(edLevelGroup)
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
-                edLevelConfig.margins = {top: 10, left: 100, right: 30, bottom: 130}
-                edLevelConfig.colors = ["#108b52"]
+                edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
+                edLevelConfig.colors = ["#800000"]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
-                    .valueAccessor((d) => {
-                        return d.value[this.displayType]
-                    })                
+                    .valueAccessor(function(d) {return d.value.totalCount;})               
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
@@ -292,28 +354,51 @@
                         return formats.edLevelOrder[d.key]
                     })
 
-                //Degree Barchart
-                var degreeConfig = {}
-                degreeConfig.id = 'degree'
-                degreeConfig.dim = this.ndx.dimension(function(d){
-                    return d.deg;
+                //Grade Rowchart               
+                var gradeConfig = {}                    
+                gradeConfig.id = 'grade'
+                gradeConfig.dim = this.ndx.dimension(function(d){
+                    return d.grade;
                 })
-                degreeConfig.group = removeEmptyBins(degreeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial))
-                degreeConfig.minHeight = 400
-                degreeConfig.aspectRatio = 3
-                degreeConfig.margins = {top: 10, left: 150, right: 30, bottom: 200}
-                degreeConfig.colors = ["#333cff"]
-                var degreeChart = dchelpers.getOrdinalBarChart(degreeConfig)
-                degreeChart
-                    .valueAccessor((d) => {
-                        return d.value[this.displayType]
-                    })
+                var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
+                gradeConfig.group = removeError(gradegroup)
+                gradeConfig.minHeight = 300
+                gradeConfig.aspectRatio = 5
+                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 60}
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), 
+                c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString(),c.darker(0.9).toString()])
+
+                var gradeChart = dchelpers.getRowChart(gradeConfig)
+                
+                gradeChart
+                    .valueAccessor(function(d) {return d.value.totalCount;})
+
+                    .ordering(function(d){
+                      return formats.gradeOrder[d.key]                      
+                    })  
+  
+                //CAFSC Rowchart
+                var cafscConfig = {}
+                cafscConfig.id = 'cafsc'
+                cafscConfig.dim = this.ndx.dimension(function(d){
+                    return d.cafsc;
+                })
+                var cafscGroup = removeEmptyBins(cafscConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
+                cafscConfig.group = removeError(cafscGroup)
+                cafscConfig.minHeight = 400
+                cafscConfig.aspectRatio = 3
+                cafscConfig.margins = {top: 10, left: 50, right: 30, bottom: 200}
+                cafscConfig.colors = ["#186d19"]
+                var cafscChart = dchelpers.getOrdinalBarChart(cafscConfig)
+                cafscChart
+                    .valueAccessor(function(d) {return d.value.totalCount;})
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-degree-barchart')
+                            this.submit(d, 'dc-cafsc-barchart')
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
@@ -328,64 +413,6 @@
                         }
                     }
                 }
-                    
-                //Grade Rowchart
-                
-                var gradeConfig = {}                    
-                gradeConfig.id = 'grade'
-
-                gradeConfig.dim = this.ndx.dimension(function(d){
-                    return d.grd;
-                })
-                var grdgroup = gradeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
-                gradeConfig.group = removeError(grdgroup)
-                gradeConfig.minHeight = 280
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
-                gradeConfig.colors = d3.scale.category10()
-
-                var gradeChart = dchelpers.getRowChart(gradeConfig)
-                
-                gradeChart
-                    .valueAccessor((d) => {
-                        return d.value[this.displayType]
-                    })
-
-                    .ordering(function(d){
-                      return formats.gradeOrder[d.key]                      
-                    }) 
-
-                //Filters data to count Enlisted only
-                var filtering = this.ndx.dimension(function(d) { return d.type; });
-                filtering.filter("O")                                        
-              
-                //Number Display for STEM, NON STEM, PERCENT, and overall total - show total for filtered content
-                var stemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.stem })
-                var stemTotalND = dc.numberDisplay("#stemTotal")
-                stemTotalND.group(stemTotal)
-                    .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) { return d;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                    })
-
-                var nonStemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.nonStemCount })
-                var nonStemTotalND = dc.numberDisplay("#nonStemTotal")
-                nonStemTotalND.group(nonStemTotal)
-                    .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) { return d;})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                    })
-
-                var percentGroup = this.ndx.groupAll().reduce(stemAdd,stemRemove,stemInitial)
-                var percentND = dc.numberDisplay("#totalPercent")
-                percentND.group(percentGroup)
-                    .formatNumber(d3.format(".1f"))
-                    .valueAccessor(function(d) {return d.stemPercent})
-                    .html({
-                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
-                    })
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -399,10 +426,51 @@
                             myFilters += ' (' + d.filters() + ')'
                     })
 
-                    FileSaver.saveAs(blob, 'PERSTAT Officer_STEM' + ' ' + store.state.asDate + myFilters + ' .csv');
+                    FileSaver.saveAs(blob, 'PERSTAT High Education' + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
                     
-                
+
+                //Filters data to count Officer only
+                var filtering = this.ndx.dimension(function(d) { return d.type; });
+                filtering.filter("E")                                        
+              
+                //Number Display for STEM, NON STEM, PERCENT, and overall total - show total for filtered content
+                var totalCount = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                var totalCountND = dc.numberDisplay("#totalCount")
+                totalCountND.group(totalCount)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+
+                var stemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.stem })
+                var stemTotalND = dc.numberDisplay("#stemTotal")
+                stemTotalND.group(stemTotal)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+
+                var nonStemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.nonstem })
+                var nonStemTotalND = dc.numberDisplay("#nonStemTotal")
+                nonStemTotalND.group(nonStemTotal)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+
+                var percentGroup = this.ndx.groupAll().reduce(highEdAdd,highEdRemove,highEdInitial)
+                var percentND = dc.numberDisplay("#totalPercent")
+                percentND.group(percentGroup)
+                    .formatNumber(d3.format(".1f"))
+                    .valueAccessor(function(d) {return d.stemPercent})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
+                    })
+
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
@@ -437,8 +505,9 @@
 
 </script>
 
-<style src="@/../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css">
 </style>
+
 <style scoped>
 .custom-control.custom-radio{
     padding-left:20px;

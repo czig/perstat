@@ -35,9 +35,11 @@ module.exports = merge(baseWebpackConfig, {
       'axios_url_off_tos': '"http://localhost:5005/api/officer_tos"',
       'axios_url_enl_tos': '"http://localhost:5005/api/enlisted_tos"',
       'axios_url_adman': '"http://localhost:5005/api/admanning_post"',
+      'axios_url_angman': '"http://localhost:5005/api/angmanning_post"',
+      'axios_url_afrman': '"http://localhost:5005/api/afrmanning_post"',      
       'axios_url_efmp': '"http://localhost:5005/api/EFMP"',
-      'axios_url_off_stem': '"http://localhost:5005/api/officer_stem"',
-      'axios_url_enl_stem': '"http://localhost:5005/api/enlisted_stem"',
+      'axios_url_high_ed_level': '"http://localhost:5005/api/high_ed_level_post"',
+      'axios_url_prom_year_group': '"http://localhost:5005/api/ed_prom_year_post"',
     }),
     // https://github.com/glenjamin/webpack-hot-middleware#installation--usage
     new webpack.HotModuleReplacementPlugin(),

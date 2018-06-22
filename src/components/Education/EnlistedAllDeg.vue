@@ -3,43 +3,21 @@
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
-                <div class="row pt-2" >
-                <div id="radioSelect" class="col form-group">
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Percentage</span>              
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="stemCount" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Count</span>
-                    </label>
-                </div>     
-                <div class="col-auto" align="right">
-                    <button type="button" id="download"
-                            class="btn btn-info btn-rounded btn-sm waves-effect" 
-                            >Download Raw Data</button>
-                    <button type="button" 
-                            class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                            @click="resetAll">Reset All</button>
-                </div>      
-                </div>       
-                <div id="stats" class="row">
-                    <div class="col-auto">
-                        STEM:
-                        <span id="stemTotal"></span>
-                    </div>
-                    <div class="col-auto">
-                        NON STEM:
-                        <span id="nonStemTotal"></span>
-                    </div>
-                    <div class="col-auto">
-                        PERCENT:
-                        <span id="totalPercent"></span>
+                <div class="row pt-2"> 
+                    <div id="total" class="col-auto">
+                        Total:        
+                        <span id="degTotal"></span>
                     </div>
                     <div class="col"></div>
-                </div>  
+                    <div class="col-auto">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="resetAll">Reset All</button>
+                    </div>
+                </div>
                 <div class='row'>
                     <div id="grade" class="col-6">
                         <div id="dc-grade-rowchart">
@@ -99,7 +77,7 @@
 			return {
 					data: [],
                     loaded: false,
-                    displayType: "stemPercent"
+                    displayType: "allCount"
 			}
 		},
 
@@ -119,7 +97,6 @@
           resetAll: (event)=>{
             dc.filterAll()
             dc.redrawAll()
-
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -169,7 +146,7 @@
 			console.log('mounted')
 
 			//test AXIOS Call:
-            axios.post(axios_url_off_stem).then(response => {
+            axios.post(axios_url_enl_stem).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
                 var objData = makeObject(invData)
@@ -193,7 +170,8 @@
                     }
                     obj2 = {};
                     obj2 = formatData(obj)
-                    output.push(obj2); 
+                    output.push(obj2);
+ 
                 }
                 return output;
             }
@@ -205,19 +183,19 @@
             obj.deg = given.deg
             obj.edlevel = given.edlevel
 
-            if (given.grd < '11') {
+            var grdType = ""
+
+            if (given.grd > '30') {
                 obj.grd = formats.gradeFormat[given.grd];
             } else {
                 obj.grd = "error";
             }
 
+            obj.stem = given.stem
             obj.tafms = given.tafms
             obj.type = given.type
-            obj.nonStemCount = +given.count - +given.stem
             obj.totalCount = given.count
-            obj.stem = given.stem
-            obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
-
+ 
                 return obj;
             }
 
@@ -228,35 +206,35 @@
 
                 //reduce functions
                 function stemAdd(p,v) {
-                    p.stemCount = p.stemCount + +v.stem
+                    p.allCount = p.allCount + +v.count
                     p.totalCount = p.totalCount + +v.count
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
+                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
                 function stemRemove(p,v) {
-                    p.stemCount = p.stemCount - +v.stem
+                    p.allCount = p.allCount - +v.count
                     p.totalCount = p.totalCount - +v.count
                     //if divide by 0, set to 0, and if NaN, set to zero
-                    p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
+                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
                 function stemInitial() {
                     return {
-                        stemCount: 0,
+                        allCount: 0,
                         totalCount: 0,
-                        stemPercent: 0,
+                        //stemPercent: 0,
                     }
-                }                  
+                }                                    
 
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.value.stemCount != 0
+                                return d.value.allCount != 0
                             })
                         }
                     }
@@ -307,7 +285,7 @@
                 degreeChart
                     .valueAccessor((d) => {
                         return d.value[this.displayType]
-                    })
+                    })                
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
@@ -329,6 +307,7 @@
                     }
                 }
                     
+
                 //Grade Rowchart
                 
                 var gradeConfig = {}                    
@@ -339,9 +318,9 @@
                 })
                 var grdgroup = gradeConfig.dim.group().reduce(stemAdd, stemRemove, stemInitial)
                 gradeConfig.group = removeError(grdgroup)
-                gradeConfig.minHeight = 280
+                gradeConfig.minHeight = 300
                 gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
+                gradeConfig.margins = {top: 5, left: 40, right: 30, bottom: 20}
                 gradeConfig.colors = d3.scale.category10()
 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
@@ -349,18 +328,18 @@
                 gradeChart
                     .valueAccessor((d) => {
                         return d.value[this.displayType]
-                    })
-
-                    .ordering(function(d){
-                      return formats.gradeOrder[d.key]                      
+                    })                
+                     .ordering(function(d){
+                      return formats.gradeOrder[d.key]
                     }) 
 
                 //Filters data to count Enlisted only
                 var filtering = this.ndx.dimension(function(d) { return d.type; });
-                filtering.filter("O")                                        
-              
-                //Number Display for STEM, NON STEM, PERCENT, and overall total - show total for filtered content
-                var stemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.stem })
+                filtering.filter("E")                    
+
+
+                //Number Display for STEM, NON STEM, and overall total - show total for filtered content
+/*                 var stemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
                 var stemTotalND = dc.numberDisplay("#stemTotal")
                 stemTotalND.group(stemTotal)
                     .formatNumber(d3.format("d"))
@@ -368,24 +347,25 @@
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-
-                var nonStemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.nonStemCount })
-                var nonStemTotalND = dc.numberDisplay("#nonStemTotal")
-                nonStemTotalND.group(nonStemTotal)
+ */
+                var degTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                var degTotalND = dc.numberDisplay("#degTotal")
+                degTotalND.group(degTotal)
                     .formatNumber(d3.format("d"))
                     .valueAccessor(function(d) { return d;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
 
-                var percentGroup = this.ndx.groupAll().reduce(stemAdd,stemRemove,stemInitial)
+/*                 var percentGroup = this.ndx.groupAll().reduce(stemAdd,stemRemove,stemInitial)
                 var percentND = dc.numberDisplay("#totalPercent")
                 percentND.group(percentGroup)
-                    .formatNumber(d3.format(".1f"))
+                    .formatNumber(d3.format("r"))
                     .valueAccessor(function(d) {return d.stemPercent})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
+ */                    
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -399,10 +379,10 @@
                             myFilters += ' (' + d.filters() + ')'
                     })
 
-                    FileSaver.saveAs(blob, 'PERSTAT Officer_STEM' + ' ' + store.state.asDate + myFilters + ' .csv');
+                    FileSaver.saveAs(blob, 'PERSTAT Enlisted_All_Degrees' + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
                     
-                
+
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
@@ -466,7 +446,7 @@
     padding-left: 8px;
 }
 
-.stats {
-    padding-left: 0;
+#total {
+    padding-left: 8px;
 }
 </style>

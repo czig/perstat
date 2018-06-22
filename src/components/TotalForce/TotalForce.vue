@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class="col">Officer</h1>
+            <h1 class="col">Total Force</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
@@ -9,14 +9,14 @@
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" @click="dynamicComponent='off-manning'" data-toggle="tab">Manning</a>
+                <a class="nav-link active" @click="dynamicComponent='adman'" data-toggle="tab">Active Duty</a>
+            </li>                    
+            <li class="nav-item">
+                <a class="nav-link" @click="dynamicComponent='ang'" data-toggle="tab">ANG</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='off-promo'" data-toggle="tab">Promotions</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='off-yrgp'" data-toggle="tab">Ed Year Group</a>
-            </li>
+                <a class="nav-link" @click="dynamicComponent='afr'" data-toggle="tab">AFR</a>
+            </li>            
         </ul>
         <transition name="fade" mode="out-in">
             <component :is="dynamicComponent"></component>
@@ -25,15 +25,16 @@
 </template>
 
 <script>
-import OfficerManning from '@/components/Officer/OfficerManning'
-import OfficerPromo from '@/components/Officer/OfficerPromo'
-import OfficerPromYRGP from '@/components/Officer/OfficerPromYRGP'
+ import adman from '@/components/TotalForce/AdMan'
+import ang from '@/components/TotalForce/ANGMan'
+import afr from '@/components/TotalForce/AFRMan' 
+
 import { store } from '@/store/store'
 
 export default {
     data() {
         return {
-           dynamicComponent: "off-manning" 
+           dynamicComponent: "adman" 
         }
     },
     computed:{
@@ -42,14 +43,28 @@ export default {
         },
     },
     components: {
-        'off-manning': OfficerManning,
-        'off-promo': OfficerPromo,
-        'off-yrgp': OfficerPromYRGP
+         adman,
+        ang,
+        afr 
     }
 }
 </script>
 
 <style scoped>
+
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
+
+#radioSelect{
+    margin-bottom: 0px;
+}
+
+
+
 .nav-tabs .nav-link{
     color:black;
 }
@@ -66,4 +81,9 @@ export default {
 .fade-leave-to{
     opacity: 0;
 }
+.custom-control-description{
+    font-weight: bold;
+}
+
 </style>
+
