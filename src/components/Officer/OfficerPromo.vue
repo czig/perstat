@@ -573,13 +573,13 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     }
                 }
                 newChart.updateFilters = function(d) {
-                    if (newChart.original === true || (newChart.level == newChart.maxLevel() && newChart.data.every(d=>newChart.filters.includes(d.key)))) {
+                    if (newChart.original === true || (newChart.level == newChart.maxLevel() && newChart.data.every(d=> _.includes(newChart.filters, d.key)))) {
                         // if at original display for level, we have to reset all filters so the clicked bar can be filtered, also
                         // if at last level and all data elements are currently filtered, reset filters
                         newChart.filters = []    
                     }                         
                     //if clicked item filtered, remove filter
-                    if (newChart.filters.includes(d.key)) {
+                    if (_.includes(newChart.filters, d.key)) {
                         if (d.key === "Others") {
                             newChart.filters = []
                         } else {
@@ -623,7 +623,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                             .property("disabled",true)
                             .style("cursor","default")
                             .style("opacity", 0.5);
-                        coreDim.filterFunction(d => newChart.filters.includes(d))
+                        coreDim.filterFunction(d => _.includes(newChart.filters, d))
                         dc.redrawAll()
                 }
                 newChart.render = function() {
@@ -653,7 +653,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                                             // reset filters and reapply for new level
                                             newChart.filters = [] 
                                             newChart.filters = newChart.filters.concat(newChart.data.map(d => d.key).concat(newChart.nextData.map(g => g.key)))
-                                            coreDim.filterFunction(d => newChart.filters.includes(d))
+                                            coreDim.filterFunction(d => _.includes(newChart.filters, d))
                                         }
                                         console.log(newChart.filters)
                                         dc.redrawAll();
@@ -691,6 +691,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                                    .attr("value",newChart.lastBar)
                                    .style('cursor','pointer')
                                    .on("input", function() {
+                                        console.log('Moving Slider')
+                                        console.log('Input Value: ' + this.value)
                                         newChart.lastBar = this.value
                                         d3.select('#slider-label')
                                           .text('Number of Bars: ' + Math.min(+this.value+1,Number(d3.select('#slider').attr('max'))));
@@ -731,7 +733,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                             return h-yScale(d.value[vm.selected]);
                         })
                         .attr("fill", function(d) {
-                            if (newChart.filters.includes(d.key)) {
+                            if (_.includes(newChart.filters, d.key)) {
                                 return  newChart.colors;
                             } 
                             else if (newChart.filters.length == 0){
@@ -834,7 +836,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         });
 
                     bars.attr("fill", function(d) {
-                            if (newChart.filters.includes(d.key)) {
+                            if (_.includes(newChart.filters, d.key)) {
                                 return newChart.colors;
                             } 
                             else if (newChart.filters.length == 0){
