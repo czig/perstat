@@ -45,7 +45,10 @@ export default {
 }
 </script>
 
+<style src="../../../node_modules/dc/dc.css">
+</style>
 <style scoped>
+
 
 .custom-control.custom-radio{
     padding-left:20px;
@@ -65,6 +68,7 @@ export default {
     margin-left: 10px;
     margin-top: 10px;
 }
+
 .centered{
     float: none;
     margin: 0 auto;

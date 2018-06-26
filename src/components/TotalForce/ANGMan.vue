@@ -45,6 +45,25 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div id="empcat" class="col-12">
+                        <div id="dc-empcat-barchart">
+                            <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-empcat-barchart')">Reset</button>
+                            </h3>
+                            <searchBox
+                                v-model="searchEMPCAT"
+                                size="3"
+                                label="Search Employee Category"
+                                @sub="submit(searchEMPCAT,'dc-empcat-barchart')"
+                                button="true"
+                            ></searchBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div id="majcom" class="col-12">
                         <div id="dc-majcom-barchart">
                             <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -54,7 +73,7 @@
                                     @click="resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchMajcom"
+                                v-model="searchMajcom"
                                 size="3"
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
@@ -73,7 +92,7 @@
                                     @click="resetChart('dc-base-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchBase"
+                                v-model="searchBase"
                                 size="3"
                                 label="Search Installation"
                                 @sub="submit(searchBase,'dc-base-barchart')"
@@ -106,6 +125,7 @@ import searchBox from '@/components/searchBox'
             return {
                 data: [],
                 searchMajcom: '',
+                searchEMPCAT: '',
                 searchBase: '',
                 selected: "percent",
                 ylabel: 'Inventory',
@@ -216,6 +236,7 @@ import searchBox from '@/components/searchBox'
                 obj.MAJCOM = formats.majFormat[given.maj]
                 obj.MPF = formats.mpfFormat[given.mpf]
                 obj.Inventory = given.freq
+                obj.empcat = given.empcat
 
                 return obj;
             }
@@ -266,7 +287,7 @@ import searchBox from '@/components/searchBox'
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.key != "error"
+                                return d.key != "error" && d.key != "**ERROR**"
                             })
                         }
                     }
@@ -282,9 +303,31 @@ import searchBox from '@/components/searchBox'
                 typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
                 typeConfig.minHeight = 200 
                 typeConfig.aspectRatio = 3
-                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
+                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 25}
                 typeConfig.colors = d3.scale.category10()
                 var typeChart = dchelpers.getRowChart(typeConfig)   
+
+                //EMPCAT
+                var empcatConfig = {}
+                empcatConfig.id = 'empcat'
+                empcatConfig.dim = this.ndx.dimension(function(d){return d.empcat})
+                var empcatGroup = removeEmptyBins(empcatConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
+                empcatConfig.group = removeError(empcatGroup)
+                empcatConfig.minHeight = 200
+                empcatConfig.aspectRatio = 3
+                empcatConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
+                empcatConfig.colors = ["#FF8C00"]
+                var empcatChart = dchelpers.getOrdinalBarChart(empcatConfig)
+                empcatChart
+                    .elasticX(true)
+                    //.ordinalColors(["#1976d2","#ff4500"])
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                             .attr('transform', 'translate(-8,0)rotate(-45)')
+                             .on('click', (d)=>{
+                                this.submit(d, 'dc-empcat-barchart')
+                             })
+                    })
 
                 //Location
                 var majcomConfig = {}

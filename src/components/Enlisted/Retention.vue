@@ -105,7 +105,7 @@
                         </div>
                         <div v-else class="col-8">
                             <afsc
-                                v-model:value="sa"
+                                v-model="sa"
                                 :ndx="ndx"
                                 :ylabel="ylabel"
                                 :selected="selected"
@@ -132,7 +132,7 @@
                             </h3>
                             
                             <searchBox
-                                v-model:value="searchMajcom"
+                                v-model="searchMajcom"
                                 size="3"
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
@@ -154,7 +154,7 @@
                                     @click="searchBase='';resetChart('dc-base-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchBase"
+                                v-model="searchBase"
                                 size="3"
                                 label="Search MPF"
                                 @sub="submit(searchBase,'dc-base-barchart')"

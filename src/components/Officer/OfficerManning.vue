@@ -11,17 +11,17 @@
                     <span class="custom-control-description">Percentage</span>
                 </label>
                 <label class="custom-control custom-radio" >
-                    <input class="custom-control-input" name="radio" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                    <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">Assigned</span>
                 </label>
                 <label class="custom-control custom-radio" >
-                    <input class="custom-control-input" name="radio" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                    <input class="custom-control-input" name="radio3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">Authorized</span>
                 </label>
                 <label class="custom-control custom-radio" >
-                    <input class="custom-control-input" name="radio" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                    <input class="custom-control-input" name="radio4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">STP</span>
                 </label>
@@ -158,7 +158,7 @@ import searchBox from '@/components/searchBox'
                 selected: "percent",
                 searchMajcom: "",
                 searchBase: "",
-                loaded: false ,
+                loaded: false,
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color
             }
@@ -306,9 +306,6 @@ import searchBox from '@/components/searchBox'
             }
 
             var renderCharts = () => {
-                dc.dataCount(".dc-data-count")
-                  .dimension(this.ndx)
-                  .group(this.allGroup)
 
                 //reduce functions
                 function manningAdd(p,v) {
@@ -374,6 +371,7 @@ import searchBox from '@/components/searchBox'
                         })
                     })
 
+
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.Authorized })
                 var authND = dc.numberDisplay("#auth")
@@ -407,7 +405,7 @@ import searchBox from '@/components/searchBox'
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
-                    
+
                 //grade
                 var gradeConfig = {};
                 gradeConfig.id = 'grade';
@@ -427,7 +425,7 @@ import searchBox from '@/components/searchBox'
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })                                    
-                
+
                 //afscGroup
                 var afscGroupConfig = {}
                 afscGroupConfig.id = 'afscGroup'
@@ -506,6 +504,7 @@ import searchBox from '@/components/searchBox'
                 //create charts
                 dc.renderAll()
                 dc.redrawAll()
+
             }
         },
         beforeUpdate() {

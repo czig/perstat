@@ -16,7 +16,7 @@
                     <div class="col-auto">
                         NON STEM:
                         <span id="nonStemTotal"></span>
-                    </div>
+                    </div>   
                     <div class="col-6" align="right">
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect" 
@@ -27,13 +27,18 @@
                     </div>      
                 </div>       
                 <div class='row'>
-                    <div id="fyr" class="col-4">
-                        <div id="dc-fyr-barchart">
-                            <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
+                    <div id="offgroup" class="col-4">
+                        <div id="dc-offgroup-barchart">
+                            <h3>GROUP<span style="font-size: 14pt; opacity: 0.87"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-offgroup-barchart')">Reset
+                            </button>
                             </h3>
                         </div>
                     </div>
-                    <div id="edlevel" class="col-8">
+                    <div id="edlevel" class="col-4">
                         <div id="dc-edlevel-barchart">
                             <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -44,9 +49,6 @@
                             </h3>
                         </div>
                     </div>
-                </div>
-                <br>
-                <div class='row'>
                     <div id="grade" class="col-4">
                         <div id="dc-grade-rowchart">
                             <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
@@ -58,23 +60,49 @@
                             </h3>
                         </div>
                     </div> 
-                    <div id="cafsc" class="col-8">
-                        <div id="dc-cafsc-barchart">
-                            <h3>CAFSC<span style="font-size: 14pt; opacity: 0.87"></span>
+                </div>
+                <br>
+                <div class='row'>
+                    <div id="yrgp" class="col-12">
+                        <div id="dc-yrgp-barchart">
+                            <h3>YEAR GROUP<span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="display: none"
-                                    @click="resetChart('dc-cafsc-barchart')">Reset
+                                    @click="resetChart('dc-yrgp-barchart')">Reset
                             </button>
                             </h3>
                             <searchBox
-                                v-model="searchCAFSC"
+                                v-model="searchYRGP"
                                 size="3"
-                                label="Search CAFSC"
-                                @sub="submit(searchCAFSC,'dc-cafsc-barchart')"
+                                label="Search Year Group"
+                                @sub="submit(searchYRGP,'dc-yrgp-barchart')"
                                 button="true"
                                 color="#1976d2"
-                                btnColor="cafscColor"
+                                btnColor="yrgpColor"
+                            ></searchBox>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class='row'>
+                    <div id="core" class="col-12">
+                        <div id="dc-core-barchart">
+                            <h3>CORE<span style="font-size: 14pt; opacity: 0.87"></span>
+                            <button type="button"
+                                    class="btn btn-danger btn-sm btn-rounded reset"
+                                    style="display: none"
+                                    @click="resetChart('dc-core-barchart')">Reset
+                            </button>
+                            </h3>
+                            <searchBox
+                                v-model="searchCore"
+                                size="3"
+                                label="Search CORE"
+                                @sub="submit(searchCore,'dc-core-barchart')"
+                                button="true"
+                                color="#1976d2"
+                                btnColor="coreColor"
                             ></searchBox>
                         </div>
                     </div>
@@ -100,8 +128,8 @@
 			return {
 					data: [],
                     loaded: false,
-                    fyr: '2018',
-                    searchCAFSC: "",
+                    searchCore: "",
+                    searchYRGP: "",
 			}
 		},
 
@@ -120,9 +148,7 @@
         methods: {
            resetAll(){
             dc.filterAll()
-            dc.redrawAll()
-            this.fyr = '2018'
-            this.singleSubmit('2018', 'dc-fyr-barchart')
+            //dc.redrawAll()
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -133,21 +159,6 @@
             dc.redrawAll()
           },
 
-            singleSubmit: (text,id) => {
-                dc.chartRegistry.list().filter(chart=>{
-                    return chart.anchorName() == id
-                }).forEach(chart=>{
-                    chart.filterAll()
-                    chart.filter(text)
-                })
-                dc.redrawAll()
-            },
-
-          radioButton: () => {
-            setTimeout(function() {
-                dc.redrawAll()
-            },10)
-          },
           submit: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id 
@@ -183,12 +194,12 @@
 			console.log('mounted')
 
 			//test AXIOS Call:
-            axios.post(axios_url_high_ed_level).then(response => {
+            axios.post(axios_url_prom_year_group).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
-                //console.log(invData)
+                console.log(invData)
                 var objData = makeObject(invData)
-                //console.log(objData)
+                console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -225,23 +236,23 @@
                 obj.edlevel = given.edlevel;
             }
 
-            if (given.cafsc == null || given.cafsc == '') {
-                obj.cafsc = 'error';
+            if (given.core == null || given.core == '') {
+                obj.core = 'error';
             } else {
-                obj.cafsc = given.cafsc;
+                obj.core = given.core;
             }
 
-            if (given.grd < '40' && given.grd >= '30') {
-                obj.grade = formats.gradeFormat[given.grd];
+            if (given.grade < '11' && given.grade >= '01') {
+                obj.grade = formats.gradeFormat[given.grade];
             } else {
                 obj.grade = "error";
             }
 
             obj.group = given.grp
-            obj.fyr = given.fyr
             obj.type = given.type
             obj.stem = given.stem
             obj.nonstem = given.non_stem
+            obj.yrgp = given.year_grp
 
                 return obj;
             }
@@ -252,17 +263,17 @@
                   .group(this.allGroup)
 
                 //reduce functions
-                function highEdAdd(p,v) {
+                function yrgpAdd(p,v) {
                     p.totalCount = p.totalCount + +v.count
                     return p
                 }
 
-                function highEdRemove(p,v) {
+                function yrgpRemove(p,v) {
                     p.totalCount = p.totalCount - +v.count
                     return p
                 }
 
-                function highEdInitial() {
+                function yrgpInitial() {
                     return {
                         totalCount: 0
                     }
@@ -284,54 +295,43 @@
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.key != "error"
+                                return d.key != "error" && d.key != "**ERROR**"
                             })
                         }
                     }
                 }                
-
-                //YEAR
-                 d3.selectAll("#row1")
-                var fyrConfig = {};
-                fyrConfig.id = 'fyr';
-                fyrConfig.dim = this.ndx.dimension(function (d) {
-                    return d.fyr;
+ 
+                //Group Barchart
+                var groupConfig = {}
+                groupConfig.id = 'offgroup'
+                groupConfig.dim = this.ndx.dimension(function(d){
+                    return d.group;
                 })
-                fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
-                fyrConfig.minHeight = 80 
-                fyrConfig.aspectRatio = 4 
-                fyrConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
-                fyrConfig.minHeight = 300
-                fyrConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                fyrConfig.colors = [chartSpecs.baseChart.color]
-                var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
-
-                fyrChart
+                var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                groupConfig.group = removeError(groupGroup)
+                groupConfig.minHeight = 300
+                groupConfig.aspectRatio = 3
+                groupConfig.margins = {top: 10, left: 50, right: 20, bottom: 45}
+                groupConfig.colors = ["#108b52"]
+                var groupChart = dchelpers.getOrdinalBarChart(groupConfig)
+                    .valueAccessor(function(d) {return d.value.totalCount;})               
                     .elasticX(true)
-                    .valueAccessor(function(d) {return d.value.totalCount;})
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.fyr = d
-                            this.singleSubmit(d, 'dc-fyr-barchart')
+                            this.submit(d, 'dc-offgroup-barchart')
                         })
-
-                        chart.selectAll("rect.bar").on("click", (d)=>{
-                            this.fyr = d.data.key
-                            this.singleSubmit(d.data.key, 'dc-fyr-barchart')
-                        });
                     })
-                fyrChart.barPadding(0.2)
-                fyrChart.filter('2018')
-  
+                    .yAxis().tickFormat(function(v) {return v + "%";})
+                
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
                 edLevelConfig.dim = this.ndx.dimension(function(d){
                     return d.edlevel;
                 })
-                var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
+                var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
@@ -360,15 +360,13 @@
                 gradeConfig.dim = this.ndx.dimension(function(d){
                     return d.grade;
                 })
-                var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
+                var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
                 gradeConfig.group = removeError(gradegroup)
                 gradeConfig.minHeight = 300
                 gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 60}
+                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
                 var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), 
-                c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString(),c.darker(0.9).toString()])
-
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 
                 gradeChart
@@ -377,42 +375,60 @@
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]                      
                     })  
-  
-                //CAFSC Rowchart
-                var cafscConfig = {}
-                cafscConfig.id = 'cafsc'
-                cafscConfig.dim = this.ndx.dimension(function(d){
-                    return d.cafsc;
+
+                //YEAR GROUP
+                var yrgpConfig = {}
+                yrgpConfig.id = 'yrgp'
+                yrgpConfig.dim = this.ndx.dimension(function(d){
+                    return d.yrgp;
                 })
-                var cafscGroup = removeEmptyBins(cafscConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
-                cafscConfig.group = removeError(cafscGroup)
-                cafscConfig.minHeight = 400
-                cafscConfig.aspectRatio = 3
-                cafscConfig.margins = {top: 10, left: 50, right: 30, bottom: 200}
-                cafscConfig.colors = ["#186d19"]
-                var cafscChart = dchelpers.getOrdinalBarChart(cafscConfig)
-                cafscChart
+                var yrgpGroup = removeEmptyBins(yrgpConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                yrgpConfig.group = removeError(yrgpGroup)
+                yrgpConfig.minHeight = 300
+                yrgpConfig.aspectRatio = 3
+                yrgpConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
+                yrgpConfig.colors = ["#ff9900"]
+                var yrgpChart = dchelpers.getOrdinalBarChart(yrgpConfig)
+                yrgpChart
                     .valueAccessor(function(d) {return d.value.totalCount;})
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-cafsc-barchart')
+                            this.submit(d, 'dc-yrgp-barchart')
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
-                //remove empty function (es6 syntax to keep correct scope)
-                var removeError = (source_group) => {
-                    return {
-                        all: () => {
-                            return source_group.all().filter((d) => {
-                                return d.key != "error"
-                            })
-                        }
-                    }
-                }
+                yrgpChart.ordering(function(d){
+                    return -d.key;
+                })
+
+                //Core Rowchart
+                var coreConfig = {}
+                coreConfig.id = 'core'
+                coreConfig.dim = this.ndx.dimension(function(d){
+                    return d.core;
+                })
+                var coreGroup = removeEmptyBins(coreConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                coreConfig.group = removeError(coreGroup)
+                coreConfig.minHeight = 300
+                coreConfig.aspectRatio = 3
+                coreConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
+                coreConfig.colors = ["#333cff"]
+                var coreChart = dchelpers.getOrdinalBarChart(coreConfig)
+                coreChart
+                    .valueAccessor(function(d) {return d.value.totalCount;})
+                    .elasticX(true)
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-core-barchart')
+                        })
+                    })
+                    .yAxis().tickFormat(function(v) {return v + "%";})
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -426,14 +442,9 @@
                             myFilters += ' (' + d.filters() + ')'
                     })
 
-                    FileSaver.saveAs(blob, 'PERSTAT High Education' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });
-                    
+                    FileSaver.saveAs(blob, 'PERSTAT Officer Year Group' + ' ' + store.state.asDate + myFilters + ' .csv');
+                });                   
 
-                //Filters data to count Officer only
-                var filtering = this.ndx.dimension(function(d) { return d.type; });
-                filtering.filter("E")                                        
-              
                 //Number Display for STEM, NON STEM, PERCENT, and overall total - show total for filtered content
                 var totalCount = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
                 var totalCountND = dc.numberDisplay("#totalCount")
@@ -462,7 +473,7 @@
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
 
-                var percentGroup = this.ndx.groupAll().reduce(highEdAdd,highEdRemove,highEdInitial)
+                var percentGroup = this.ndx.groupAll().reduce(yrgpAdd,yrgpRemove,yrgpInitial)
                 var percentND = dc.numberDisplay("#totalPercent")
                 percentND.group(percentGroup)
                     .formatNumber(d3.format(".1f"))
@@ -507,8 +518,8 @@
 
 <style src="../../../node_modules/dc/dc.css">
 </style>
-
 <style scoped>
+
 .custom-control.custom-radio{
     padding-left:20px;
     padding-right:10px;
