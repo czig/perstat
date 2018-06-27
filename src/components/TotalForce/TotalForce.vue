@@ -52,18 +52,6 @@ export default {
 
 <style scoped>
 
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
-}
-
-#radioSelect{
-    margin-bottom: 0px;
-}
-
-
 
 .nav-tabs .nav-link{
     color:black;
@@ -71,18 +59,6 @@ export default {
 .nav-tabs .nav-link.active{
     font-weight:bold;
     color:teal;
-}
-.fade-enter{
-    opacity: 0;
-}
-.fade-enter-active, .fade-leave-active{
-    transition: all 0.5s;
-}
-.fade-leave-to{
-    opacity: 0;
-}
-.custom-control-description{
-    font-weight: bold;
 }
 
 </style>

@@ -40,7 +40,7 @@
                     </div>
                     <div id="edlevel" class="col-4">
                         <div id="dc-edlevel-barchart">
-                            <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>HIGHEST ED LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="display: none"
@@ -148,7 +148,7 @@
         methods: {
            resetAll(){
             dc.filterAll()
-            //dc.redrawAll()
+            dc.redrawAll()
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
