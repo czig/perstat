@@ -15,7 +15,7 @@
                 <a class="nav-link" @click="dynamicComponent='off-promo'" data-toggle="tab">Promotions</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='off-yrgp'" data-toggle="tab">Ed Year Group</a>
+                <a class="nav-link" @click="dynamicComponent='off-yrgp'" data-toggle="tab">Education</a>
             </li>
         </ul>
         <transition name="fade" mode="out-in">
