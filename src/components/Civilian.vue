@@ -106,7 +106,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <largeBarChart :id="'loc'"         
+                               :dimension="locDim"
+                               :group="locGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                               :minHeight="chartSpecs.baseChart.minHeight"
+                               :ylabel="ylabel"
+                               :reducer="inventoryAdd"
+                               :accumulator="inventoryInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.baseChart.margins"
+                               :colorScale="locColorScale"
+                               :title="'Installation'"
+                               :loaded="loaded">
+                </largeBarChart>
+                <!--<div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
                             <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -126,7 +141,7 @@
                             ></searchBox>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
         </transition-group>
     </div>
@@ -141,6 +156,7 @@ import AutoComplete from '@/components/AutoComplete'
 import searchBox from '@/components/searchBox'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
+import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -150,7 +166,9 @@ import { store } from '@/store/store'
                 searchBase: "",
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
-                majcomColor: chartSpecs.majcomChart.color
+                majcomColor: chartSpecs.majcomChart.color,
+                chartSpecs: chartSpecs,
+                locColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color])
             }
         },
         computed: {
@@ -165,6 +183,12 @@ import { store } from '@/store/store'
           },
           ylabel: function() {
             return "Inventory"
+          },
+          locDim: function() {
+              return this.ndx.dimension(d => d.MPF);
+          },
+          locGroup: function() {
+              return this.locDim.group().reduceSum(function(d) {return d.Inventory;}) 
           }
         },
         methods: {
@@ -203,12 +227,19 @@ import { store } from '@/store/store'
                 }
             })
             dc.redrawAll()
+          },
+          inventoryAdd: function(p,v) {
+              return p + v
+          },
+          inventoryInitial: function() {
+            return 0;
           }
         },
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            searchBox
+            searchBox,
+            largeBarChart
         },
         created: function(){
           console.log('created')
@@ -418,26 +449,26 @@ import { store } from '@/store/store'
                         })
                     })
 
-                //base(mpf)
-                var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
-                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-base-barchart')
-                        })
-                    })
+               // //base(mpf)
+               // var baseConfig = {}
+               // baseConfig.id = 'base'
+               // baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
+               // var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
+               // baseConfig.group = removeEmptyBins(basePercent)
+               // baseConfig.minHeight = chartSpecs.baseChart.minHeight 
+               // baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+               // baseConfig.margins = chartSpecs.baseChart.margins 
+               // baseConfig.colors = [chartSpecs.baseChart.color]
+               // var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
+               // baseChart
+               //     .elasticX(true)
+               //     .on('pretransition', (chart)=> {
+               //         chart.selectAll('g.x text')
+               //         .attr('transform', 'translate(-8,0)rotate(-45)')
+               //         .on('click', (d)=>{
+               //             this.submit(d, 'dc-base-barchart')
+               //         })
+               //     })
 
                 //Download Raw Data button
                 d3.select('#download')
