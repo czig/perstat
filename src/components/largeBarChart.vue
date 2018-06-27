@@ -273,13 +273,13 @@ export default {
             }
         },
         updateFilters: function(d) {
-            if (this.original === true || (this.level == this.maxLevel && this.data.every(d=>this.filters.includes(d.key)))) {
+            if (this.original === true || (this.level == this.maxLevel && this.data.every(d=>_.includes(this.filters,d.key)))) {
                 // if at original display for level, we have to reset all filters so the clicked bar can be filtered, also
                 // if at last level and all data elements are currently filtered, reset filters
                 this.filters = []    
             }                         
             //if clicked item filtered, remove filter
-            if (this.filters.includes(d.key)) {
+            if (_.includes(this.filters,d.key)) {
                 if (d.key === "Others") {
                     this.filters = []
                 } else {
@@ -323,7 +323,7 @@ export default {
                 .property("disabled",true)
                 .style("cursor","default")
                 .style("opacity", 0.5);
-            this.dimension.filterFunction(d => this.filters.includes(d))
+            this.dimension.filterFunction(d => _.includes(this.filters,d))
             dc.redrawAll()
         },
         render: function() {
@@ -364,7 +364,7 @@ export default {
                                         // reset filters and reapply for new level
                                         vm.filters = [] 
                                         vm.filters = vm.filters.concat(vm.data.map(d => d.key).concat(vm.nextData.map(g => g.key)))
-                                        vm.dimension.filterFunction(d => vm.filters.includes(d))
+                                        vm.dimension.filterFunction(d => _.includes(vm.filters,d))
                                     }
                                     console.log(vm.filters)
                                     dc.redrawAll();
@@ -452,7 +452,7 @@ export default {
                     //color bars
                     .attr("fill", function(d) {
                         // if filtered, make desired color
-                        if (vm.filters.includes(d.key)) {
+                        if (_.includes(vm.filters,d.key)) {
                             // use color scale and color domain to set color
                             return typeof vm.colorFunction === "function" ? vm.colorFunction(d,vm.colorScale,vm.colorScale.domain()) : vm.colorScale(); 
                         } 
@@ -565,7 +565,7 @@ export default {
 
                 //defines bar color and specifies where entering bars end up
                 bars.attr("fill", function(d) {
-                        if (vm.filters.includes(d.key)) {
+                        if (_.includes(vm.filters, d.key)) {
                             return typeof vm.colorFunction === "function" ? vm.colorFunction(d,vm.colorScale,vm.colorScale.domain()) : vm.colorScale(); 
                         } 
                         else if (vm.filters.length == 0){
