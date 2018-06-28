@@ -336,7 +336,7 @@
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
                 edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
-                edLevelConfig.colors = ["#800000"]
+                edLevelConfig.colors = ["#cc5500"]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
                     .valueAccessor(function(d) {return d.value.totalCount;})               
