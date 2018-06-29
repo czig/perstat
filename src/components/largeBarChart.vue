@@ -208,6 +208,7 @@ export default {
                 }
             }
         },
+
         dataAll: function() {
             return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
         },
@@ -427,7 +428,7 @@ export default {
                             .attr("height",this.h + this.margin.top + this.margin.bottom)
                             .append("g")
                             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-                            
+                          
                 var firstBars = svg.append("g")
                     .attr("id", this.id + "chart")
                     .attr("clip-path", "url(#" + this.id + "chart-area)")
@@ -585,10 +586,9 @@ export default {
                         return vm.yScale((d.value[vm.selected] === undefined ? d.value : d.value[vm.selected]));
                     })
                     .attr("height", function(d) {
-                        return vm.h-vm.yScale((d.value[vm.selected] === undefined ? d.value : d.value[vm.selected]));
+                        return vm.h-vm.yScale((d.value[vm.selected] === undefined ? d.value : d.value[vm.selected]));                       
                     })
-                    ;
-
+            
                 //defines where bars that are leaving screen end up
                 bars.exit()
                     .transition()
@@ -610,11 +610,12 @@ export default {
                               .select(".y.axis")
                               .transition()
                               .duration(800)
-                              .call(this.yAxis);
+                              .call(this.yAxis);                            
             }
         }
     },
-    created: function() {
+    
+    created: function() {        
         console.log('created: large bar chart')
     },
     mounted: function() {

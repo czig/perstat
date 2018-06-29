@@ -85,7 +85,22 @@
                     </div>
                 </div>
                 <br>
-                <div class='row'>
+                <largeBarChart :id="'core'"         
+                               :dimension="coreDim"
+                               :group="removeError(coreGroup)"
+                               :widthFactor="0.90"
+                               :aspectRatio="3"
+                               :minHeight="300"
+                               :reducer="edAdd"
+                               :accumulator="edInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.coreChart.margins"
+                               :colorScale="coreColorScale"
+                               :title="'CORE'"
+                               :loaded="loaded">
+                </largeBarChart>
+                
+<!--                 <div class='row'>
                     <div id="core" class="col-12">
                         <div id="dc-core-barchart">
                             <h3>CORE<span style="font-size: 14pt; opacity: 0.87"></span>
@@ -107,7 +122,7 @@
                         </div>
                     </div>
                 </div>
-            </div>    
+-->             </div>    
         </transition-group>    
 	</div>
 </template>
@@ -121,7 +136,7 @@
 	import searchBox from '@/components/searchBox'
 	import Loader from '@/components/Loader'
 	import { store } from '@/store/store'
-
+    import largeBarChart from '@/components/largeBarChart'
 
 	export default {
 		data() {
@@ -130,6 +145,8 @@
                     loaded: false,
                     searchCore: "",
                     searchYRGP: "",
+                    chartSpecs: chartSpecs,
+                    coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
 			}
 		},
 
@@ -142,7 +159,13 @@
             },
             allGroup: function(){
                 return this.ndx.groupAll()
-            }
+            },
+            coreDim: function() {
+                return this.ndx.dimension(function(d) {return d.core;});
+            },
+            coreGroup: function() {
+                return this.coreDim.group().reduceSum(function(d) {return d.count;});
+            }            
 		},
 
         methods: {
@@ -158,6 +181,18 @@
             })
             dc.redrawAll()
           },
+
+        //remove empty function (es6 syntax to keep correct scope)
+        removeError: (source_group) => {
+            return {
+                all: () => {
+                    return source_group.all().filter((d) => {
+                        return d.key != "error" && d.key != "**ERROR**"
+                    })
+                }
+            }
+        },                
+          
 
           submit: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
@@ -177,13 +212,20 @@
                 }
             })
             dc.redrawAll()
+          },
+          edAdd: function(p,v) {
+              return p + v
+          },
+          edInitial: function() {
+            return 0;
           }
 		},
 
 		components: {
 			'AutoComplete': AutoComplete,
             'Loader': Loader,
-            searchBox
+            searchBox,
+            largeBarChart
 		},
 
 		created: function() { 
@@ -263,17 +305,17 @@
                   .group(this.allGroup)
 
                 //reduce functions
-                function yrgpAdd(p,v) {
+                function edAdd(p,v) {
                     p.totalCount = p.totalCount + +v.count
                     return p
                 }
 
-                function yrgpRemove(p,v) {
+                function edRemove(p,v) {
                     p.totalCount = p.totalCount - +v.count
                     return p
                 }
 
-                function yrgpInitial() {
+                function edInitial() {
                     return {
                         totalCount: 0
                     }
@@ -307,7 +349,7 @@
                 groupConfig.dim = this.ndx.dimension(function(d){
                     return d.group;
                 })
-                var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 groupConfig.group = removeError(groupGroup)
                 groupConfig.minHeight = 300
                 groupConfig.aspectRatio = 3
@@ -331,7 +373,7 @@
                 edLevelConfig.dim = this.ndx.dimension(function(d){
                     return d.edlevel;
                 })
-                var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
                 edLevelConfig.minHeight = 300
                 edLevelConfig.aspectRatio = 3
@@ -360,7 +402,7 @@
                 gradeConfig.dim = this.ndx.dimension(function(d){
                     return d.grade;
                 })
-                var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 gradeConfig.group = removeError(gradegroup)
                 gradeConfig.minHeight = 300
                 gradeConfig.aspectRatio = 5
@@ -382,7 +424,7 @@
                 yrgpConfig.dim = this.ndx.dimension(function(d){
                     return d.yrgp;
                 })
-                var yrgpGroup = removeEmptyBins(yrgpConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                var yrgpGroup = removeEmptyBins(yrgpConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 yrgpConfig.group = removeError(yrgpGroup)
                 yrgpConfig.minHeight = 300
                 yrgpConfig.aspectRatio = 3
@@ -404,14 +446,14 @@
                 yrgpChart.ordering(function(d){
                     return -d.key;
                 })
-
+ 
                 //Core Rowchart
-                var coreConfig = {}
+/*                 var coreConfig = {}
                 coreConfig.id = 'core'
                 coreConfig.dim = this.ndx.dimension(function(d){
                     return d.core;
                 })
-                var coreGroup = removeEmptyBins(coreConfig.dim.group().reduce(yrgpAdd, yrgpRemove, yrgpInitial))
+                var coreGroup = removeEmptyBins(coreConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 coreConfig.group = removeError(coreGroup)
                 coreConfig.minHeight = 300
                 coreConfig.aspectRatio = 3
@@ -429,7 +471,7 @@
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
-
+ */
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
@@ -473,7 +515,7 @@
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
 
-                var percentGroup = this.ndx.groupAll().reduce(yrgpAdd,yrgpRemove,yrgpInitial)
+                var percentGroup = this.ndx.groupAll().reduce(edAdd,edRemove,edInitial)
                 var percentND = dc.numberDisplay("#totalPercent")
                 percentND.group(percentGroup)
                     .formatNumber(d3.format(".1f"))

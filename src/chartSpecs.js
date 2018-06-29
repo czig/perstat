@@ -22,5 +22,5 @@ var coreChart = {
 module.exports = {
     baseChart,
     majcomChart,
-    coreChart
+    coreChart,
 }
