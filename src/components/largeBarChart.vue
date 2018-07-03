@@ -630,7 +630,6 @@ export default {
                               .duration(800)
                               .call(this.yAxis);
 
-                console.log(this.lastBar)
             }
         }
     },
@@ -639,11 +638,14 @@ export default {
     },
     mounted: function() {
         console.log('mounted: large bar chart')
+        //allow use of vue 'this' within scoped functions (need this for this.chart.filters --> function has to return vm.filters, this.filters causes the function to return itself)
+        var vm = this
         //define chart object
         this.chart.anchorName = this.anchorName
         this.chart.redraw = this.redraw
         this.chart.render = this.render
         this.chart.filterAll = this.filterAll
+        this.chart.filters = function() { return vm.filters }
         //register chart for dc
         dc.chartRegistry.register(this.chart)
         //call render (redraw always happens after render) if component is destroyed then created again
