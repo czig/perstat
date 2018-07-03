@@ -41,7 +41,16 @@ Props:
     <div class ="row">
         <div :id="this.id + 'wrapper'" class="col-12">
             <div :id="this.id + 'title'" class="row">
-                <h3 class="col-12">{{ title }} <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                <h3 class="col-12">{{ title }} 
+                    <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <span data-toggle="tooltip" 
+                          data-placement="bottom"
+                          title="Click on a bar to apply a filter. Ctrl+click the 'Others' bar to see bars aggregated within 'Others'. Pressing the 'Move up' button (displayed after Ctrl+clicking 'Others') is the opposite of Ctrl+clicking 'Others'. Use the scroll bar to select how many bars to show.">
+                        <fontAwesomeIcon icon="info-circle" 
+                                         size="xs"
+                                         >
+                        </fontAwesomeIcon>
+                    </span>
                 </h3>
             </div>
         </div>
@@ -49,6 +58,7 @@ Props:
 </template>
 
 <script>
+import fontAwesomeIcon from '@fortawesome/vue-fontawesome' 
 export default {
     data() {
         return {
@@ -134,6 +144,9 @@ export default {
             type: Boolean,
             required: true,
         }
+    },
+    components: {
+        fontAwesomeIcon,   
     },
     computed: {
         h: function() {
@@ -638,6 +651,10 @@ export default {
     },
     mounted: function() {
         console.log('mounted: large bar chart')
+        //initialize tooltips
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
         //allow use of vue 'this' within scoped functions (need this for this.chart.filters --> function has to return vm.filters, this.filters causes the function to return itself)
         var vm = this
         //define chart object
