@@ -66,7 +66,7 @@ export default {
                     },
             w: document.documentElement.clientWidth*this.widthFactor - this.margin.left - this.margin.right,
             rendered: false,
-            valSort: true,
+            allSort: true,
         } 
     },
     props: {
@@ -199,7 +199,7 @@ export default {
             dc.redrawAll()
         },
         //remove empty function (es6 syntax to keep correct scope)
-        removeEmptyBins: (source_group) => {
+        removeEmptyBins: function(source_group) {
             return {
                 all: () => {
                     return source_group.all().filter((d) => {
@@ -208,26 +208,36 @@ export default {
                 }
             }
         },
-
         dataAll: function() {
-            return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+            if (this.allSort == true) {
+                return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+            } else {
+                return this.removeEmptyBins(this.group).all().sort((a,b) => b.key < a.key);
+            }
         },
         filterAll: function(all) {
              //all is boolean. true for all, false for partial
+             console.log('filterAll: no filters')
              var all = all == undefined ? true : all 
              d3.select("#" + this.id)
                 .selectAll("rect")
                 // on reset, always fill all with first color in color domain
                 .attr("fill",this.colorScale(this.colorScale.domain()[0]))
                 .attr("opacity",1);
+             //hide reset button
              d3.select("#" + this.id + "reset")
                  .style("visibility",  all ? "hidden" : "visible");
+             //hide 'move up' button
              d3.select("#" + this.id + "level")
                  .style("visibility","hidden");
+             // enable slider
              d3.select("#" + this.id + "slider")
                  .property("disabled", !all)
                  .style('cursor',  all ? 'pointer' : "default")
                  .style('opacity', all ? 1 : 0.5);
+             //enable sort
+             d3.select("#" + this.id + "sortAll")
+                .property("disabled",false);
              this.filters = []
              this.dimension.filterAll()
              this.level = 0
@@ -236,7 +246,7 @@ export default {
         },
         updateData: function() {
             //data to display now
-            this.data = this.dataAll().slice(this.lastBar*this.level,this.lastBar*(this.level+1))
+            this.data = this.dataAll().slice(this.lastBar*this.level,this.lastBar*(this.level+1)) 
             //remaining data that gets group into others
             this.nextData = this.dataAll().slice(this.lastBar*(this.level+1))
             // pull out value object from all data
@@ -246,15 +256,9 @@ export default {
             var othersObj = {key: "Others", value: nextVal.reduce(this.reducer, this.accumulator())}
             this.data.push(othersObj)
             this.data = this.data.filter(d => (d.value[this.selected] === undefined ? d.value : d.value[this.selected]) != 0)
-            // sorting by key and values 
-            if (this.valSort == true) {
-                this.data.sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected])) 
-            } else {
-                this.data.sort((a,b) => b.key < a.key)
-            } 
         },
-        toggleSort: function() {
-            this.valSort = !this.valSort
+        sortAll: function() {
+            this.allSort = !this.allSort
             this.redraw()
         },
         nextLevel: function(d) {
@@ -318,12 +322,18 @@ export default {
             }
         },
         applyFilters: function() {
+            //show reset button
             d3.select("#" + this.id + "reset")
               .style("visibility","visible");
+            //disable slider
             d3.select("#" + this.id + "slider")
                 .property("disabled",true)
                 .style("cursor","default")
                 .style("opacity", 0.5);
+            //disable sort button
+            d3.select("#" + this.id + "sortAll")
+                .property("disabled",true);
+
             this.dimension.filterFunction(d => _.includes(this.filters,d))
             dc.redrawAll()
         },
@@ -396,11 +406,10 @@ export default {
                 sliderContainer.append("input")
                                .attr("id", this.id + "slider")
                                .attr("type","range")
-                               .classed("form-control",true)
-                               .attr("min",2)
+                               .classed("form-control slider",true)
+                               .attr("min",1)
                                .attr("max",Math.min(this.dataAll().length,60))
-                               .attr("step",1)
-                               .attr("value",this.lastBar)
+                               .attr("value",this.data.length)
                                .style('cursor','pointer')
                                .on("input", function() {
                                    //'vm' is vue context and 'this' is context for this callback 
@@ -408,17 +417,18 @@ export default {
                                     d3.select('#' + vm.id + 'slider-label')
                                       .text('Bars Displayed: ' + Math.min(+this.value+1,Number(d3.select('#' + vm.id + 'slider').attr('max'))));
                                     vm.redraw() 
+                                    this.value = vm.data.length
                                })
                                ;
 
-                var btnSort = d3.select("#" + this.id + "title")
+                var btnSortAll = d3.select("#" + this.id + "title")
                                 .selectAll("h3")
                                 .append("button")
-                                .attr("id",this.id + "sort")
+                                .attr("id",this.id + "sortAll")
                                 .text("Sort")
                                 .classed("btn btn-primary btn-sm",true)
                                 .on("click", function() {
-                                    vm.toggleSort()
+                                    vm.sortAll()
                                 });
 
                 var svg = d3.select("#" + this.id + "wrapper")
@@ -428,7 +438,7 @@ export default {
                             .attr("height",this.h + this.margin.top + this.margin.bottom)
                             .append("g")
                             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-                          
+                            
                 var firstBars = svg.append("g")
                     .attr("id", this.id + "chart")
                     .attr("clip-path", "url(#" + this.id + "chart-area)")
@@ -532,6 +542,13 @@ export default {
                 d3.select('#' + this.id + 'slider-label')
                   .text('Bars Displayed: ' + this.data.length);
 
+                d3.select('#' + this.id + 'slider')
+                   .attr("value",this.data.length)
+                   .attr("max",Math.min(this.dataAll().length,60));
+
+                //setting value with d3 doesn't work, so use document element
+                document.getElementById(this.id + 'slider').value = this.data.length
+
                 //select bars for entering, updating, and exiting bars
                 var bars = d3.select("#" + this.id + "chart").selectAll("rect")
                             .data(this.data,key);
@@ -586,9 +603,10 @@ export default {
                         return vm.yScale((d.value[vm.selected] === undefined ? d.value : d.value[vm.selected]));
                     })
                     .attr("height", function(d) {
-                        return vm.h-vm.yScale((d.value[vm.selected] === undefined ? d.value : d.value[vm.selected]));                       
+                        return vm.h-vm.yScale((d.value[vm.selected] === undefined ? d.value : d.value[vm.selected]));
                     })
-            
+                    ;
+
                 //defines where bars that are leaving screen end up
                 bars.exit()
                     .transition()
@@ -610,12 +628,13 @@ export default {
                               .select(".y.axis")
                               .transition()
                               .duration(800)
-                              .call(this.yAxis);                            
+                              .call(this.yAxis);
+
+                console.log(this.lastBar)
             }
         }
     },
-    
-    created: function() {        
+    created: function() {
         console.log('created: large bar chart')
     },
     mounted: function() {
