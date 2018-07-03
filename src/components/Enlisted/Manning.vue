@@ -247,7 +247,7 @@ import searchBox from '@/components/searchBox'
                     }
                     obj2 = {};
                     obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
+                    //obj2 = testData(obj2, obj) //
                     output.push(obj2);
                 }
                 return output;
@@ -258,7 +258,9 @@ import searchBox from '@/components/searchBox'
 
                 obj.Grade = formats.gradeFormat[given.GRADE]
                 obj.MAJCOM = formats.majFormat[given.MAJCOM_T12C]
-                obj.AFSC_Group = formats.afscGroupFormat[given.AFSC_GROUP]
+                if (given.AFSC_GROUP == '**ERROR**') 
+                    obj.AFSC_Group = 'PENDING UPDATE'   
+                else obj.AFSC_Group = given.AFSC_GROUP
                 obj.MPF = formats.mpfFormat[given.MPF]
                 obj.Assigned = +given.ASGNCURR
                 obj.Authorized = +given.AUTHCURR

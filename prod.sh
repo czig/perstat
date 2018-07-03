@@ -10,13 +10,13 @@ cd ../ps_prod;
 git pull origin master;
 cd ../perstat/dist;
 
-rm -rf ../ps_prod/static;
-rm -rf ../ps_prod/index.html;
+rm -rf ../../ps_prod/static;
+rm -rf ../../ps_prod/index.html;
 
-cp -a ./dist/static ../ps_prod;
-cp -a ./dist/index.html ../ps_prod/index.html;
+cp -a ./static ../../ps_prod;
+cp -a ./index.html ../../ps_prod/index.html;
 
-cd ../ps_prod;
+cd ../../ps_prod;
 
 git add . ;
 git commit -m "`(date +%F%T)`";
