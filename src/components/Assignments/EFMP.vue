@@ -402,21 +402,30 @@ export default {
             gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
             	return d.Cnt
             }))
-            gradeConfig.minHeight = 270
-            gradeConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-            gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 60}
-            gradeConfig.colors = ['green']
+            gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+            gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+            gradeConfig.margins = chartSpecs.gradeChart.margins
+            //gradeConfig.colors = [chartSpecs.gradeChart.color]
+            var c = d3.rgb(51,172,255)
             var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
-
             gradeChart
                 .elasticX(true)
-                .on('pretransition', (chart)=> {
-                    chart.selectAll('g.x text')
-                    .attr('transform', 'translate(-8,0)rotate(-45)')
-                    .on('click', (d)=>{
-                        this.submit(d, 'dc-grade-barchart')
-                    })
+                .colorAccessor(function(d){
+                    return d.key;
                 })
+                .colors(d3.scale.ordinal().domain(["(01) 2LT", "(02) 1LT", "(03) CPT", "(04) MAJ", "(05) LTC", "(E2) AMN", "(E3) A1C",
+                                                     "(E4) SRA", "(E5) SSG", "(E6) TSG", "(E7) MSG", "(E8) SMS", "(E9) CMS"])
+                .range([c.brighter(1).toString(), c.brighter(0.9).toString(), c.brighter(0.8).toString(), 
+                                        c.brighter(0.7).toString(), c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(), 
+                                        c.brighter(0.3).toString(), c.brighter(0.2).toString(), c.brighter(0.1).toString(), c.darker(0.2).toString(), 
+                                        c.darker(0.3).toString(), c.darker(0.4).toString()]))
+            .on('pretransition', (chart)=> {
+                chart.selectAll('g.x text')
+                .attr('transform', 'translate(-8,0)rotate(-45)')
+                .on('click', (d)=>{
+                    this.submit(d, 'dc-grade-barchart')
+                })
+            })
             //projChart.barPadding(0.2)
 
             //MAJCOM

@@ -425,9 +425,18 @@ import searchBox from '@/components/searchBox'
                 gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
                 gradeConfig.margins = chartSpecs.gradeChart.margins
                 gradeConfig.colors = [chartSpecs.gradeChart.color]
+                var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .elasticX(true)
+                    .colorAccessor(function(d){
+                        return d.key;
+                    })
+                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
+                    .range([c.brighter(1).toString(), c.brighter(0.8).toString(), c.brighter(0.6).toString(), 
+                                            c.brighter(0.4).toString(), c.brighter(0.2).toString(), c.brighter(0.2).toString(), c.toString(), 
+                                            c.darker(0.2).toString(), c.darker(0.4).toString(), c.darker(0.6).toString(), c.darker(0.8).toString(), 
+                                            c.darker(0.9).toString()]))
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')

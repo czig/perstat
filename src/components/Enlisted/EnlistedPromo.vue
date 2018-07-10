@@ -373,7 +373,9 @@ import { store } from '@/store/store'
                 gradeConfig.minHeight = 150 
                 gradeConfig.aspectRatio = 2
                 gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                gradeConfig.colors = d3.scale.category10()
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.8).toString(), c.brighter(0.6).toString(), c.brighter(0.4).toString(),c.brighter(0.2).toString(),c.darker(0.2).toString(),c.darker(0.4).toString()])
+
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .valueAccessor((d) => {

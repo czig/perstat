@@ -408,12 +408,8 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
                 gradeConfig.margins = chartSpecs.gradeChart.margins
                 gradeConfig.colors = [chartSpecs.gradeChart.color]
-                 var c = d3.rgb(51,172,255)
-/*                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(), c.brighter(0.9).toString(), c.brighter(0.8).toString(), 
-                                            c.brighter(0.7).toString(), c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(),
-                                            c.brighter(0.3).toString(), c.brighter(0.2).toString(), c.brighter(0.1).toString(), c.toString(), 
-                                            c.darker(0.3).toString(), c.darker(0.5).toString()])
- */                var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
+                var c = d3.rgb(51,172,255)
+                var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .elasticX(true)
                     .colorAccessor(function(d){
