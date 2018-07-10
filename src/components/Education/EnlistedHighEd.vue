@@ -284,7 +284,7 @@
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.key != "error"
+                                return d.key != "error" && d.key != "**ERROR**"
                             })
                         }
                     }
@@ -333,10 +333,10 @@
                 })
                 var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
-                edLevelConfig.minHeight = 300
-                edLevelConfig.aspectRatio = 3
-                edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
-                edLevelConfig.colors = ["#cc5500"]
+                edLevelConfig.minHeight = chartSpecs.highEdChart.minHeight
+                edLevelConfig.aspectRatio = chartSpecs.highEdChart.aspectRatio
+                edLevelConfig.margins = chartSpecs.highEdChart.margins
+                edLevelConfig.colors = [chartSpecs.highEdChart.color]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
                     .valueAccessor(function(d) {return d.value.totalCount;})               
@@ -402,17 +402,6 @@
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
-
-                //remove empty function (es6 syntax to keep correct scope)
-                var removeError = (source_group) => {
-                    return {
-                        all: () => {
-                            return source_group.all().filter((d) => {
-                                return d.key != "error"
-                            })
-                        }
-                    }
-                }
 
                 //Download Raw Data button
                 d3.select('#download')

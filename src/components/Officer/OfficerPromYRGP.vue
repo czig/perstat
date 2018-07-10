@@ -351,10 +351,10 @@
                 })
                 var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 groupConfig.group = removeError(groupGroup)
-                groupConfig.minHeight = 300
-                groupConfig.aspectRatio = 3
-                groupConfig.margins = {top: 10, left: 50, right: 20, bottom: 45}
-                groupConfig.colors = ["#108b52"]
+                groupConfig.minHeight = chartSpecs.offGroupChart.minHeight
+                groupConfig.aspectRatio = chartSpecs.offGroupChart.aspectRatio
+                groupConfig.margins = chartSpecs.offGroupChart.margins
+                groupConfig.colors = [chartSpecs.offGroupChart.color]
                 var groupChart = dchelpers.getOrdinalBarChart(groupConfig)
                     .valueAccessor(function(d) {return d.value.totalCount;})               
                     .elasticX(true)
@@ -375,10 +375,10 @@
                 })
                 var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
-                edLevelConfig.minHeight = 300
-                edLevelConfig.aspectRatio = 3
-                edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
-                edLevelConfig.colors = ["#cc5500"]
+                edLevelConfig.minHeight = chartSpecs.highEdChart.minHeight
+                edLevelConfig.aspectRatio = chartSpecs.highEdChart.aspectRatio
+                edLevelConfig.margins = chartSpecs.highEdChart.margins
+                edLevelConfig.colors = [chartSpecs.highEdChart.color]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
                     .valueAccessor(function(d) {return d.value.totalCount;})               
@@ -404,9 +404,9 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 300
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = chartSpecs.gradeChart.margins
                 var c = d3.rgb(51,172,255)
                 gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)

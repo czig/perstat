@@ -390,10 +390,10 @@ import searchBox from '@/components/searchBox'
                     return d.Grade;
                 })
                 gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                gradeConfig.minHeight = 200
-                gradeConfig.aspectRatio = 2.6
-                gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
-                gradeConfig.colors = ["#108b52"]
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = chartSpecs.gradeChart.margins
+                gradeConfig.colors = [chartSpecs.gradeChart.color]
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .elasticX(true)

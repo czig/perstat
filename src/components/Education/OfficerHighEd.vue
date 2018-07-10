@@ -71,7 +71,22 @@
                     </div>
                 </div>
                 <br>
-                <div class='row'>
+                <largeBarChart :id="'core'"         
+                               :dimension="coreDim"
+                               :group="removeError(coreGroup)"
+                               :widthFactor="0.90"
+                               :aspectRatio="3"
+                               :minHeight="300"
+                               :reducer="edAdd"
+                               :accumulator="edInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.coreChart.margins"
+                               :colorScale="coreColorScale"
+                               :title="'CORE'"
+                               :loaded="loaded">
+                </largeBarChart>
+                
+<!--                 <div class='row'>
                     <div id="core" class="col-12">
                         <div id="dc-core-barchart">
                             <h3>CORE<span style="font-size: 14pt; opacity: 0.87"></span>
@@ -93,7 +108,7 @@
                         </div>
                     </div>
                 </div>
-            </div>    
+ -->            </div>    
         </transition-group>    
 	</div>
 </template>
@@ -107,7 +122,7 @@
 	import searchBox from '@/components/searchBox'
 	import Loader from '@/components/Loader'
 	import { store } from '@/store/store'
-
+    import largeBarChart from '@/components/largeBarChart'
 
 	export default {
 		data() {
@@ -116,6 +131,8 @@
                     loaded: false,
                     fyr: '2018',
                     searchCore: "",
+                    chartSpecs: chartSpecs,
+                    coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
 			}
 		},
 
@@ -128,13 +145,19 @@
             },
             allGroup: function(){
                 return this.ndx.groupAll()
-            }
+            },
+            coreDim: function() {
+                return this.ndx.dimension(function(d) {return d.core;});
+            },
+            coreGroup: function() {
+                return this.coreDim.group().reduceSum(function(d) {return d.count;});
+            }                        
 		},
 
         methods: {
            resetAll(){
             dc.filterAll()
-            //dc.redrawAll()
+            dc.redrawAll()
             this.fyr = '2018'
             this.singleSubmit('2018', 'dc-fyr-barchart')
           },
@@ -147,6 +170,17 @@
             dc.redrawAll()
           },
 
+            //remove empty function (es6 syntax to keep correct scope)
+            removeError: (source_group) => {
+                return {
+                    all: () => {
+                        return source_group.all().filter((d) => {
+                            return d.key != "error" && d.key != "**ERROR**"
+                        })
+                    }
+                }
+            },                
+            
             singleSubmit: (text,id) => {
                 dc.chartRegistry.list().filter(chart=>{
                     return chart.anchorName() == id
@@ -180,13 +214,20 @@
                 }
             })
             dc.redrawAll()
-          }
+          },
+          edAdd: function(p,v) {
+              return p + v
+          },
+          edInitial: function() {
+            return 0;
+          }          
 		},
 
 		components: {
 			'AutoComplete': AutoComplete,
             'Loader': Loader,
-            searchBox
+            searchBox,
+            largeBarChart
 		},
 
 		created: function() { 
@@ -347,10 +388,10 @@
                 })
                 var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 groupConfig.group = removeError(groupGroup)
-                groupConfig.minHeight = 300
-                groupConfig.aspectRatio = 3
-                groupConfig.margins = {top: 10, left: 50, right: 20, bottom: 45}
-                groupConfig.colors = ["#108b52"]
+                groupConfig.minHeight = chartSpecs.offGroupChart.minHeight
+                groupConfig.aspectRatio = chartSpecs.offGroupChart.aspectRatio
+                groupConfig.margins = chartSpecs.offGroupChart.margins
+                groupConfig.colors = [chartSpecs.offGroupChart.color]
                 var groupChart = dchelpers.getOrdinalBarChart(groupConfig)
                     .valueAccessor(function(d) {return d.value.totalCount;})               
                     .elasticX(true)
@@ -371,10 +412,10 @@
                 })
                 var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
-                edLevelConfig.minHeight = 300
-                edLevelConfig.aspectRatio = 3
-                edLevelConfig.margins = {top: 30, left: 50, right: 30, bottom: 50}
-                edLevelConfig.colors = ["#cc5500"]
+                edLevelConfig.minHeight = chartSpecs.highEdChart.minHeight
+                edLevelConfig.aspectRatio = chartSpecs.highEdChart.aspectRatio
+                edLevelConfig.margins = chartSpecs.highEdChart.margins
+                edLevelConfig.colors = [chartSpecs.highEdChart.color]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
                     .valueAccessor(function(d) {return d.value.totalCount;})               
@@ -400,9 +441,9 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 300
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = chartSpecs.gradeChart.margins
                 var c = d3.rgb(51,172,255)
                 gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
@@ -415,7 +456,7 @@
                     })  
   
                 //Core Rowchart
-                var coreConfig = {}
+/*                 var coreConfig = {}
                 coreConfig.id = 'core'
                 coreConfig.dim = this.ndx.dimension(function(d){
                     return d.core;
@@ -438,7 +479,7 @@
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
-
+ */
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
