@@ -514,7 +514,7 @@ import largeBarChart from '@/components/largeBarChart'
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
-                    var data = occupGroupConfig.dim.top(Infinity);
+                    var data = boardConfig.dim.top(Infinity);
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                     var myFilters = '';
