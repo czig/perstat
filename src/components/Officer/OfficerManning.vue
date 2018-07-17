@@ -273,7 +273,7 @@ import searchBox from '@/components/searchBox'
                     }
                     obj2 = {};
                     obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
+                    //obj2 = testData(obj2, obj)
                     output.push(obj2);
                 }
                 return output;
@@ -284,7 +284,9 @@ import searchBox from '@/components/searchBox'
 
                 obj.Grade = formats.gradeFormat[given.GRADE]
                 obj.MAJCOM = formats.majFormat[given.MAJCOM_T12C]
-                obj.AFSC_Group = formats.afscGroupFormat[given.AFSC_GROUP]
+                 if (given.AFSC_GROUP == '**ERROR**') 
+                    obj.AFSC_Group = 'PENDING UPDATE'   
+                else obj.AFSC_Group = given.AFSC_GROUP
                 obj.MPF = formats.mpfFormat[given.MPF]
                 obj.Assigned = +given.ASGNCURR
                 obj.Authorized = +given.AUTHCURR
@@ -364,6 +366,11 @@ import searchBox from '@/components/searchBox'
                     })
                     .ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
+                         var colors =d3.scale.ordinal().domain(["ACC", "a", "Delaware", "Mississippi", "Oklahoma", "AETC"])
+                                .range(["steelblue", "brown", "red", "green", "yellow", "grey"]);
+                        chart.selectAll('rect.bar').each(function(d){
+                             d3.select(this).attr("style", "fill: " + colors(d.key)); // use key accessor if you are using a custom accessor
+                        });
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
