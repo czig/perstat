@@ -441,11 +441,11 @@ import searchBox from '@/components/searchBox'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                gradeConfig.minHeight = 280
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 40, right: 30, bottom: 50}
-                gradeConfig.colors = ["#1976d2"]
-
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = chartSpecs.gradeChart.margins
+                gradeConfig.colors = [chartSpecs.gradeChart.color]
+                var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
 
                 gradeChart
@@ -453,7 +453,13 @@ import searchBox from '@/components/searchBox'
                         return d.value.average
                     })
                     .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
+                    .colorAccessor(function(d){
+                        return d.key;
+                    })
+                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL"])
+                    .range([c.brighter(0.9).toString(), c.brighter(0.6).toString(), c.brighter(0.3).toString(), c.toString(), 
+                                            c.darker(0.2).toString(), c.darker(0.4).toString()]))
+                    
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
 	                        .attr('transform', 'translate(-8,0)rotate(-45)')

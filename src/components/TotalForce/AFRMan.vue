@@ -45,19 +45,19 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="empcat" class="col-12">
-                        <div id="dc-empcat-barchart">
+                    <div id="empCat" class="col-12">
+                        <div id="dc-empCat-barchart">
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
-                                    @click="resetChart('dc-empcat-barchart')">Reset</button>
+                                    @click="resetChart('dc-empCat-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model="searchEMPCAT"
+                                v-model="searchempCat"
                                 size="3"
                                 label="Search Employee Category"
-                                @sub="submit(searchEMPCAT,'dc-empcat-barchart')"
+                                @sub="submit(searchempCat,'dc-empCat-barchart')"
                                 button="true"
                             ></searchBox>
                         </div>
@@ -126,7 +126,7 @@ import searchBox from '@/components/searchBox'
                 data: [],
                 searchMajcom: '',
                 searchBase: '',
-                searchEMPCAT: '',
+                searchempCat: '',
                 selected: "percent",
                 ylabel: 'Inventory',
                 loaded: false,
@@ -236,7 +236,7 @@ import searchBox from '@/components/searchBox'
                 obj.MAJCOM = formats.majFormat[given.maj]
                 obj.MPF = formats.mpfFormat[given.mpf]
                 obj.Inventory = given.freq
-                obj.empcat = given.afr_cat
+                obj.empCat = given.afr_cat
 
                 return obj;
             }
@@ -327,31 +327,31 @@ import searchBox from '@/components/searchBox'
                 })
                 var typeGroup = removeEmptyBins(typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 typeConfig.group = removeError(typeGroup)
-                typeConfig.minHeight = 200 
-                typeConfig.aspectRatio = 3
-                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 25}
-                typeConfig.colors = d3.scale.category10()
+                typeConfig.minHeight = chartSpecs.typeChart.minHeight
+                typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio
+                typeConfig.margins = chartSpecs.typeChart.margins
+                typeConfig.colors = chartSpecs.typeChart.color
                 var typeChart = dchelpers.getRowChart(typeConfig)   
 
-                //EMPCAT
-                var empcatConfig = {}
-                empcatConfig.id = 'empcat'
-                empcatConfig.dim = this.ndx.dimension(function(d){return d.empcat})
-                var empcatGroup = removeEmptyBins(empcatConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                empcatConfig.group = removeError(empcatGroup)
-                empcatConfig.minHeight = 300
-                empcatConfig.aspectRatio = 3
-                empcatConfig.margins = {top: 30, left: 50, right: 30, bottom: 100}
-                empcatConfig.colors = ["#FF8C00"]
-                var empcatChart = dchelpers.getOrdinalBarChart(empcatConfig)
-                empcatChart
+                //empCat
+                var empCatConfig = {}
+                empCatConfig.id = 'empCat'
+                empCatConfig.dim = this.ndx.dimension(function(d){return d.empCat})
+                var empCatGroup = removeEmptyBins(empCatConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
+                empCatConfig.group = removeError(empCatGroup)
+                empCatConfig.minHeight = chartSpecs.empCatChart.minHeight
+                empCatConfig.aspectRatio = chartSpecs.empCatChart.aspectRatio
+                empCatConfig.margins = chartSpecs.empCatChart.margins
+                empCatConfig.colors = [chartSpecs.empCatChart.color]
+                var empCatChart = dchelpers.getOrdinalBarChart(empCatConfig)
+                empCatChart
                     .elasticX(true)
                     //.ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                              .attr('transform', 'translate(-8,0)rotate(-45)')
                              .on('click', (d)=>{
-                                this.submit(d, 'dc-empcat-barchart')
+                                this.submit(d, 'dc-empCat-barchart')
                              })
                     })
                 
@@ -421,13 +421,21 @@ import searchBox from '@/components/searchBox'
                 })
                 var gradeGroup = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 gradeConfig.group = removeError(gradeGroup)
-                gradeConfig.minHeight = 200
-                gradeConfig.aspectRatio = 2.6
-                gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
-                gradeConfig.colors = ["#108b52"]
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = chartSpecs.gradeChart.margins
+                var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .elasticX(true)
+                    .colorAccessor(function(d){
+                        return d.key;
+                    })
+                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
+                    .range([c.brighter(1).toString(), c.brighter(0.8).toString(), c.brighter(0.6).toString(), 
+                                            c.brighter(0.4).toString(), c.brighter(0.2).toString(), c.brighter(0.2).toString(), c.toString(), 
+                                            c.darker(0.2).toString(), c.darker(0.4).toString(), c.darker(0.6).toString(), c.darker(0.8).toString(), 
+                                            c.darker(0.9).toString()]))
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')

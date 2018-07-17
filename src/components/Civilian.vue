@@ -366,7 +366,13 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.minHeight = 400 
                 gradeConfig.aspectRatio = 1
                 gradeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
-                gradeConfig.colors = d3.scale.category10()
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(), c.brighter(0.9).toString(), c.brighter(0.8).toString(), 
+                                            c.brighter(0.7).toString(), c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(), 
+                                            c.brighter(0.3).toString(), c.brighter(0.2).toString(), c.brighter(0.1).toString(), c.darker(0.1).toString(), 
+                                            c.darker(0.2).toString(), c.darker(0.3).toString(), c.darker(0.4).toString(), c.darker(0.5).toString(), 
+                                            c.darker(0.6).toString(), c.darker(0.7).toString()])
+
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                 .ordering(d=>{
