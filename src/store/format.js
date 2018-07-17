@@ -1435,7 +1435,11 @@ export default {
         "03": "CPT",
         "04": "MAJ",
         "05": "LTC",
-        "06": "COL",
+		"06": "COL",
+		"07": "BG",
+		"08": "MG",
+		"09": "LTG",
+		"10": "GEN",
         "31": "[31-33] AMN",
         "32": "[31-33] AMN",
         "33": "[31-33] AMN",
@@ -1470,6 +1474,10 @@ export default {
         "67": "WAGE GROUP"
     }
     ,gradeOrder : {
+		"GEN": 10,
+		"LTG": 9,
+		"MG": 8,
+		"BG": 7,
 	    "COL": 6,
 	    "LTC": 5,
 	    "MAJ": 4,
@@ -1591,16 +1599,15 @@ export default {
         "Z":"UNKNOWN"
 	},
 	edLevelOrder: {
-		"UNKNOWN/NOT VERIFIED": 0,
-		"UNKNOWN": 1,
-		"NO HIGH SCHOOL DIPL": 2,
-		"HS DIPL/CERT/GED/HS SENIOR": 3,
-		"COLLEGE CREDIT (12+ SH)": 4,
-		"AA": 5,
-		"BA/BS": 6,
-		"MA/MS": 7,
-		"PROF DEG": 8,
-		"PHD": 9
+		"UNKNOWN/": 0,
+		"NO HIGH": 1,
+		"HS DIPL/": 2,
+		"COLLEGE": 3,
+		"AA": 4,
+		"BA/BS": 5,
+		"MA/MS": 6,
+		"PROF DEG": 7,
+		"PHD": 8
 	},
     civGradeOrder: {
         "EXEC": 0,

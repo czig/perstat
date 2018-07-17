@@ -353,12 +353,10 @@
                     return d.fyr;
                 })
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
-                fyrConfig.minHeight = 80 
-                fyrConfig.aspectRatio = 4 
-                fyrConfig.margins = {top: 10, left: 50, right: 30, bottom: 45}
-                fyrConfig.minHeight = 300
-                fyrConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                fyrConfig.colors = [chartSpecs.baseChart.color]
+                fyrConfig.minHeight = chartSpecs.yearChart.minHeight
+                fyrConfig.aspectRatio = chartSpecs.yearChart.aspectRatio
+                fyrConfig.margins = chartSpecs.yearChart.margins
+                fyrConfig.colors = [chartSpecs.yearChart.color]
                 var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
 
                 fyrChart

@@ -298,12 +298,10 @@
                     return d.fyr;
                 })
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
-                fyrConfig.minHeight = 80 
-                fyrConfig.aspectRatio = 4 
-                fyrConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
-                fyrConfig.minHeight = 300
-                fyrConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                fyrConfig.colors = [chartSpecs.baseChart.color]
+                fyrConfig.minHeight = chartSpecs.yearChart.minHeight
+                fyrConfig.aspectRatio = chartSpecs.yearChart.aspectRatio
+                fyrConfig.margins = chartSpecs.yearChart.margins
+                fyrConfig.colors = [chartSpecs.yearChart.color]
                 var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
 
                 fyrChart
@@ -338,7 +336,7 @@
                 edLevelConfig.margins = chartSpecs.highEdChart.margins
                 edLevelConfig.colors = [chartSpecs.highEdChart.color]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
-                edLevelChart
+                edLevelChart                   
                     .valueAccessor(function(d) {return d.value.totalCount;})               
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
@@ -362,9 +360,9 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 300
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 60}
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = chartSpecs.gradeChart.margins
                 var c = d3.rgb(51,172,255)
                 gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), 
                 c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString(),c.darker(0.9).toString()])
@@ -386,10 +384,10 @@
                 })
                 var cafscGroup = removeEmptyBins(cafscConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 cafscConfig.group = removeError(cafscGroup)
-                cafscConfig.minHeight = 400
-                cafscConfig.aspectRatio = 3
-                cafscConfig.margins = {top: 10, left: 50, right: 30, bottom: 200}
-                cafscConfig.colors = ["#186d19"]
+                cafscConfig.minHeight = chartSpecs.afscGroupChart.minHeight
+                cafscConfig.aspectRatio = chartSpecs.afscGroupChart.aspectRatio
+                cafscConfig.margins = chartSpecs.afscGroupChart.margins
+                cafscConfig.colors = [chartSpecs.afscGroupChart.color]
                 var cafscChart = dchelpers.getOrdinalBarChart(cafscConfig)
                 cafscChart
                     .valueAccessor(function(d) {return d.value.totalCount;})

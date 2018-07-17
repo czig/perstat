@@ -185,11 +185,6 @@ import largeBarChart from '@/components/largeBarChart'
             })
             dc.redrawAll()
           },
-          radioButton: () => {
-            setTimeout(function() {
-                dc.redrawAll()
-            },10)
-          },
           submit: (text,id) => {
             dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id 
@@ -334,10 +329,10 @@ import largeBarChart from '@/components/largeBarChart'
                     return d.File_Type;
                 })
                 typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
-                typeConfig.minHeight = 200 
-                typeConfig.aspectRatio = 3
-                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 25}
-                typeConfig.colors = d3.scale.category10()
+                typeConfig.minHeight = chartSpecs.typeChart.minHeight
+                typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio
+                typeConfig.margins = chartSpecs.typeChart.margins
+                typeConfig.colors = chartSpecs.typeChart.color
                 var typeChart = dchelpers.getRowChart(typeConfig)   
 
                 //Location
@@ -407,7 +402,6 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
                 gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
                 gradeConfig.margins = chartSpecs.gradeChart.margins
-                gradeConfig.colors = [chartSpecs.gradeChart.color]
                 var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart

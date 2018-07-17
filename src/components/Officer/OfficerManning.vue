@@ -413,9 +413,9 @@ import searchBox from '@/components/searchBox'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                gradeConfig.minHeight = 200 
-                gradeConfig.aspectRatio = 2
-                gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = chartSpecs.gradeChart.margins
                 var c = d3.rgb(51,172,255)
                 gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
@@ -433,10 +433,10 @@ import searchBox from '@/components/searchBox'
                 afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_Group})
                 var afscGroup = afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
                 afscGroupConfig.group = removeEmptyBins(afscGroup)
-                afscGroupConfig.minHeight = 200 
-                afscGroupConfig.aspectRatio = 3 
-                afscGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 80}
-                afscGroupConfig.colors = ["#108b52"] 
+                afscGroupConfig.minHeight = chartSpecs.afscGroupChart.minHeight
+                afscGroupConfig.aspectRatio = chartSpecs.afscGroupChart.aspectRatio
+                afscGroupConfig.margins = chartSpecs.afscGroupChart.margins
+                afscGroupConfig.colors = [chartSpecs.afscGroupChart.color] 
                 var afscGroupChart = dchelpers.getOrdinalBarChart(afscGroupConfig)
                 afscGroupChart
                     .elasticX(true)
