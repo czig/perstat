@@ -225,7 +225,7 @@ export default {
             if (this.allSort == true) {
                 return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
             } else {
-                return this.removeEmptyBins(this.group).all().sort((a,b) => b.key < a.key);
+                return this.removeEmptyBins(this.group).all().sort((a,b) => a.key.localeCompare(b.key));
             }
         },
         filterAll: function(all) {
