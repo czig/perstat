@@ -68,6 +68,13 @@ var yearChart = {
     color: "#dfaf00"
 }
 
+var boardChart = {
+    minHeight: 250,
+    aspectRatio: 5,
+    margins: {top: 30, left: 40, right: 30, bottom: 60},
+    color: "#1976d2"
+}
+
 module.exports = {
     baseChart,
     majcomChart,
@@ -78,5 +85,6 @@ module.exports = {
     typeChart,
     empCatChart,
     afscGroupChart,
-    yearChart
+    yearChart,
+    boardChart,
 }

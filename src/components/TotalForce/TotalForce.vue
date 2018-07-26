@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class="col">Total Force</h1>
+            <h1 class="col">Total Force Military</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
@@ -11,10 +11,10 @@
             <li class="nav-item">
                 <a class="nav-link active" @click="dynamicComponent='adman'" data-toggle="tab">Active Duty</a>
             </li>                    
-            <li class="nav-item">
+<!--             <li class="nav-item">
                 <a class="nav-link" @click="dynamicComponent='ang'" data-toggle="tab">ANG</a>
             </li>
-            <li class="nav-item">
+ -->            <li class="nav-item">
                 <a class="nav-link" @click="dynamicComponent='afr'" data-toggle="tab">AFR</a>
             </li>            
         </ul>

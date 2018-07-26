@@ -110,7 +110,24 @@
                                :title="'Core'"
                                :loaded="loaded">
                 </largeBarChart>
-                <div class="row">
+                <largeBarChart :id="'board'"         
+                               :dimension="boardDim"
+                               :group="boardGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.boardChart.aspectRatio"
+                               :minHeight="chartSpecs.boardChart.minHeight"
+                               :selected="selected"
+                               :ylabel="ylabel"
+                               :reducer="promoAdd"
+                               :accumulator="promoInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.boardChart.margins"
+                               :colorScale="boardColorScale"
+                               :title="'Board'"
+                               :loaded="loaded">
+                </largeBarChart>
+
+<!--                 <div class="row">
                     <div id="board" class="col-12">
                         <div id="dc-board-barchart">
                             <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -122,7 +139,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+ -->            </div>
         </transition-group>
     </div>
 </template>
@@ -148,6 +165,7 @@ import largeBarChart from '@/components/largeBarChart'
                 width: document.documentElement.clientWidth,
                 chartSpecs: chartSpecs,
                 coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+                boardColorScale: d3.scale.ordinal().range([chartSpecs.boardChart.color]),
             }
         },
         computed: {
@@ -176,7 +194,14 @@ import largeBarChart from '@/components/largeBarChart'
           },
           coreGroup: function() {
             return this.coreDim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial);
+          },
+          boardDim: function() {
+            return this.ndx.dimension(function(d) {return d.Board;});
+          },
+          boardGroup: function() {
+            return this.boardDim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial);
           }
+
         },
         methods: {
           resetAll: (event)=>{
@@ -484,7 +509,7 @@ import largeBarChart from '@/components/largeBarChart'
                     })                                    
                 
                 //board
-                var boardConfig = {}
+/*                 var boardConfig = {}
                 boardConfig.id = 'board'
                 boardConfig.dim = this.ndx.dimension(function(d){return  d.Board})
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
@@ -512,7 +537,7 @@ import largeBarChart from '@/components/largeBarChart'
                         })
                     })
 
-                //Download Raw Data button
+ */                //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
                     var data = boardConfig.dim.top(Infinity);

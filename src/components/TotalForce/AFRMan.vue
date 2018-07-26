@@ -63,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+<!--                 <div class="row">
                     <div id="majcom" class="col-12">
                         <div id="dc-majcom-barchart">
                             <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-                <!--<div class ="row">-->
+ -->                <!--<div class ="row">-->
                     <!--<div id="majcom-chart-wrapper" class="col-12"></div>-->
                 <!--</div>-->
             </div>

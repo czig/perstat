@@ -85,7 +85,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <largeBarChart :id="'majcom'"         
+                               :dimension="majcomDim"
+                               :group="majcomGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                               :minHeight="chartSpecs.majcomChart.minHeight"
+                               :selected="selected"
+                               :ylabel="ylabel"
+                               :reducer="inventoryAdd"
+                               :accumulator="inventoryInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.majcomChart.margins"
+                               :colorScale="majcomColorScale"
+                               :title="'MAJCOM'"
+                               :loaded="loaded">
+                </largeBarChart>
+
+<!--                 <div class="row">
                     <div id="majcom" class="col-12">
                         <div id="dc-majcom-barchart">
                             <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -106,7 +123,7 @@
                         </div>
                     </div>
                 </div>
-                <largeBarChart :id="'loc'"         
+ -->                <largeBarChart :id="'loc'"         
                                :dimension="locDim"
                                :group="locGroup"
                                :widthFactor="0.90"
@@ -168,7 +185,8 @@ import largeBarChart from '@/components/largeBarChart'
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color,
                 chartSpecs: chartSpecs,
-                locColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color])
+                locColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+                majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color])
             }
         },
         computed: {
@@ -189,7 +207,14 @@ import largeBarChart from '@/components/largeBarChart'
           },
           locGroup: function() {
               return this.locDim.group().reduceSum(function(d) {return d.Inventory;}) 
+          },
+          majcomDim: function() {
+              return this.ndx.dimension(d => d.MAJCOM);
+          },
+          majcomGroup: function() {
+              return this.majcomDim.group().reduceSum(function(d) {return d.Inventory;}) 
           }
+
         },
         methods: {
           resetAll: (event)=>{
@@ -434,7 +459,7 @@ import largeBarChart from '@/components/largeBarChart'
                 var priorChart = dchelpers.getRowChart(priorConfig)
 
                 //Majcom
-                var majcomConfig = {}
+/*                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM })
                 var majcomPercent = majcomConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
@@ -454,7 +479,7 @@ import largeBarChart from '@/components/largeBarChart'
                             this.submit(d, 'dc-majcom-barchart')
                         })
                     })
-
+ */
                // //base(mpf)
                // var baseConfig = {}
                // baseConfig.id = 'base'

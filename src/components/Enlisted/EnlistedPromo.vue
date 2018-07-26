@@ -107,7 +107,24 @@
                 </div>
                 <div class="row">
                 </div>
-                <div class="row">
+                <largeBarChart :id="'board'"         
+                               :dimension="boardDim"
+                               :group="boardGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.boardChart.aspectRatio"
+                               :minHeight="chartSpecs.boardChart.minHeight"
+                               :selected="selected"
+                               :ylabel="ylabel"
+                               :reducer="promoAdd"
+                               :accumulator="promoInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.boardChart.margins"
+                               :colorScale="boardColorScale"
+                               :title="'Board'"
+                               :loaded="loaded">
+                </largeBarChart>
+
+<!--                 <div class="row">
                     <div id="board" class="col-12">
                         <div id="dc-board-barchart">
                             <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -119,19 +136,21 @@
                         </div>
                     </div>
                 </div>
-            </div>
+ -->            </div>
         </transition-group>
     </div>
 </template>
 
 <script>
 import dchelpers from '@/dchelpers'
+import chartSpecs from '@/chartSpecs'
 import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import Afsc from '@/components/afsc'
 import { store } from '@/store/store'
+import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -140,7 +159,9 @@ import { store } from '@/store/store'
                 selected: "percent",
                 startAfsc: false,
                 sa: '',
-                loaded: false
+                loaded: false,
+                chartSpecs: chartSpecs,
+                boardColorScale: d3.scale.ordinal().range([chartSpecs.boardChart.color]),
             }
         },
         computed: {
@@ -163,7 +184,14 @@ import { store } from '@/store/store'
             else {
                 return "PME Complete Rate (%)"
             }
+          },
+          boardDim: function() {
+            return this.ndx.dimension(function(d) {return d.Board;});
+          },
+          boardGroup: function() {
+            return this.boardDim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial);
           }
+
         },
         methods: {
             resetAll: (event)=>{
@@ -229,7 +257,8 @@ import { store } from '@/store/store'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            'afsc': Afsc
+            'afsc': Afsc,
+            largeBarChart
         },
         created: function(){
           console.log('created')
@@ -423,7 +452,7 @@ import { store } from '@/store/store'
                     })
 
                 //board
-                var boardConfig = {}
+/*                 var boardConfig = {}
                 boardConfig.id = 'board'
                 boardConfig.dim = this.ndx.dimension(function(d){ return d.Board })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
@@ -449,7 +478,7 @@ import { store } from '@/store/store'
                             this.submit(d, 'dc-board-barchart')
                         })
                     })
-
+ */
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
