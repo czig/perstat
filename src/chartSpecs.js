@@ -13,9 +13,9 @@ var majcomChart = {
 }
 
 var coreChart = {
-    minHeight: 260,
-    aspectRatio: 3.2,
-    margins: {top: 30, left: 50, right: 30, bottom: 50},
+    minHeight: 250,
+    aspectRatio: 4,
+    margins: {top: 5, left: 50, right: 30, bottom: 50},
     color: "#2ca25f"
 }
 
@@ -71,7 +71,7 @@ var yearChart = {
 var boardChart = {
     minHeight: 250,
     aspectRatio: 5,
-    margins: {top: 30, left: 40, right: 30, bottom: 60},
+    margins: {top: 5, left: 40, right: 30, bottom: 60},
     color: "#1976d2"
 }
 
