@@ -16,7 +16,8 @@ USAGE:
                    :colorFunction="unitColorFun"
                    :title="'Units'"
                    :loaded="loaded"
-                   :sort="yaxis">
+                   :sortBy="value"
+                   :orderBy="desc">
     </largeBarChart>
 
 Props:
@@ -44,7 +45,7 @@ Props:
     <div class ="row">
         <div :id="this.id + 'wrapper'" class="col-12">
             <div :id="this.id + 'title'" class="row">
-                <h3 class="col-12">{{ title }} 
+                <h3 class="col-12 mb-0 pb-0">{{ title }} 
                     <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                     <span data-toggle="tooltip" 
                           data-placement="bottom"
@@ -150,12 +151,10 @@ export default {
         sortBy: {
             type: String,
             required: false,
-            default: 'value'  
         },
         orderBy: {
             type: String,
             required: false,
-            default: 'desc'
         }
     },
     components: {
@@ -175,10 +174,10 @@ export default {
             return this.minMax[1]
         },
         sortedBy: function() {
-            return this.sortBy;
+            return this.sortBy || 'value';
         },
         orderedBy: function() {
-            return this.orderBy;
+            return this.orderBy || 'desc';
         },
         xScale: function() {
             return d3.scale.ordinal()
@@ -240,45 +239,37 @@ export default {
                 }
             }
         },
-/*         dataAll: function() {
-            if (this.allSort == true) {
-                return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+        sortKey: function(order) {
+            console.log(order)
+            if (order == 'desc') {
+                return this.removeEmptyBins(this.group).all().sort((a,b) => b.key.localeCompare(a.key));
             } else {
                 return this.removeEmptyBins(this.group).all().sort((a,b) => a.key.localeCompare(b.key));
             }
         },
-
-        
- */
-        sortKeyDesc: function() {
-            return this.removeEmptyBins(this.group).all().sort((a,b) => b.key.localeCompare(a.key));
+        sortValue: function(order) {
+            console.log(order)
+            if (order == 'desc') {
+                return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+            } else {
+                return this.removeEmptyBins(this.group).all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
+            }
+            
         },
-        sortKeyAsc: function() {
-            return this.removeEmptyBins(this.group).all().sort((a,b) => a.key.localeCompare(b.key));
-        },
-        sortValueDesc: function() {
-            return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
-        },
-        sortValueAsc: function() {
-            return this.removeEmptyBins(this.group).all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
-        },
-
         dataAll: function() {    
+            //allSort toggles between key and value sort 
             if (this.allSort == true) {
-                if (this.sortedBy == "value" && this.orderedBy == "asc") {
-                    return this.sortValueAsc();
-                } else if (this.sortedBy == "value" && this.orderedBy == "desc") {
-                    return this.sortValueDesc();
-                } else if (this.sortedBy == "key" && this.orderedBy == "asc") {
-                    return this.sortKeyAsc();
-                } else if (this.sortedBy == "key" && this.orderedBy == "desc") {
-                    return this.sortKeyDesc();
+                //sortedBy is initial sort type (key or value), orderedBy is ascending or descending
+                if (this.sortedBy == "value") {
+                    return this.sortValue(this.orderedBy);
+                } else {
+                    return this.sortKey(this.orderedBy);
                 }
             } else {
                 if (this.sortedBy == "value") {
-                    return this.sortKeyAsc();
+                    return this.sortKey('asc');
                 } else {
-                    return this.sortValueDesc();
+                    return this.sortValue('desc');
                 }
             }
         },
@@ -464,17 +455,19 @@ export default {
                                         .selectAll("h3")
                                         .append("div")
                                         .attr("id",this.id + "slider-container")
-                                        .style("display","inline-block");
+                                        .style("display","inline-block")
+                                        .classed("mb-0 pb-0",true);
 
                 sliderContainer.append("label")
                    .attr("id",this.id + "slider-label")
+                   .classed("pt-0 pb-0 mt-0 mb-0",true)
                    .text("Bars Displayed: " + Number(this.lastBar + 1))
                    .style("font-size","12px");
 
                 sliderContainer.append("input")
                                .attr("id", this.id + "slider")
                                .attr("type","range")
-                               .classed("form-control slider",true)
+                               .classed("form-control slider pt-0 pb-0 mt-0 mb-0",true)
                                .attr("min",1)
                                .attr("max",Math.min(this.dataAll().length,60))
                                .attr("value",this.data.length)
@@ -504,8 +497,10 @@ export default {
                             .attr("id",this.id + "svg")
                             .attr("width",this.w + this.margin.left + this.margin.right)
                             .attr("height",this.h + this.margin.top + this.margin.bottom)
+                            .classed("mt-0 pt-0",true)
                             .append("g")
                             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
                             
                 var firstBars = svg.append("g")
                     .attr("id", this.id + "chart")

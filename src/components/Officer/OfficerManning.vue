@@ -65,13 +65,14 @@
                         :minHeight="chartSpecs.majcomChart.minHeight"
                         :selected="selected"
                         :ylabel="ylabel"
-                        :reducer="manningAdd"
+                        :reducer="manningAddLarge"
                         :accumulator="manningInitial"
                         :numBars="30"
                         :margin="chartSpecs.majcomChart.margins"
                         :colorScale="majcomColorScale"
                         :title="'MAJCOM'"
-                        :loaded="loaded">
+                        :loaded="loaded"
+                        >
         </largeBarChart>
 
 <!--         <div class="row">
@@ -125,7 +126,7 @@
                         :minHeight="chartSpecs.baseChart.minHeight"
                         :selected="selected"
                         :ylabel="ylabel"
-                        :reducer="manningAdd"
+                        :reducer="manningAddLarge"
                         :accumulator="manningInitial"
                         :numBars="30"
                         :margin="chartSpecs.baseChart.margins"
@@ -282,7 +283,16 @@ import largeBarChart from '@/components/largeBarChart'
                     percent: 0,
                     stpPercent: 0,
                 }
-            }
+            },
+            manningAddLarge: function(p,v) {
+                p.asgn = p.asgn + +v.asgn
+                p.auth = p.auth + +v.auth
+                p.stp = p.stp + +v.stp
+                //if divide by 0, set to 0, and if NaN, set to zero
+                p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
+                p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                return p
+            },
 
         },
         components: {
@@ -349,7 +359,7 @@ import largeBarChart from '@/components/largeBarChart'
                 obj.MAJCOM = formats.majFormat[given.MAJCOM_T12C]
                  if (given.AFSC_GROUP == '**ERROR**') 
                     obj.AFSC_Group = 'PENDING UPDATE'   
-                else obj.AFSC_Group = given.AFSC_GROUP
+                else obj.AFSC_Group = formats.afscGroupFormat[given.AFSC_GROUP]
                 obj.MPF = formats.mpfFormat[given.MPF]
                 obj.Assigned = +given.ASGNCURR
                 obj.Authorized = +given.AUTHCURR
@@ -483,11 +493,10 @@ import largeBarChart from '@/components/largeBarChart'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
-                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.minHeight = 200 
+                gradeConfig.aspectRatio = 4 
                 gradeConfig.margins = chartSpecs.gradeChart.margins
-                var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
+                gradeConfig.colors = d3.scale.ordinal().range(['#bcbddc','#9e9ac8','#756bb1','#54278f'])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .valueAccessor((d)=> {
