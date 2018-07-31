@@ -15,7 +15,8 @@ USAGE:
                    :colorScale="unitColorScale"
                    :colorFunction="unitColorFun"
                    :title="'Units'"
-                   :loaded="loaded">
+                   :loaded="loaded"
+                   :sort="yaxis">
     </largeBarChart>
 
 Props:
@@ -35,6 +36,8 @@ Props:
     colorFunction: function that tells chart how to choose colors for different bars  
     title: string for chart title
     loaded: Boolean indicating where data has been loaded
+    sortBy: key or value.  If this prop is used, you must also use orderBy
+    orderBy: asc or desc.  If this prop is used, you must also use sortBy
 
 ###########################################-->
 <template>
@@ -143,6 +146,16 @@ export default {
         loaded: {
             type: Boolean,
             required: true,
+        },
+        sortBy: {
+            type: String,
+            required: false,
+            default: 'value'  
+        },
+        orderBy: {
+            type: String,
+            required: false,
+            default: 'desc'
         }
     },
     components: {
@@ -160,6 +173,12 @@ export default {
         },
         maxVal: function() {
             return this.minMax[1]
+        },
+        sortedBy: function() {
+            return this.sortBy;
+        },
+        orderedBy: function() {
+            return this.orderBy;
         },
         xScale: function() {
             return d3.scale.ordinal()
@@ -221,13 +240,49 @@ export default {
                 }
             }
         },
-        dataAll: function() {
+/*         dataAll: function() {
             if (this.allSort == true) {
                 return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
             } else {
                 return this.removeEmptyBins(this.group).all().sort((a,b) => a.key.localeCompare(b.key));
             }
         },
+
+        
+ */
+        sortKeyDesc: function() {
+            return this.removeEmptyBins(this.group).all().sort((a,b) => b.key.localeCompare(a.key));
+        },
+        sortKeyAsc: function() {
+            return this.removeEmptyBins(this.group).all().sort((a,b) => a.key.localeCompare(b.key));
+        },
+        sortValueDesc: function() {
+            return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+        },
+        sortValueAsc: function() {
+            return this.removeEmptyBins(this.group).all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
+        },
+
+        dataAll: function() {    
+            if (this.allSort == true) {
+                if (this.sortedBy == "value" && this.orderedBy == "asc") {
+                    return this.sortValueAsc();
+                } else if (this.sortedBy == "value" && this.orderedBy == "desc") {
+                    return this.sortValueDesc();
+                } else if (this.sortedBy == "key" && this.orderedBy == "asc") {
+                    return this.sortKeyAsc();
+                } else if (this.sortedBy == "key" && this.orderedBy == "desc") {
+                    return this.sortKeyDesc();
+                }
+            } else {
+                if (this.sortedBy == "value") {
+                    return this.sortKeyAsc();
+                } else {
+                    return this.sortValueDesc();
+                }
+            }
+        },
+
         filterAll: function(all) {
              //all is boolean. true for all, false for partial
              console.log('filterAll: no filters')

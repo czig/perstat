@@ -62,7 +62,23 @@
                     </div> 
                 </div>
                 <br>
-                <div class='row'>
+                <largeBarChart :id="'yrgp'"         
+                               :dimension="yrgpDim"
+                               :group="removeError(yrgpGroup)"
+                               :widthFactor="0.90"
+                               :aspectRatio="3"
+                               :minHeight="300"
+                               :reducer="edAdd"
+                               :accumulator="edInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.yrgpChart.margins"
+                               :colorScale="yrgpColorScale"
+                               :title="'YEAR GROUP'"
+                               :loaded="loaded"
+                               :sortBy="'key'"
+                               :orderBy="'desc'">
+                </largeBarChart>
+<!--                 <div class='row'>
                     <div id="yrgp" class="col-12">
                         <div id="dc-yrgp-barchart">
                             <h3>YEAR GROUP<span style="font-size: 14pt; opacity: 0.87"></span>
@@ -84,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-                <br>
+ -->                <br>
                 <largeBarChart :id="'core'"         
                                :dimension="coreDim"
                                :group="removeError(coreGroup)"
@@ -147,6 +163,7 @@
                     searchYRGP: "",
                     chartSpecs: chartSpecs,
                     coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+                    yrgpColorScale: d3.scale.ordinal().range([chartSpecs.yrgpChart.color]),                    
 			}
 		},
 
@@ -165,7 +182,14 @@
             },
             coreGroup: function() {
                 return this.coreDim.group().reduceSum(function(d) {return d.count;});
+            },
+            yrgpDim: function() {
+                return this.ndx.dimension(function(d) {return d.yrgp;});
+            },
+            yrgpGroup: function() {
+                return this.yrgpDim.group().reduceSum(function(d) {return d.count;});
             }            
+
 		},
 
         methods: {
@@ -419,7 +443,7 @@
                     })  
 
                 //YEAR GROUP
-                var yrgpConfig = {}
+/*                 var yrgpConfig = {}
                 yrgpConfig.id = 'yrgp'
                 yrgpConfig.dim = this.ndx.dimension(function(d){
                     return d.yrgp;
@@ -446,7 +470,7 @@
                 yrgpChart.ordering(function(d){
                     return -d.key;
                 })
- 
+ */ 
                 //Core Rowchart
 /*                 var coreConfig = {}
                 coreConfig.id = 'core'

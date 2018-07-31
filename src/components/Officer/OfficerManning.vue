@@ -57,7 +57,24 @@
                 <span id="percent"></span>
             </div>
         </div>
-        <div class="row">
+        <largeBarChart :id="'majcom'"         
+                        :dimension="majcomDim"
+                        :group="majcomGroup"
+                        :widthFactor="0.90"
+                        :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                        :minHeight="chartSpecs.majcomChart.minHeight"
+                        :selected="selected"
+                        :ylabel="ylabel"
+                        :reducer="manningAdd"
+                        :accumulator="manningInitial"
+                        :numBars="30"
+                        :margin="chartSpecs.majcomChart.margins"
+                        :colorScale="majcomColorScale"
+                        :title="'MAJCOM'"
+                        :loaded="loaded">
+        </largeBarChart>
+
+<!--         <div class="row">
             <div id="majcom" class="col-12">
                 <div id="dc-majcom-barchart">
                     <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -75,19 +92,10 @@
                         :color="majcomColor"
                         :btnColor="majcomColor"
                     ></searchBox>
-                    <!-- <form class="form-inline">
-                        <div class="form-group">
-                            <input id="searchMajcom" v-model="searchMajcom" placeholder="Search MAJCOM" @keydown.enter="submit(searchMajcom,'dc-majcom-barchart')">
-                            <button class="btn btn-primary btn-sm" @click.stop.prevent="submit(searchMajcom,'dc-majcom-barchart')">Submit</button>
-                        </div>
-                    </form> -->
-                    <!--<div id="app" class="container">-->
-                            <!--<autocomplete :suggestions="suggestions" v-model="searchMajcom"></autocomplete>-->
-                    <!--</div>-->
                 </div>
             </div>
         </div>
-        <div class="row">
+ -->        <div class="row">
             <div id="grade" class="col-4">
                 <div id="dc-grade-rowchart">
                     <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -109,7 +117,24 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <largeBarChart :id="'mpf'"         
+                        :dimension="mpfDim"
+                        :group="mpfGroup"
+                        :widthFactor="0.90"
+                        :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                        :minHeight="chartSpecs.baseChart.minHeight"
+                        :selected="selected"
+                        :ylabel="ylabel"
+                        :reducer="manningAdd"
+                        :accumulator="manningInitial"
+                        :numBars="30"
+                        :margin="chartSpecs.baseChart.margins"
+                        :colorScale="baseColorScale"
+                        :title="'MPF'"
+                        :loaded="loaded">
+        </largeBarChart>
+
+<!--         <div class="row">
             <div id="base" class="col-12">
                 <div id="dc-base-barchart">
                     <h3>MPF <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -127,16 +152,10 @@
                         :color="baseColor"
                         :btnColor="baseColor"
                     ></searchBox>
-                    <!-- <form class="form-inline">
-                        <div class="form-group">
-                            <input id="searchBase" v-model="searchBase" placeholder="Search Installation" @keydown.enter="submit(searchBase,'dc-base-barchart')">
-                            <button class="btn btn-primary btn-sm" @click.stop.prevent="submit(searchBase,'dc-base-barchart')">Submit</button>
-                        </div>
-                    </form> -->
                 </div>
             </div>
         </div>
-        </div>
+ -->        </div>
         </transition-group>
     </div>
 </template>
@@ -150,6 +169,7 @@ import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
+import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -159,8 +179,9 @@ import searchBox from '@/components/searchBox'
                 searchMajcom: "",
                 searchBase: "",
                 loaded: false,
-                baseColor: chartSpecs.baseChart.color,
-                majcomColor: chartSpecs.majcomChart.color
+                chartSpecs: chartSpecs,
+                majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
+                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
             }
         },
         computed: {
@@ -183,7 +204,20 @@ import searchBox from '@/components/searchBox'
             else {
                 return "Authorized"
             }
+          },
+          majcomDim: function() {
+            return this.ndx.dimension(function(d) {return d.MAJCOM;});
+          },
+          majcomGroup: function() {
+            return this.majcomDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial);
+          },
+          mpfDim: function() {
+            return this.ndx.dimension(function(d) {return d.MPF;});
+          },
+          mpfGroup: function() {
+            return this.mpfDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial);
           }
+
         },
         methods: {
           resetAll: (event)=>{
@@ -221,12 +255,41 @@ import searchBox from '@/components/searchBox'
                 }
             })
             dc.redrawAll()
-          }
+          },
+            manningAdd: function(p,v) {
+                p.asgn = p.asgn + +v.Assigned
+                p.auth = p.auth + +v.Authorized
+                p.stp = p.stp + +v.STP
+                //if divide by 0, set to 0, and if NaN, set to zero
+                p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
+                p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                return p
+            },
+            manningRemove: function(p,v) {
+                p.asgn = p.asgn - +v.Assigned
+                p.auth = p.auth - +v.Authorized
+                p.stp = p.stp - +v.STP
+                //if divide by 0, set to 0, and if NaN, set to zero
+                p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
+                p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                return p
+            },
+            manningInitial: function() {
+                return {
+                    asgn: 0,
+                    auth: 0,
+                    stp: 0,
+                    percent: 0,
+                    stpPercent: 0,
+                }
+            }
+
         },
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
             searchBox,
+            largeBarChart
         },
         created: function(){
           console.log('created')
@@ -349,7 +412,7 @@ import searchBox from '@/components/searchBox'
                 }
 
                 //Majcom
-                var majcomConfig = {}
+/*                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
                 var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
@@ -377,7 +440,7 @@ import searchBox from '@/components/searchBox'
                             this.submit(d, 'dc-majcom-barchart')
                         })
                     })
-
+ */
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.Authorized })
@@ -459,7 +522,7 @@ import searchBox from '@/components/searchBox'
                     })
 
                 //base(mpf)
-                var baseConfig = {}
+/*                 var baseConfig = {}
                 baseConfig.id = 'base'
                 baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
                 var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
@@ -481,7 +544,7 @@ import searchBox from '@/components/searchBox'
                             this.submit(d, 'dc-base-barchart')
                         })
                     })
-
+ */
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
