@@ -91,7 +91,6 @@
                                :widthFactor="0.90"
                                :aspectRatio="chartSpecs.majcomChart.aspectRatio"
                                :minHeight="chartSpecs.majcomChart.minHeight"
-                               :selected="selected"
                                :ylabel="ylabel"
                                :reducer="inventoryAdd"
                                :accumulator="inventoryInitial"
@@ -388,7 +387,7 @@ import largeBarChart from '@/components/largeBarChart'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                gradeConfig.minHeight = 400 
+                gradeConfig.minHeight = 450 
                 gradeConfig.aspectRatio = 1
                 gradeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
                 var c = d3.rgb(51,172,255)

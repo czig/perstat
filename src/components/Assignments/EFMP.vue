@@ -402,9 +402,9 @@ export default {
             gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
             	return d.Cnt
             }))
-            gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
-            gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
-            gradeConfig.margins = chartSpecs.gradeChart.margins
+            gradeConfig.minHeight = 260
+            gradeConfig.aspectRatio = 3
+            gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
             //gradeConfig.colors = [chartSpecs.gradeChart.color]
             var c = d3.rgb(51,172,255)
             var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)

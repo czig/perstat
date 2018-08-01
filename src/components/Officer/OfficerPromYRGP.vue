@@ -428,9 +428,9 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(edAdd, edRemove, edInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
-                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
-                gradeConfig.margins = chartSpecs.gradeChart.margins
+                gradeConfig.minHeight = 300
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
                 var c = d3.rgb(51,172,255)
                 gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)

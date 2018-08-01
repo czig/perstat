@@ -399,7 +399,7 @@ import largeBarChart from '@/components/largeBarChart'
                     return d.Grade
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                gradeConfig.minHeight = 150 
+                gradeConfig.minHeight = 240 
                 gradeConfig.aspectRatio = 2
                 gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 var c = d3.rgb(51,172,255)

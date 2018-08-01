@@ -327,9 +327,9 @@ import searchBox from '@/components/searchBox'
                 })
                 var typeGroup = removeEmptyBins(typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 typeConfig.group = removeError(typeGroup)
-                typeConfig.minHeight = chartSpecs.typeChart.minHeight
-                typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio
-                typeConfig.margins = chartSpecs.typeChart.margins
+                typeConfig.minHeight = 200
+                typeConfig.aspectRatio = 3
+                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
                 typeConfig.colors = chartSpecs.typeChart.color
                 var typeChart = dchelpers.getRowChart(typeConfig)   
 
@@ -423,9 +423,9 @@ import searchBox from '@/components/searchBox'
                 })
                 var gradeGroup = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 gradeConfig.group = removeError(gradeGroup)
-                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
-                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
-                gradeConfig.margins = chartSpecs.gradeChart.margins
+                gradeConfig.minHeight = 250
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 70}
                 var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart

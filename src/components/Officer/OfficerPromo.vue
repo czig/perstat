@@ -431,7 +431,7 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 gradeConfig.minHeight = 175 
                 gradeConfig.aspectRatio = 3 
-                gradeConfig.margins = chartSpecs.gradeChart.margins
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
                 var c = d3.rgb(51,172,255)
                 gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)

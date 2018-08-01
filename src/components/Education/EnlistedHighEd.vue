@@ -360,9 +360,9 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
-                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
-                gradeConfig.margins = chartSpecs.gradeChart.margins
+                gradeConfig.minHeight = 260
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
                 var c = d3.rgb(51,172,255)
                 gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), 
                 c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString(),c.darker(0.9).toString()])
@@ -384,9 +384,9 @@
                 })
                 var cafscGroup = removeEmptyBins(cafscConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 cafscConfig.group = removeError(cafscGroup)
-                cafscConfig.minHeight = chartSpecs.afscGroupChart.minHeight
-                cafscConfig.aspectRatio = chartSpecs.afscGroupChart.aspectRatio
-                cafscConfig.margins = chartSpecs.afscGroupChart.margins
+                cafscConfig.minHeight = 350
+                cafscConfig.aspectRatio = 3
+                cafscConfig.margins = {top: 10, left: 40, right: 30, bottom: 150}
                 cafscConfig.colors = [chartSpecs.afscGroupChart.color]
                 var cafscChart = dchelpers.getOrdinalBarChart(cafscConfig)
                 cafscChart

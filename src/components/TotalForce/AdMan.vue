@@ -329,9 +329,9 @@ import largeBarChart from '@/components/largeBarChart'
                     return d.File_Type;
                 })
                 typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
-                typeConfig.minHeight = chartSpecs.typeChart.minHeight
-                typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio
-                typeConfig.margins = chartSpecs.typeChart.margins
+                typeConfig.minHeight = 200
+                typeConfig.aspectRatio = 3
+                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
                 typeConfig.colors = chartSpecs.typeChart.color
                 var typeChart = dchelpers.getRowChart(typeConfig)   
 
@@ -399,12 +399,12 @@ import largeBarChart from '@/components/largeBarChart'
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
-                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
-                gradeConfig.margins = chartSpecs.gradeChart.margins
+                gradeConfig.minHeight = 250
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 70}
                 var c = d3.rgb(51,172,255)
-                var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
-                gradeChart
+                var gradeBarChart = dchelpers.getOrdinalBarChart(gradeConfig)
+                gradeBarChart
                     .elasticX(true)
                     .colorAccessor(function(d){
                         return d.key;
@@ -423,7 +423,7 @@ import largeBarChart from '@/components/largeBarChart'
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
-                gradeChart
+                gradeBarChart
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  

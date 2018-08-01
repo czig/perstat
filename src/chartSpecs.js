@@ -26,7 +26,7 @@ var highEdChart = {
     color: "#cc5500"
 }
 
-var gradeChart = {
+var gradeBarChart = {
     minHeight: 300,
     aspectRatio: 3,
     margins: {top: 10, left: 50, right: 30, bottom: 20},
@@ -87,7 +87,7 @@ module.exports = {
     majcomChart,
     coreChart,
     highEdChart,
-    gradeChart,
+    gradeBarChart,
     offGroupChart,
     typeChart,
     empCatChart,
