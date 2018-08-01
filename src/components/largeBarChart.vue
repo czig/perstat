@@ -263,6 +263,7 @@ export default {
             return this.removeEmptyBins(this.group).all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
         },
 
+        //Sort parameters are set in the call to the largebarchart component.  
         dataAll: function() {    
             if (this.allSort == true) {
                 if (this.sortedBy == "value" && this.orderedBy == "asc") {

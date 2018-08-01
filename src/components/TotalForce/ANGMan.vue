@@ -330,7 +330,7 @@ import searchBox from '@/components/searchBox'
                     })
 
                 //Location
-                var majcomConfig = {}
+/*                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
                 var majcomGroup = removeEmptyBins(majcomConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
@@ -350,9 +350,9 @@ import searchBox from '@/components/searchBox'
                                 this.submit(d, 'dc-majcom-barchart')
                              })
                     })
-
+ */
                 //base(mpf)
-                var baseConfig = {}
+/*                 var baseConfig = {}
                 baseConfig.id = 'base'
                 baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
                 var basePercent = removeEmptyBins(baseConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
@@ -371,7 +371,7 @@ import searchBox from '@/components/searchBox'
                                  this.submit(d, 'dc-base-barchart')
                              })
                     })
-
+ */
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory })
                 var invND = dc.numberDisplay("#inv")
