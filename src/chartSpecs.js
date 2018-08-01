@@ -1,21 +1,21 @@
 var baseChart = {
     minHeight: 240,
     aspectRatio: 3.8,
-    margins: {top: 30, left: 70, right: 30, bottom: 100},
+    margins: {top: 5, left: 50, right: 30, bottom: 100},
     color: "#dfaf00"
 }
 
 var majcomChart = {
     minHeight: 200,
     aspectRatio: 4.2,
-    margins: {top: 30, left: 70, right: 30, bottom: 100},
+    margins: {top: 5, left: 50, right: 30, bottom: 100},
     color: "#1976d2"
 }
 
 var coreChart = {
-    minHeight: 260,
-    aspectRatio: 3.2,
-    margins: {top: 30, left: 50, right: 30, bottom: 50},
+    minHeight: 250,
+    aspectRatio: 4,
+    margins: {top: 5, left: 50, right: 30, bottom: 50},
     color: "#2ca25f"
 }
 
@@ -29,7 +29,7 @@ var highEdChart = {
 var gradeChart = {
     minHeight: 300,
     aspectRatio: 3,
-    margins: {top: 30, left: 50, right: 30, bottom: 80},
+    margins: {top: 10, left: 50, right: 30, bottom: 20},
     color: "#33acff"
 }
 
@@ -57,7 +57,7 @@ var empCatChart = {
 var afscGroupChart = {
     minHeight: 300,
     aspectRatio: 3,
-    margins: {top: 10, left: 40, right: 30, bottom: 150},
+    margins: {top: 10, left: 40, right: 30, bottom: 100},
     color: "#108b52"
 }
 
@@ -71,7 +71,7 @@ var yearChart = {
 var boardChart = {
     minHeight: 250,
     aspectRatio: 5,
-    margins: {top: 30, left: 40, right: 30, bottom: 60},
+    margins: {top: 5, left: 40, right: 30, bottom: 60},
     color: "#1976d2"
 }
 
