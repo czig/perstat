@@ -33,6 +33,12 @@ var gradeBarChart = {
     color: "#33acff"
 }
 
+var gradeChart = {
+    minHeight: 300,
+    aspectRatio: 3,
+    margins: {top: 10, left: 50, right: 30, bottom: 20},
+    color: "#33acff"
+}
 var offGroupChart = {
     minHeight: 300,
     aspectRatio: 3,
@@ -88,6 +94,7 @@ module.exports = {
     coreChart,
     highEdChart,
     gradeBarChart,
+    gradeChart,
     offGroupChart,
     typeChart,
     empCatChart,

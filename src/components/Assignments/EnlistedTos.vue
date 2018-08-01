@@ -388,7 +388,7 @@ import searchBox from '@/components/searchBox'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 140
+                tourConfig.minHeight = 200
                 tourConfig.aspectRatio = 2.7
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
@@ -435,10 +435,10 @@ import searchBox from '@/components/searchBox'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight
-                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
-                gradeConfig.margins = chartSpecs.gradeChart.margins
-                gradeConfig.colors = [chartSpecs.gradeChart.color]
+                gradeConfig.minHeight = 240
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 60}
+                gradeConfig.colors = [chartSpecs.gradeBarChart.color]
                 var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
