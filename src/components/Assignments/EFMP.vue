@@ -405,7 +405,6 @@ export default {
             gradeConfig.minHeight = 260
             gradeConfig.aspectRatio = 3
             gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
-            //gradeConfig.colors = [chartSpecs.gradeChart.color]
             var c = d3.rgb(51,172,255)
             var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
             gradeChart

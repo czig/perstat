@@ -134,7 +134,7 @@
                                :numBars="30"
                                :margin="chartSpecs.baseChart.margins"
                                :colorScale="locColorScale"
-                               :title="'Installation'"
+                               :title="'Servicing MPF'"
                                :loaded="loaded">
                 </largeBarChart>
                 <!--<div class="row">

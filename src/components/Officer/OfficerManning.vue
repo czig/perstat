@@ -131,7 +131,7 @@
                         :numBars="30"
                         :margin="chartSpecs.baseChart.margins"
                         :colorScale="baseColorScale"
-                        :title="'MPF'"
+                        :title="'Servicing MPF'"
                         :loaded="loaded">
         </largeBarChart>
 

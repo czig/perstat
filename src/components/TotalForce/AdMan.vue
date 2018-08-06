@@ -90,7 +90,7 @@
                                :numBars="30"
                                :margin="chartSpecs.baseChart.margins"
                                :colorScale="baseColorScale"
-                               :title="'BASE'"
+                               :title="'Servicing MPF'"
                                :loaded="loaded">
                 </largeBarChart>
               
@@ -403,8 +403,8 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 70}
                 var c = d3.rgb(51,172,255)
-                var gradeBarChart = dchelpers.getOrdinalBarChart(gradeConfig)
-                gradeBarChart
+                var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
+                gradeChart
                     .elasticX(true)
                     .colorAccessor(function(d){
                         return d.key;
@@ -423,7 +423,7 @@ import largeBarChart from '@/components/largeBarChart'
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
-                gradeBarChart
+                gradeChart
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  

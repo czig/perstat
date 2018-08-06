@@ -444,7 +444,6 @@ import searchBox from '@/components/searchBox'
                 gradeConfig.minHeight = 230
                 gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
-                gradeConfig.colors = [chartSpecs.gradeBarChart.color]
                 var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
 
