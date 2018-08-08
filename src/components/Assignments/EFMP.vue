@@ -91,7 +91,7 @@
                                     @click="resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchMajcom"
+                                v-model="searchMajcom"
                                 size="3"
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
@@ -105,14 +105,14 @@
                 <div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
-                            <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Servicing MPF <span style="font-size: 14pt; opacity: 0.87;"></span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
                                     @click="resetChart('dc-base-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchBase"
+                                v-model="searchBase"
                                 size="3"
                                 label="Search MPF"
                                 @sub="submit(searchBase,'dc-base-barchart')"
@@ -378,6 +378,7 @@ export default {
             var typeChart = dchelpers.getRowChart(typeConfig)
 
             typeChart.filter(this.category)
+            
             //Marital marital
             var maritalConfig = {};
             maritalConfig.id = 'marital';

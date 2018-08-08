@@ -72,7 +72,7 @@
                                         @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
                                 </h3>
                                 <searchBox
-                                    v-model:value="searchBase"
+                                    v-model="searchBase"
                                     size="3"
                                     label="Enter Installation"
                                     @sub="submit(searchBase,'dc-base-select')"

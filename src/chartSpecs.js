@@ -1,7 +1,7 @@
 var baseChart = {
     minHeight: 240,
     aspectRatio: 3.8,
-    margins: {top: 5, left: 50, right: 30, bottom: 100},
+    margins: {top: 5, left: 60, right: 30, bottom: 100},
     color: "#dfaf00"
 }
 

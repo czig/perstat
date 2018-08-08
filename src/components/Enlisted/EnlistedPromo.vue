@@ -75,7 +75,7 @@
                                 <div v-else class="col-12">
                                      
                                     <afsc 
-                                        v-model:value="sa"
+                                        v-model="sa"
                                         :ndx="ndx"
                                         :ylabel="ylabel"
                                         :selected="selected"
@@ -107,24 +107,7 @@
                 </div>
                 <div class="row">
                 </div>
-                <largeBarChart :id="'board'"         
-                               :dimension="boardDim"
-                               :group="boardGroup"
-                               :widthFactor="0.90"
-                               :aspectRatio="chartSpecs.boardChart.aspectRatio"
-                               :minHeight="chartSpecs.boardChart.minHeight"
-                               :selected="selected"
-                               :ylabel="ylabel"
-                               :reducer="promoAdd"
-                               :accumulator="promoInitial"
-                               :numBars="30"
-                               :margin="chartSpecs.boardChart.margins"
-                               :colorScale="boardColorScale"
-                               :title="'Board'"
-                               :loaded="loaded">
-                </largeBarChart>
-
-<!--                 <div class="row">
+                <div class="row">
                     <div id="board" class="col-12">
                         <div id="dc-board-barchart">
                             <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -136,7 +119,7 @@
                         </div>
                     </div>
                 </div>
- -->            </div>
+            </div>
         </transition-group>
     </div>
 </template>
@@ -150,7 +133,6 @@ import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import Afsc from '@/components/afsc'
 import { store } from '@/store/store'
-import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -161,7 +143,7 @@ import largeBarChart from '@/components/largeBarChart'
                 sa: '',
                 loaded: false,
                 chartSpecs: chartSpecs,
-                boardColorScale: d3.scale.ordinal().range([chartSpecs.boardChart.color]),
+                boardColor: chartSpecs.boardChart.color
             }
         },
         computed: {
@@ -184,12 +166,6 @@ import largeBarChart from '@/components/largeBarChart'
             else {
                 return "PME Complete Rate (%)"
             }
-          },
-          boardDim: function() {
-            return this.ndx.dimension(function(d) {return d.Board;});
-          },
-          boardGroup: function() {
-            return this.boardDim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial);
           }
 
         },
@@ -257,8 +233,7 @@ import largeBarChart from '@/components/largeBarChart'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            'afsc': Afsc,
-            largeBarChart
+            'afsc': Afsc
         },
         created: function(){
           console.log('created')
@@ -438,7 +413,7 @@ import largeBarChart from '@/components/largeBarChart'
                     return d.Recommendation;
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                recommendConfig.minHeight = 150 
+                recommendConfig.minHeight = 185 
                 recommendConfig.aspectRatio = 5
                 recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 recommendConfig.colors = d3.scale.ordinal().range(["#1a9850","#91cf60","#d9ef8b","#fee08b","#fc8d59","#d73027"])
@@ -452,7 +427,7 @@ import largeBarChart from '@/components/largeBarChart'
                     })
 
                 //board
-/*                 var boardConfig = {}
+                 var boardConfig = {}
                 boardConfig.id = 'board'
                 boardConfig.dim = this.ndx.dimension(function(d){ return d.Board })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
@@ -478,7 +453,7 @@ import largeBarChart from '@/components/largeBarChart'
                             this.submit(d, 'dc-board-barchart')
                         })
                     })
- */
+ 
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{

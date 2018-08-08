@@ -121,7 +121,7 @@
                         </div>
                     </template>
                 </div>
-                <div class="row">
+<!--                 <div class="row">
                     <div id="majcom" class="col-12">
                         <div id="dc-majcom-barchart">
                             <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
@@ -144,7 +144,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+
+ -->                
+                <largeBarChart :id="'majcom'"         
+                                :dimension="majcomDim"
+                                :group="majcomGroup"
+                                :widthFactor="0.90"
+                                :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                                :minHeight="chartSpecs.majcomChart.minHeight"
+                                :selected="selected"
+                                :ylabel="ylabel"
+                                :reducer="retentionAddLarge"
+                                :accumulator="retentionInitial"
+                                :numBars="30"
+                                :margin="chartSpecs.majcomChart.margins"
+                                :colorScale="majcomColorScale"
+                                :title="'MAJCOM'"
+                                :loaded="loaded">
+                </largeBarChart>
+ 
+<!--                 <div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
                             <h3>Servicing MPF <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
@@ -165,8 +184,26 @@
                         </div>
                     </div>
                 </div>
+ --> 
+                 <largeBarChart :id="'mpf'"         
+                                :dimension="mpfDim"
+                                :group="mpfGroup"
+                                :widthFactor="0.90"
+                                :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                                :minHeight="chartSpecs.baseChart.minHeight"
+                                :selected="selected"
+                                :ylabel="ylabel"
+                                :reducer="retentionAddLarge"
+                                :accumulator="retentionInitial"
+                                :numBars="30"
+                                :margin="chartSpecs.baseChart.margins"
+                                :colorScale="baseColorScale"
+                                :title="'Servicing MPF'"
+                                :loaded="loaded">
+                </largeBarChart>
+
             </div>
-        </transition-group>
+         </transition-group>
     </div>
 </template>
 
@@ -179,6 +216,7 @@
     import { store } from '@/store/store'
     import Loader from '@/components/Loader'
     import searchBox from '@/components/searchBox'
+    import largeBarChart from '@/components/largeBarChart'    
 
     export default {
         data() {
@@ -190,9 +228,10 @@
                 sa: "",
                 startAfsc:false,
                 loaded: false,
+                chartSpecs: chartSpecs,
                 asDate: 'Undetermined',
-                baseColor: chartSpecs.baseChart.color,
-                majcomColor: chartSpecs.majcomChart.color,
+                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                
+                majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
                 category: '1ST TERM',
                 year: '2018'
             }
@@ -201,6 +240,7 @@
             'afsc': afsc,
             'loader': Loader,
             'searchBox': searchBox,
+            largeBarChart
         },
         computed: {
           ndx: function(){
@@ -226,6 +266,19 @@
                 return "Keep Rate(%)"
             }
           },
+          majcomDim: function() {
+            return this.ndx.dimension(function(d) {return d.MAJCOM;});
+          },
+          majcomGroup: function() {
+            return this.majcomDim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial);
+          },
+          mpfDim: function() {
+            return this.ndx.dimension(function(d) {return d.MPF;});
+          },
+          mpfGroup: function() {
+            return this.mpfDim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial);
+          }
+
         },
         methods: {
           resetAll(){
@@ -305,6 +358,16 @@
                 KR: 0,
             }
           },
+            retentionAddLarge: function(p,v) {
+                p.asgn = p.asgn + +v.I
+                p.auth = p.auth + +v.E
+                p.stp = p.stp + +v.K
+                //if divide by 0, set to 0, and if NaN, set to zero
+                p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
+                p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
+                return p
+            },
+
           removeEmptyBins:(source_group) => {
             return {
                 all: () => {
@@ -490,7 +553,7 @@
 
                 catChart.filter('1ST TERM')
                 //Majcom
-                var majcomConfig = {}
+/*                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM })
                 var majcomInv = majcomConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
@@ -524,12 +587,11 @@
 
                     })
 
-                    
-                
-        
+ */                    
+       
 
                 //base(mpf)
-                var baseConfig = {}
+/*                 var baseConfig = {}
                 baseConfig.id = 'base'
                 baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
                 var baseGroup = baseConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
@@ -552,7 +614,7 @@
                             this.submit(d, 'dc-base-barchart')
                         })
                     })
-
+ */
                 //Call The AFSC Component HERE
                 this.startAfsc = true;
 
