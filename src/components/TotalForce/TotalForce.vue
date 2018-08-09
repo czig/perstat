@@ -11,10 +11,10 @@
             <li class="nav-item">
                 <a class="nav-link active" @click="dynamicComponent='adman'" data-toggle="tab">Active Duty</a>
             </li>                    
-<!--             <li class="nav-item">
+             <li class="nav-item">
                 <a class="nav-link" @click="dynamicComponent='ang'" data-toggle="tab">ANG</a>
             </li>
- -->            <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" @click="dynamicComponent='afr'" data-toggle="tab">AFR</a>
             </li>            
         </ul>
