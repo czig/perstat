@@ -94,7 +94,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <largeBarChart :id="'core'"         
+                               :dimension="coreDim"
+                               :group="coreGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.coreChart.aspectRatio"
+                               :minHeight="chartSpecs.coreChart.minHeight"
+                               :selected="selected"
+                               :ylabel="ylabel"
+                               :reducer="promoAdd"
+                               :accumulator="promoInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.coreChart.margins"
+                               :colorScale="coreColorScale"
+                               :title="'Core'"
+                               :loaded="loaded">
+                </largeBarChart>
+                <largeBarChart :id="'board'"         
+                               :dimension="boardDim"
+                               :group="boardGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.boardChart.aspectRatio"
+                               :minHeight="chartSpecs.boardChart.minHeight"
+                               :selected="selected"
+                               :ylabel="ylabel"
+                               :reducer="promoAdd"
+                               :accumulator="promoInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.boardChart.margins"
+                               :colorScale="boardColorScale"
+                               :title="'Board'"
+                               :loaded="loaded">
+                </largeBarChart>
+
+<!--                 <div class="row">
                     <div id="board" class="col-12">
                         <div id="dc-board-barchart">
                             <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -106,31 +139,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div id="occupGroup" class="col-12">
-                        <div id="dc-occupGroup-barchart">
-                            <h3>Occupation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-occupGroup-barchart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
+ -->            </div>
         </transition-group>
     </div>
 </template>
 
 <script>
 import dchelpers from '@/dchelpers'
+import chartSpecs from '@/chartSpecs'
 import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -139,6 +162,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 selected: "percent",
                 loaded: false,
                 showAlert: true,
+                width: document.documentElement.clientWidth,
+                chartSpecs: chartSpecs,
+                coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+                boardColorScale: d3.scale.ordinal().range([chartSpecs.boardChart.color]),
             }
         },
         computed: {
@@ -161,7 +188,20 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
             else {
                 return "PME Complete Rate (%)"
             }
+          },
+          coreDim: function() {
+            return this.ndx.dimension(function(d) {return d.Core;});
+          },
+          coreGroup: function() {
+            return this.coreDim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial);
+          },
+          boardDim: function() {
+            return this.ndx.dimension(function(d) {return d.Board;});
+          },
+          boardGroup: function() {
+            return this.boardDim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial);
           }
+
         },
         methods: {
           resetAll: (event)=>{
@@ -199,12 +239,34 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 }
             })
             dc.redrawAll()
+          },
+          promoAdd: function(p,v) {
+              p.elig = p.elig + +v.elig
+              p.sel = p.sel + +v.sel
+              //if divide by 0, set to 0, and if NaN, set to zero
+              p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
+              return p
+          },
+          promoRemove: function(p,v) {
+              p.elig = p.elig - +v.elig
+              p.sel = p.sel - +v.sel
+              //if divide by 0, set to 0, and if NaN, set to zero
+              p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
+              return p
+          },
+          promoInitial: function() {
+              return {
+                  elig: 0,
+                  sel: 0,
+                  percent: 0,
+              }
           }
         },
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            FontAwesomeIcon
+            FontAwesomeIcon,
+            largeBarChart
         },
         created: function(){
           console.log('created')
@@ -231,27 +293,6 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 renderCharts()
             }).catch(console.error)
 
-            var makeObject = (data) => {
-                var keys = data.shift()
-                var i = 0
-                var k = 0
-                var obj = null
-                var obj2 = null
-                var output = [];
-
-                for (i=0; i < data.length; i++) {
-                    obj = {};
-                    for (k = 0; k < keys.length; k++) {
-                        obj[keys[k]] = data[i][k];
-                    }
-                    obj2 = {};
-                    obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
-                    output.push(obj2);
-                }
-                return output;
-            }
-
             var formatData = (given) =>{
                 var obj = {}
 
@@ -261,10 +302,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 obj.Recomendation = formats.recommendFormat[given.Promo_Recomendation];
                 obj.PME = formats.pmeFormat[given.PME_Complete]
                 obj.Board = formats.gradeFormat[given.Board_ID.substring(1,3)] + "20" + given.Board_ID.substring(3,6)
-                obj.Occupation = given.Occupation
-                obj.Select = +given.num_select
-                obj.Eligible = +given.num_eligible
-                obj.Percent =  obj.Select/obj.Eligible === Infinity ? 0 : Math.round((obj.Select/obj.Eligible)*1000)/10 || 0;
+                obj.Core = given.Core
+                obj.sel = +given.num_select
+                obj.elig = +given.num_eligible
+                obj.Percent =  obj.sel/obj.elig === Infinity ? 0 : Math.round((obj.sel/obj.elig)*1000)/10 || 0;
 
                 return obj;
             }
@@ -287,15 +328,15 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
                 //reduce functions
                 function promoAdd(p,v) {
-                    p.elig = p.elig + +v.Eligible
-                    p.sel = p.sel + +v.Select
+                    p.elig = p.elig + +v.elig
+                    p.sel = p.sel + +v.sel
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
                     return p
                 }
                 function promoRemove(p,v) {
-                    p.elig = p.elig - +v.Eligible
-                    p.sel = p.sel - +v.Select
+                    p.elig = p.elig - +v.elig
+                    p.sel = p.sel - +v.sel
                     //if divide by 0, set to 0, and if NaN, set to zero
                     p.percent = p.sel/p.elig === Infinity ? 0 : Math.round((p.sel/p.elig)*1000)/10 || 0
                     return p
@@ -388,10 +429,11 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                gradeConfig.minHeight = 150 
-                gradeConfig.aspectRatio = 2
-                gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                gradeConfig.colors = d3.scale.category10()
+                gradeConfig.minHeight = 175 
+                gradeConfig.aspectRatio = 3 
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .valueAccessor((d) => {
@@ -466,31 +508,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                       return formats.pmeOrder[d.key]
                     })                                    
                 
-                //occupGroup
-                var occupGroupConfig = {}
-                occupGroupConfig.id = 'occupGroup'
-                occupGroupConfig.dim = this.ndx.dimension(function(d){return d.Occupation})
-                occupGroupConfig.group = occupGroupConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                occupGroupConfig.minHeight = 200 
-                occupGroupConfig.aspectRatio = 5 
-                occupGroupConfig.margins = {top: 10, left: 40, right: 30, bottom: 40}
-                occupGroupConfig.colors = ["#108b52"] 
-                var occupGroupChart = dchelpers.getOrdinalBarChart(occupGroupConfig)
-                occupGroupChart
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-occupGroup-barchart')
-                        })
-                    })
-                    .gap(20)
-
                 //board
-                var boardConfig = {}
+/*                 var boardConfig = {}
                 boardConfig.id = 'board'
                 boardConfig.dim = this.ndx.dimension(function(d){return  d.Board})
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
@@ -518,10 +537,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         })
                     })
 
-                //Download Raw Data button
+ */                //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
-                    var data = occupGroupConfig.dim.top(Infinity);
+                    var data = boardConfig.dim.top(Infinity);
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                     var myFilters = '';
@@ -566,7 +585,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 <style src="@/../node_modules/dc/dc.css">
 </style>
-<style scoped>
+<style>  /*should be scoped*/
 .custom-control.custom-radio{
     padding-left:20px;
     padding-right:10px;
@@ -585,5 +604,4 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 .fade-enter-to, .fade-leave {
     opacity: 1;
 }
-
 </style>
