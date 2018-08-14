@@ -4,7 +4,6 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const webpack = require('webpack')
-var Promise = require("es6-promise").Promise;
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -12,7 +11,7 @@ function resolve (dir) {
 
 module.exports = {
   entry: {
-    app: './src/main.js'
+    app: ['babel-polyfill','./src/main.js']
   },
   output: {
     path: config.build.assetsRoot,
@@ -90,7 +89,6 @@ module.exports = {
           'FileSaver': 'file-saver',
           dc: 'dc',
           _: 'lodash',
-          Promise: 'es6-promise-promise'
         })
     ]
 }
