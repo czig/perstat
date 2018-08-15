@@ -29,13 +29,13 @@ describe('Home', () => {
         expect(wrapper.first('div').getAttribute('class')).to.equal('container')
     })
     //beginning of relevant tests - test whether clicking on cards pushes a new route to the router
-    it('pushes "/tf_inv" route when clicking tf tile', () => {
+    it('pushes "/totalforce" route when clicking tf tile', () => {
         const wrapper = mount(Home, {router}) 
         routerPush = sandbox.spy(wrapper.vm.$router, 'push')
         const tfTile = wrapper.find('#tf-card')[0]
         tfTile.trigger('click')
         wrapper.update();
-        expect(routerPush).to.have.been.calledWith('/tf_inv')
+        expect(routerPush).to.have.been.calledWith('/totalforce')
     })
     it('pushes "/officer" route when clicking officer tile', () => {
         const wrapper = mount(Home, {router}) 

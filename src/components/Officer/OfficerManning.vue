@@ -183,6 +183,21 @@ import largeBarChart from '@/components/largeBarChart'
                 chartSpecs: chartSpecs,
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
+                gradeChart: {},
+                gradeConfig: {},
+                //var gradeConfig = {};
+                //gradeConfig.id = 'grade';
+                //gradeConfig.dim = this.ndx.dimension(function (d) {
+                //    return d.Grade;
+                //})
+                //gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                //gradeConfig.minHeight = 220 
+                //gradeConfig.aspectRatio = 4 
+                //gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
+                //var c = d3.rgb(51,172,255)
+                //gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
+                afscGroupChart: {},
+                afscGroupConfig: {}
             }
         },
         computed: {
@@ -292,6 +307,19 @@ import largeBarChart from '@/components/largeBarChart'
                 p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
                 p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
                 return p
+            },
+            //TODO: this can be computed
+            generateGradeConfig: function() {
+                this.gradeConfig = {
+                    'width': 200,
+                    'height': 300,
+                    'elasticX': true,
+                    'dimension': this.ndx.dimension(function(d) { return d.Grade; }),
+                    'group': this.ndx.dimension(function(d) {return d.Grade; }).group().reduce(this.manningAdd,this.manningRemove,this.manningInitial),
+                    'minHeight': 220,
+                    'margins': {top: 10, left: 50, right: 30, bottom: 20},
+                    'colors': d3.scale.category10()
+                }
             },
 
         },
@@ -487,25 +515,19 @@ import largeBarChart from '@/components/largeBarChart'
                     })
 
                 //grade
-                var gradeConfig = {};
-                gradeConfig.id = 'grade';
-                gradeConfig.dim = this.ndx.dimension(function (d) {
-                    return d.Grade;
-                })
-                gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                gradeConfig.minHeight = 220 
-                gradeConfig.aspectRatio = 4 
-                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
-                var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
-                var gradeChart = dchelpers.getRowChart(gradeConfig)
+                this.generateGradeConfig()
+                //var gradeChart = dchelpers.getRowChart(this.gradeConfig)
+                var gradeChart = dc.rowChart('#dc-grade-rowchart')
                 gradeChart
+                    .options(this.gradeConfig)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })                                    
+                this.gradeChart = gradeChart
+                window.gradeChart = gradeChart
 
                 //afscGroup
                 var afscGroupConfig = {}
@@ -530,31 +552,9 @@ import largeBarChart from '@/components/largeBarChart'
                             this.submit(d, 'dc-afscGroup-barchart')
                         })
                     })
+                this.afscGroupConfig = afscGroupConfig
+                this.afscGroupChart = afscGroupChart
 
-                //base(mpf)
-/*                 var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
-                var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .elasticX(true)
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-base-barchart')
-                        })
-                    })
- */
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
@@ -583,7 +583,7 @@ import largeBarChart from '@/components/largeBarChart'
                 }
 
                 //create charts
-                dc.renderAll()
+                //dc.renderAll()
                 dc.redrawAll()
 
             }
