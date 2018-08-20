@@ -4,6 +4,11 @@
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
+                <div class="row">
+                    <div class="col-auto" style="font-weight:bold; align:left; padding-top:15px">
+                        Officer Detailed Education Information
+                    </div>
+                </div>
                 <div class="row pt-2" >
                     <div class="col-auto">
                         TOTAL:
