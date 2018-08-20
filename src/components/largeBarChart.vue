@@ -240,7 +240,6 @@ export default {
             }
         },
         sortKey: function(order) {
-            console.log(order)
             if (order == 'desc') {
                 return this.removeEmptyBins(this.group).all().sort((a,b) => b.key.localeCompare(a.key));
             } else {
@@ -248,7 +247,6 @@ export default {
             }
         },
         sortValue: function(order) {
-            console.log(order)
             if (order == 'desc') {
                 return this.removeEmptyBins(this.group).all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
             } else {
