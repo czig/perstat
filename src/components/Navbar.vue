@@ -9,13 +9,12 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
           <router-link class="nav-item" to="/" tag="li" active-class="active" exact><a class="nav-link">Home</a></router-link>
-        <router-link class="nav-item" to="/tf_inv" tag="li" active-class="active"><a class="nav-link">TF Inventory</a></router-link>
+        <router-link class="nav-item" to="/totalforce" tag="li" active-class="active"><a class="nav-link">TF Military</a></router-link>
           <router-link class="nav-item" to="/officer" tag="li" active-class="active"><a class="nav-link">Officer</a></router-link>
           <router-link class="nav-item" to="/enlisted" tag="li" active-class="active"><a class="nav-link">Enlisted</a></router-link>
           <router-link class="nav-item" to="/civilian" tag="li" active-class="active"><a class="nav-link">Civilian</a></router-link>
           <router-link class="nav-item" to="/assignments" tag="li" active-class="active"><a class="nav-link">Assignments</a></router-link>
-          <!-- <router-link class="nav-item" to="/education" tag="li" active-class="active"><a class="nav-link">Education</a></router-link> -->
-
+          <router-link class="nav-item" to="/education" tag="li" active-class="active"><a class="nav-link">Highest Education</a></router-link>
          <!-- 
           <router-link class="nav-item" to="/joint" tag="li" active-class="active"><a class="nav-link">Joint</a></router-link>
           <router-link class="nav-item" to="/care" tag="li" active-class="active"><a class="nav-link">Care</a></router-link>

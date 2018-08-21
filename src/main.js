@@ -1,14 +1,5 @@
-//Import polyfill so IE can use Promise & Axios
-import {polyfill} from 'es6-promise'; polyfill();
-var ES6Promise = require("es6-promise");
-ES6Promise.polyfill();
-
-//startsWith IE polyfill 
-if(!String.prototype.startsWith) {
-  String.prototype.startsWith = function(searchString, position){
-    return this.substr(position || 0, searchString.length) === searchString;
-  };
-}
+// babel-polyfill allows use of Promises in IE
+import "babel-polyfill";
 
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.

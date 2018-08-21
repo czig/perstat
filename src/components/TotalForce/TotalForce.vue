@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <h1 class="col">Total Force</h1>
+            <h1 class="col">Total Force Military</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
@@ -11,7 +11,7 @@
             <li class="nav-item">
                 <a class="nav-link active" @click="dynamicComponent='adman'" data-toggle="tab">Active Duty</a>
             </li>                    
-            <li class="nav-item">
+             <li class="nav-item">
                 <a class="nav-link" @click="dynamicComponent='ang'" data-toggle="tab">ANG</a>
             </li>
             <li class="nav-item">
@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import adman from '@/components/TotalForce/AdMan'
+ import adman from '@/components/TotalForce/AdMan'
 import ang from '@/components/TotalForce/ANGMan'
-import afr from '@/components/TotalForce/AFRMan'
-/*import afr from '@/components/TF/AFR' */
+import afr from '@/components/TotalForce/AFRMan' 
+
 import { store } from '@/store/store'
 
 export default {
@@ -43,37 +43,16 @@ export default {
         },
     },
     components: {
-        adman,
+         adman,
         ang,
-        afr
+        afr 
     }
 }
 </script>
 
 <style scoped>
 
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
-}
 
-#radioSelect{
-    margin-bottom: 0px;
-}
-
-.active{
-    border-color:red;
-}
-.padded{
-    margin-left: 10px;
-    margin-top: 10px;
-}
-.centered{
-    float: none;
-    margin: 0 auto;
-}
 .nav-tabs .nav-link{
     color:black;
 }
@@ -81,33 +60,6 @@ export default {
     font-weight:bold;
     color:teal;
 }
-.fade-enter{
-    opacity: 0;
-}
-.fade-enter-active, .fade-leave-active{
-    transition: all 0.5s;
-}
-.fade-leave-to{
-    opacity: 0;
-}
-.custom-control-description{
-    font-weight: bold;
-}
 
-#category .custom-control-input:checked~.custom-control-indicator {
-    background-color: rgb(18, 153, 60);
-}
-
-#category .custom-control-input:focus~.custom-control-indicator {
-    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(18, 153, 60,.25);
-}
-
-#category{
-    margin-top: .5rem;
-}
-
-.form-group {
-    margin-bottom: 0;
-}
 </style>
 
