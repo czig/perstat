@@ -12,10 +12,10 @@
                 <a class="nav-link active" @click="dynamicComponent='adman'" data-toggle="tab">Active Duty</a>
             </li>                    
              <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='ang'" data-toggle="tab">ANG</a>
+                <a class="nav-link" @click="dynamicComponent='Construction'" data-toggle="tab">ANG</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='afr'" data-toggle="tab">AFR</a>
+                <a class="nav-link" @click="dynamicComponent='Construction'" data-toggle="tab">AFR</a>
             </li>            
         </ul>
         <transition name="fade" mode="out-in">
@@ -24,10 +24,13 @@
     </div>
 </template>
 
+
+
 <script>
- import adman from '@/components/TotalForce/AdMan'
+import adman from '@/components/TotalForce/AdMan'
 import ang from '@/components/TotalForce/ANGMan'
 import afr from '@/components/TotalForce/AFRMan' 
+import Construction from '@/components/Construction'
 
 import { store } from '@/store/store'
 
@@ -43,9 +46,10 @@ export default {
         },
     },
     components: {
-         adman,
+        adman,
         ang,
-        afr 
+        afr,
+        Construction 
     }
 }
 </script>
