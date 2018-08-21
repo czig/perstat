@@ -5,51 +5,35 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                <div id="radioSelect" class="col form-group">
-<!--                     <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio1" value="stemPercent" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Percentage</span>              
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioPercent" type="radio" id="radio2" value="totalCount" v-model="displayType" @click="radioButton">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Count</span>
-                    </label>
- -->                </div>     
-                <div class="col-auto" align="right">
-                    <button type="button" id="download"
-                            class="btn btn-info btn-rounded btn-sm waves-effect" 
-                            >Download Raw Data</button>
-                    <button type="button" 
-                            class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                            @click="searchCore='';resetAll()">Reset All</button>
-                </div>      
-                </div>       
-<!--                 <div id="stats" class="row">
                     <div class="col-auto">
                         TOTAL:
                         <span id="totalCount"></span>
                     </div>
                     <div class="col-auto">
-                        PERCENT:
-                        <span id="totalPercent"></span>
+                        STEM:
+                        <span id="stemTotal"></span>
                     </div>
-                    <div class="col"></div>
-                </div>  
- -->                <div class='row'>
-                    <div id="fyr" class="col-6">
+                    <div class="col-auto">
+                        NON STEM:
+                        <span id="nonStemTotal"></span>
+                    </div>
+                    <div class="col-6" align="right">
+                        <button type="button" id="download"
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
+                        <button type="button" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="searchCore='';resetAll()">Reset All</button>
+                    </div>      
+                </div>       
+                <div class='row'>
+                    <div id="fyr" class="col-4">
                         <div id="dc-fyr-barchart">
                             <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
                             </h3>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-fyr-barchart')">Reset
-                            </button>
                         </div>
                     </div>
-                    <div id="edlevel" class="col-6">
+                    <div id="edlevel" class="col-8">
                         <div id="dc-edlevel-barchart">
                             <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -63,7 +47,7 @@
                 </div>
                 <br>
                 <div class='row'>
-                    <div id="grade" class="col-6">
+                    <div id="grade" class="col-4">
                         <div id="dc-grade-rowchart">
                             <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -74,10 +58,7 @@
                             </h3>
                         </div>
                     </div> 
-                </div>
-                <br>
-                <div class='row'>
-                    <div id="cafsc" class="col-12">
+                    <div id="cafsc" class="col-8">
                         <div id="dc-cafsc-barchart">
                             <h3>CAFSC<span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -87,7 +68,7 @@
                             </button>
                             </h3>
                             <searchBox
-                                v-model:value="searchCAFSC"
+                                v-model="searchCAFSC"
                                 size="3"
                                 label="Search CAFSC"
                                 @sub="submit(searchCAFSC,'dc-cafsc-barchart')"
@@ -119,7 +100,6 @@
 			return {
 					data: [],
                     loaded: false,
-                    displayType: "stemPercent",
                     fyr: '2018',
                     searchCAFSC: "",
 			}
@@ -142,7 +122,6 @@
             dc.filterAll()
             dc.redrawAll()
             this.fyr = '2018'
-            //this.displayType = 'stemPercent'
             this.singleSubmit('2018', 'dc-fyr-barchart')
           },
           resetChart: (id)=>{
@@ -207,9 +186,9 @@
             axios.post(axios_url_high_ed_level).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
-                console.log(invData)
+                //console.log(invData)
                 var objData = makeObject(invData)
-                console.log(objData)
+                //console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -230,7 +209,6 @@
                     }
                     obj2 = {};
                     obj2 = formatData(obj)
-                    //obj2 = testData(obj2, obj)
                     output.push(obj2); 
                 }
                 return output;
@@ -253,8 +231,8 @@
                 obj.cafsc = given.cafsc;
             }
 
-            if (given.grade < '40' && given.grade >= '30') {
-                obj.grade = formats.gradeFormat[given.grade];
+            if (given.grd < '40' && given.grd >= '30') {
+                obj.grade = formats.gradeFormat[given.grd];
             } else {
                 obj.grade = "error";
             }
@@ -263,21 +241,9 @@
             obj.fyr = given.fyr
             obj.type = given.type
             obj.stem = given.stem
-            //obj.totalCount = given.count
-            //obj.percent = given.stem/given.count === Infinity ? 0 : Math.round((given.stem/given.count)*1000)/10 || 0;
+            obj.nonstem = given.non_stem
 
                 return obj;
-            }
-
-            var testData = (formatted, original) =>{
-                for (var key in formatted) {
-                    if (formatted[key] === ''){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
-                        formatted[key] = "UNKNOWN"
-                    }
-                }
-                return formatted;
             }
 
             var renderCharts = () => {
@@ -287,26 +253,18 @@
 
                 //reduce functions
                 function highEdAdd(p,v) {
-                    //p.stemCount = p.stemCount + +v.stem
                     p.totalCount = p.totalCount + +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
                 function highEdRemove(p,v) {
-                    //p.stemCount = p.stemCount - +v.stem
                     p.totalCount = p.totalCount - +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
                     return p
                 }
 
                 function highEdInitial() {
                     return {
-                        //stemCount: 0,
                         totalCount: 0
-                        //stemPercent: 0,
                     }
                 }                  
 
@@ -326,7 +284,7 @@
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.key != "error"
+                                return d.key != "error" && d.key != "**ERROR**"
                             })
                         }
                     }
@@ -340,13 +298,10 @@
                     return d.fyr;
                 })
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
-                fyrConfig.minHeight = 80 
-                fyrConfig.aspectRatio = 4 
-                fyrConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                fyrConfig.minHeight = 310
-                fyrConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                fyrConfig.margins = {top: 10, left: 45, right: 30, bottom: 30}
-                fyrConfig.colors = [chartSpecs.baseChart.color]
+                fyrConfig.minHeight = chartSpecs.yearChart.minHeight
+                fyrConfig.aspectRatio = chartSpecs.yearChart.aspectRatio
+                fyrConfig.margins = chartSpecs.yearChart.margins
+                fyrConfig.colors = [chartSpecs.yearChart.color]
                 var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
 
                 fyrChart
@@ -367,8 +322,7 @@
                     })
                 fyrChart.barPadding(0.2)
                 fyrChart.filter('2018')
- 
- 
+  
                 //Education Level Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
@@ -377,12 +331,12 @@
                 })
                 var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
-                edLevelConfig.minHeight = 300
-                edLevelConfig.aspectRatio = 3
-                edLevelConfig.margins = {top: 10, left: 100, right: 30, bottom: 130}
-                edLevelConfig.colors = ["#108b52"]
+                edLevelConfig.minHeight = chartSpecs.highEdChart.minHeight
+                edLevelConfig.aspectRatio = chartSpecs.highEdChart.aspectRatio
+                edLevelConfig.margins = chartSpecs.highEdChart.margins
+                edLevelConfig.colors = [chartSpecs.highEdChart.color]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
-                edLevelChart
+                edLevelChart                   
                     .valueAccessor(function(d) {return d.value.totalCount;})               
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
@@ -406,10 +360,12 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 280
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 20, right: 30, bottom: 50}
-                gradeConfig.colors = d3.scale.category10()
+                gradeConfig.minHeight = 260
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), 
+                c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString(),c.darker(0.9).toString()])
 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 
@@ -428,10 +384,10 @@
                 })
                 var cafscGroup = removeEmptyBins(cafscConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 cafscConfig.group = removeError(cafscGroup)
-                cafscConfig.minHeight = 400
+                cafscConfig.minHeight = 350
                 cafscConfig.aspectRatio = 3
-                cafscConfig.margins = {top: 10, left: 20, right: 20, bottom: 200}
-                cafscConfig.colors = ["#333cff"]
+                cafscConfig.margins = {top: 10, left: 40, right: 30, bottom: 150}
+                cafscConfig.colors = [chartSpecs.afscGroupChart.color]
                 var cafscChart = dchelpers.getOrdinalBarChart(cafscConfig)
                 cafscChart
                     .valueAccessor(function(d) {return d.value.totalCount;})
@@ -444,17 +400,6 @@
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
-
-                //remove empty function (es6 syntax to keep correct scope)
-                var removeError = (source_group) => {
-                    return {
-                        all: () => {
-                            return source_group.all().filter((d) => {
-                                return d.key != "error"
-                            })
-                        }
-                    }
-                }
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -486,6 +431,24 @@
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
 
+                var stemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.stem })
+                var stemTotalND = dc.numberDisplay("#stemTotal")
+                stemTotalND.group(stemTotal)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+
+                var nonStemTotal = this.ndx.groupAll().reduceSum(function(d) { return +d.nonstem })
+                var nonStemTotalND = dc.numberDisplay("#nonStemTotal")
+                nonStemTotalND.group(nonStemTotal)
+                    .formatNumber(d3.format("d"))
+                    .valueAccessor(function(d) { return d;})
+                    .html({
+                        one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
+                    })
+
                 var percentGroup = this.ndx.groupAll().reduce(highEdAdd,highEdRemove,highEdInitial)
                 var percentND = dc.numberDisplay("#totalPercent")
                 percentND.group(percentGroup)
@@ -495,22 +458,6 @@
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
 
-                //Download Raw Data button
-                d3.select('#download')
-                .on('click', ()=>{
-                    var data = gradeConfig.dim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
-
-                    var myFilters = '';
-                    dc.chartRegistry.list().forEach((d)=>{
-                        if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'
-                    })
-
-                    FileSaver.saveAs(blob, 'PERSTAT Officer_STEM' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });
-                    
-                
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
@@ -545,8 +492,9 @@
 
 </script>
 
-<style src="@/../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css">
 </style>
+
 <style scoped>
 .custom-control.custom-radio{
     padding-left:20px;
