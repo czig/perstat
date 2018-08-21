@@ -43,7 +43,6 @@ const webpackConfig = merge(baseWebpackConfig, {
       'axios_url_enl_man': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ENL.js"',
       'axios_url_off_pro': '"https://starsraw.afpc.randolph.af.mil/perstat_json/ps_off_promo.json"',
       'axios_url_off_man': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_OFF.js"',
-      'axios_url_adman': '"https://starsraw.afpc.randolph.af.mil/perstat_json/PS_ALL.js"',
       'axios_url_off_tos': '"https://starsraw.afpc.randolph.af.mil/perstat_json/officer_tos.js"',
       'axios_url_enl_tos': '"https://starsraw.afpc.randolph.af.mil/perstat_json/enlisted_tos.js"',
       'axios_url_join_spouse': '"https://starsraw.afpc.randolph.af.mil/perstat_json/join_spouse.js"',  
