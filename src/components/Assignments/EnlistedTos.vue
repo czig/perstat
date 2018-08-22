@@ -85,7 +85,6 @@
                             </div>
                              </transition>
                         </div>
-                    </div>
                 </div>
                 <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
                     Please select from maps below to display Installation graph
