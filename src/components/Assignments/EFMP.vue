@@ -91,7 +91,7 @@
                                     @click="resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchMajcom"
+                                v-model="searchMajcom"
                                 size="3"
                                 label="Search MAJCOM"
                                 @sub="submit(searchMajcom,'dc-majcom-barchart')"
@@ -105,14 +105,14 @@
                 <div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
-                            <h3>MPF <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Servicing MPF <span style="font-size: 14pt; opacity: 0.87;"></span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
                                     @click="resetChart('dc-base-barchart')">Reset</button>
                             </h3>
                             <searchBox
-                                v-model:value="searchBase"
+                                v-model="searchBase"
                                 size="3"
                                 label="Search MPF"
                                 @sub="submit(searchBase,'dc-base-barchart')"
@@ -378,6 +378,7 @@ export default {
             var typeChart = dchelpers.getRowChart(typeConfig)
 
             typeChart.filter(this.category)
+            
             //Marital marital
             var maritalConfig = {};
             maritalConfig.id = 'marital';
@@ -399,24 +400,32 @@ export default {
             gradeConfig.dim = this.ndx.dimension(function (d) {
                 return d.Grade;
             })
-            gradeConfig.group = gradeConfig.dim.group().reduceSum((d)=>{
+            gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
             	return d.Cnt
-            })
-            gradeConfig.minHeight = 270
-            gradeConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-            gradeConfig.margins = {top: 10, left: 45, right: 30, bottom: 60}
-            gradeConfig.colors = ['green']
+            }))
+            gradeConfig.minHeight = 260
+            gradeConfig.aspectRatio = 3
+            gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
+            var c = d3.rgb(51,172,255)
             var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
-
             gradeChart
                 .elasticX(true)
-                .on('pretransition', (chart)=> {
-                    chart.selectAll('g.x text')
-                    .attr('transform', 'translate(-8,0)rotate(-45)')
-                    .on('click', (d)=>{
-                        this.submit(d, 'dc-grade-barchart')
-                    })
+                .colorAccessor(function(d){
+                    return d.key;
                 })
+                .colors(d3.scale.ordinal().domain(["(01) 2LT", "(02) 1LT", "(03) CPT", "(04) MAJ", "(05) LTC", "(E2) AMN", "(E3) A1C",
+                                                     "(E4) SRA", "(E5) SSG", "(E6) TSG", "(E7) MSG", "(E8) SMS", "(E9) CMS"])
+                .range([c.brighter(1).toString(), c.brighter(0.9).toString(), c.brighter(0.8).toString(), 
+                                        c.brighter(0.7).toString(), c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(), 
+                                        c.brighter(0.3).toString(), c.brighter(0.2).toString(), c.brighter(0.1).toString(), c.darker(0.2).toString(), 
+                                        c.darker(0.3).toString(), c.darker(0.4).toString()]))
+            .on('pretransition', (chart)=> {
+                chart.selectAll('g.x text')
+                .attr('transform', 'translate(-8,0)rotate(-45)')
+                .on('click', (d)=>{
+                    this.submit(d, 'dc-grade-barchart')
+                })
+            })
             //projChart.barPadding(0.2)
 
             //MAJCOM

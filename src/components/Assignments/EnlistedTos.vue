@@ -63,26 +63,28 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-select">
+                        <div id="base" class="col-12">
+                                <div id="dc-base-select">
+                                </div>
+                                <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
+                                <button v-if="baseHasFilter" type="button"
+                                        class="btn btn-danger btn-sm btn-rounded reset" 
+                                        @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
+                                </h3>
+                                <searchBox
+                                    v-model="searchBase"
+                                    size="3"
+                                    label="Enter Installation"
+                                    @sub="submit(searchBase,'dc-base-select')"
+                                    button="true"
+                                    :color="baseColor"
+                                    :btnColor="baseColor"
+                                ></searchBox>
+                            <transition name="expand" key="1">
+                            <div id="dc-base-barchart" v-show="loaded&&showBase">
+                            </div>
+                             </transition>
                         </div>
-                        <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
-                        <button v-if="baseHasFilter" type="button"
-                                class="btn btn-danger btn-sm btn-rounded reset" 
-                                @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
-                        </h3>
-                        <searchBox
-                            v-model:value="searchBase"
-                            size="3"
-                            label="Enter Installation"
-                            @sub="submit(searchBase,'dc-base-select')"
-                            button="true"
-                            :color="baseColor"
-                            :btnColor="baseColor"
-                        ></searchBox>
-                        <transition name="expand" key="1">
-                            <div id="dc-base-barchart" v-show="loaded&&showBase"></div>
-                        </transition>
                     </div>
                 </div>
                 <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
@@ -393,7 +395,7 @@ import searchBox from '@/components/searchBox'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 140
+                tourConfig.minHeight = 200
                 tourConfig.aspectRatio = 2.7
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
@@ -440,19 +442,23 @@ import searchBox from '@/components/searchBox'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                gradeConfig.minHeight = 280
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 40, right: 30, bottom: 50}
-                gradeConfig.colors = ["#1976d2"]
-
+                gradeConfig.minHeight = 240
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 60}
+                var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
-
                 gradeChart
                     .valueAccessor((d) => {
                         return d.value.average
-                    })
+                    })                
                     .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
+                    .colorAccessor(function(d){
+                        return d.key;
+                    })
+                    .colors(d3.scale.ordinal().domain(["[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
+                    .range([c.brighter(1).toString(), c.brighter(0.8).toString(), c.brighter(0.6).toString(), 
+                                            c.brighter(0.4).toString(), c.brighter(0.2).toString(), c.darker(0.2).toString(), 
+                                            c.darker(0.4).toString()]))
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                             .attr('transform', 'translate(-8,0)rotate(-45)')

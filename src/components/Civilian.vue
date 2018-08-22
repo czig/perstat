@@ -85,7 +85,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <largeBarChart :id="'majcom'"         
+                               :dimension="majcomDim"
+                               :group="majcomGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                               :minHeight="chartSpecs.majcomChart.minHeight"
+                               :ylabel="ylabel"
+                               :reducer="inventoryAdd"
+                               :accumulator="inventoryInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.majcomChart.margins"
+                               :colorScale="majcomColorScale"
+                               :title="'MAJCOM'"
+                               :loaded="loaded">
+                </largeBarChart>
+
+<!--                 <div class="row">
                     <div id="majcom" class="col-12">
                         <div id="dc-majcom-barchart">
                             <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -106,7 +122,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+ -->                <largeBarChart :id="'loc'"         
+                               :dimension="locDim"
+                               :group="locGroup"
+                               :widthFactor="0.90"
+                               :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                               :minHeight="chartSpecs.baseChart.minHeight"
+                               :ylabel="ylabel"
+                               :reducer="inventoryAdd"
+                               :accumulator="inventoryInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.baseChart.margins"
+                               :colorScale="locColorScale"
+                               :title="'Servicing MPF'"
+                               :loaded="loaded">
+                </largeBarChart>
+                <!--<div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
                             <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -126,7 +157,7 @@
                             ></searchBox>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
         </transition-group>
     </div>
@@ -141,6 +172,7 @@ import AutoComplete from '@/components/AutoComplete'
 import searchBox from '@/components/searchBox'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
+import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -150,7 +182,10 @@ import { store } from '@/store/store'
                 searchBase: "",
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
-                majcomColor: chartSpecs.majcomChart.color
+                majcomColor: chartSpecs.majcomChart.color,
+                chartSpecs: chartSpecs,
+                locColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+                majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color])
             }
         },
         computed: {
@@ -165,7 +200,20 @@ import { store } from '@/store/store'
           },
           ylabel: function() {
             return "Inventory"
+          },
+          locDim: function() {
+              return this.ndx.dimension(d => d.MPF);
+          },
+          locGroup: function() {
+              return this.locDim.group().reduceSum(function(d) {return d.Inventory;}) 
+          },
+          majcomDim: function() {
+              return this.ndx.dimension(d => d.MAJCOM);
+          },
+          majcomGroup: function() {
+              return this.majcomDim.group().reduceSum(function(d) {return d.Inventory;}) 
           }
+
         },
         methods: {
           resetAll: (event)=>{
@@ -203,12 +251,19 @@ import { store } from '@/store/store'
                 }
             })
             dc.redrawAll()
+          },
+          inventoryAdd: function(p,v) {
+              return p + v
+          },
+          inventoryInitial: function() {
+            return 0;
           }
         },
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            searchBox
+            searchBox,
+            largeBarChart
         },
         created: function(){
           console.log('created')
@@ -314,7 +369,7 @@ import { store } from '@/store/store'
                 careerFieldConfig.dim = this.ndx.dimension(function(d){
                     return d.Career_Field;
                 })
-                careerFieldConfig.group = careerFieldConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
+                careerFieldConfig.group = removeEmptyBins(careerFieldConfig.dim.group().reduceSum(function(d) {return d.Inventory;}))
                 careerFieldConfig.minHeight = 200
                 careerFieldConfig.aspectRatio = 3
                 careerFieldConfig.margins = {top: 10, left: 45, right: 30, bottom: 110}
@@ -339,10 +394,16 @@ import { store } from '@/store/store'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                gradeConfig.minHeight = 400 
+                gradeConfig.minHeight = 450 
                 gradeConfig.aspectRatio = 1
                 gradeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
-                gradeConfig.colors = d3.scale.category10()
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(), c.brighter(0.9).toString(), c.brighter(0.8).toString(), 
+                                            c.brighter(0.7).toString(), c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(), 
+                                            c.brighter(0.3).toString(), c.brighter(0.2).toString(), c.brighter(0.1).toString(), c.darker(0.1).toString(), 
+                                            c.darker(0.2).toString(), c.darker(0.3).toString(), c.darker(0.4).toString(), c.darker(0.5).toString(), 
+                                            c.darker(0.6).toString(), c.darker(0.7).toString()])
+
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                 .ordering(d=>{
@@ -404,7 +465,7 @@ import { store } from '@/store/store'
                 var priorChart = dchelpers.getRowChart(priorConfig)
 
                 //Majcom
-                var majcomConfig = {}
+/*                 var majcomConfig = {}
                 majcomConfig.id = 'majcom'
                 majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM })
                 var majcomPercent = majcomConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
@@ -424,27 +485,27 @@ import { store } from '@/store/store'
                             this.submit(d, 'dc-majcom-barchart')
                         })
                     })
-
-                //base(mpf)
-                var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
-                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-base-barchart')
-                        })
-                    })
+ */
+               // //base(mpf)
+               // var baseConfig = {}
+               // baseConfig.id = 'base'
+               // baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
+               // var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
+               // baseConfig.group = removeEmptyBins(basePercent)
+               // baseConfig.minHeight = chartSpecs.baseChart.minHeight 
+               // baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+               // baseConfig.margins = chartSpecs.baseChart.margins 
+               // baseConfig.colors = [chartSpecs.baseChart.color]
+               // var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
+               // baseChart
+               //     .elasticX(true)
+               //     .on('pretransition', (chart)=> {
+               //         chart.selectAll('g.x text')
+               //         .attr('transform', 'translate(-8,0)rotate(-45)')
+               //         .on('click', (d)=>{
+               //             this.submit(d, 'dc-base-barchart')
+               //         })
+               //     })
 
                 //Download Raw Data button
                 d3.select('#download')

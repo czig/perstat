@@ -72,7 +72,7 @@
                                         @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
                                 </h3>
                                 <searchBox
-                                    v-model:value="searchBase"
+                                    v-model="searchBase"
                                     size="3"
                                     label="Enter Installation"
                                     @sub="submit(searchBase,'dc-base-select')"
@@ -394,7 +394,7 @@ import searchBox from '@/components/searchBox'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 140
+                tourConfig.minHeight = 200
                 tourConfig.aspectRatio = 2.7
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
@@ -441,11 +441,10 @@ import searchBox from '@/components/searchBox'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                gradeConfig.minHeight = 280
-                gradeConfig.aspectRatio = 5
-                gradeConfig.margins = {top: 30, left: 40, right: 30, bottom: 50}
-                gradeConfig.colors = ["#1976d2"]
-
+                gradeConfig.minHeight = 230
+                gradeConfig.aspectRatio = 3
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
+                var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
 
                 gradeChart
@@ -453,7 +452,13 @@ import searchBox from '@/components/searchBox'
                         return d.value.average
                     })
                     .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
+                    .colorAccessor(function(d){
+                        return d.key;
+                    })
+                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL"])
+                    .range([c.brighter(0.9).toString(), c.brighter(0.6).toString(), c.brighter(0.3).toString(), c.toString(), 
+                                            c.darker(0.2).toString(), c.darker(0.4).toString()]))
+                    
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
 	                        .attr('transform', 'translate(-8,0)rotate(-45)')

@@ -377,20 +377,20 @@ export default {
 
 	#dc-afsc-select{
 		padding-left: 0;
-        //height: 400px;
+        /* height: 400px; */
 	}
 
     .expandMid-enter-active, .expandMid-leave-active {
-      //transition: all 2s ease;
+      /* transition: all 2s ease; */
       animation: bounce-in 1.1s;
-      //max-height: 600px;
+      /* max-height: 600px; */
       overflow: hidden;
     }
-    .expandMid-enter, .expandMid-leave-to {
+/*     .expandMid-enter, .expandMid-leave-to {
       //animation: bounce-in .8s reverse;
       //max-height: 0;
     }
-
+ */
     @keyframes bounce-in {
       0% {
         transform: scaleY(0);

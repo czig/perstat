@@ -75,7 +75,7 @@
                                 <div v-else class="col-12">
                                      
                                     <afsc 
-                                        v-model:value="sa"
+                                        v-model="sa"
                                         :ndx="ndx"
                                         :ylabel="ylabel"
                                         :selected="selected"
@@ -126,6 +126,7 @@
 
 <script>
 import dchelpers from '@/dchelpers'
+import chartSpecs from '@/chartSpecs'
 import axios from 'axios'
 import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
@@ -140,7 +141,9 @@ import { store } from '@/store/store'
                 selected: "percent",
                 startAfsc: false,
                 sa: '',
-                loaded: false
+                loaded: false,
+                chartSpecs: chartSpecs,
+                boardColor: chartSpecs.boardChart.color
             }
         },
         computed: {
@@ -164,6 +167,7 @@ import { store } from '@/store/store'
                 return "PME Complete Rate (%)"
             }
           }
+
         },
         methods: {
             resetAll: (event)=>{
@@ -370,10 +374,12 @@ import { store } from '@/store/store'
                     return d.Grade
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                gradeConfig.minHeight = 150 
+                gradeConfig.minHeight = 240 
                 gradeConfig.aspectRatio = 2
                 gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                gradeConfig.colors = d3.scale.category10()
+                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.8).toString(), c.brighter(0.6).toString(), c.brighter(0.4).toString(),c.brighter(0.2).toString(),c.darker(0.2).toString(),c.darker(0.4).toString()])
+
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .valueAccessor((d) => {
@@ -407,7 +413,7 @@ import { store } from '@/store/store'
                     return d.Recommendation;
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                recommendConfig.minHeight = 150 
+                recommendConfig.minHeight = 185 
                 recommendConfig.aspectRatio = 5
                 recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
                 recommendConfig.colors = d3.scale.ordinal().range(["#1a9850","#91cf60","#d9ef8b","#fee08b","#fc8d59","#d73027"])
@@ -421,7 +427,7 @@ import { store } from '@/store/store'
                     })
 
                 //board
-                var boardConfig = {}
+                 var boardConfig = {}
                 boardConfig.id = 'board'
                 boardConfig.dim = this.ndx.dimension(function(d){ return d.Board })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
@@ -447,7 +453,7 @@ import { store } from '@/store/store'
                             this.submit(d, 'dc-board-barchart')
                         })
                     })
-
+ 
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
