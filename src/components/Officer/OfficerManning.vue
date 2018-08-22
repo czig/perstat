@@ -304,7 +304,7 @@ import largeBarChart from '@/components/largeBarChart'
                 if (given.AFSC_GROUP == '**ERROR**') {
                     obj.AFSC_Group = 'PENDING UPDATE'   
                 } else {
-                    obj.AFSC_Group = formats.afscGroupFormat[given.AFSC_GROUP]
+                    obj.AFSC_Group = given.AFSC_GROUP
                 }
                 obj.MPF = formats.mpfFormat[given.MPF]
                 obj.Assigned = +given.ASGNCURR
