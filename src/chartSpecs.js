@@ -75,6 +75,13 @@ var yrgpChart = {
     color: "#ff9900"
 }
 
+var stateChart = {
+    minHeight: 200,
+    aspectRatio: 4.2,
+    margins: {top: 5, left: 50, right: 30, bottom: 100},
+    color: "#108b52"
+}
+
 module.exports = {
     baseChart,
     majcomChart,
@@ -86,5 +93,6 @@ module.exports = {
     afscGroupChart,
     yearChart,
     boardChart,
-    yrgpChart
+    yrgpChart,
+    stateChart
 }

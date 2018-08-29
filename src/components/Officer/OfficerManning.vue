@@ -188,7 +188,7 @@ import largeBarChart from '@/components/largeBarChart'
                         'dim': this.gradeDim,
                         'group': this.gradeDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial),
                         'minHeight': 220,
-                        'aspectRadio': 4,
+                        'aspectRatio': 4,
                         'margins': {top: 10, left: 50, right: 30, bottom: 20},
                         'colors': d3.scale.ordinal().range([this.gradeColor.brighter(1).toString(),
                                                             this.gradeColor.brighter(0.7).toString(), 
@@ -379,7 +379,6 @@ import largeBarChart from '@/components/largeBarChart'
                       return formats.gradeOrder[d.key]
                     })                                    
                 this.gradeChart = gradeChart
-                window.gradeChart = gradeChart
 
                 //afscGroup
                 var afscGroupChart = dchelpers.getOrdinalBarChart(this.afscGroupConfig)
@@ -396,7 +395,6 @@ import largeBarChart from '@/components/largeBarChart'
                         })
                     })
                 this.afscGroupChart = afscGroupChart
-                window.afscGroupChart = afscGroupChart
 
                 //Download Raw Data button
                 d3.select('#download')

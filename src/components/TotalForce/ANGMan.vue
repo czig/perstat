@@ -63,6 +63,22 @@
                         </div>
                     </div>
                 </div>
+                <br>
+                <largeBarChart :id="'state'"         
+                               :dimension="stateDim"
+                               :group="removeError(stateGroup)"
+                               :widthFactor="0.90"
+                               :aspectRatio="3"
+                               :minHeight="300"
+                               :reducer="angAdd"
+                               :accumulator="angInitial"
+                               :numBars="30"
+                               :margin="chartSpecs.stateChart.margins"
+                               :colorScale="stateColorScale"
+                               :title="'STATE'"
+                               :loaded="loaded">
+                </largeBarChart>
+
 <!--                 <div class="row">
                     <div id="majcom" class="col-12">
                         <div id="dc-majcom-barchart">
@@ -119,6 +135,7 @@ import formats from '@/store/format'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
+import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -132,6 +149,8 @@ import searchBox from '@/components/searchBox'
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color,
+                chartSpecs: chartSpecs,
+                stateColorScale: d3.scale.ordinal().range([chartSpecs.stateChart.color]),
             }
         },
         computed: {
@@ -144,6 +163,13 @@ import searchBox from '@/components/searchBox'
           allGroup: function(){
             return this.ndx.groupAll()
           },
+            stateDim: function() {
+                return this.ndx.dimension(function(d) {return d.state;});
+            },
+            stateGroup: function() {
+                return this.stateDim.group().reduceSum(function(d) {return d.Inventory;});
+            }                        
+
         },
         methods: {
           resetAll: (event)=>{
@@ -181,11 +207,30 @@ import searchBox from '@/components/searchBox'
                 }
             })
             dc.redrawAll()
-          }
+          },
+          angAdd: function(p,v) {
+              return p + v
+          },
+          angInitial: function() {
+            return 0;
+          },
+                //remove empty function (es6 syntax to keep correct scope)
+            removeError: (source_group) => {
+                return {
+                    all: () => {
+                        return source_group.all().filter((d) => {
+                            return d.key != "error" && d.key != "**ERROR**"
+                        })
+                    }
+                }
+            },                
+               
+
         },
         components: {
             'loader': Loader,
-            searchBox
+            searchBox,
+            largeBarChart
         },
         created: function(){
           console.log('created')
@@ -197,10 +242,10 @@ import searchBox from '@/components/searchBox'
             $('[data-toggle="tooltip"]').tooltip({delay: {"show":100, "hide":100}})
             //TEST AXIOS CALL:
             axios.post(axios_url_angman).then(response => {
-                //console.log(response)
+                console.log(response)
                 store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
-                //console.log(axiosData)
+                console.log(axiosData)
                 var objData = makeObject(axiosData)
                 this.data = objData
                 this.loaded = true
@@ -222,7 +267,7 @@ import searchBox from '@/components/searchBox'
                     }
                     var obj2 = {};
                     obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
+                    /* obj2 = testData(obj2, obj) */
                     output.push(obj2);
                 }
                 return output;
@@ -234,9 +279,9 @@ import searchBox from '@/components/searchBox'
                 obj.File_Type = formats.type[given.type]
                 obj.Grade = formats.gradeFormat[given.grade]
                 obj.MAJCOM = formats.majFormat[given.maj]
-                obj.MPF = formats.mpfFormat[given.mpf]
                 obj.Inventory = given.freq
                 obj.empCat = given.empcat
+                obj.state = given.state
 
                 return obj;
             }
@@ -291,8 +336,7 @@ import searchBox from '@/components/searchBox'
                             })
                         }
                     }
-                }                
-                
+                }      
 
                 //type 
                 var typeConfig = {};

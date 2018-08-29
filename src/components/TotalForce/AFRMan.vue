@@ -355,6 +355,8 @@ import searchBox from '@/components/searchBox'
                              })
                     })
                 
+                empCatChart.filter([['ART','HQ AGR','HQ AGR RECRUIT','IMA','TRAD','UNIT AGR']])
+                
 
                 //MAJCOM
 /*                 var majcomConfig = {}
