@@ -64,7 +64,25 @@
                     </div>
                 </div>
                 <br>
-                <largeBarChart :id="'state'"         
+                <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                    Please select from map below to display state information
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="row">
+                    <div id="us" class="col-6">
+                        <div id="dc-us-geoChoroplethChart">
+                            <h3>US Map <span style="font-size: 14pt; opacity: 0.87; text-align: center;"></span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="display: none"
+                                    @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+<!--                 <largeBarChart :id="'state'"         
                                :dimension="stateDim"
                                :group="removeError(stateGroup)"
                                :widthFactor="0.90"
@@ -78,26 +96,8 @@
                                :title="'STATE'"
                                :loaded="loaded">
                 </largeBarChart>
-
-<!--                 <div class="row">
-                    <div id="majcom" class="col-12">
-                        <div id="dc-majcom-barchart">
-                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-majcom-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchMajcom"
-                                size="3"
-                                label="Search MAJCOM"
-                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                button="true"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
+ -->
+<!--                 
                 <div class="row">
                     <div id="base" class="col-12">
                         <div id="dc-base-barchart">
@@ -119,9 +119,7 @@
                         </div>
                     </div>
                 </div>
- -->                <!--<div class ="row">-->
-                    <!--<div id="majcom-chart-wrapper" class="col-12"></div>-->
-                <!--</div>-->
+ -->                
             </div>
         </transition-group>
     </div>
@@ -141,16 +139,18 @@ import largeBarChart from '@/components/largeBarChart'
         data() {
             return {
                 data: [],
-                searchMajcom: '',
                 searchempCat: '',
-                searchBase: '',
                 selected: "percent",
                 ylabel: 'Inventory',
                 loaded: false,
-                baseColor: chartSpecs.baseChart.color,
-                majcomColor: chartSpecs.majcomChart.color,
+/*                 baseColor: chartSpecs.baseChart.color, */
                 chartSpecs: chartSpecs,
-                stateColorScale: d3.scale.ordinal().range([chartSpecs.stateChart.color]),
+                baseColor: chartSpecs.baseChart.color,
+                baseLen: 0,
+                baseHasFilter: false,
+                showBase: false
+
+/*                 stateColorScale: d3.scale.ordinal().range([chartSpecs.stateChart.color]), */
             }
         },
         computed: {
@@ -163,13 +163,13 @@ import largeBarChart from '@/components/largeBarChart'
           allGroup: function(){
             return this.ndx.groupAll()
           },
-            stateDim: function() {
+/*             stateDim: function() {
                 return this.ndx.dimension(function(d) {return d.state;});
             },
             stateGroup: function() {
                 return this.stateDim.group().reduceSum(function(d) {return d.Inventory;});
             }                        
-
+ */
         },
         methods: {
           resetAll: (event)=>{
@@ -211,6 +211,9 @@ import largeBarChart from '@/components/largeBarChart'
           angAdd: function(p,v) {
               return p + v
           },
+          angRemove: function(p,v) {
+              return p - v
+          },
           angInitial: function() {
             return 0;
           },
@@ -242,10 +245,10 @@ import largeBarChart from '@/components/largeBarChart'
             $('[data-toggle="tooltip"]').tooltip({delay: {"show":100, "hide":100}})
             //TEST AXIOS CALL:
             axios.post(axios_url_angman).then(response => {
-                console.log(response)
+                //console.log(response)
                 store.state.asDate = response.data.ASOFDATE
                 var axiosData = response.data.data
-                console.log(axiosData)
+                //console.log(axiosData)
                 var objData = makeObject(axiosData)
                 this.data = objData
                 this.loaded = true
@@ -267,7 +270,7 @@ import largeBarChart from '@/components/largeBarChart'
                     }
                     var obj2 = {};
                     obj2 = formatData(obj)
-                    /* obj2 = testData(obj2, obj) */
+                    //obj2 = testData(obj2, obj) 
                     output.push(obj2);
                 }
                 return output;
@@ -286,7 +289,7 @@ import largeBarChart from '@/components/largeBarChart'
                 return obj;
             }
 
-            var testData = (formatted, original) =>{
+/*             var testData = (formatted, original) =>{
                 for (var key in formatted) {
                     if (formatted[key] === undefined){
                         console.log('Empty Value of ' + key)
@@ -296,7 +299,7 @@ import largeBarChart from '@/components/largeBarChart'
                 }
                 return formatted;
             }
-
+ */
             var renderCharts = () => {
                 dc.dataCount(".dc-data-count")
                   .dimension(this.ndx)
@@ -338,6 +341,27 @@ import largeBarChart from '@/components/largeBarChart'
                     }
                 }      
 
+                //reduce functions
+                function angAdd(p,v) {
+                    p.totalCount = p.totalCount + +v.count
+                    p.cnt = p.cnt + +v.Inventory
+                    return p
+                }
+
+                function angRemove(p,v) {
+                    p.totalCount = p.totalCount - +v.count
+                    p.cnt = p.cnt - +v.Inventory
+                    return p
+                }
+
+                function angInitial() {
+                    return {
+                        totalCount: 0,
+                        cnt: 0
+                    }
+                }                  
+
+
                 //type 
                 var typeConfig = {};
                 typeConfig.id = 'type'
@@ -373,49 +397,6 @@ import largeBarChart from '@/components/largeBarChart'
                              })
                     })
 
-                //Location
-/*                 var majcomConfig = {}
-                majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
-                var majcomGroup = removeEmptyBins(majcomConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                majcomConfig.group = removeError(majcomGroup)
-                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
-                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
-                majcomConfig.margins = chartSpecs.majcomChart.margins 
-                majcomConfig.colors = [chartSpecs.majcomChart.color]
-                var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-                majcomChart
-                    .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('transform', 'translate(-8,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                this.submit(d, 'dc-majcom-barchart')
-                             })
-                    })
- */
-                //base(mpf)
-/*                 var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
-                var basePercent = removeEmptyBins(baseConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                baseConfig.group = removeError(basePercent)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('transform', 'translate(-9,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                 this.submit(d, 'dc-base-barchart')
-                             })
-                    })
- */
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory })
                 var invND = dc.numberDisplay("#inv")
@@ -463,6 +444,109 @@ import largeBarChart from '@/components/largeBarChart'
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  
+
+                //base(mpf)
+/*                 var baseSelDim = this.ndx.dimension((d)=>{return d.Base});
+                var baseSelGrp = removeEmptyBins(baseSelDim.group().reduceSum(function(d) { return +d.Inventory }));
+                var baseSelect = dc.selectMenu('#dc-base-select')
+                baseSelect
+                    .dimension(baseSelDim)
+                    .group(baseSelGrp)       
+                    .numberVisible(10)
+                    .controlsUseVisibility(true);
+
+                var baseConfig = {}
+                baseConfig.id = 'base'
+                baseConfig.dim = this.ndx.dimension(function(d){return d.Base});
+                var basePercent = baseConfig.dim.group().reduce(angAdd, angRemove, angInitial)
+                baseConfig.group = removeEmptyBins(basePercent)
+                baseConfig.minHeight = chartSpecs.baseChart.minHeight
+                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+                baseConfig.margins = chartSpecs.baseChart.margins 
+                baseConfig.colors = [chartSpecs.baseChart.color]
+                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
+                baseChart
+                    .valueAccessor((d) => {
+                        return d.value.average
+                    })
+                    .elasticX(true)
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                             .attr('fill','white')
+                        var len = chart.group().all().length
+                        this.baseLen = len
+                        if (chart.hasFilter() || baseSelect.hasFilter()) 
+                            this.baseHasFilter = true;
+                        else this.baseHasFilter = false;
+                        //console.log(len)
+                        var timer = 3500;
+                        if (len > 0 && len < 60)
+                            timer = 0
+                        setTimeout(()=>{ 
+                            chart.selectAll('g.x text')
+                                 .attr('fill','black') 
+                        }, timer);
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            this.submit(d, 'dc-base-barchart')
+                        })
+                    })
+
+                baseChart.on('filtered', (chart)=>{
+                    this.baseLen = chart.group().all().length
+                })
+
+                baseSelect.on('filtered', (chart)=>{
+                    if (chart.hasFilter() || baseChart.hasFilter()) 
+                        this.baseHasFilter = true;
+                    else this.baseHasFilter = false;
+                })
+ */
+                //CONUS 
+                var usConfig = {}
+                usConfig.id = 'us';
+                usConfig.dim = this.ndx.dimension(function(d){
+                    return d.state;
+                })
+            
+                usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(angAdd, angRemove, angInitial))
+
+                console.log(usConfig.group.all())
+                
+                usConfig.scale = 700;
+                usConfig.minHeight = 200
+                usConfig.aspectRatio = 2
+
+                usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
+                usConfig.colorAccessor = 'cnt'
+            
+                var statesJson = require('../../assets/geoUS.json')
+                usConfig.json = statesJson
+                usConfig.geoName = "state"
+                usConfig.propName = 'name' 
+                usConfig.numType = 'cnt'
+
+                usConfig.projection = d3.geo.albersUsa()
+                usConfig.size = [0.6, 0.9, 2.1];                                        
+
+                var usChart = dchelpers.getGeoChart(usConfig)
+                usChart.title(function(d) {
+                    var myCount = 0;
+                    console.log("myCount=" + d.value);
+                    if (d.value){
+                        myCount = d.value.cnt;
+                        console.log("myCount=" + d);
+                    }
+                    return formats.geoCS[formats.stateFormat[d.key]] + " " + myCount ;
+                });
+
+                usChart.colorCalculator(function (d) { 
+                    if (d && d.cnt)
+                        return d.cnt ? usChart.colors()(d.cnt) : '#ccc'; 
+                    else return '#ccc'
+                })
+
 
                 //Download Raw Data button
                 d3.select('#download')

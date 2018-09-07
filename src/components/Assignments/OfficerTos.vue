@@ -558,10 +558,10 @@ import searchBox from '@/components/searchBox'
                 usConfig.json = statesJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name'
+                usConfig.numType = 'average'
 
                 usConfig.projection = d3.geo.albersUsa()
-                usConfig.size = [0.6 , 0.9, 2.1];
-                                          
+                usConfig.size = [0.6, 0.9, 2.1];                                        
 
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
@@ -580,14 +580,13 @@ import searchBox from '@/components/searchBox'
                     else return '#ccc'
                 })
 
+                //oconus
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
                      return d.Country;
                 })
                 jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
-                // jpConfig.dim = usConfig.dim
-                // jpConfig.group = usConfig.group
                 jpConfig.size = [0.3 , 2.5, 0.8];
                 jpConfig.minHeight = 200
                 jpConfig.aspectRatio = 2
@@ -599,6 +598,7 @@ import searchBox from '@/components/searchBox'
                 jpConfig.json = jpJson
                 jpConfig.geoName = "state"
                 jpConfig.propName = "iso_a2"
+                jpConfig.numType = "average"
 
                 var center = d3.geo.centroid(jpConfig.json)
                 center[1] -= 13
@@ -624,8 +624,6 @@ import searchBox from '@/components/searchBox'
                 })
 
                 jpChart.on('pretransition', (chart)=> {
-                    // console.log(chart.group().all())
-                    //console.log(usChart.filters())
                     var color = 'orange'
                     chart.select('svg').append('g').attr("class", "divider")
                     var divider = chart.select('.divider')

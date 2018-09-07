@@ -551,6 +551,7 @@ import searchBox from '@/components/searchBox'
                 usConfig.json = statesJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name'
+                usConfig.numType = 'average'
 
                 usConfig.projection = d3.geo.albersUsa()
                 usConfig.size = [0.6 , 0.9, 2.1];
@@ -592,6 +593,7 @@ import searchBox from '@/components/searchBox'
                 jpConfig.json = jpJson
                 jpConfig.geoName = "state"
                 jpConfig.propName = "iso_a2"
+                jpConfig.numType = 'average'
 
                 var center = d3.geo.centroid(jpConfig.json)
                 center[1] -= 13
