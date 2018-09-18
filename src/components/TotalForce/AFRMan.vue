@@ -120,6 +120,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 
+
     export default {
         data() {
             return {
