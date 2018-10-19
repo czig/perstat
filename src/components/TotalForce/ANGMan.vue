@@ -71,6 +71,7 @@
                     </button>
                 </div>
                 <div class="row">
+                    <div class="col-3"></div>
                     <div id="us" class="col-6">
                         <div id="dc-us-geoChoroplethChart">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87; text-align: center;"></span>
@@ -81,6 +82,7 @@
                             </h3>
                         </div>
                     </div>
+                    <div class="col-3"></div>
                 </div>
 <!--                 <largeBarChart :id="'state'"         
                                :dimension="stateDim"
