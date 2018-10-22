@@ -12,12 +12,12 @@
                 <a class="nav-link active" @click="dynamicComponent='adman'" data-toggle="tab">Active Duty</a>
             </li>                    
              <li class="nav-item">
-                <!-- <a class="nav-link" @click="dynamicComponent='Construction'" data-toggle="tab">ANG</a> -->
-                <a class="nav-link" @click="dynamicComponent='ang'" data-toggle="tab">ANG</a>
+                <a class="nav-link" @click="dynamicComponent='Construction'" data-toggle="tab">ANG</a>
+                <!-- <a class="nav-link" @click="dynamicComponent='ang'" data-toggle="tab">ANG</a> -->
             </li>
             <li class="nav-item">
-                <!-- <a class="nav-link" @click="dynamicComponent='Construction'" data-toggle="tab">AFR</a> -->
-                <a class="nav-link" @click="dynamicComponent='afr'" data-toggle="tab">AFR</a>
+                <a class="nav-link" @click="dynamicComponent='Construction'" data-toggle="tab">AFR</a>
+                <!-- <a class="nav-link" @click="dynamicComponent='afr'" data-toggle="tab">AFR</a> -->
             </li>            
         </ul>
         <transition name="fade" mode="out-in">
