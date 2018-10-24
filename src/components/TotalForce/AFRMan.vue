@@ -120,6 +120,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 
+
     export default {
         data() {
             return {
@@ -354,6 +355,8 @@ import searchBox from '@/components/searchBox'
                                 this.submit(d, 'dc-empCat-barchart')
                              })
                     })
+                
+                empCatChart.filter([['ART','HQ AGR','HQ AGR RECRUIT','IMA','TRAD','UNIT AGR']])
                 
 
                 //MAJCOM

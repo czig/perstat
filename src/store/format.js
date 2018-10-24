@@ -1471,7 +1471,7 @@ export default {
         "64": "GS-14",
         "65": "GS-15",
         "66": "NSPS-02",
-        "67": "WAGE GROUP"
+		"67": "WAGE GROUP"
     }
     ,gradeOrder : {
 		"GEN": 10,

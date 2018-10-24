@@ -11,7 +11,7 @@ var getOrdinalBarChart = (config)=>{
       .x(d3.scale.ordinal())
       .xUnits(dc.units.ordinal)
       .elasticY(true)
-      .ordinalColors(config.colors)
+      .colors(config.colors)
       .on('preRedraw', function(c){
         preRedraw(c, config)
       })
@@ -89,7 +89,7 @@ var getGeoChart = (config)=>{
       .dimension(config.dim)
       .group(config.group)
       .colors(config.colors)
-      .colorAccessor(function(d){ if (d) return d['average'];})
+      .colorAccessor(function(d){ if (d) return d[config.numType];})
       //.useViewBoxResizing(true)
       //Resize the geo map 
       .projection(    
@@ -101,32 +101,31 @@ var getGeoChart = (config)=>{
                         return d.properties[config.propName];
                     });
 
-
     //Fix Color Range upon render/redraw
     chart.on("preRender", function(chart) {
-      var range = d3.extent(chart.group().all(), function(d){return d.value['average']});
+      var range = d3.extent(chart.group().all(), function(d){return d.value[config.numType]});
       var diff = range[1]-range[0];
       // range[0] += diff/4;
       // range[1] -= diff/4;
-       console.log(range + ' - ' + diff)
+       //console.log(range + ' - ' + diff)
       if (diff == 0){
         range[0]-=3;
         range[1]+=2;
       }
-      console.log(range)
+      //console.log(range)
       chart.colorDomain(range);
     });
     chart.on("preRedraw", function(chart) {
-      var range = d3.extent(chart.group().all(), function(d){return d.value['average']});
+      var range = d3.extent(chart.group().all(), function(d){return d.value[config.numType]});
       var diff = range[1]-range[0];
       // range[0] += diff/4;
       // range[1] -= diff/4;
-      console.log(range + ' - ' + diff)
+      //console.log(range + ' - ' + diff)
       if (diff == 0){
         range[0]-=4;
         range[1]+=2;
       }
-      console.log(range)
+      //console.log(range)
       chart.colorDomain(range);
     });
     return chart

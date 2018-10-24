@@ -139,26 +139,29 @@ import largeBarChart from '@/components/largeBarChart'
                 data: [],
                 //searchMajcom: '',
                 //searchBase: '',
-                selected: "percent",
+                //selected: "percent",
                 ylabel: 'Inventory',
                 loaded: false,
-                //baseColor: chartSpecs.baseChart.color,
+                baseColor: chartSpecs.baseChart.color,
                 pageName: 'Total Force Inventory',
                 chartSpecs: chartSpecs,
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),                
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                                
+                gradeChart: {},
+                gradeColor: d3.rgb(51,172,255),
+                typeChart: {}
             }
         },
         computed: {
-          ndx: function(){
-            return crossfilter(this.data)
-          },
-          asDate: function(){
-            return store.state.asDate;
-          },
-          allGroup: function(){
-            return this.ndx.groupAll()
-          },
+            ndx: function(){
+                return crossfilter(this.data)
+            },
+            asDate: function(){
+                return store.state.asDate;
+            },
+            allGroup: function(){
+                return this.ndx.groupAll()
+            },
             majcomDim: function() {
                 return this.ndx.dimension(function(d) {return d.MAJCOM;});
             },
@@ -170,50 +173,91 @@ import largeBarChart from '@/components/largeBarChart'
             },
             baseGroup: function() {
                 return this.baseDim.group().reduceSum(function(d) {return d.Inventory;});
-            }                      
+            },
+            typeDim: function() {
+                return this.ndx.dimension(function(d) {return d.File_Type});
+            },
+            typeConfig: function() {
+                return {
+                            'id': 'type',
+                            'dim': this.typeDim,
+                            'group': this.typeDim.group().reduceSum(function(d) {return +d.Inventory;}),
+                            'minHeight': 200,
+                            'aspectRatio': 3,
+                            'margins': {top: 0,left: 30, right: 30, bottom: 20},
+                            'colors': chartSpecs.typeChart.color
+   
+                }
+            },
+            gradeDim: function() {
+                return this.ndx.dimension(function(d) {return d.grade;});
+            },
+            gradeConfig: function() {
+                return {
+                            'id': 'grade',
+                            'dim': this.gradeDim,
+                            'group': this.removeError(this.gradeDim.group().reduceSum(function(d) {return +d.Inventory;})),
+                            'minHeight': 250,
+                            'aspectRatio': 3,
+                            'margins': {top: 10, left: 50, right: 30, bottom: 70},
+                            'colors': d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
+                                                        .range([this.gradeColor.brighter(1).toString(),
+                                                                this.gradeColor.brighter(0.8).toString(), 
+                                                                this.gradeColor.brighter(0.6).toString(), 
+                                                                this.gradeColor.brighter(0.4).toString(), 
+                                                                this.gradeColor.brighter(0.2).toString(), 
+                                                                this.gradeColor.brighter(0.1).toString(), 
+                                                                this.gradeColor.toString(),
+                                                                this.gradeColor.darker(0.2).toString(),
+                                                                this.gradeColor.darker(0.4).toString(),
+                                                                this.gradeColor.darker(0.6).toString(),
+                                                                this.gradeColor.darker(0.8).toString(),
+                                                                this.gradeColor.darker(0.9).toString()])
+                       }
+            }                    
         },
         methods: {
-          resetAll: (event)=>{
-            dc.filterAll()
-            dc.redrawAll()
-          },
-          resetChart: (id)=>{
-            dc.chartRegistry.list().filter(chart=>{
-              return chart.anchorName() == id
-            }).forEach(chart=>{
-              chart.filterAll()
-            })
-            dc.redrawAll()
-          },
-          submit: (text,id) => {
-            dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == id 
-            }).forEach(chart=>{
-                var mainArray = []
-                chart.dimension().group().all().forEach((d) => {
-                    mainArray.push(String(d.key))
+            resetAll: (event)=>{
+                dc.filterAll()
+                dc.redrawAll()
+            },
+            resetChart: (id)=>{
+                dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == id
+                }).forEach(chart=>{
+                chart.filterAll()
                 })
-                var filterArray = mainArray.filter((d) => {
-                    var element = d.toUpperCase() 
-                    return element.indexOf(text.toUpperCase()) !== -1
+                dc.redrawAll()
+            },
+            submit: (text,id) => {
+                dc.chartRegistry.list().filter(chart=>{
+                    return chart.anchorName() == id 
+                }).forEach(chart=>{
+                    var mainArray = []
+                    chart.dimension().group().all().forEach((d) => {
+                        mainArray.push(String(d.key))
+                    })
+                    var filterArray = mainArray.filter((d) => {
+                        var element = d.toUpperCase() 
+                        return element.indexOf(text.toUpperCase()) !== -1
+                    })
+                    chart.filter(null)
+                    if (filterArray.length != mainArray.length) {
+                        chart.filter([filterArray])
+                    }
                 })
-                chart.filter(null)
-                if (filterArray.length != mainArray.length) {
-                    chart.filter([filterArray])
-                }
-            })
-            dc.redrawAll()
-          },
+                dc.redrawAll()
+            },
 
-          tfAdd: function(p,v) {
-              return p + v
-          },
-          tfInitial: function() {
-            return 0;
-          },
+            tfAdd: function(p,v) {
+                return p + v
+            },
+            tfInitial: function() {
+                return 0;
+            },
           
             //remove empty function (es6 syntax to keep correct scope)
-            removeError: (source_group) => {
+            removeError: function(source_group) {
                 return {
                     all: () => {
                         return source_group.all().filter((d) => {
@@ -221,34 +265,40 @@ import largeBarChart from '@/components/largeBarChart'
                         })
                     }
                 }
-            },               
-        },
-        components: {
-            'loader': Loader,
-            searchBox,
-            largeBarChart
-        },
-        created: function(){
-          console.log('created')
-          //var data = require('@/assets/data/ps_off.csv')
-          //this.data = data
-        },
-        mounted() {
-            console.log('mounted')       
-            $('[data-toggle="tooltip"]').tooltip({delay: {"show":100, "hide":100}})
-            //TEST AXIOS CALL:
-            axios.post(axios_url_adman).then(response => {
-                //console.log(response)
-                store.state.asDate = response.data.ASOFDATE
-                var axiosData = response.data.data
-                //console.log(axiosData)
-                var objData = makeObject(axiosData)
-                this.data = objData
-                this.loaded = true
-                renderCharts()
-            }).catch(console.error)
+            },  
+            //remove empty function (es6 syntax to keep correct scope)
+            removeEmptyBins: function(source_group)  {
+                return {
+                    all: () => {
+                        return source_group.all().filter((d) => {
+                            return d.value != 0
+                        })
+                    }
+                }
+            },
+            formatData: function(given) {
+                var obj = {}
 
-            var makeObject = (data) => {
+                obj.File_Type = formats.type[given.type]
+                obj.grade = formats.gradeFormat[given.grade]
+                obj.MAJCOM = formats.majFormat[given.maj]
+                obj.MPF = formats.mpfFormat[given.mpf]
+                obj.Inventory = given.freq
+
+                return obj;
+            },
+            testData: function(formatted, original) {
+                for (var key in formatted) {
+                    if (formatted[key] === undefined){
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
+                        formatted[key] = "UNKNOWN"
+                    }
+                }
+                return formatted;
+            },
+
+            makeObject: function(data) {
                 var keys = data.shift()
                 var i = 0
                 var k = 0
@@ -262,37 +312,13 @@ import largeBarChart from '@/components/largeBarChart'
                         obj[keys[k]] = data[i][k];
                     }
                     var obj2 = {};
-                    obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
+                    obj2 = this.formatData(obj)
+                    obj2 = this.testData(obj2, obj)
                     output.push(obj2);
                 }
                 return output;
-            }
-
-            var formatData = (given) =>{
-                var obj = {}
-
-                obj.File_Type = formats.type[given.type]
-                obj.Grade = formats.gradeFormat[given.grade]
-                obj.MAJCOM = formats.majFormat[given.maj]
-                obj.MPF = formats.mpfFormat[given.mpf]
-                obj.Inventory = given.freq
-
-                return obj;
-            }
-
-            var testData = (formatted, original) =>{
-                for (var key in formatted) {
-                    if (formatted[key] === undefined){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
-                        formatted[key] = "UNKNOWN"
-                    }
-                }
-                return formatted;
-            }
-
-            var renderCharts = () => {
+            },
+            renderCharts: function() {
                 dc.dataCount(".dc-data-count")
                   .dimension(this.ndx)
                   .group(this.allGroup)
@@ -310,30 +336,10 @@ import largeBarChart from '@/components/largeBarChart'
                         }
                     }
                 }
-
-                //remove empty function (es6 syntax to keep correct scope)
-                var removeError = (source_group) => {
-                    return {
-                        all: () => {
-                            return source_group.all().filter((d) => {
-                                return d.key != "error" && d.key != "**ERROR**"
-                            })
-                        }
-                    }
-                }                
-
                 //type 
-                var typeConfig = {};
-                typeConfig.id = 'type'
-                typeConfig.dim = this.ndx.dimension(function (d) {
-                    return d.File_Type;
-                })
-                typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
-                typeConfig.minHeight = 200
-                typeConfig.aspectRatio = 3
-                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
-                typeConfig.colors = chartSpecs.typeChart.color
-                var typeChart = dchelpers.getRowChart(typeConfig)   
+                var typeChart = dchelpers.getRowChart(this.typeConfig)  
+                
+                this.typeChart = typeChart
 
                 //Location
 /*                 var majcomConfig = {}
@@ -390,30 +396,14 @@ import largeBarChart from '@/components/largeBarChart'
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
 
-
                  //grade
-                var gradeConfig = {}
-                gradeConfig.id = 'grade'
-                gradeConfig.dim = this.ndx.dimension(function(d){
-                    return d.Grade;
-                })
-                var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 250
-                gradeConfig.aspectRatio = 3
-                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 70}
-                var c = d3.rgb(51,172,255)
-                var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
+                var gradeChart = dchelpers.getOrdinalBarChart(this.gradeConfig)
                 gradeChart
                     .elasticX(true)
-                    .colorAccessor(function(d){
+                    //.colorDomain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
+                    .colorAccessor(function(d,i){
                         return d.key;
                     })
-                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
-                    .range([c.brighter(1).toString(), c.brighter(0.8).toString(), c.brighter(0.6).toString(), 
-                                            c.brighter(0.4).toString(), c.brighter(0.2).toString(), c.brighter(0.2).toString(), c.toString(), 
-                                            c.darker(0.2).toString(), c.darker(0.4).toString(), c.darker(0.6).toString(), c.darker(0.8).toString(), 
-                                            c.darker(0.9).toString()]))
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
@@ -427,6 +417,8 @@ import largeBarChart from '@/components/largeBarChart'
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  
+
+                this.gradeChart = gradeChart
 
                  //Download Raw Data button
                 d3.select('#download')
@@ -442,24 +434,55 @@ import largeBarChart from '@/components/largeBarChart'
 
                     FileSaver.saveAs(blob, 'PERSTAT TF Active Duty' + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
-
-
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
                 })
-
                 //make responsive
                 var temp
                 window.onresize = function(event) {
                     clearTimeout(temp)
                     temp = setTimeout(dc.redrawAll(), 500)
                 }
-
                 //create charts
                 dc.renderAll()
                 dc.redrawAll()
             }
+        },
+        components: {
+            'loader': Loader,
+            searchBox,
+            largeBarChart
+        },
+        created: function(){
+          console.log('created')
+          //var data = require('@/assets/data/ps_off.csv')
+          //this.data = data
+        },
+        mounted() {
+            console.log('mounted')       
+            $('[data-toggle="tooltip"]').tooltip({delay: {"show":100, "hide":100}})
+            //TEST AXIOS CALL:
+            axios.post(axios_url_adman).then(response => {
+                //console.log(response)
+                store.state.asDate = response.data.ASOFDATE
+                var axiosData = response.data.data
+                //console.log(axiosData)
+                var objData = this.makeObject(axiosData)
+                this.data = objData
+                this.loaded = true
+                this.renderCharts()
+            }).catch(console.error)
+            //remove empty function (es6 syntax to keep correct scope)
+            var removeError = (source_group) => {
+                return {
+                    all: () => {
+                        return source_group.all().filter((d) => {
+                            return d.key != "error" && d.key != "**ERROR**"
+                        })
+                    }
+                }
+            }                
         },
         beforeUpdate() {
             console.log("beforeupdate")
