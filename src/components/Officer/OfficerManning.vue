@@ -97,23 +97,22 @@
                         </div>
                     </div>
                 </div>
-                <largeBarChart :id="'mpf'"         
-                                :dimension="mpfDim"
-                                :group="mpfGroup"
-                                :widthFactor="0.90"
-                                :aspectRatio="chartSpecs.baseChart.aspectRatio"
-                                :minHeight="chartSpecs.baseChart.minHeight"
-                                :selected="selected"
-                                :ylabel="ylabel"
-                                :reducer="manningAddLarge"
-                                :accumulator="manningInitial"
-                                :numBars="30"
-                                :margin="chartSpecs.baseChart.margins"
-                                :colorScale="baseColorScale"
-                                :title="'Servicing MPF'"
-                                :loaded="loaded">
-                </largeBarChart>
-
+                <overviewBarChart :id="'mpf'"
+                                  :dimension="mpfDim"
+                                  :aspectRatio="3.8"
+                                  :minHeight="240"
+                                  :normalToOverviewFactor="2.5"
+                                  :selected="selected"
+                                  :ylabel="ylabel"
+                                  :reducerAdd="manningAdd"
+                                  :reducerRemove="manningRemove"
+                                  :accumulator="manningInitial"
+                                  :numBars="15"
+                                  :margin="chartSpecs.baseChart.margins"
+                                  :colorScale="baseColorScale"
+                                  :title="'Servicing MPF'"
+                                    :loaded="loaded">
+                </overviewBarChart>
             </div>
         </transition-group>
     </div>
@@ -129,6 +128,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import largeBarChart from '@/components/largeBarChart'
+import overviewBarChart from '@/components/overviewBarChart'
 
     export default {
         data() {
@@ -433,7 +433,8 @@ import largeBarChart from '@/components/largeBarChart'
             'autocomplete': AutoComplete,
             'loader': Loader,
             searchBox,
-            largeBarChart
+            largeBarChart,
+            overviewBarChart
         },
         created: function(){
         },
