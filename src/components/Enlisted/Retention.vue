@@ -266,6 +266,9 @@
                 return "Keep Rate(%)"
             }
           },
+          downloadDim: function() {
+            return this.ndx.dimension(function(d) {return d;});    
+          },      
           majcomDim: function() {
             return this.ndx.dimension(function(d) {return d.MAJCOM;});
           },
@@ -621,7 +624,7 @@
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
-                    var data = majcomConfig.dim.top(Infinity);
+                    var data = this.downloadDim.top(Infinity);
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                     var myFilters = '';

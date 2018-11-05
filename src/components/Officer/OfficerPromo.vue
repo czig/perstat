@@ -189,6 +189,9 @@ import largeBarChart from '@/components/largeBarChart'
                 return "PME Complete Rate (%)"
             }
           },
+          downloadDim: function() {
+            return this.ndx.dimension(function(d) {return d;});    
+          },      
           coreDim: function() {
             return this.ndx.dimension(function(d) {return d.Core;});
           },
@@ -540,7 +543,7 @@ import largeBarChart from '@/components/largeBarChart'
  */                //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
-                    var data = boardConfig.dim.top(Infinity);
+                    var data = this.downloadDim.top(Infinity);
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                     var myFilters = '';
