@@ -42,7 +42,6 @@ TODO: Find A way to load component (With Data) Without v-if
 <div id="dc-afsc-select" class="col-12">
     <h3>
         AFSC 
-        <span v-if="Current>1">[ {{afscFilter}} ] </span>
         <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
         <button type="button" 
             class="btn btn-danger btn-sm btn-rounded reset" 

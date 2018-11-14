@@ -5,21 +5,16 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div class="col" id="category">
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="1st" type="radio" value="1ST TERM" v-model="category" @click="singleSubmit('1ST TERM', 'dc-cat-rowchart')">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">1ST TERM</span>
+                    <div class="col">
+                        <label class="custom-control custom-radio">
+                           <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="reEnlRate" v-model="selected" @click="radioButton">
+                           <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">Reenlistment Rate</span>
                         </label>
                         <label class="custom-control custom-radio">
-                            <input class="custom-control-input" name="2nd" type="radio" value="2ND TERM" v-model="category" @click="singleSubmit('2ND TERM', 'dc-cat-rowchart')">
+                            <input class="custom-control-input" name="group5" type="radio" id="radio5" value="keepRate" v-model="selected" @click="radioButton">
                             <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">2ND TERM</span>
-                        </label>
-                        <label class="custom-control custom-radio">
-                            <input class="custom-control-input" name="career" type="radio" value="CAREER" v-model="category" @click="singleSubmit('CAREER', 'dc-cat-rowchart')">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">CAREER</span>
+                            <span class="custom-control-description">Keep Rate</span>
                         </label>
                     </div>
                     <div class="col-auto">
@@ -29,20 +24,6 @@
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">Reset All</button>
-                    </div>
-                </div>
-                <div class="row pt-2"> 
-                    <div class="col">
-                        <label class="custom-control custom-radio">
-                           <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="RR" v-model="selected" @click="radioButton">
-                           <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Reenlistment Rate</span>
-                        </label>
-                        <label class="custom-control custom-radio">
-                            <input class="custom-control-input" name="group5" type="radio" id="radio5" value="KR" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Keep Rate</span>
-                        </label>
                     </div>
                 </div>
                 <div class="row">
@@ -60,33 +41,25 @@
                     </div>
                     <div class="col-auto">
                         Re-Enlist Rate:
-                        <span id="rr"></span>
+                        <span id="reEnlRate"></span>
                     </div>
                     <div class="col-auto">
                         Keep Rate:
-                        <span id="kr"></span>
+                        <span id="keepRate"></span>
                     </div>
-                    <!-- div class="col text-right" style="margin-right:5px">
-                        As of Date: 
-                        <span style="font-weight:bold"> {{ asDate }} </span>
-                    </div -->
                 </div>
                 <div class="row">
                     <div class="col-4">
                         <div class="row">
                             <div id="year" class="col-12">
-                                <div id="dc-year-barchart">
-                                    <h3>Year [{{year}}]<span style="font-size: 14pt; opacity: 0.87;"> &nbsp {{ylabel}}</span>
+                                <div id="dc-year-rowchart">
+                                    <h3>Year<span style="font-size: 14pt; opacity: 0.87;"> &nbsp {{ylabel}}</span>
                                     </h3>
                                 </div>
                             </div>
-                            <div v-show="false" id="cat" class="col-12">
+                            <div v-show="true" id="cat" class="col-12">
                                 <div id="dc-cat-rowchart">
                                     <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
-                                            @click="resetChart('dc-cat-rowchart')">Reset</button>
                                     </h3>
                                 </div>
                             </div>
@@ -113,7 +86,7 @@
                                 :reduceRemove = "retentionRemove"
                                 :reduceInitial = "retentionInitial"
                                 dataVar="AFSC"
-                                removeBin = "I"
+                                removeBin = "inv"
                                 :minHeight = "250"
                                 :aspectRatio = "2.5"
                             >
@@ -121,31 +94,6 @@
                         </div>
                     </template>
                 </div>
-<!--                 <div class="row">
-                    <div id="majcom" class="col-12">
-                        <div id="dc-majcom-barchart">
-                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="searchMajcom='';resetChart('dc-majcom-barchart')">Reset</button>
-                            </h3>
-                            
-                            <searchBox
-                                v-model="searchMajcom"
-                                size="3"
-                                label="Search MAJCOM"
-                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                button="true"
-                                :color="majcomColor"
-                                :btnColor="majcomColor"
-                            ></searchBox>
-                           
-                        </div>
-                    </div>
-                </div>
-
- -->                
                 <largeBarChart :id="'majcom'"         
                                 :dimension="majcomDim"
                                 :group="majcomGroup"
@@ -163,28 +111,6 @@
                                 :loaded="loaded">
                 </largeBarChart>
  
-<!--                 <div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-barchart">
-                            <h3>Servicing MPF <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}} </span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="searchBase='';resetChart('dc-base-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchBase"
-                                size="3"
-                                label="Search MPF"
-                                @sub="submit(searchBase,'dc-base-barchart')"
-                                button="true"
-                                :color="baseColor"
-                                :btnColor="baseColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- --> 
                  <largeBarChart :id="'mpf'"         
                                 :dimension="mpfDim"
                                 :group="mpfGroup"
@@ -222,7 +148,7 @@
         data() {
             return {
                 data: [],
-                selected:'RR',
+                selected:'reEnlRate',
                 searchMajcom: "",
                 searchBase: "",
                 sa: "",
@@ -250,16 +176,16 @@
             return this.ndx.groupAll()
           },
           ylabel: function() {
-            if (this.selected === "I") {
+            if (this.selected === "inv") {
                 return "Inventory"
             }
-            else if (this.selected === "E") {
+            else if (this.selected === "elig") {
                 return "Eligible"
             }
-            else if (this.selected === "K") {
-                return "KEEP"
+            else if (this.selected === "keep") {
+                return "Keep"
             }
-            else if (this.selected === "RR") {
+            else if (this.selected === "reEnlRate") {
                 return "Reenlist Rate(%)"
             }
             else {
@@ -286,20 +212,33 @@
         methods: {
           resetAll(){
             this.category = '1ST TERM';
-            this.selected = 'RR';
+            this.selected = 'reEnlRate';
             this.year = '2018'
             store.state.resetAfsc = true;
             dc.filterAll();
-            this.singleSubmit('2018', 'dc-year-barchart')
+            this.singleSubmit('2018', 'dc-year-rowchart')
             this.singleSubmit('1ST TERM', 'dc-cat-rowchart')
           },
-          resetChart: (id)=>{
+          resetChart: function(id) {
             dc.chartRegistry.list().filter(chart=>{
               return chart.anchorName().indexOf(id) !== -1
             }).forEach(chart=>{
               chart.filterAll()
             })
             dc.redrawAll()
+          },
+          resetChartSingle: function(id) {
+              dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName().indexOf(id) !== -1
+              }).forEach(chart=>{
+                  chart.filterAll()
+                  if (_.includes(id,'year')) {
+                    this.singleSubmit('2018', id)
+                  } else {
+                    this.singleSubmit('1ST TERM', id)
+                  }
+              })
+              dc.redrawAll();
           },
           radioButton: () => {
             setTimeout(function() {
@@ -335,47 +274,47 @@
             dc.redrawAll()
           },
           retentionAdd(p,v) {
-            p.I = p.I + +v.Inventory
-            p.E = p.E + +v.Eligible
-            p.K = p.K + +v.Keep
+            p.inv = p.inv + +v.Inventory
+            p.elig = p.elig + +v.Eligible
+            p.keep = p.keep + +v.Keep
             //if divide by 0, set to 0, and if NaN, set to zero
-            p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
-            p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
+            p.keepRate = p.keep/p.inv === Infinity ? 0 : Math.round((p.keep/p.inv)*1000)/10 || 0
+            p.reEnlRate = p.keep/p.elig === Infinity ? 0 : Math.round((p.keep/p.elig)*1000)/10 || 0
             return p
           },
           retentionRemove(p,v) {
-            p.I = p.I - +v.Inventory
-            p.E = p.E - +v.Eligible
-            p.K = p.K - +v.Keep
+            p.inv = p.inv - +v.Inventory
+            p.elig = p.elig - +v.Eligible
+            p.keep = p.keep - +v.Keep
             //if divide by 0, set to 0, and if NaN, set to zero
-            p.KR = p.K/p.I === Infinity ? 0 : Math.round((p.K/p.I)*1000)/10 || 0
-            p.RR = p.K/p.E === Infinity ? 0 : Math.round((p.K/p.E)*1000)/10 || 0
+            p.keepRate = p.keep/p.inv === Infinity ? 0 : Math.round((p.keep/p.inv)*1000)/10 || 0
+            p.reEnlRate = p.keep/p.elig === Infinity ? 0 : Math.round((p.keep/p.elig)*1000)/10 || 0
             return p
           },
           retentionInitial() {
             return {
-                I: 0,
-                E: 0,
-                K: 0,
-                RR: 0,
-                KR: 0,
+                inv: 0,
+                elig: 0,
+                keep: 0,
+                reEnlRate: 0,
+                keepRate: 0,
             }
           },
-            retentionAddLarge: function(p,v) {
-                p.asgn = p.asgn + +v.I
-                p.auth = p.auth + +v.E
-                p.stp = p.stp + +v.K
-                //if divide by 0, set to 0, and if NaN, set to zero
-                p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
-                return p
-            },
+          retentionAddLarge: function(p,v) {
+              p.inv = p.inv + +v.inv
+              p.elig = p.elig + +v.elig
+              p.keep = p.keep + +v.keep
+              //if divide by 0, set to 0, and if NaN, set to zero
+              p.keepRate = p.keep/p.inv === Infinity ? 0 : Math.round((p.keep/p.inv)*1000)/10 || 0
+              p.reEnlRate = p.keep/p.elig === Infinity ? 0 : Math.round((p.keep/p.elig)*1000)/10 || 0
+              return p
+          },
 
           removeEmptyBins:(source_group) => {
             return {
                 all: () => {
                     return source_group.all().filter((d) => {
-                        return d.value.I != 0
+                        return d.value[this.selected] != 0
                     })
                 }
             }
@@ -450,11 +389,6 @@
                 dc.dataCount(".dc-data-count")
                   .dimension(this.ndx)
                   .group(this.allGroup)
-                //I = INV
-                //E= ELIG
-                //K = KEEP
-                //RR= RE-ENL RATE
-                //KR= KEEP RATE
 
                 //***Totals***
                 var tots = this.ndx.groupAll().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
@@ -462,7 +396,7 @@
                 var invND = dc.numberDisplay("#inv")
                 invND.group(tots)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) { return d.I;})
+                    .valueAccessor(function(d) { return d.inv;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
@@ -470,7 +404,7 @@
                 var eligND = dc.numberDisplay("#elig")
                 eligND.group(tots)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d.E;})
+                    .valueAccessor(function(d) {return d.elig;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
@@ -478,64 +412,58 @@
                 var keepND = dc.numberDisplay("#keep")
                 keepND.group(tots)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d.K;})
+                    .valueAccessor(function(d) {return d.keep;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
                 //Re-enlist Rate
-                var rrND = dc.numberDisplay("#rr")
-                rrND.group(tots)
+                var reEnlRateND = dc.numberDisplay("#reEnlRate")
+                reEnlRateND.group(tots)
                     .formatNumber(d3.format(".1f"))
-                    .valueAccessor(function(d) {return d.RR})
+                    .valueAccessor(function(d) {return d.reEnlRate})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
                 //Keep Rate
-                var krND = dc.numberDisplay("#kr")
-                krND.group(tots)
+                var keepRateND = dc.numberDisplay("#keepRate")
+                keepRateND.group(tots)
                     .formatNumber(d3.format(".1f"))
-                    .valueAccessor(function(d) {return d.KR})
+                    .valueAccessor(function(d) {return d.keepRate})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
                 
                 //YEAR
-                d3.selectAll("#row1")
                 var yearConfig = {};
                 yearConfig.id = 'year';
                 yearConfig.dim = this.ndx.dimension(function (d) {
                     return d.Year;
                 })
                 yearConfig.group = yearConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                yearConfig.minHeight = 80 
-                yearConfig.aspectRatio = 4 
-                yearConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                yearConfig.minHeight = 310
+                yearConfig.minHeight = 100
                 yearConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
                 yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 30}
                 yearConfig.colors = [chartSpecs.baseChart.color]
+<<<<<<< HEAD
                 var yearChart = dchelpers.getOrdinalBarChart(yearConfig)
+=======
+                var yearChart = dchelpers.getRowChart(yearConfig)
+
+>>>>>>> master
                 yearChart
                     .elasticX(true)
                     .valueAccessor((d) => {
                         return d.value[this.selected];
                     })
                     .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.year = d
-                            this.singleSubmit(d, 'dc-year-barchart')
-                        })
-
-                        chart.selectAll("rect.bar").on("click", (d)=>{
-                            this.year = d.data.key
-                            this.singleSubmit(d.data.key, 'dc-year-barchart')
+                        chart.selectAll("rect").on("click", (d)=>{
+                            this.year = d.key
+                            this.singleSubmit(d.key, 'dc-year-rowchart')
                         });
                     })
-                yearChart.barPadding(0.2)
+                    .controlsUseVisibility(true);
                 yearChart.filter('2018')
-                //this.singleSubmit('2018', 'dc-year-barchart')
+
                 //CAT
                 var catConfig = {};
                 catConfig.id = 'cat';
@@ -552,71 +480,16 @@
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll("rect").on("click", (d)=>{
+                            this.year = d.key
+                            this.singleSubmit(d.key, 'dc-cat-rowchart')
+                        });
+                    })
+                    .controlsUseVisibility(true);
 
                 catChart.filter('1ST TERM')
-                //Majcom
-/*                 var majcomConfig = {}
-                majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM })
-                var majcomInv = majcomConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                majcomConfig.group = this.removeEmptyBins(majcomInv)
-                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
-                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
-                majcomConfig.margins = chartSpecs.majcomChart.margins 
-                majcomConfig.colors = [chartSpecs.majcomChart.color]
-                var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-                majcomChart
-                    .elasticX(true)
-                    .valueAccessor((d) => {
-                        return d.value[this.selected];
-                    })
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition',  (chart)=> {
-                        chart.selectAll('rect.bar')
-                            .classed('stack-deselected', function(d) {
-                                //d.x is majcom and d.layer is assigned or stp
-                                return chart.filter() && chart.filters().indexOf(d.x) === -1
-                            })
-                            .on('click', function(d) {
-                                chart.filter(d.x)
-                                dc.redrawAll()
-                            })
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-majcom-barchart')
-                        })
 
-                    })
-
- */                    
-       
-
-                //base(mpf)
-/*                 var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
-                var baseGroup = baseConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                baseConfig.group = this.removeEmptyBins(baseGroup)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-//                baseChart.stack(baseConfig.group, 'Inv',)
-                baseChart
-                    .elasticX(true)
-                    .valueAccessor((d) => {
-                        return d.value[this.selected];
-                    })
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-base-barchart')
-                        })
-                    })
- */
                 //Call The AFSC Component HERE
                 this.startAfsc = true;
 

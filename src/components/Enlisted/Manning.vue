@@ -64,35 +64,14 @@
                                 :ylabel="ylabel"
                                 :reducer="manningAddLarge"
                                 :accumulator="manningInitial"
-                                :numBars="30"
+                                :numBars="15"
                                 :margin="chartSpecs.majcomChart.margins"
                                 :colorScale="majcomColorScale"
                                 :title="'MAJCOM'"
                                 :loaded="loaded">
                 </largeBarChart>
 
-<!--                 <div class="row">
-                    <div id="majcom" class="col-12">
-                        <div id="dc-majcom-barchart">
-                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-majcom-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchMajcom"
-                                size="3"
-                                label="Search MAJCOM"
-                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                button="true"
-                                :color="majcomColor"
-                                :btnColor="majcomColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->                <div class="row">
+                 <div class="row">
                     <div id="grade" class="col-4">
                         <div id="dc-grade-rowchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -114,45 +93,23 @@
                         </div>
                     </div>
                 </div>
-                <largeBarChart :id="'mpf'"         
-                                :dimension="mpfDim"
-                                :group="mpfGroup"
-                                :widthFactor="0.90"
-                                :aspectRatio="chartSpecs.baseChart.aspectRatio"
-                                :minHeight="chartSpecs.baseChart.minHeight"
-                                :selected="selected"
-                                :ylabel="ylabel"
-                                :reducer="manningAddLarge"
-                                :accumulator="manningInitial"
-                                :numBars="30"
-                                :margin="chartSpecs.baseChart.margins"
-                                :colorScale="baseColorScale"
-                                :title="'Servicing MPF'"
-                                :loaded="loaded">
-                </largeBarChart>
-
-<!--                 <div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-barchart">
-                            <h3>Servicing MPF <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-base-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchBase"
-                                size="3"
-                                label="Search MPF"
-                                @sub="submit(searchBase,'dc-base-barchart')"
-                                button="true"
-                                :color="baseColor"
-                                :btnColor="baseColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->            </div>
+                <overviewBarChart :id="'mpf'"
+                                    :dimension="mpfDim"
+                                    :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                                    :minHeight="chartSpecs.baseChart.minHeight"
+                                    :normalToOverviewFactor="2.5"
+                                    :selected="selected"
+                                    :ylabel="ylabel"
+                                    :reducerAdd="manningAdd"
+                                    :reducerRemove="manningRemove"
+                                    :accumulator="manningInitial"
+                                    :numBars="15"
+                                    :margin="chartSpecs.baseChart.margins"
+                                    :colorScale="baseColorScale"
+                                    :title="'Servicing MPF'"
+                                    :loaded="loaded">
+                </overviewBarChart>
+            </div>
         </transition-group> 
     </div>
 </template>
@@ -166,6 +123,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import largeBarChart from '@/components/largeBarChart'
+import overviewBarChart from '@/components/overviewBarChart'
 
     export default {
         data() {
@@ -297,7 +255,8 @@ import largeBarChart from '@/components/largeBarChart'
         components: {
             'loader': Loader,
             searchBox, 
-            largeBarChart
+            largeBarChart,
+            overviewBarChart
         },
         created: function(){
           console.log('created')
@@ -374,35 +333,6 @@ import largeBarChart from '@/components/largeBarChart'
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
-                //reduce functions
-                function manningAdd(p,v) {
-                    p.asgn = p.asgn + +v.Assigned
-                    p.auth = p.auth + +v.Authorized
-                    p.stp = p.stp + +v.STP
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
-                    return p
-                }
-                function manningRemove(p,v) {
-                    p.asgn = p.asgn - +v.Assigned
-                    p.auth = p.auth - +v.Authorized
-                    p.stp = p.stp - +v.STP
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    p.percent = p.asgn/p.auth === Infinity ? 0 : Math.round((p.asgn/p.auth)*1000)/10 || 0
-                    p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
-                    return p
-                }
-                function manningInitial() {
-                    return {
-                        asgn: 0,
-                        auth: 0,
-                        stp: 0,
-                        percent: 0,
-                        stpPercent: 0,
-                    }
-                }
-
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
                     return {
@@ -414,59 +344,31 @@ import largeBarChart from '@/components/largeBarChart'
                     }
                 }
 
-                //MAJCOM
-/*                 var majcomConfig = {}
-                majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
-                var majcomPercent = majcomConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
-                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
-                majcomConfig.margins = chartSpecs.majcomChart.margins 
-                majcomConfig.colors = [chartSpecs.majcomChart.color]
-                var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-                majcomChart
-                    .elasticX(true)
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-majcom-barchart')
-                        })
-                    })
- */
                 //Number Display for Auth, Asgn, STP - show total for filtered content
-                var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.Authorized })
+                var overallGroup = this.ndx.groupAll().reduce(this.manningAdd,this.manningRemove,this.manningInitial)
                 var authND = dc.numberDisplay("#auth")
-                authND.group(auth)
+                authND.group(overallGroup)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) { return d;})
+                    .valueAccessor(function(d) { return d.auth;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.Assigned})
                 var asgnND = dc.numberDisplay("#asgn")
-                asgnND.group(asgn)
+                asgnND.group(overallGroup)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d;})
+                    .valueAccessor(function(d) {return d.asgn;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var stp = this.ndx.groupAll().reduceSum(function(d) { return +d.STP})
                 var stpND = dc.numberDisplay("#stp")
-                stpND.group(stp)
+                stpND.group(overallGroup)
                     .formatNumber(d3.format("d"))
-                    .valueAccessor(function(d) {return d;})
+                    .valueAccessor(function(d) {return d.stp;})
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
-                var percentGroup = this.ndx.groupAll().reduce(manningAdd,manningRemove,manningInitial)
                 var percentND = dc.numberDisplay("#percent")
-                percentND.group(percentGroup)
+                percentND.group(overallGroup)
                     .formatNumber(d3.format(".1f"))
                     .valueAccessor(function(d) {return d.percent})
                     .html({
@@ -480,7 +382,7 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
                     return d.Grade;
                 })
-                gradeConfig.group = gradeConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
+                gradeConfig.group = gradeConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial)
                 gradeConfig.minHeight = 200
                 gradeConfig.aspectRatio = 4
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
@@ -499,7 +401,7 @@ import largeBarChart from '@/components/largeBarChart'
                 var afscGroupConfig = {}
                 afscGroupConfig.id = 'afscGroup'
                 afscGroupConfig.dim = this.ndx.dimension(function(d){return d.AFSC_Group})
-                afscGroupConfig.group = removeEmptyBins(afscGroupConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial))
+                afscGroupConfig.group = removeEmptyBins(afscGroupConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial))
                 afscGroupConfig.minHeight = chartSpecs.afscGroupChart.minHeight
                 afscGroupConfig.aspectRatio = chartSpecs.afscGroupChart.aspectRatio
                 afscGroupConfig.margins = chartSpecs.afscGroupChart.margins
@@ -518,30 +420,6 @@ import largeBarChart from '@/components/largeBarChart'
                         })
                     })
 
-                //base(mpf)
-/*                 var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
-                var basePercent = baseConfig.dim.group().reduce(manningAdd,manningRemove,manningInitial)
-                baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .elasticX(true)
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-base-barchart')
-                        })
-                    })
- */
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
