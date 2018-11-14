@@ -444,12 +444,7 @@
                 yearConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
                 yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 30}
                 yearConfig.colors = [chartSpecs.baseChart.color]
-<<<<<<< HEAD
-                var yearChart = dchelpers.getOrdinalBarChart(yearConfig)
-=======
                 var yearChart = dchelpers.getRowChart(yearConfig)
-
->>>>>>> master
                 yearChart
                     .elasticX(true)
                     .valueAccessor((d) => {
