@@ -1,0 +1,12 @@
+commit b775f3e02d59deb92ade9e30104dda61caa9d0e1
+Author: Caleb <caleb.ziegler@gmail.com>
+Date:   Tue Aug 14 15:23:52 2018 -0500
+
+    Replaces es6-promise with babel-polyfill.
+
+.babelrc
+build/webpack.base.conf.js
+package.json
+src/main.js
+test/unit/karma.conf.js
+yarn.lock

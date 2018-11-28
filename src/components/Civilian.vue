@@ -302,6 +302,13 @@ import largeBarChart from '@/components/largeBarChart'
                     obj2 = {};
                     obj2 = formatData(obj)
                     obj2 = testData(obj2, obj)
+                   
+                    if (obj2.MAJCOM == "UNKNOWN"){
+                        console.log('UNKNOWN MAJCOM')
+                        console.log(obj)
+                        console.log(obj2)
+                    }
+                  
                     output.push(obj2);
                 }
                 return output;

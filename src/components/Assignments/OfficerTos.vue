@@ -600,6 +600,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
+                    // Returns ##/ZZ array of Country identifiers from oconus.json via iso_a2 key below
                      return d.Country;
                 })
                 jpConfig.group = jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
@@ -771,6 +772,26 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 d3.select('#download')
                 .on('click', ()=>{
                     var data = tourConfig.dim.top(Infinity);
+                    console.log(data)
+                    data.forEach(d=>{
+                        if (d.Country=="02"){
+                            d.Country='';
+                            d.State='AK';
+                        }
+                        if (d.Country=="15"){
+                            d.Country='';
+                            d.State='HI';
+                        }
+
+                        if (d.State)
+                            d.Country_State= formats.stateLong[d.State].toUpperCase();
+                        else if (d.Country)
+                            d.Country_State= formats.countryLong[d.Country].toUpperCase();
+                        else d.Country_State = ''
+
+                        delete d.State;
+                        delete d.Country;  
+                    })
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                     var myFilters = '';
