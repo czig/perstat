@@ -46,6 +46,24 @@
                     <div class="col-auto">
                         Keep Rate:
                         <span id="keepRate"></span>
+                    <span class="h3 mt-0 pt-0 align-middle">
+                        <span class="ico-tooltip"
+                            data-toggle="tooltip" 
+                            title="This is the percentage of people who reenlisted out of those who are eligible to reenlist or separate within the term.">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="20px" height="25px" style="vertical-align:top; margin-top:2px;" viewBox="0 0 512 512">
+                            <path d="M256,0C114.613,0,0,114.617,0,256c0,141.391,114.613,256,256,256s256-114.609,256-256C512,114.617,397.387,0,256,0z   M256,128c17.674,0,32,14.328,32,32c0,17.68-14.326,32-32,32s-32-14.32-32-32C224,142.328,238.326,128,256,128z M304,384h-96  c-8.836,0-16-7.156-16-16c0-8.836,7.164-16,16-16h16v-96h-16c-8.836,0-16-7.156-16-16c0-8.836,7.164-16,16-16h64  c8.836,0,16,7.164,16,16v112h16c8.836,0,16,7.164,16,16C320,376.844,312.836,384,304,384z"></path>
+                        </svg>
+                        </span>
+                    </span>
+                       <!-- <span data-toggle="tooltip" 
+                          data-placement="bottom"
+                          title="This is the percentage of people who reenlisted out of those who are eligible to reenlist or separate within the term.">
+                        <fontAwesomeIcon icon="info-circle" 
+                                         size="sm"
+                                         >
+                        </fontAwesomeIcon>
+                    </span> -->
+
                     </div>
                 </div>
                 <div class="row">
@@ -143,6 +161,7 @@
     import Loader from '@/components/Loader'
     import searchBox from '@/components/searchBox'
     import largeBarChart from '@/components/largeBarChart'    
+    import fontAwesomeIcon from '@fortawesome/vue-fontawesome' 
 
     export default {
         data() {
@@ -166,7 +185,8 @@
             'afsc': afsc,
             'loader': Loader,
             'searchBox': searchBox,
-            largeBarChart
+            largeBarChart,
+            fontAwesomeIcon,   
         },
         computed: {
           ndx: function(){

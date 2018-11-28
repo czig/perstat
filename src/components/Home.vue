@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col">
                 <div class="card">
-                    <img class="card-img-top" style="position: relative;" src="../../static/welcome_tight.jpg">
+                    <img class="card-img-top" style="position: relative; height: 500px" src="../../static/F-16 Falcon.jpg">
                     <span class="white-text" style="position: absolute; bottom: 0; left: 20px;"><h1>Welcome!</h1></span>
                 </div>
             </div>
