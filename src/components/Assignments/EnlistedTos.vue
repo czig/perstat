@@ -615,7 +615,8 @@ import searchBox from '@/components/searchBox'
                             myCount = d.value.cnt;
                             myAverage = d.value.average;
                         }
-                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
+                        //return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
+                        return formats.countryLong[d.key] + "\n Average TOS: " + myAverage;
                     });
 
                 jpChart.colorCalculator(function (d) { 

@@ -584,9 +584,10 @@ import searchBox from '@/components/searchBox'
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
+                    // Returns ##/ZZ array of Country identifiers from oconus.json via iso_a2 key below
                      return d.Country;
                 })
-                jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
+                jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))              
                 jpConfig.size = [0.3 , 2.5, 0.8];
                 jpConfig.minHeight = 200
                 jpConfig.aspectRatio = 2
