@@ -71,45 +71,19 @@
                     </button>
                 </div>
                 <div class="row">
-                    <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix">
-                            <h3>US Map <span style="font-size: 14pt; opacity: 0.87; text-align: center;">TF ANG</span>
-                            <button type="button" 
-                                class="btn btn-danger btn-sm btn-rounded reset" 
-                                style="display: none"
-                                @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                    
-                    <div id="terr" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center">
-                        <div id="dc-terr-geoChoroplethChart" class="center-block clearfix">
-                            <h3>US Territories Map <span style="font-size: 14pt; opacity: 0.87; text-align: center;">TF ANG</span>
+                    <div class="col-3"></div>
+                    <div id="us" class="col-6">
+                        <div id="dc-us-geoChoroplethChart">
+                            <h3>US Map <span style="font-size: 14pt; opacity: 0.87; text-align: center;"></span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="display: none"
-                                    @click="resetChart('dc-terr-geoChoroplethChart')">Reset</button>
+                                    @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
                             </h3>
                         </div>
-                    </div>                      
+                    </div>
+                    <div class="col-3"></div>
                 </div>
-                <br>                
-                <!-- <div class="row">
-                    <div class="col-3"></div>
-                    <div id="territories" class="col-6">
-                        <div id="dc-territories-geoChoroplethChart">
-                            <h3>US Territories Map <span style="font-size: 14pt; opacity: 0.87; text-align: center;"></span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-territories-geoChoroplethChart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                    <div class="col-3"></div>
-                </div> -->
-
-
 <!--                 <largeBarChart :id="'state'"         
                                :dimension="stateDim"
                                :group="removeError(stateGroup)"
@@ -531,11 +505,8 @@ import largeBarChart from '@/components/largeBarChart'
                     else this.baseHasFilter = false;
                 })
  */
-
-
-                //CONUS
+                //CONUS 
                 var usConfig = {}
-                var d3_composite = require("d3-composite-projections");
                 usConfig.id = 'us';
                 usConfig.dim = this.ndx.dimension(function(d){
                     return d.state;
@@ -549,15 +520,14 @@ import largeBarChart from '@/components/largeBarChart'
                 usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
                 usConfig.colorAccessor = 'cnt'
             
-                var tfConusJson = require('../../assets/geoUS.json')
-                usConfig.json = tfConusJson
+                var statesJson = require('../../assets/geoUS.json')
+                usConfig.json = statesJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name' 
                 usConfig.numType = 'cnt'
 
-                //usConfig.projection = d3.geo.albersUsa()
-                usConfig.projection = d3_composite.geoAlbersUsaTerritories();                          
-                usConfig.size = [0.7, 0.78, 2.1];                                        
+                usConfig.projection = d3.geo.albersUsa()
+                usConfig.size = [0.6, 0.9, 2.1];                                        
 
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
@@ -572,117 +542,6 @@ import largeBarChart from '@/components/largeBarChart'
                     if (d && d.cnt)
                         return d.cnt ? usChart.colors()(d.cnt) : '#ccc'; 
                     else return '#ccc'
-                })
-
-                // Territories
-                var terrConfig = {}
-                terrConfig.id = 'terr';
-                // return State Value from territories.json
-                terrConfig.dim = this.ndx.dimension(function(d){
-                    // Returns ##/ZZ array of Country identifiers from territories.json via propName name key below
-                     return d.state;
-                })
-            
-                // this populates the numeric data for the Territory chart
-                // Reads PR, not PQ; reads GU not TW; no VI counts
-                terrConfig.group = removeEmptyBins(terrConfig.dim.group().reduce(angAdd, angRemove, angInitial))
-                // minHeight and aspect ratio are only needed for the divider line
-                terrConfig.minHeight = 200
-                terrConfig.aspectRatio = 2
-                
-                // this is the key to scale, x and y
-                terrConfig.size = [8 , 0.08, 30];
-
-                // the overall scale of colors used in this chlororpleth
-                terrConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                // the json reference for what value to use in the svg rendering
-                terrConfig.colorAccessor = 'cnt'
-            
-                // using geoUS.json format: pro- uses an ID reference, suspect required for charts; 
-                // using this format rather than oconus format because properties are easier to see;
-                var terrJson = require('../../assets/territories.json')
-                terrConfig.json = terrJson
-                // state and the two letter name are applied into the svg g tag class
-                terrConfig.geoName = "state"                
-                terrConfig.propName = "name" 
-                // this cnt is updated within the title tag of the svg
-                terrConfig.numType = "cnt"
-                
-                // CONUS uses d3_composite, this is an alternative...but it appears, GUAM is not visible
-                // render the config json above using d3 geo centroid function
-                var center = d3.geo.centroid(terrConfig.json);
-
-                // use the mercator projection to calculate the svgs x/y from lat/lon
-                terrConfig.projection =   d3.geo.mercator()
-                                                .center(center)                     
-
-                var terrChart = dchelpers.getGeoChart(terrConfig)
-                terrChart.title(function(d) {
-                    var myCount = 0;
-                    if (d.value){
-                        myCount = d.value.cnt;                       
-                    }
-                    //return formats.("99":"FullName")[formats.("AA":"99")[d.key]] + " " + myCount ;
-                    return formats.geoCS[formats.stateFormat[d.key]] + " " + myCount ;
-                });
-                
-                // this renders the chart in chloropleth color scale 
-                terrChart.colorCalculator(function (d) { 
-                    if (d && d.cnt)
-                        return d.cnt ? terrChart.colors()(d.cnt) : '#ccc'; 
-                    else return '#ccc'
-                })
-
-                terrChart.on('pretransition', (chart)=> {
-                    var color = 'orange'
-                    chart.select('svg').append('g').attr("class", "divider")
-                    var divider = chart.select('.divider')
-                    var dividerStroke = 3
-
-                    divider
-                         .append("line")
-                         .attr("x1", terrConfig.width * 0.20)
-                         .attr("y1", terrConfig.width * 0)
-                         .attr("x2", terrConfig.width * 0.25)
-                         .attr("y2", terrConfig.width * 0.3)
-                         .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);
-                    divider
-                         .append("line")
-                         .attr("x1", terrConfig.width * 0.25)
-                         .attr("y1", terrConfig.width * 0.3)
-                         .attr("x2", terrConfig.width * 0.45)
-                         .attr("y2", terrConfig.width * 0.4)
-                         .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);
-
-
-                    chart.select('svg').append('g').attr("class", "textLabels")
-                    var textLabels = chart.select('.textLabels')
-                    var textStroke = 0.5
-                     textLabels
-                        .append("text")
-                        .attr("x", terrConfig.width * 0.09)
-                        .attr("y", terrConfig.height * 0.95)
-                        .attr("fill", color) 
-                        .attr("font-weight", 'bold')  
-                        .text('Guam');
-
-                    textLabels
-                        .append("text")
-                        .attr("x", terrConfig.width * 0.38)
-                        .attr("y", terrConfig.height * 0.25)
-                        .attr("fill", color) 
-                        .attr("font-weight", 'bold') 
-                        .text('Puerto Rico');
-
-                    textLabels
-                        .append("text")
-                        .attr("x", terrConfig.width * 0.7)
-                        .attr("y", terrConfig.height * 0.87)
-                        .attr("fill", color) 
-                        .attr("font-weight", 'bold') 
-                        .text('US Virgin Islands');
                 })
 
 
