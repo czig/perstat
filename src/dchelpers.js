@@ -78,54 +78,35 @@ var getPieChart = (config)=>{
 
 var getGeoChart = (config)=>{
     config = updateChartConfig(config)
-    config.scale = config.width * config.size[0]
-    config.width = config.scale * config.size[1]
-    config.height = config.scale / config.size[2]
+    config.xOffset = config.width/config.xRatio
+    config.yOffset = config.height/config.yRatio
     var chart = dc.geoChoroplethChart("#dc-"+config.id+"-geoChoroplethChart")
     chart
-      .width(config.width)
-      .height(config.height)
-      .transitionDuration(1000)
       .dimension(config.dim)
       .group(config.group)
+      .valueAccessor(config.valueAccessor)
       .colors(config.colors)
-      .colorAccessor(function(d){ if (d) return d[config.numType];})
-      //.useViewBoxResizing(true)
+      .colorAccessor(config.colorAccessor)
+      .width(config.width)
+      .minWidth(config.width)
+      .height(config.height)
+      .minHeight(config.minHeight)
       //Resize the geo map 
-      .projection(    
-                      config.projection.scale(config.scale)
-                                       .translate([config.width / 2, config.height / 2])
+      .projection(config.projection.scale(Math.round(config.width/config.scale))
+                    .translate([config.xOffset, config.yOffset])
                   )
       //Hook the geo map
       .overlayGeoJson(config.json.features, config.geoName, function(d) {
                         return d.properties[config.propName];
                     });
 
-    //Fix Color Range upon render/redraw
-    chart.on("preRender", function(chart) {
-      var range = d3.extent(chart.group().all(), function(d){return d.value[config.numType]});
-      var diff = range[1]-range[0];
-      // range[0] += diff/4;
-      // range[1] -= diff/4;
-       //console.log(range + ' - ' + diff)
-      if (diff == 0){
-        range[0]-=3;
-        range[1]+=2;
+    chart.on("preRedraw", function(c) {
+      preRedraw(c, config)
+      var rangeFunc = function(d) {
+        var g = config.valueAccessor(d)
+        return config.colorAccessor(g)
       }
-      //console.log(range)
-      chart.colorDomain(range);
-    });
-    chart.on("preRedraw", function(chart) {
-      var range = d3.extent(chart.group().all(), function(d){return d.value[config.numType]});
-      var diff = range[1]-range[0];
-      // range[0] += diff/4;
-      // range[1] -= diff/4;
-      //console.log(range + ' - ' + diff)
-      if (diff == 0){
-        range[0]-=4;
-        range[1]+=2;
-      }
-      //console.log(range)
+      var range = d3.extent(chart.group().all(), rangeFunc);
       chart.colorDomain(range);
     });
     return chart
@@ -159,6 +140,14 @@ var preRedraw = (chart, config) => {
   else if (/\-piechart$/.test(chart.anchorName())){
     chart.radius(config.radius || newHeight/2)
   }
+  else if (/\-geoChoroplethChart$/.test(chart.anchorName())) {
+    var newXOffset = newWidth/config.xRatio
+    var newYOffset = newHeight/config.yRatio
+    chart.projection(config.projection.scale(newWidth/config.scale)
+                        .translate([newXOffset, newYOffset]));
+  }
+  config.width = newWidth
+  config.height = newHeight
 }
 
 module.exports = {

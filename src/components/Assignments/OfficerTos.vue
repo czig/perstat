@@ -4,18 +4,6 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row">
-                    <!-- <div class="col-auto">
-                        Personnel:        
-                        <span id="count"></span>
-                    </div>
-                    <div class="col-auto">
-                        Total TOS: 
-                        <span id="months"></span>
-                    </div> -->
-                    <div class="col-auto">
-                        Average Time on Station for the last 4 years: 
-                        <span id="average"></span>
-                    </div>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -27,36 +15,52 @@
                     </div>
                 </div>
                 <div class="row">
-		            <div id="tour" class="col-4">
+                    <div class="col-auto">
+                        Average TOS: 
+                        <span id="average"></span>
+                    </div>
+                    <div class="col-auto">
+                        Completed Tours:        
+                        <span id="count"></span>
+                    </div>
+                    <span data-toggle="tooltip" 
+                          data-placement="bottom"
+                          title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
+                        <fontAwesomeIcon icon="info-circle">
+                        </fontAwesomeIcon>
+                    </span>
+                </div>
+                <div class="row">
+            		<div id="tour" class="col-3">
 		                <div id="dc-tour-rowchart">
-		                    <h3>Assign Area <span style="font-size: 14pt; opacity: 0.87;">
-		                    	Avg. TOS
-		                    </span>
-		                    <button type="button" 
-		                            class="btn btn-danger btn-sm btn-rounded reset" 
-		                            style="display: none"
-		                            @click="resetChart('dc-tour-rowchart')">Reset</button>
-		                    </h3>
-                		</div>
-            		</div>
-            		<div id="tour_st" class="col-3">
-		                <div id="dc-tour_st-rowchart">
 		                    <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
 		                    	Avg. TOS
 		                    </span>
 		                    <button type="button" 
 		                            class="btn btn-danger btn-sm btn-rounded reset" 
-		                            style="display: none"
-		                            @click="resetChart('dc-tour_st-rowchart')">Reset</button>
+		                            style="visibility: hidden"
+		                            @click="resetChart('dc-tour-rowchart')">Reset</button>
 		                    </h3>
                 		</div>
             		</div>
-            		<div id="grade" class="col-5">
+		            <div id="type" class="col-3">
+		                <div id="dc-type-rowchart">
+		                    <h3>Type <span style="font-size: 14pt; opacity: 0.87;">
+		                    	Avg. TOS
+		                    </span>
+		                    <button type="button" 
+		                            class="btn btn-danger btn-sm btn-rounded reset" 
+		                            style="visibility: hidden"
+		                            @click="resetChart('dc-type-rowchart')">Reset</button>
+		                    </h3>
+                		</div>
+            		</div>
+            		<div id="grade" class="col-6">
                         <div id="dc-grade-barchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-grade-barchart')">Reset</button>
                             </h3>
                         </div>
@@ -67,8 +71,10 @@
                                 <div id="dc-base-select">
                                 </div>
                                 <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
-                                <button v-if="baseHasFilter" type="button"
+                                <button type="button"
+                                        id="btn-base-reset"
                                         class="btn btn-danger btn-sm btn-rounded reset" 
+                                        style="visibility: hidden"
                                         @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
                                 </h3>
                                 <searchBox
@@ -98,7 +104,7 @@
                             <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
                             </h3>
                         </div>
@@ -108,7 +114,7 @@
                             <h3>OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-jp-geoChoroplethChart')">Reset</button>
                             </h3>
                         </div>
@@ -128,6 +134,7 @@ import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 	export default {
         data() {
@@ -135,17 +142,8 @@ import searchBox from '@/components/searchBox'
                 loaded: false,
                 searchBase: '',
                 baseColor: chartSpecs.baseChart.color,
-                baseLen: 0,
-                baseHasFilter: false,
-                showBase: false
-            }
-        },
-        watch: {
-            baseLen: function(val){
-                if (val > 0 && val < 60){
-                    //this.showBase = true;
-                    setTimeout(()=>{ this.showBase = true; }, 500);
-                }else this.showBase = false;
+                conusFiltered: false,
+                oconusFiltered: false,
             }
         },
         computed: {
@@ -154,6 +152,9 @@ import searchBox from '@/components/searchBox'
           },
           allGroup: function(){
             return this.ndx.groupAll()
+          },
+          showBase: function() {
+            return this.conusFiltered || this.oconusFiltered;
           },
         },
         methods: {
@@ -192,6 +193,7 @@ import searchBox from '@/components/searchBox'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
+            'fontAwesomeIcon': FontAwesomeIcon,
             searchBox
         },
         created: function(){
@@ -200,25 +202,46 @@ import searchBox from '@/components/searchBox'
         },
         mounted() {
             console.log('mounted')
+            var postArray = []
+            
+            postArray.push(axios.post(axios_url_off_tos))
+            postArray.push(axios.post(axios_url_enl_tos))
+            
+            Promise.all(postArray).then(payload => {
+                //payload is an array of arrays
+                var offData = payload[0].data.data
+                var enlData = payload[1].data.data 
+                var offDate = new Date(payload[0].data.ASOFDATE)
+                var enlDate = new Date(payload[1].data.ASOFDATE)
+                //take oldest date
+                if (offDate < enlDate) {
+                    store.state.asDate = payload[0].data.ASOFDATE 
+                } else {
+                    store.state.asDate = payload[1].data.ASOFDATE 
+                }
+                //remove keys
+                var offKeys = offData.splice(0,1)[0]
+                var enlKeys = enlData.splice(0,1)[0]
+                //add type to keys
+                offKeys.push('type')
+                //add officer and enlisted fields
+                offData.forEach((d,i) => {
+                    offData[i].push('Officer');
+                })
+                enlData.forEach((d,i) => {
+                    enlData[i].push('Enlisted');
+                })
 
-            //TEST AXIOS CALL:
-            axios.post(axios_url_off_tos).then(response => {
-                store.state.asDate = response.data.ASOFDATE
-                var axiosData = response.data.data
-                //console.log(axiosData)
-                var objData = makeObject(axiosData)
-                //console.log('MADE It')
+                console.log(offKeys)
+                var axiosData = offData.concat(enlData)
+                var objData = makeObject(offKeys,axiosData)
                 console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
             }).catch(console.error)
 
-            var makeObject = (data) => {
-                function getRandomInt(max) {
-                  return Math.floor(Math.random() * Math.floor(max));
-                }
-                var keys = data.shift()
+            var makeObject = (keys,data) => {
                 var i = 0
                 var k = 0
                 var obj = null
@@ -230,7 +253,6 @@ import searchBox from '@/components/searchBox'
                     for (k = 0; k < keys.length; k++) {
                         obj[keys[k]] = data[i][k];
                     }
-
                     var obj2 = {};
                     obj2 = formatData(obj)
                     // obj2 = testData(obj2, obj)
@@ -268,6 +290,7 @@ import searchBox from '@/components/searchBox'
                 obj.Tour = locStFormat[given.LOC_ST]
                 obj.Grade = formats.gradeFormat[given.grd]
                 obj.Base = given.DLOC;
+                obj.type = given.type;
 
                 obj.State = ''
                 obj.Country = ''
@@ -282,15 +305,9 @@ import searchBox from '@/components/searchBox'
                     else obj.Country = given.CS
                 }
 
-                
-                //obj.Country_State = formats.geoCSAb[given.CS]
-
                 obj.Total_Months = given.months
                 obj.Inventory = given.cnt
                 obj.Average_TOS = obj.Total_Months/obj.Inventory === Infinity ? 0 : obj.Total_Months/obj.Inventory || 0
-
-                // if (obj.CS2 === undefined)
-                //     obj.CS2 = 'AA'
 
                 return obj;
             }
@@ -386,16 +403,37 @@ import searchBox from '@/components/searchBox'
                 })
           
 
+                //Rowchart for type
+                var typeConfig = {};
+                typeConfig.id = 'type';
+                typeConfig.dim = this.ndx.dimension(function (d) {
+                    return d.type;
+                })
+
+                typeConfig.group = typeConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
+                typeConfig.minHeight = 200
+                typeConfig.aspectRatio = 2.7
+                typeConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
+                typeConfig.colors = d3.scale.category10()
+
+                var typeChart = dchelpers.getRowChart(typeConfig)
+
+                typeChart
+                    .controlsUseVisibility(true)
+                    .valueAccessor((d)=> {
+                        return d.value.average;
+                    })
+
                 //Rowchart for tour
                 var tourConfig = {};
                 tourConfig.id = 'tour';
                 tourConfig.dim = this.ndx.dimension(function (d) {
-                    return d.MAJCOM_Assign_Type;
+                    return d.Tour;
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 200
-                tourConfig.aspectRatio = 2.7
+                tourConfig.minHeight = 200 
+                tourConfig.aspectRatio = 2.6
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
 
@@ -403,30 +441,7 @@ import searchBox from '@/components/searchBox'
                 var tourChart = dchelpers.getRowChart(tourConfig)
 
                 tourChart
-                    .valueAccessor((d)=> {
-                        return d.value.average;
-                    })
-                    .ordering(function(d){
-                      return locFormatOrder[d.key]
-                    })        
-
-                //Rowchart for tour
-                var tourStConfig = {};
-                tourStConfig.id = 'tour_st';
-                tourStConfig.dim = this.ndx.dimension(function (d) {
-                    return d.Tour;
-                })
-
-                tourStConfig.group = tourStConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourStConfig.minHeight = 200 
-                tourStConfig.aspectRatio = 2.6
-                tourStConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
-                tourStConfig.colors = d3.scale.category10()
-
-
-                var tourStChart = dchelpers.getRowChart(tourStConfig)
-
-                tourStChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d)=> {
                         return d.value.average;
                     })
@@ -440,7 +455,7 @@ import searchBox from '@/components/searchBox'
                 gradeConfig.dim = this.ndx.dimension(function(d){
                     return d.Grade;
                 })
-                gradeConfig.group = gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 gradeConfig.minHeight = 230
                 gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
@@ -448,6 +463,7 @@ import searchBox from '@/components/searchBox'
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
 
                 gradeChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d) => {
                         return d.value.average
                     })
@@ -492,42 +508,33 @@ import searchBox from '@/components/searchBox'
                 baseConfig.colors = [chartSpecs.baseChart.color]
                 var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
                 baseChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d) => {
                         return d.value.average
                     })
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('fill','white')
-                        var len = chart.group().all().length
-                        this.baseLen = len
-                        if (chart.hasFilter() || baseSelect.hasFilter()) 
-                            this.baseHasFilter = true;
-                        else this.baseHasFilter = false;
-                        console.log(len)
-                        var timer = 3500;
-                        if (len > 0 && len < 60)
-                            timer = 0
-                        setTimeout(()=>{ 
-                            chart.selectAll('g.x text')
-                                 .attr('fill','black') 
-                        }, timer);
+                        chart.selectAll('g')
+                             .attr('opacity','0');
+                        if (this.showBase) {
+                            chart.selectAll('g')
+                                 .attr('opacity','1');
+                        } else {
+                            chart.selectAll('g')
+                                 .attr('opacity','0');
+                        }
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
                             this.submit(d, 'dc-base-barchart')
                         })
                     })
-
-                baseChart.on('filtered', (chart)=>{
-                    this.baseLen = chart.group().all().length
-                })
-
-                baseSelect.on('filtered', (chart)=>{
-                    if (chart.hasFilter() || baseChart.hasFilter()) 
-                        this.baseHasFilter = true;
-                    else this.baseHasFilter = false;
-                })
+                baseChart.turnOnControls = function() {
+                    d3.select('#btn-base-reset').style('visibility','visible');
+                }
+                baseChart.turnOffControls = function() {
+                    d3.select('#btn-base-reset').style('visibility','hidden');
+                }
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory })
@@ -545,25 +552,33 @@ import searchBox from '@/components/searchBox'
                 usConfig.dim = this.ndx.dimension(function(d){
                     return d.State;
                 })
-                usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
-                
-                usConfig.scale = 700;
+                usConfig.group = usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                usConfig.scale = 1
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2
-
-                usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                usConfig.colorAccessor = 'average'
-            
+                usConfig.xRatio = 2.0
+                usConfig.yRatio = 2.0 
+                usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                usConfig.valueAccessor = function(d) {
+                    if (d) {
+                        return d.value;
+                    }
+                }
+                usConfig.colorAccessor = function(d) {
+                    if (d) {
+                        return d.average;
+                    } else {
+                        return 0;
+                    }
+                } 
                 var statesJson = require('../../assets/geo.json')
                 usConfig.json = statesJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name'
-                usConfig.numType = 'average'
-
                 usConfig.projection = d3.geo.albersUsa()
-                usConfig.size = [0.6, 0.9, 2.1];                                        
 
                 var usChart = dchelpers.getGeoChart(usConfig)
+                usChart.controlsUseVisibility(true)
                 usChart.title(function(d) {
                     var myCount = 0;
                     var myAverage = 0;
@@ -571,13 +586,14 @@ import searchBox from '@/components/searchBox'
                         myCount = d.value.cnt;
                         myAverage = d.value.average;
                     }
-                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
+                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
                 });
-
-                usChart.colorCalculator(function (d) { 
-                    if (d && d.average)
-                        return d.average ? usChart.colors()(d.average) : '#ccc'; 
-                    else return '#ccc'
+                usChart.on('filtered',(chart) => {
+                    if (chart.hasFilter()) {
+                        this.conusFiltered = true
+                    } else {
+                        this.conusFiltered = false
+                    }
                 })
 
                 //oconus
@@ -586,27 +602,38 @@ import searchBox from '@/components/searchBox'
                 jpConfig.dim = this.ndx.dimension(function(d){
                      return d.Country;
                 })
-                jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
-                jpConfig.size = [0.3 , 2.5, 0.8];
+                jpConfig.group = jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                jpConfig.scale = 2 
                 jpConfig.minHeight = 200
-                jpConfig.aspectRatio = 2
+                jpConfig.aspectRatio = 2 
+                jpConfig.xRatio = 1.8 
+                jpConfig.yRatio = 2 
 
-                jpConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                jpConfig.colorAccessor = 'average'
+                jpConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                jpConfig.valueAccessor = function(d) {
+                    if (d) {
+                        return d.value;
+                    }
+                }
+                jpConfig.colorAccessor = function(d) {
+                    if (d) {
+                        return d.average;
+                    } else {
+                        return 0;
+                    }
+                } 
             
                 var jpJson = require('../../assets/oconus.json')
                 jpConfig.json = jpJson
                 jpConfig.geoName = "state"
                 jpConfig.propName = "iso_a2"
-                jpConfig.numType = "average"
 
                 var center = d3.geo.centroid(jpConfig.json)
-                center[1] -= 13
-                jpConfig.projection =   d3.geo.mercator()
-                                          .center(center)
+                center[1] -= 10
+                jpConfig.projection = d3.geo.mercator().center(center)
         
                 var jpChart = dchelpers.getGeoChart(jpConfig)
-
+                jpChart.controlsUseVisibility(true)
                 jpChart.title(function(d) {
                         var myCount = 0;
                         var myAverage = 0;
@@ -614,84 +641,103 @@ import searchBox from '@/components/searchBox'
                             myCount = d.value.cnt;
                             myAverage = d.value.average;
                         }
-                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
+                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
                     });
 
-                jpChart.colorCalculator(function (d) { 
-                    if (d && d.average)
-                        return d.average ? jpChart.colors()(d.average) : '#ccc'; 
-                    else return '#ccc'
+                jpChart.on('filtered',(chart) => {
+                    if (chart.hasFilter()) {
+                        this.oconusFiltered = true
+                    } else {
+                        this.oconusFiltered = false
+                    }
                 })
 
                 jpChart.on('pretransition', (chart)=> {
                     var color = 'orange'
+                    chart.select('svg').select(".divider").remove()
                     chart.select('svg').append('g').attr("class", "divider")
                     var divider = chart.select('.divider')
                     var dividerStroke = 3
 
+                    //lines must meet; set variables to represent where lines meet
+                    //point where all areas meet
+                    var tripleJunctionX = 0.25 * jpConfig.width 
+                    var tripleJunctionY = 0.2 * jpConfig.height
+                    //intersection between pacific and alaska
+                    var pacificAlaskaX = 0.14 * jpConfig.width
+                    var pacificAlaskaY = 0.55 * jpConfig.height
+                    //corner (90 deg) between alaska and europe
+                    var europeAlaskaTopX = 0.432 * jpConfig.width
+                    var europeAlaskaTopY = 0.2 * jpConfig.height
+                    //corner (>90 deg) between alaska and europe
+                    var europeAlaskaBotX = 0.43 * jpConfig.width
+                    var europeAlaskaBotY = 0.552 * jpConfig.height
+                    //end of line between alaska and europe
+                    var europeAlaskaEndX = 0.6 * jpConfig.width
+                    var europeAlaskaEndY = 0.8 * jpConfig.height
+                    //top vertical (pacific-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.25)
+                         .attr("x1", tripleJunctionX)
                          .attr("y1", 0)
-                         .attr("x2", jpConfig.width * 0.25)
-                         .attr("y2", jpConfig.height * 0.2)
+                         .attr("x2", tripleJunctionX)
+                         .attr("y2", tripleJunctionY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);
 
+                    //top left diagonal (left of alaska; pacific-alaska divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.25)
-                         .attr("y1", jpConfig.height * 0.2)
-                         .attr("x2", jpConfig.width * 0.15)
-                         .attr("y2", jpConfig.height * 0.5)
+                         .attr("x1", tripleJunctionX)
+                         .attr("y1", tripleJunctionY)
+                         .attr("x2", pacificAlaskaX)
+                         .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);
 
+                    //left horizontal (pacific-alaska divider)
                     divider
                          .append("line")
                          .attr("x1", 0)
-                         .attr("y1", jpConfig.height * 0.5)
-                         .attr("x2", jpConfig.width * 0.152)
-                         .attr("y2", jpConfig.height * 0.5)
+                         .attr("y1", pacificAlaskaY)
+                         .attr("x2", pacificAlaskaX)
+                         .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);   
 
+
+                    //top right horizontal (top of alaska; alaska-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.432)
-                         .attr("y1", jpConfig.height * 0.20)
-                         .attr("x2", jpConfig.width * 0.25)
-                         .attr("y2", jpConfig.height * 0.2)
+                         .attr("x1", tripleJunctionX)
+                         .attr("y1", tripleJunctionY)
+                         .attr("x2", europeAlaskaTopX)
+                         .attr("y2", europeAlaskaTopY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);  
 
+                    //right vertical (to the right of alaska; alaska-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.43)
-                         .attr("y1", jpConfig.height * 0.20)
-                         .attr("x2", jpConfig.width * 0.43)
-                         .attr("y2", jpConfig.height * 0.552)
+                         .attr("x1", europeAlaskaTopX)
+                         .attr("y1", europeAlaskaTopY)
+                         .attr("x2", europeAlaskaBotX)
+                         .attr("y2", europeAlaskaBotY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);  
 
+                    //bottom right diagonal (slope ~= -1; alaska-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.6)
-                         .attr("y1", jpConfig.height * 0.8)
-                         .attr("x2", jpConfig.width * 0.43)
-                         .attr("y2", jpConfig.height * 0.55)
+                         .attr("x1", europeAlaskaBotX)
+                         .attr("y1", europeAlaskaBotY)
+                         .attr("x2", europeAlaskaEndX)
+                         .attr("y2", europeAlaskaEndY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);  
 
-                    divider
-                         .append("line")
-                         .attr("x1", jpConfig.width * 0.6)
-                         .attr("y1", jpConfig.height * 0.8)
-                         .attr("x2", jpConfig.width * 0.43)
-                         .attr("y2", jpConfig.height * 0.55)
-                         .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);  
 
+                    chart.select('svg').select(".textLabels").remove()
                     chart.select('svg').append('g').attr("class", "textLabels")
                     var textLabels = chart.select('.textLabels')
                     var textStroke = 0.5
@@ -720,50 +766,6 @@ import searchBox from '@/components/searchBox'
                         .text('Europe');
                 })
 
-                // var geoDim = this.ndx.dimension(function(d){
-                //     return formats.geoCSAb[d.st];
-                // })
-                // var geoGroup = geoDim.group().reduce(tosAdd, tosRemove, tosInitial)
-
-                // var scale = 700;
-                // var width = scale*0.8;
-                // var height = scale/2;
-
-                // dc.geoChoroplethChart("#us-chart")
-                //     .width(width) // (optional) define chart width, :default = 200
-                //     .height(height) // (optional) define chart height, :default = 200
-                //     .transitionDuration(1000) // (optional) define chart transition duration, :default = 1000
-                //     .dimension(geoDim) // set crossfilter dimension, dimension key should match the name retrieved in geo json layer
-                //     .group(geoGroup) // set crossfilter group
-                //     // (optional) define color function or array for bubbles
-                //     //.scale(scale)
-                //     .colors(["#ccc", "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"])
-                //     // (optional) define color domain to match your data domain if you want to bind data or color
-                //     .colorDomain([7000, 8000])
-                //     // (optional) define color value accessor
-                //     .colorAccessor(function(d){ if (d) return d.cnt;})
-                //     .projection(    
-                //       d3.geo.albersUsa()
-                //       .scale(scale)
-                //       .translate([width / 2, height / 2])
-                //     )
-                //     /* Project the given geojson. You can call this function mutliple times with different geojson feed to generate
-                //      * multiple layers of geo paths.
-                //      * 1st param - geo json data
-                //      * 2nd param - name of the layer which will be used to generate css class
-                //      * 3rd param - (optional) a function used to generate key for geo path, it should match the dimension key
-                //      * in order for the coloring to work properly */
-                //     .overlayGeoJson(statesJson.features, "state", function(d) {
-                //         return d.properties.name;
-                //     })
-                    
-                //     // (optional) closure to generate title for path, :default = d.key + ": " + d.value
-                //     .title(function(d) {
-                //         var myCount = 0;
-                //         if (d.value)
-                //             myCount = d.value.cnt;
-                //         return "State: " + d.key + "\n Count: " + myCount;
-                //     });
 
                  //Download Raw Data button
                 d3.select('#download')
@@ -796,6 +798,9 @@ import searchBox from '@/components/searchBox'
                 dc.renderAll()
                 dc.redrawAll()
             }
+            $(function() {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
         },
         beforeUpdate() {
             console.log("beforeupdate")

@@ -18,22 +18,6 @@
                 <a class="nav-link" @click="dynamicComponent='efmp'" data-toggle="tab">EFMP/Humi</a>
             </li>
         </ul>
-        <div class="row" v-if="dynamicComponent=='offTOS' || dynamicComponent=='enlTOS'">
-            <div class="padded">
-                <div id="radioSelect" class="col form-group">
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radio" type="radio" id="radio1" value="offTOS" v-model="dynamicComponent">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Officer</span>
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radio" type="radio" id="radio2" value="enlTOS" v-model="dynamicComponent">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Enlisted</span>
-                    </label>
-                </div>
-            </div>
-        </div>
         <transition name="fade" mode="out-in">
             <component :is="dynamicComponent"></component>
         </transition>

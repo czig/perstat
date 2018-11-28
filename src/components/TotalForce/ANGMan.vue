@@ -26,7 +26,7 @@
                                     <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
+                                            style="visibility: hidden"
                                             @click="resetChart('dc-type-rowchart')">Reset</button>
                                     </h3>
                                 </div>
@@ -38,7 +38,7 @@
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-grade-barchart')">Reset</button>
                             </h3>
                         </div>
@@ -50,7 +50,7 @@
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-empCat-barchart')">Reset</button>
                             </h3>
                             <searchBox
@@ -64,64 +64,18 @@
                     </div>
                 </div>
                 <br>
-                <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
-                    Please select from map below to display state information
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
                 <div class="row">
-                    <div class="col-3"></div>
-                    <div id="us" class="col-6">
+                    <div id="us" class="col-12">
                         <div id="dc-us-geoChoroplethChart">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87; text-align: center;"></span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
                             </h3>
                         </div>
                     </div>
-                    <div class="col-3"></div>
                 </div>
-<!--                 <largeBarChart :id="'state'"         
-                               :dimension="stateDim"
-                               :group="removeError(stateGroup)"
-                               :widthFactor="0.90"
-                               :aspectRatio="3"
-                               :minHeight="300"
-                               :reducer="angAdd"
-                               :accumulator="angInitial"
-                               :numBars="30"
-                               :margin="chartSpecs.stateChart.margins"
-                               :colorScale="stateColorScale"
-                               :title="'STATE'"
-                               :loaded="loaded">
-                </largeBarChart>
- -->
-<!--                 
-                <div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-barchart">
-                            <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-base-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchBase"
-                                size="3"
-                                label="Search Installation"
-                                @sub="submit(searchBase,'dc-base-barchart')"
-                                button="true"
-                                :color="baseColor"
-                                :btnColor="baseColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->                
             </div>
         </transition-group>
     </div>
@@ -322,47 +276,15 @@ import largeBarChart from '@/components/largeBarChart'
                 }
 
                 //remove empty function (es6 syntax to keep correct scope)
-                var removeEmptyBins = (source_group) => {
-                    return {
-                        all: () => {
-                            return source_group.all().filter((d) => {
-                                return d.value.totalCount != 0
-                            })
-                        }
-                    }
-                }
-
-                //remove empty function (es6 syntax to keep correct scope)
                 var removeError = (source_group) => {
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
-                                return d.key != "error" && d.key != "**ERROR**"
+                                return d.key != "**ERROR**"
                             })
                         }
                     }
                 }      
-
-                //reduce functions
-                function angAdd(p,v) {
-                    p.totalCount = p.totalCount + +v.count
-                    p.cnt = p.cnt + +v.Inventory
-                    return p
-                }
-
-                function angRemove(p,v) {
-                    p.totalCount = p.totalCount - +v.count
-                    p.cnt = p.cnt - +v.Inventory
-                    return p
-                }
-
-                function angInitial() {
-                    return {
-                        totalCount: 0,
-                        cnt: 0
-                    }
-                }                  
-
 
                 //type 
                 var typeConfig = {};
@@ -376,6 +298,7 @@ import largeBarChart from '@/components/largeBarChart'
                 typeConfig.margins = chartSpecs.typeChart.margins
                 typeConfig.colors = chartSpecs.typeChart.color
                 var typeChart = dchelpers.getRowChart(typeConfig)   
+                typeChart.controlsUseVisibility(true)
 
                 //empCat
                 var empCatConfig = {}
@@ -390,6 +313,7 @@ import largeBarChart from '@/components/largeBarChart'
                 var empCatChart = dchelpers.getOrdinalBarChart(empCatConfig)
                 empCatChart
                     .elasticX(true)
+                    .controlsUseVisibility(true)
                     //.ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
@@ -427,6 +351,7 @@ import largeBarChart from '@/components/largeBarChart'
                     .colorAccessor(function(d){
                         return d.key;
                     })
+                    .controlsUseVisibility(true)
                     .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "BG", "MG", "LTG", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
                     .range([c.brighter(1).toString(), c.brighter(0.8).toString(), c.brighter(0.7).toString(), 
                                             c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(),  
@@ -447,102 +372,43 @@ import largeBarChart from '@/components/largeBarChart'
                       return formats.gradeOrder[d.key]
                     })  
 
-                //base(mpf)
-/*                 var baseSelDim = this.ndx.dimension((d)=>{return d.Base});
-                var baseSelGrp = removeEmptyBins(baseSelDim.group().reduceSum(function(d) { return +d.Inventory }));
-                var baseSelect = dc.selectMenu('#dc-base-select')
-                baseSelect
-                    .dimension(baseSelDim)
-                    .group(baseSelGrp)       
-                    .numberVisible(10)
-                    .controlsUseVisibility(true);
-
-                var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.Base});
-                var basePercent = baseConfig.dim.group().reduce(angAdd, angRemove, angInitial)
-                baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .valueAccessor((d) => {
-                        return d.value.average
-                    })
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('fill','white')
-                        var len = chart.group().all().length
-                        this.baseLen = len
-                        if (chart.hasFilter() || baseSelect.hasFilter()) 
-                            this.baseHasFilter = true;
-                        else this.baseHasFilter = false;
-                        //console.log(len)
-                        var timer = 3500;
-                        if (len > 0 && len < 60)
-                            timer = 0
-                        setTimeout(()=>{ 
-                            chart.selectAll('g.x text')
-                                 .attr('fill','black') 
-                        }, timer);
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-base-barchart')
-                        })
-                    })
-
-                baseChart.on('filtered', (chart)=>{
-                    this.baseLen = chart.group().all().length
-                })
-
-                baseSelect.on('filtered', (chart)=>{
-                    if (chart.hasFilter() || baseChart.hasFilter()) 
-                        this.baseHasFilter = true;
-                    else this.baseHasFilter = false;
-                })
- */
                 //CONUS 
                 var usConfig = {}
                 usConfig.id = 'us';
                 usConfig.dim = this.ndx.dimension(function(d){
                     return d.state;
                 })
-            
-                usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(angAdd, angRemove, angInitial))
-                usConfig.scale = 700;
+                usConfig.group = removeError(usConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
+                usConfig.scale = 1
                 usConfig.minHeight = 200
-                usConfig.aspectRatio = 2
-
-                usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                usConfig.colorAccessor = 'cnt'
+                usConfig.aspectRatio = 2.1 
+                usConfig.xRatio = 2.0
+                usConfig.yRatio = 2.0 
+                usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                usConfig.valueAccessor = function(d) {
+                    if (d.value) {
+                        return d.value
+                    }
+                }
+                usConfig.colorAccessor = function(d) {
+                    if (d) {
+                        return d;   
+                    } else {
+                        return 0;
+                    }
+                }
             
                 var statesJson = require('../../assets/geoUS.json')
                 usConfig.json = statesJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name' 
-                usConfig.numType = 'cnt'
-
                 usConfig.projection = d3.geo.albersUsa()
-                usConfig.size = [0.6, 0.9, 2.1];                                        
 
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
-                    var myCount = 0;
-                    if (d.value){
-                        myCount = d.value.cnt;
-                    }
-                    return formats.geoCS[formats.stateFormat[d.key]] + " " + myCount ;
+                    return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
                 });
-
-                usChart.colorCalculator(function (d) { 
-                    if (d && d.cnt)
-                        return d.cnt ? usChart.colors()(d.cnt) : '#ccc'; 
-                    else return '#ccc'
-                })
+                usChart.controlsUseVisibility(true);
 
 
                 //Download Raw Data button

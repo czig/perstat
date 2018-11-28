@@ -4,18 +4,22 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row">
-                    <!-- <div class="col-auto">
-                        Personnel:        
-                        <span id="count"></span>
-                    </div>
                     <div class="col-auto">
-                        Total TOS: 
-                        <span id="months"></span>
-                    </div> -->
-                    <div class="col-auto">
-                        Average Time on Station for the last 4 years: 
+                        Average TOS: 
                         <span id="average"></span>
                     </div>
+                    <div class="col-auto">
+                        Completed Tours:        
+                        <span id="count"></span>
+                    </div>
+                    <span data-toggle="tooltip" 
+                          data-placement="bottom"
+                          title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
+                        <fontAwesomeIcon icon="info-circle" 
+                                         size="md"
+                                         >
+                        </fontAwesomeIcon>
+                    </span>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -86,6 +90,12 @@
                              </transition>
                         </div>
                 </div>
+                <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                    Please select from maps below to display Installation graph
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="row">
                     <div id="us" class="col-6">
                         <div id="dc-us-geoChoroplethChart">
@@ -122,6 +132,7 @@ import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
     export default {
         data() {
@@ -186,6 +197,7 @@ import searchBox from '@/components/searchBox'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
+            'fontAwesomeIcon': FontAwesomeIcon,
             searchBox
         },
         created: function(){
@@ -538,24 +550,32 @@ import searchBox from '@/components/searchBox'
                 usConfig.dim = this.ndx.dimension(function(d){
                     return d.State;
                 })
-                usConfig.group = removeEmptyBins(usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
+                usConfig.group = usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
                 
-                usConfig.scale = 700;
+                usConfig.scale = 1
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2
-
-                usConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                usConfig.colorAccessor = 'average'
-            
+                usConfig.xRatio = 2.0
+                usConfig.yRatio = 2.0 
+                usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                usConfig.valueAccessor = function(d) {
+                    if (d) {
+                        return d.value;
+                    }
+                }
+                usConfig.colorAccessor = function(d) {
+                    if (d) {
+                        return d.average;
+                    } else {
+                        return 0;
+                    }
+                } 
                 var statesJson = require('../../assets/geo.json')
                 usConfig.json = statesJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name'
-                usConfig.numType = 'average'
 
                 usConfig.projection = d3.geo.albersUsa()
-                usConfig.size = [0.6 , 0.9, 2.1];
-                                          
 
                 var usChart = dchelpers.getGeoChart(usConfig)
                 usChart.title(function(d) {
@@ -565,38 +585,42 @@ import searchBox from '@/components/searchBox'
                         myCount = d.value.cnt;
                         myAverage = d.value.average;
                     }
-                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage ;
+                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
                 });
-
-                usChart.colorCalculator(function (d) { 
-                    if (d && d.average)
-                        return d.average ? usChart.colors()(d.average) : '#ccc'; 
-                    else return '#ccc'
-                })
 
                 var jpConfig = {}
                 jpConfig.id = 'jp';
                 jpConfig.dim = this.ndx.dimension(function(d){
                      return d.Country;
                 })
-                jpConfig.group = removeEmptyBins(jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
-                // jpConfig.dim = usConfig.dim
-                // jpConfig.group = usConfig.group
-                jpConfig.size = [0.3 , 2.5, 0.8];
+                jpConfig.group = jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                jpConfig.scale = 2 
                 jpConfig.minHeight = 200
-                jpConfig.aspectRatio = 2
+                jpConfig.aspectRatio = 2 
+                jpConfig.xRatio = 1.8 
+                jpConfig.yRatio = 2 
 
-                jpConfig.colors =["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"]
-                jpConfig.colorAccessor = 'average'
+                jpConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                jpConfig.valueAccessor = function(d) {
+                    if (d) {
+                        return d.value;
+                    }
+                }
+                jpConfig.colorAccessor = function(d) {
+                    if (d) {
+                        return d.average;
+                    } else {
+                        return 0;
+                    }
+                } 
             
                 var jpJson = require('../../assets/oconus.json')
                 jpConfig.json = jpJson
                 jpConfig.geoName = "state"
                 jpConfig.propName = "iso_a2"
-                jpConfig.numType = 'average'
 
                 var center = d3.geo.centroid(jpConfig.json)
-                center[1] -= 13
+                center[1] -= 10
                 jpConfig.projection =   d3.geo.mercator()
                                           .center(center)
         
@@ -609,86 +633,95 @@ import searchBox from '@/components/searchBox'
                             myCount = d.value.cnt;
                             myAverage = d.value.average;
                         }
-                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage;
+                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
                     });
 
-                jpChart.colorCalculator(function (d) { 
-                    if (d && d.average)
-                        return d.average ? jpChart.colors()(d.average) : '#ccc'; 
-                    else return '#ccc'
-                })
-                
                 jpChart.on('pretransition', (chart)=> {
-                    // console.log(chart.group().all())
-                    //console.log(usChart.filters())
                     var color = 'orange'
+                    chart.select('svg').select(".divider").remove()
                     chart.select('svg').append('g').attr("class", "divider")
                     var divider = chart.select('.divider')
                     var dividerStroke = 3
 
+
+                    //lines must meet; set variables to represent where lines meet
+                    //point where all areas meet
+                    var tripleJunctionX = 0.25 * jpConfig.width 
+                    var tripleJunctionY = 0.2 * jpConfig.height
+                    //intersection between pacific and alaska
+                    var pacificAlaskaX = 0.14 * jpConfig.width
+                    var pacificAlaskaY = 0.55 * jpConfig.height
+                    //corner (90 deg) between alaska and europe
+                    var europeAlaskaTopX = 0.432 * jpConfig.width
+                    var europeAlaskaTopY = 0.2 * jpConfig.height
+                    //corner (>90 deg) between alaska and europe
+                    var europeAlaskaBotX = 0.43 * jpConfig.width
+                    var europeAlaskaBotY = 0.552 * jpConfig.height
+                    //end of line between alaska and europe
+                    var europeAlaskaEndX = 0.6 * jpConfig.width
+                    var europeAlaskaEndY = 0.8 * jpConfig.height
+                    //top vertical (pacific-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.25)
+                         .attr("x1", tripleJunctionX)
                          .attr("y1", 0)
-                         .attr("x2", jpConfig.width * 0.25)
-                         .attr("y2", jpConfig.height * 0.2)
+                         .attr("x2", tripleJunctionX)
+                         .attr("y2", tripleJunctionY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);
 
+                    //top left diagonal (left of alaska; pacific-alaska divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.25)
-                         .attr("y1", jpConfig.height * 0.2)
-                         .attr("x2", jpConfig.width * 0.15)
-                         .attr("y2", jpConfig.height * 0.5)
+                         .attr("x1", tripleJunctionX)
+                         .attr("y1", tripleJunctionY)
+                         .attr("x2", pacificAlaskaX)
+                         .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);
 
+                    //left horizontal (pacific-alaska divider)
                     divider
                          .append("line")
                          .attr("x1", 0)
-                         .attr("y1", jpConfig.height * 0.5)
-                         .attr("x2", jpConfig.width * 0.152)
-                         .attr("y2", jpConfig.height * 0.5)
+                         .attr("y1", pacificAlaskaY)
+                         .attr("x2", pacificAlaskaX)
+                         .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);   
 
+
+                    //top right horizontal (top of alaska; alaska-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.432)
-                         .attr("y1", jpConfig.height * 0.20)
-                         .attr("x2", jpConfig.width * 0.25)
-                         .attr("y2", jpConfig.height * 0.2)
+                         .attr("x1", tripleJunctionX)
+                         .attr("y1", tripleJunctionY)
+                         .attr("x2", europeAlaskaTopX)
+                         .attr("y2", europeAlaskaTopY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);  
 
+                    //right vertical (to the right of alaska; alaska-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.43)
-                         .attr("y1", jpConfig.height * 0.20)
-                         .attr("x2", jpConfig.width * 0.43)
-                         .attr("y2", jpConfig.height * 0.552)
+                         .attr("x1", europeAlaskaTopX)
+                         .attr("y1", europeAlaskaTopY)
+                         .attr("x2", europeAlaskaBotX)
+                         .attr("y2", europeAlaskaBotY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);  
 
+                    //bottom right diagonal (slope ~= -1; alaska-europe divider)
                     divider
                          .append("line")
-                         .attr("x1", jpConfig.width * 0.6)
-                         .attr("y1", jpConfig.height * 0.8)
-                         .attr("x2", jpConfig.width * 0.43)
-                         .attr("y2", jpConfig.height * 0.55)
+                         .attr("x1", europeAlaskaBotX)
+                         .attr("y1", europeAlaskaBotY)
+                         .attr("x2", europeAlaskaEndX)
+                         .attr("y2", europeAlaskaEndY)
                          .attr("stroke-width", dividerStroke)
                          .attr("stroke", color);  
 
-                    divider
-                         .append("line")
-                         .attr("x1", jpConfig.width * 0.6)
-                         .attr("y1", jpConfig.height * 0.8)
-                         .attr("x2", jpConfig.width * 0.43)
-                         .attr("y2", jpConfig.height * 0.55)
-                         .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);  
-
+                    chart.select('svg').select(".textLabels").remove()
                     chart.select('svg').append('g').attr("class", "textLabels")
                     var textLabels = chart.select('.textLabels')
                     var textStroke = 0.5
@@ -717,50 +750,6 @@ import searchBox from '@/components/searchBox'
                         .text('Europe');
                 })
 
-                // var geoDim = this.ndx.dimension(function(d){
-                //     return formats.geoCSAb[d.st];
-                // })
-                // var geoGroup = geoDim.group().reduce(tosAdd, tosRemove, tosInitial)
-
-                // var scale = 700;
-                // var width = scale*0.8;
-                // var height = scale/2;
-
-                // dc.geoChoroplethChart("#us-chart")
-                //     .width(width) // (optional) define chart width, :default = 200
-                //     .height(height) // (optional) define chart height, :default = 200
-                //     .transitionDuration(1000) // (optional) define chart transition duration, :default = 1000
-                //     .dimension(geoDim) // set crossfilter dimension, dimension key should match the name retrieved in geo json layer
-                //     .group(geoGroup) // set crossfilter group
-                //     // (optional) define color function or array for bubbles
-                //     //.scale(scale)
-                //     .colors(["#ccc", "#E2F2FF","#C4E4FF","#9ED2FF","#81C5FF","#6BBAFF","#51AEFF","#36A2FF","#1E96FF","#0089FF","#0061B5"])
-                //     // (optional) define color domain to match your data domain if you want to bind data or color
-                //     .colorDomain([7000, 8000])
-                //     // (optional) define color value accessor
-                //     .colorAccessor(function(d){ if (d) return d.cnt;})
-                //     .projection(    
-                //       d3.geo.albersUsa()
-                //       .scale(scale)
-                //       .translate([width / 2, height / 2])
-                //     )
-                //     /* Project the given geojson. You can call this function mutliple times with different geojson feed to generate
-                //      * multiple layers of geo paths.
-                //      * 1st param - geo json data
-                //      * 2nd param - name of the layer which will be used to generate css class
-                //      * 3rd param - (optional) a function used to generate key for geo path, it should match the dimension key
-                //      * in order for the coloring to work properly */
-                //     .overlayGeoJson(statesJson.features, "state", function(d) {
-                //         return d.properties.name;
-                //     })
-                    
-                //     // (optional) closure to generate title for path, :default = d.key + ": " + d.value
-                //     .title(function(d) {
-                //         var myCount = 0;
-                //         if (d.value)
-                //             myCount = d.value.cnt;
-                //         return "State: " + d.key + "\n Count: " + myCount;
-                //     });
 
                  //Download Raw Data button
                 d3.select('#download')
@@ -793,6 +782,9 @@ import searchBox from '@/components/searchBox'
                 dc.renderAll()
                 dc.redrawAll()
             }
+            $(function() {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
         },
         beforeUpdate() {
             console.log("beforeupdate")
