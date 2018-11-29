@@ -219,7 +219,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 } else {
                     store.state.asDate = payload[1].data.ASOFDATE 
                 }
-                //remove keys
+                //remove keys (both are necessary to remove array of keys)
                 var offKeys = offData.splice(0,1)[0]
                 var enlKeys = enlData.splice(0,1)[0]
                 //add type to keys
@@ -231,11 +231,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 enlData.forEach((d,i) => {
                     enlData[i].push('Enlisted');
                 })
-
-                console.log(offKeys)
                 var axiosData = offData.concat(enlData)
                 var objData = makeObject(offKeys,axiosData)
-                console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -642,7 +639,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                             myCount = d.value.cnt;
                             myAverage = d.value.average;
                         }
-                        return formats.geoCS1[d.key] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
+                        return formats.countryLong[d.key] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
                     });
 
                 jpChart.on('filtered',(chart) => {

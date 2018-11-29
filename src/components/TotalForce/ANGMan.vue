@@ -471,6 +471,7 @@ import largeBarChart from '@/components/largeBarChart'
                                                 .center(center)                     
 
                 var terrChart = dchelpers.getGeoChart(terrConfig)
+                terrChart.controlsUseVisibility(true)
                 terrChart.title(function(d) {
                     var myCount = 0;
                     if (d){
