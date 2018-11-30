@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="row mt-3">
-            <div class="col-4">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-bottom: 15px;">
                 <div id="tf-card" class="card hoverable click" @click="$router.push('/totalforce')">
                     <img class="card-img-top" src="../../static/ad_manning.jpg" height="200px">
                     <div class="card-body">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-bottom: 15px;">
                 <div id="officer-card" class="card hoverable click" @click="$router.push('/officer')">
                     <img class="card-img-top" src="../../static/officer.jpg" height="200px">
                     <div class="card-body">
@@ -41,7 +41,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-bottom: 15px;">
                 <div id="enlisted-card" class="card hoverable click" @click="$router.push('/enlisted')">
                     <img class="card-img-top" src="../../static/enlisted.jpg" height="200px">
                     <div class="card-body">
@@ -49,9 +49,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-4">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-bottom: 15px;">
                 <div id="civilian-card" class="card hoverable click" @click="$router.push('/civilian')">
                     <img class="card-img-top" src="../../static/civilian.jpg" height="200px">
                     <div class="card-body">
@@ -59,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-bottom: 15px;">
                 <div id="assignments-card" class="card hoverable click" @click="$router.push('/assignments')">
                     <img class="card-img-top" src="../../static/assignments.jpg" height="200px">
                     <div class="card-body">
@@ -67,7 +65,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-bottom: 15px;">
                 <div class="card hoverable click" @click="$router.push('/education')">
                     <img class="card-img-top" src="../../static/education.jpg" height="200px">
                     <div class="card-body">
