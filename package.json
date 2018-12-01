@@ -10,7 +10,7 @@
     "build": "node build/build.js",
     "fla": "node build/buildFla.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js",
-    "test": "npm run unit",
+    "test": "yarn run unit",
     "full-test": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run"
   },
   "dependencies": {
