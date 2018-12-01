@@ -62,7 +62,6 @@ import { store } from '@/store/store'
 .nav-tabs .nav-link.active{
     font-weight:bold;
     color:teal;
-    //background-color:red;
 }
 .fade-enter{
     opacity: 0;

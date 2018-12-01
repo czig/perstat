@@ -2,17 +2,19 @@
     <div class="container">
         <div class="row" v-if="dynamicComponent=='offHighEd' || dynamicComponent=='enlHighEd'">
             <div class="padded">
-                <div id="category" class="col form-group">
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioType" type="radio" id="radio1" value="offHighEd" v-model="dynamicComponent">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Officer</span>
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radioType" type="radio" id="radio2" value="enlHighEd" v-model="dynamicComponent">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Enlisted</span>
-                    </label>
+                <div id="radioSelect" class="col">
+                    <div class="custom-control custom-radio custom-control-inline">
+                       <input class="custom-control-input" name="radio" type="radio" id="radio1" value="offHighEd" v-model="dynamicComponent">
+                       <label class="custom-control-label" for="radio1">
+                            Officer 
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                       <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="enlHighEd" v-model="dynamicComponent">
+                       <label class="custom-control-label" for="radio2">
+                            Enlisted 
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,17 +50,8 @@ export default {
 <style src="../../../node_modules/dc/dc.css">
 </style>
 <style scoped>
-
-
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
-}
-
-#radioSelect{
-    margin-bottom: 0px;
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 
 .active{
@@ -93,11 +86,11 @@ export default {
     font-weight: bold;
 }
 
-#category .custom-control-input:checked~.custom-control-indicator {
+#radioSelect .custom-control-input:checked~.custom-control-indicator {
     background-color: rgb(18, 153, 60);
 }
 
-#category .custom-control-input:focus~.custom-control-indicator {
+#radioSelect .custom-control-input:focus~.custom-control-indicator {
     box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(18, 153, 60,.25);
 }
 

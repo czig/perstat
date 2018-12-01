@@ -5,32 +5,37 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                    <div id="radioSelect" class="col-8 form-group">
-                       <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="totalCount" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Total</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="stem" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">STEM</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio3" type="radio" id="radio3" value="nonStem" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Non-STEM</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio4" type="radio" id="radio4" value="stemPercent" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Percent STEM</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio5" type="radio" id="radio5" value="nonStemPercent" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Percent Non-STEM</span>
-                        </label>
+                    <div id="radioSelect" class="col-8">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="totalCount" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Total 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="stem" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio2">
+                                STEM 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio3" type="radio" id="radio3" value="nonStem" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio3">
+                                Non-STEM 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio4" type="radio" id="radio4" value="stemPercent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio4">
+                                Percent STEM 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio5" type="radio" id="radio5" value="nonStemPercent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio5">
+                                Percent Non-STEM 
+                            </label>
+                        </div>
                     </div>
                     <div class="col-4" align="right">
                         <button type="button" id="download"
@@ -530,12 +535,8 @@
 <style src="../../../node_modules/dc/dc.css">
 </style>
 <style scoped>
-
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 .fade-enter-active {
     transition: all 0.5s; }

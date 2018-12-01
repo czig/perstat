@@ -4,6 +4,14 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
+                    <div id="radioSelect" class="col form-group">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Promotion Rate
+                            </label>
+                        </div>
+                    </div>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -513,11 +521,8 @@ import { store } from '@/store/store'
 <style src="@/../node_modules/dc/dc.css">
 </style>
 <style scoped>
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 .fade-enter-active {
     transition: all 0.5s;

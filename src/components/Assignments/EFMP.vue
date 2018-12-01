@@ -5,23 +5,7 @@
 	        <loader v-show="!loaded" key="loader"></loader>
 	        <div v-show="loaded" key="content">
 		        <div class="row pt-2">
-		        	<div class="col" id="category">
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="1st" type="radio" value="EFMP ASSIGNMENT" v-model="category" @click="singleSubmit('EFMP ASSIGNMENT', 'dc-type-rowchart')">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">EFMP Assignment</span>
-                        </label>
-                        <label class="custom-control custom-radio">
-                            <input class="custom-control-input" name="2nd" type="radio" value="HUMANITARIAN ASSIGNMENT" v-model="category" @click="singleSubmit('HUMANITARIAN ASSIGNMENT', 'dc-type-rowchart')">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Humanitarian Assignment</span>
-                        </label>
-                        <label class="custom-control custom-radio">
-                            <input class="custom-control-input" name="career" type="radio" value="EXPEDITED TRANSFER" v-model="category" @click="singleSubmit('EXPEDITED TRANSFER', 'dc-type-rowchart')">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Expedited Transfer</span>
-                        </label>
-                    </div>
+                    <div class="col"></div>
 		        	<div class="col-auto">
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect" 
@@ -43,51 +27,49 @@
                     		<h3>Year <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
-	                                style="display: none"
+	                                style="visibility: hidden"
 	                                @click="resetChart('dc-year-barchart')">Reset</button>
 	                        </h3>
                     	</div>
                     </div>
-                    <div class="col-4" id="marital">
-                		<div id="dc-marital-rowchart">
-                    		<h3>Marital Status <span style="font-size: 14pt; opacity: 0.87;"></span>
-	                        	<button type="button" 
-	                                class="btn btn-danger btn-sm btn-rounded reset" 
-	                                style="display: none"
-	                                @click="resetChart('dc-marital-rowchart')">Reset</button>
-	                        </h3>
-                    	</div>
-                	</div>
-                	<div class="col-5" id="grade">
+                    <div class="col-3" id="type">
+                        <div id="dc-type-rowchart">
+                            <h3>Type <span style="font-size: 14pt; opacity: 0.87;"></span>
+                                <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-type-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                	<div class="col-6" id="grade">
                     	<div id="dc-grade-barchart">
                     		<h3>Grade <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
-	                                style="display: none"
+	                                style="visibility: hidden"
 	                                @click="resetChart('dc-grade-barchart')">Reset</button>
 	                        </h3>
                     	</div>
                     </div>
                 </div>
-                <div v-show="false" class="row">
-                	<div class="col-6" id="type">
-                    	<div id="dc-type-rowchart">
-                    		<h3>Type <span style="font-size: 14pt; opacity: 0.87;"></span>
+                <div class="row">
+                    <div class="col-3" id="marital">
+                		<div id="dc-marital-rowchart">
+                    		<h3>Marital Status <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
-	                                style="display: none"
-	                                @click="resetChart('dc-type-rowchart')">Reset</button>
+	                                style="visibility: hidden"
+	                                @click="resetChart('dc-marital-rowchart')">Reset</button>
 	                        </h3>
                     	</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div id="majcom" class="col-12">
+                	</div>
+                    <div id="majcom" class="col-9">
                         <div id="dc-majcom-barchart">
                             <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"></span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-majcom-barchart')">Reset</button>
                             </h3>
                             <searchBox
@@ -108,7 +90,7 @@
                             <h3>Servicing MPF <span style="font-size: 14pt; opacity: 0.87;"></span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-base-barchart')">Reset</button>
                             </h3>
                             <searchBox
@@ -141,7 +123,7 @@ import searchBox from '@/components/searchBox'
 export default {
     data() {
     	return {
-    		category:'EFMP ASSIGNMENT',
+    		selected:'cnt',
     		searchMajcom: "",
             searchBase: "",
             loaded: false,
@@ -159,9 +141,8 @@ export default {
     },
     methods: {
       resetAll(event){
-      	this.category = 'EFMP ASSIGNMENT'
         dc.filterAll()
-        this.singleSubmit('EFMP ASSIGNMENT' , 'dc-type-rowchart')
+        dc.redrawAll()
       },
       resetChart: (id)=>{
         dc.chartRegistry.list().filter(chart=>{
@@ -176,15 +157,11 @@ export default {
             dc.redrawAll()
         },10)
       },
-      singleSubmit: (text,id) => {
-            dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == id
-            }).forEach(chart=>{
-                chart.filterAll()
-                chart.filter(text)
-            })
+      radioButton: () => {
+        setTimeout(function() {
             dc.redrawAll()
-          },
+        },10)
+      },
       submit: (text,id) => {
         dc.chartRegistry.list().filter(chart=>{
             return chart.anchorName() == id 
@@ -276,60 +253,18 @@ export default {
                 return {
                     all: () => {
                         return source_group.all().filter((d) => {
-                            return d.value != 0
+                            return d.value[this.selected] != 0
                         })
                     }
                 }
             }
 
             //TOTAL
-            var tots = this.ndx.groupAll().reduceSum((d)=>{ 
+            var totalGroup = this.ndx.groupAll().reduceSum((d)=>{ 
             	return d.Cnt
             })
             var invND = dc.numberDisplay("#cnt")
-            invND.group(tots)
-                 .formatNumber(d3.format("d"))
-                 .valueAccessor(function(d) { return d;})
-                 .html({
-                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                 })
-
-            //efmp
-            var efmpGroup = this.ndx.groupAll().reduceSum((d)=>{ 
-            	if (d.Type == 'EFMP ASSIGNMENT')
-            		return +d.Cnt
-            	else return 0
-            })
-            var efmpChart = dc.numberDisplay("#efmp")
-            efmpChart.group(efmpGroup)
-                 .formatNumber(d3.format("d"))
-                 .valueAccessor(function(d) { return d;})
-                 .html({
-                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                 })
-
-            //hum
-            var humGroup = this.ndx.groupAll().reduceSum((d)=>{ 
-            	if (d.Type == 'HUMANITARIAN ASSIGNMENT')
-            		return +d.Cnt
-            	else return 0
-            })
-            var humChart = dc.numberDisplay("#hum")
-            humChart.group(humGroup)
-                 .formatNumber(d3.format("d"))
-                 .valueAccessor(function(d) { return d;})
-                 .html({
-                    one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
-                 })
-
-            //exp
-            var expGroup = this.ndx.groupAll().reduceSum((d)=>{ 
-            	if (d.Type == 'EXPEDITED TRANSFER')
-            		return +d.Cnt
-            	else return 0
-            })
-            var expChart = dc.numberDisplay("#exp")
-            expChart.group(expGroup)
+            invND.group(totalGroup)
                  .formatNumber(d3.format("d"))
                  .valueAccessor(function(d) { return d;})
                  .html({
@@ -345,13 +280,13 @@ export default {
             yearConfig.group = yearConfig.dim.group().reduceSum((d)=>{
             	return d.Cnt
             })
-            yearConfig.minHeight = 310
-            yearConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
+            yearConfig.minHeight = 220 
+            yearConfig.aspectRatio = 1.1 
             yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 100}
             yearConfig.colors = [chartSpecs.baseChart.color]
             var yearChart = dchelpers.getOrdinalBarChart(yearConfig)
-
             yearChart
+                .controlsUseVisibility(true)
                 .elasticX(true)
                 .on('pretransition', (chart)=> {
                     chart.selectAll('g.x text')
@@ -360,7 +295,6 @@ export default {
                         this.submit(d, 'dc-year-barchart')
                     })
                 })
-            yearChart.barPadding(0.2)
 
             //TYPE
             var typeConfig = {};
@@ -371,28 +305,15 @@ export default {
             typeConfig.group = typeConfig.dim.group().reduceSum((d)=>{
             	return d.Cnt
             })
-            typeConfig.minHeight = 300 
+            typeConfig.minHeight = 180 
             typeConfig.aspectRatio = 2
             typeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
             typeConfig.colors = d3.scale.category10()
             var typeChart = dchelpers.getRowChart(typeConfig)
-
-            typeChart.filter(this.category)
+            typeChart
+                .controlsUseVisibility(true)
             
-            //Marital marital
-            var maritalConfig = {};
-            maritalConfig.id = 'marital';
-            maritalConfig.dim = this.ndx.dimension(function (d) {
-                return d.Marital;
-            })
-            maritalConfig.group = maritalConfig.dim.group().reduceSum((d)=>{
-            	return d.Cnt
-            })
-            maritalConfig.minHeight = 230 
-            maritalConfig.aspectRatio = 2
-            maritalConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-            maritalConfig.colors = d3.scale.category10()
-            var maritalChart = dchelpers.getRowChart(maritalConfig)
+
 
             //Projection
             var gradeConfig = {};
@@ -403,13 +324,14 @@ export default {
             gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
             	return d.Cnt
             }))
-            gradeConfig.minHeight = 260
+            gradeConfig.minHeight = 210
             gradeConfig.aspectRatio = 3
             gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
             var c = d3.rgb(51,172,255)
             var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
             gradeChart
                 .elasticX(true)
+                .controlsUseVisibility(true)
                 .colorAccessor(function(d){
                     return d.key;
                 })
@@ -426,7 +348,23 @@ export default {
                     this.submit(d, 'dc-grade-barchart')
                 })
             })
-            //projChart.barPadding(0.2)
+
+            //Marital marital
+            var maritalConfig = {};
+            maritalConfig.id = 'marital';
+            maritalConfig.dim = this.ndx.dimension(function (d) {
+                return d.Marital;
+            })
+            maritalConfig.group = maritalConfig.dim.group().reduceSum((d)=>{
+            	return d.Cnt
+            })
+            maritalConfig.minHeight = 200 
+            maritalConfig.aspectRatio = 2
+            maritalConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+            maritalConfig.colors = d3.scale.category10()
+            var maritalChart = dchelpers.getRowChart(maritalConfig)
+            maritalChart
+                .controlsUseVisibility(true)
 
             //MAJCOM
             var majcomConfig = {}
@@ -442,6 +380,7 @@ export default {
             majcomConfig.colors = [chartSpecs.majcomChart.color]
             var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
             majcomChart
+                .controlsUseVisibility(true)
                 .elasticX(true)
                 .ordinalColors(["#1976d2","#ff4500"])
                 .on('pretransition', (chart)=> {
@@ -466,6 +405,7 @@ export default {
             baseConfig.colors = [chartSpecs.baseChart.color]
             var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
             baseChart
+                .controlsUseVisibility(true)
                 .elasticX(true)
                 .on('pretransition', (chart)=> {
                     chart.selectAll('g.x text')
@@ -528,14 +468,28 @@ export default {
 </script>
 
 <style scoped>
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+div[id*="-barchart"] .x.axis text{
+    text-anchor: end !important;
+    transform: rotate(-45deg);
+  }
+
+div[id*="-rowchart"] g.row text{
+    fill: black;
+}
+#radioSelect div,input,label{
+    cursor: pointer;
+}
+.fade-enter-active {
+    transition: all 0.5s;
+}
+.fade-leave-active {
+    transition: all 0.2s;
+}
+.fade-enter, .fade-leave-to {
+    opacity: 0;
+}
+.fade-enter-to, .fade-leave {
+    opacity: 1;
 }
 
-.form-group{
-    align-content: center;
-}
 </style>

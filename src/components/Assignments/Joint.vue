@@ -4,17 +4,19 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col form-group">
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="count" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Number of Marriages</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio2" value="percent" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Match Percentage</span>
-                        </label>
+                    <div id="radioSelect" class="col">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="count" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Number of Marriages 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="percent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio2">
+                                Match Percentage 
+                            </label>
+                        </div>
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
@@ -183,10 +185,10 @@ import { store } from '@/store/store'
 	        },
              ylabel: function() {
                 if (this.selected === "percent") {
-                    return "Match (%)"
+                    return "(%)"
                 }
                 else if (this.selected === "count") {
-                    return "Joined With"
+                    return "(Count)"
                 }
             }
         },
@@ -570,13 +572,12 @@ import { store } from '@/store/store'
 
 <style scoped>
 	.myBtn{
-		//padding-top: 15px;
-		//padding-bottom: 15px;
-		//padding-left: 5px;
-		//padding-right: 5px;
 		width: 100px;
-		//height: 3px;
 	}
+
+    #radioSelect div,input,label{
+        cursor: pointer;
+    }
 
 	#bar{
 		height: 200px;
