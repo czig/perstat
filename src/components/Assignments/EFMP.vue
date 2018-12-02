@@ -5,6 +5,10 @@
 	        <loader v-show="!loaded" key="loader"></loader>
 	        <div v-show="loaded" key="content">
 		        <div class="row pt-2">
+		        	<div class="col-auto pt-1">
+                        Assignment Actions:
+                        <span id="count"></span>
+                    </div>
                     <div class="col"></div>
 		        	<div class="col-auto">
                         <button type="button" id="download"
@@ -16,19 +20,13 @@
                     </div>
 		        </div> 
 		        <div class="row">
-		        	<div class="col-auto">
-                        Assignment Actions:
-                        <span id="cnt"></span>
-                    </div>
-		        </div>
-		        <div class="row">
                     <div class="col-3" id="year">
-                    	<div id="dc-year-barchart">
-                    		<h3>Year <span style="font-size: 14pt; opacity: 0.87;"></span>
+                    	<div id="dc-year-rowchart">
+                            <h3>Year <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
 	                                style="visibility: hidden"
-	                                @click="resetChart('dc-year-barchart')">Reset</button>
+	                                @click="resetChart('dc-year-rowchart')">Reset</button>
 	                        </h3>
                     	</div>
                     </div>
@@ -44,7 +42,7 @@
                     </div>
                 	<div class="col-6" id="grade">
                     	<div id="dc-grade-barchart">
-                    		<h3>Grade <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
 	                                style="visibility: hidden"
@@ -55,56 +53,48 @@
                 </div>
                 <div class="row">
                     <div class="col-3" id="marital">
-                		<div id="dc-marital-rowchart">
-                    		<h3>Marital Status <span style="font-size: 14pt; opacity: 0.87;"></span>
+                		<div id="dc-marital-barchart">
+                            <h3>Marital Status <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
 	                                style="visibility: hidden"
-	                                @click="resetChart('dc-marital-rowchart')">Reset</button>
+	                                @click="resetChart('dc-marital-barchart')">Reset</button>
 	                        </h3>
                     	</div>
                 	</div>
-                    <div id="majcom" class="col-9">
-                        <div id="dc-majcom-barchart">
-                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;"></span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="visibility: hidden"
-                                    @click="resetChart('dc-majcom-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchMajcom"
-                                size="3"
-                                label="Search MAJCOM"
-                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                button="true"
-                                :color="majcomColor"
-                                :btnColor="majcomColor"
-                            ></searchBox>
-                        </div>
+                    <div class="col-9">
+                        <largeBarChart :id="'majcom'"
+                                       :dimension="majcomDim"
+                                       :group="majcomGroup"
+                                       :widthFactor="0.90"
+                                       :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                                       :minHeight="chartSpecs.majcomChart.minHeight"
+                                       :ylabel="' '"
+                                       :reducer="asgnAdd"
+                                       :accumulator="asgnInitial"
+                                       :numBars="10"
+                                       :margin="{top: 10, left: 40, right: 10, bottom: 90}"
+                                       :colorScale="majcomColorScale" 
+                                       :title="'MAJCOM'"
+                                       :loaded="loaded">
+                        </largeBarChart>
                     </div>
                 </div>
-                <div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-barchart">
-                            <h3>Servicing MPF <span style="font-size: 14pt; opacity: 0.87;"></span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="visibility: hidden"
-                                    @click="resetChart('dc-base-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchBase"
-                                size="3"
-                                label="Search MPF"
-                                @sub="submit(searchBase,'dc-base-barchart')"
-                                button="true"
-                                :color="baseColor"
-                                :btnColor="baseColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
+                <largeBarChart :id="'base'"
+                               :dimension="baseDim"
+                               :group="baseGroup"
+                               :widthFactor="0.90"
+                             :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                             :minHeight="chartSpecs.baseChart.minHeight"
+                             :ylabel="' '"
+                             :reducer="asgnAdd"
+                             :accumulator="asgnInitial"
+                             :numBars="20"
+                             :margin="chartSpecs.baseChart.margins"
+                             :colorScale="baseColorScale"
+                             :title="'Servicing MPF'"
+                             :loaded="loaded">
+                </largeBarChart>
 	    	</div>
 	    	</transition-group>
 	    </div>
@@ -119,25 +109,46 @@ import formats from '@/store/format'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
+import largeBarChart from '@/components/largeBarChart'
 
 export default {
     data() {
     	return {
-    		selected:'cnt',
-    		searchMajcom: "",
-            searchBase: "",
+            data: [],
+    		selected:'count',
             loaded: false,
-            baseColor: chartSpecs.baseChart.color,
-            majcomColor: chartSpecs.majcomChart.color
+            ylabel: '(Count)',
+            chartSpecs: chartSpecs,
+            baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
+            majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color])
     	}
     },
     computed: {
       	ndx: function(){
         	return crossfilter(this.data)
       	},
+        downloadDim: function() {
+          return this.ndx.dimension(function(d) {return d;});    
+        },      
       	allGroup: function(){
         	return this.ndx.groupAll()
       	},
+        majcomDim: function() {
+            return this.ndx.dimension(function(d) {return d.Majcom;})
+        },
+        majcomGroup: function() {
+            return this.majcomDim.group().reduceSum((d) => {
+                return +d.Count;
+            })
+        },
+        baseDim: function() {
+            return this.ndx.dimension(function(d) {return d.Mpf;})
+        },
+        baseGroup: function() {
+            return this.baseDim.group().reduceSum((d) => {
+                return +d.Count;
+            })
+        }
     },
     methods: {
       resetAll(event){
@@ -157,29 +168,20 @@ export default {
             dc.redrawAll()
         },10)
       },
-      radioButton: () => {
-        setTimeout(function() {
-            dc.redrawAll()
-        },10)
+      removeEmptyBins: function(source_group) {
+          return {
+              all: () => {
+                  return source_group.all().filter((d) => {
+                      return d.value != 0
+                  })
+              }
+          }
       },
-      submit: (text,id) => {
-        dc.chartRegistry.list().filter(chart=>{
-            return chart.anchorName() == id 
-        }).forEach(chart=>{
-            var mainArray = []
-            chart.dimension().group().all().forEach((d) => {
-                mainArray.push(String(d.key))
-            })
-            var filterArray = mainArray.filter((d) => {
-                var element = d.toUpperCase() 
-                return element.indexOf(text.toUpperCase()) !== -1
-            })
-            chart.filter(null)
-            if (filterArray.length != mainArray.length) {
-                chart.filter([filterArray])
-            }
-        })
-        dc.redrawAll()
+      asgnAdd: function(p,v) {
+        return p + v;
+      },
+      asgnInitial: function() {
+        return 0;
       }
     },
     mounted() {
@@ -187,7 +189,6 @@ export default {
 
         //TEST AXIOS CALL:
         axios.post(axios_url_efmp).then(response => {
-            console.log('FLA DEPLOY');
         	var axiosData = response.data.data
         	store.state.asDate = response.data.ASOFDATE
             var objData = makeObject(axiosData)
@@ -221,9 +222,9 @@ export default {
         var formatData = (given) =>{
             var obj = {}
 
-            obj.Grade = given.ahk4_t
+            obj.Grade = given.ahk4_t.trim().split(" ")[1]
             obj.Marital = given.ale_t
-            obj.Cnt = given.cnt
+            obj.Count = given.cnt
             obj.Majcom = formats.majFormat[given.cmd]
             obj.Mpf = formats.mpfFormat[given.mpf]
             obj.Type = given.type
@@ -248,22 +249,11 @@ export default {
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
-            //remove empty function (es6 syntax to keep correct scope)
-            var removeEmptyBins = (source_group) => {
-                return {
-                    all: () => {
-                        return source_group.all().filter((d) => {
-                            return d.value[this.selected] != 0
-                        })
-                    }
-                }
-            }
-
             //TOTAL
             var totalGroup = this.ndx.groupAll().reduceSum((d)=>{ 
-            	return d.Cnt
+            	return d.Count
             })
-            var invND = dc.numberDisplay("#cnt")
+            var invND = dc.numberDisplay("#count")
             invND.group(totalGroup)
                  .formatNumber(d3.format("d"))
                  .valueAccessor(function(d) { return d;})
@@ -278,23 +268,15 @@ export default {
                 return d.Year;
             })
             yearConfig.group = yearConfig.dim.group().reduceSum((d)=>{
-            	return d.Cnt
+            	return d.Count
             })
-            yearConfig.minHeight = 220 
-            yearConfig.aspectRatio = 1.1 
-            yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 100}
-            yearConfig.colors = [chartSpecs.baseChart.color]
-            var yearChart = dchelpers.getOrdinalBarChart(yearConfig)
+            yearConfig.minHeight = chartSpecs.standardRowChart.minHeight 
+            yearConfig.aspectRatio = 1.5 
+            yearConfig.margins = chartSpecs.standardRowChart.margins 
+            yearConfig.colors = d3.scale.ordinal().range([chartSpecs.baseChart.color])
+            var yearChart = dchelpers.getRowChart(yearConfig)
             yearChart
                 .controlsUseVisibility(true)
-                .elasticX(true)
-                .on('pretransition', (chart)=> {
-                    chart.selectAll('g.x text')
-                    .attr('transform', 'translate(-8,0)rotate(-45)')
-                    .on('click', (d)=>{
-                        this.submit(d, 'dc-year-barchart')
-                    })
-                })
 
             //TYPE
             var typeConfig = {};
@@ -303,11 +285,11 @@ export default {
                 return d.Type;
             })
             typeConfig.group = typeConfig.dim.group().reduceSum((d)=>{
-            	return d.Cnt
+            	return d.Count
             })
-            typeConfig.minHeight = 180 
-            typeConfig.aspectRatio = 2
-            typeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+            typeConfig.minHeight = chartSpecs.standardRowChart.minHeight 
+            typeConfig.aspectRatio = 1.5 
+            typeConfig.margins = chartSpecs.standardRowChart.margins 
             typeConfig.colors = d3.scale.category10()
             var typeChart = dchelpers.getRowChart(typeConfig)
             typeChart
@@ -321,13 +303,13 @@ export default {
             gradeConfig.dim = this.ndx.dimension(function (d) {
                 return d.Grade;
             })
-            gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
-            	return d.Cnt
+            gradeConfig.group = this.removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
+            	return d.Count
             }))
             gradeConfig.minHeight = 210
             gradeConfig.aspectRatio = 3
-            gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
-            var c = d3.rgb(51,172,255)
+            gradeConfig.margins = {top: 10, left: 40, right: 10, bottom: 45}
+            gradeConfig.colors = chartSpecs.gradeChartColorScale
             var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
             gradeChart
                 .elasticX(true)
@@ -335,19 +317,13 @@ export default {
                 .colorAccessor(function(d){
                     return d.key;
                 })
-                .colors(d3.scale.ordinal().domain(["(01) 2LT", "(02) 1LT", "(03) CPT", "(04) MAJ", "(05) LTC", "(E2) AMN", "(E3) A1C",
-                                                     "(E4) SRA", "(E5) SSG", "(E6) TSG", "(E7) MSG", "(E8) SMS", "(E9) CMS"])
-                .range([c.brighter(1).toString(), c.brighter(0.9).toString(), c.brighter(0.8).toString(), 
-                                        c.brighter(0.7).toString(), c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(), 
-                                        c.brighter(0.3).toString(), c.brighter(0.2).toString(), c.brighter(0.1).toString(), c.darker(0.2).toString(), 
-                                        c.darker(0.3).toString(), c.darker(0.4).toString()]))
-            .on('pretransition', (chart)=> {
-                chart.selectAll('g.x text')
-                .attr('transform', 'translate(-8,0)rotate(-45)')
-                .on('click', (d)=>{
-                    this.submit(d, 'dc-grade-barchart')
+                .ordering(function(d) {
+                    return formats.gradeOrder[d.key]
                 })
-            })
+                .on('pretransition', (chart)=> {
+                    chart.selectAll('g.x text')
+                    .attr('transform', 'translate(-8,0)rotate(-45)')
+                })
 
             //Marital marital
             var maritalConfig = {};
@@ -355,71 +331,32 @@ export default {
             maritalConfig.dim = this.ndx.dimension(function (d) {
                 return d.Marital;
             })
-            maritalConfig.group = maritalConfig.dim.group().reduceSum((d)=>{
-            	return d.Cnt
-            })
-            maritalConfig.minHeight = 200 
+            maritalConfig.group = this.removeEmptyBins(maritalConfig.dim.group().reduceSum((d)=>{
+            	return d.Count
+            }))
+            maritalConfig.minHeight = chartSpecs.majcomChart.minHeight 
             maritalConfig.aspectRatio = 2
-            maritalConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-            maritalConfig.colors = d3.scale.category10()
-            var maritalChart = dchelpers.getRowChart(maritalConfig)
+            maritalConfig.margins = {top: 10, left: 40, right: 10, bottom: 50}
+            maritalConfig.colors = ["#7570b3"]
+            var maritalChart = dchelpers.getOrdinalBarChart(maritalConfig)
             maritalChart
                 .controlsUseVisibility(true)
-
-            //MAJCOM
-            var majcomConfig = {}
-            majcomConfig.id = 'majcom'
-            majcomConfig.dim = this.ndx.dimension(function(d){return d.Majcom})
-            var majcomPercent = majcomConfig.dim.group().reduceSum((d)=>{
-            	return d.Cnt
-            })
-            majcomConfig.group = removeEmptyBins(majcomPercent)
-            majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
-            majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
-            majcomConfig.margins = chartSpecs.majcomChart.margins 
-            majcomConfig.colors = [chartSpecs.majcomChart.color]
-            var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-            majcomChart
-                .controlsUseVisibility(true)
-                .elasticX(true)
-                .ordinalColors(["#1976d2","#ff4500"])
-                .on('pretransition', (chart)=> {
-                    chart.selectAll('g.x text')
-                    .attr('transform', 'translate(-8,0)rotate(-45)')
-                    .on('click', (d)=>{
-                        this.submit(d, 'dc-majcom-barchart')
-                    })
-                })
-
-            //base(mpf)
-            var baseConfig = {}
-            baseConfig.id = 'base'
-            baseConfig.dim = this.ndx.dimension(function(d){return d.Mpf})
-            var basePercent = baseConfig.dim.group().reduceSum((d)=>{
-            	return d.Cnt
-            })
-            baseConfig.group = removeEmptyBins(basePercent)
-            baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-            baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-            baseConfig.margins = chartSpecs.baseChart.margins 
-            baseConfig.colors = [chartSpecs.baseChart.color]
-            var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-            baseChart
-                .controlsUseVisibility(true)
                 .elasticX(true)
                 .on('pretransition', (chart)=> {
                     chart.selectAll('g.x text')
                     .attr('transform', 'translate(-8,0)rotate(-45)')
-                    .on('click', (d)=>{
-                        this.submit(d, 'dc-base-barchart')
-                    })
                 })
+                //order by descending value
+                .ordering((d) => {
+                    return -d.value;
+                })
+
 
 
             //Download Raw Data button
             d3.select('#download')
             .on('click', ()=>{
-                var data = yearConfig.dim.top(Infinity);
+                var data = this.downloadDim.top(Infinity);
                 var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                 var myFilters = '';
@@ -462,6 +399,7 @@ export default {
     components: {
     	'loader': Loader,
         searchBox, 
+        largeBarChart
     }
 }
 

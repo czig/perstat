@@ -3,7 +3,22 @@
 		<transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
-                <div class="row">
+                <div class="row pt-2">
+                    <div class="col-auto pt-1">
+                        Average TOS: 
+                        <span id="average"></span>
+                    </div>
+                    <div class="col-auto pt-1">
+                        Completed Tours:        
+                        <span id="count"></span>
+                        <span data-toggle="tooltip" 
+                              data-placement="bottom"
+                              class="pl-1"
+                              title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
+                            <fontAwesomeIcon icon="info-circle">
+                            </fontAwesomeIcon>
+                        </span>
+                    </div>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -13,22 +28,6 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="resetAll">Reset All</button>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-auto">
-                        Average TOS: 
-                        <span id="average"></span>
-                    </div>
-                    <div class="col-auto">
-                        Completed Tours:        
-                        <span id="count"></span>
-                    </div>
-                    <span data-toggle="tooltip" 
-                          data-placement="bottom"
-                          title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
-                        <fontAwesomeIcon icon="info-circle">
-                        </fontAwesomeIcon>
-                    </span>
                 </div>
                 <div class="row">
             		<div id="tour" class="col-3">
@@ -455,7 +454,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
                 gradeConfig.minHeight = 230
                 gradeConfig.aspectRatio = 3
-                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
+                gradeConfig.margins = {top: 10, left: 30, right: 10, bottom: 55}
+                gradeConfig.colors = chartSpecs.gradeChartColorScale
                 var c = d3.rgb(51,172,255)
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
 
@@ -468,16 +468,9 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     .colorAccessor(function(d){
                         return d.key;
                     })
-                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL"])
-                    .range([c.brighter(0.9).toString(), c.brighter(0.6).toString(), c.brighter(0.3).toString(), c.toString(), 
-                                            c.darker(0.2).toString(), c.darker(0.4).toString()]))
-                    
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
 	                        .attr('transform', 'translate(-8,0)rotate(-45)')
-	                        .on('click', (d)=>{
-	                            this.submit(d, 'dc-grade-barchart')
-                        })
                     })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]

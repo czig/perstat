@@ -25,41 +25,15 @@
                                 @click="resetAll">Reset All</button>
                     </div>
                 </div>
-                <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
-                    Data excludes CMSgt and Senior Officers
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
             	<div class="row">
-	                <div v-show="select.length > 1" class="row">
-	                    	<div class="col-auto">
-		                        Marriages (RegAF to RegAF):
-		                        <span id="count"></span>
-		                    </div>
-		                    <!-- <div class="col-auto">
-		                        Match:
-		                        <span id="match"></span>
-		                    </div> -->
-		                    <div class="col-auto">
-		                        Matched:
-		                        <span id="percent"></span>
-		                    </div>
-	                </div>
-	                <div v-show="select.length <= 1" class="row">
-	                    	<div class="col-auto">
-		                      Marriages (RegAF to RegAF):
-		                        <span id="count2"></span>
-		                    </div>
-		                    <!-- <div class="col-auto">
-		                        Match:
-		                        <span id="match2"></span>
-		                    </div> -->
-		                    <div class="col-auto">
-		                        Matched:
-                                <span id="percent2"></span>
-		                    </div>
-	                </div>
+                    <div class="col-auto">
+                        Marriages (RegAF to RegAF):
+                        <span id="count"></span>
+                    </div>
+                    <div class="col-auto">
+                        Matched:
+                        <span id="percent"></span>
+                    </div>
                 </div>
                 <div class="row">
                 	<div id="grp" class="col-3">
@@ -67,7 +41,7 @@
                                     <h3> Join Type <span style="font-size: 14pt; opacity: 0.87;"> {{ ylabel }} </span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
+                                            style="visibility: hidden"
                                             @click="resetChart('dc-grp-rowchart')">Reset</button>
                                     </h3>
                                 </div>
@@ -113,7 +87,7 @@
 	                            <h3> {{this.select}} <span style="font-size: 14pt; opacity: 0.87;"> {{ ylabel }} </span>
 	                            <button type="button" 
 	                                    class="btn btn-danger btn-sm btn-rounded reset" 
-	                                    style="display: none"
+	                                    style="visibility: hidden"
 	                                    @click="resetChart('dc-bar-barchart')">Reset</button>
 	                            </h3>
 	                        </div>
@@ -446,6 +420,7 @@ import { store } from '@/store/store'
                 var barChart = dchelpers.getOrdinalBarChart(barConfig)
                 barChart
                     .elasticX(true)
+                    .controlsUseVisibility(true)
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
@@ -473,6 +448,7 @@ import { store } from '@/store/store'
                 gradeAConfig.margins = chartSpecs.majcomChart.margins 
                 gradeAConfig.colors = [chartSpecs.majcomChart.color]
                 var gradeAChart = dchelpers.getOrdinalBarChart(gradeAConfig)
+                gradeAChart.controlsUseVisibility(true)
                 
                 gradeAChart.on('pretransition', (chart)=> {
                     if (chart.hasFilter() || barChart.hasFilter()) 
@@ -507,6 +483,7 @@ import { store } from '@/store/store'
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
+                    .controlsUseVisibility(true)
                     .ordering((d)=>{
                     	return grpOrder[d.key]
                     })
@@ -625,17 +602,6 @@ import { store } from '@/store/store'
     }
     .fade-enter-to, .fade-leave {
         opacity: 1;
-    }
-
-    .custom-control.custom-radio{
-        padding-left:20px;
-        padding-right:10px;
-        margin-right: 0;
-        cursor:pointer;
-    }
-    #radioSelect{
-        margin-bottom: 0px;
-        padding-left: 0;
     }
 
 </style>
