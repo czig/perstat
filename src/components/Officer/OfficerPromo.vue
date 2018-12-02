@@ -449,7 +449,7 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.minHeight = 180 
                 gradeConfig.aspectRatio = 5 
                 gradeConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
-                gradeConfig.colors = ["#1976d2"]
+                gradeConfig.colors = chartSpecs.gradeChartColorScale 
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .controlsUseVisibility(true)
@@ -457,8 +457,11 @@ import largeBarChart from '@/components/largeBarChart'
                         return d.value[this.selected]
                     })
                     .ordering(function(d){
-                      return formats.gradeOrder[d.key]
+                        return formats.gradeOrder[d.key]
                     })                                    
+                    .colorAccessor(function(d) {
+                        return d.key;
+                    })
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')

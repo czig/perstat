@@ -53,8 +53,8 @@ var typeChart = {
 
 var empCatChart = {
     minHeight: 200,
-    aspectRatio: 3,
-    margins: {top: 30, left: 50, right: 10, bottom: 80},
+    aspectRatio: 2.1,
+    margins: {top: 10, left: 50, right: 10, bottom: 60},
     color: "#FF8C00"
 }
 
@@ -114,11 +114,14 @@ var gradePairs = {
     "LTC": blue.darker(0.4).toString(),
     "COL": blue.darker(0.5).toString(),
     "BG": blue.darker(0.6).toString(),
-    "MG": blue.darker(0.7).toString()
+    "MG": blue.darker(0.7).toString(),
+    "LTG": blue.darker(0.8).toString(),
 }
 var gradeDomain = Object.keys(gradePairs)
 var gradeRange = Object.values(gradePairs) 
 var gradeChartColorScale = d3.scale.ordinal().domain(gradeDomain).range(gradeRange)
+
+var mapColorScale = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
 
 export default {
     standardBarChart,
@@ -135,5 +138,6 @@ export default {
     boardChart,
     yrgpChart,
     stateChart,
-    gradeChartColorScale
+    gradeChartColorScale,
+    mapColorScale
 }

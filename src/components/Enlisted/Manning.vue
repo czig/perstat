@@ -389,12 +389,14 @@ import overviewBarChart from '@/components/overviewBarChart'
                 gradeConfig.minHeight = 200
                 gradeConfig.aspectRatio = 4
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
-                var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.8).toString(), c.brighter(0.6).toString(), c.brighter(0.4).toString(),c.brighter(0.2).toString(),c.darker(0.2).toString(),c.darker(0.4).toString()])
+                gradeConfig.colors = this.chartSpecs.gradeChartColorScale 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
+                    })
+                    .colorAccessor((d) => {
+                        return d.key;
                     })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]

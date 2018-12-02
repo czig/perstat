@@ -145,8 +145,6 @@ import overviewBarChart from '@/components/overviewBarChart'
                 chartSpecs: chartSpecs,
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
-                gradeChart: {},
-                gradeColor: d3.rgb(51,172,255),
                 afscGroupChart: {},
             }
         },
@@ -197,12 +195,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                         'minHeight': 220,
                         'aspectRatio': 4,
                         'margins': {top: 10, left: 50, right: 30, bottom: 20},
-                        'colors': d3.scale.ordinal().range([this.gradeColor.brighter(1).toString(),
-                                                            this.gradeColor.brighter(0.7).toString(), 
-                                                            this.gradeColor.brighter(0.3).toString(), 
-                                                            this.gradeColor.toString(),
-                                                            this.gradeColor.darker(0.3).toString(),
-                                                            this.gradeColor.darker(0.6).toString()]),
+                        'colors': this.chartSpecs.gradeChartColorScale
                     }
           },
           afscGroupDim: function() {

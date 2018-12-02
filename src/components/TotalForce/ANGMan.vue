@@ -19,18 +19,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="row">
-                            <div id="type" class="col-12">
-                                <div id="dc-type-rowchart">
-                                    <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="visibility: hidden"
-                                            @click="resetChart('dc-type-rowchart')">Reset</button>
-                                    </h3>
-                                </div>
-                            </div>
+                    <div id="type" class="col-4">
+                        <div id="dc-type-rowchart">
+                            <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-type-rowchart')">Reset</button>
+                            </h3>
                         </div>
                     </div>
                     <div id="grade" class="col-8">
@@ -45,7 +41,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="empCat" class="col-12">
+                    <div id="empCat" class="col-6">
                         <div id="dc-empCat-barchart">
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -53,29 +49,8 @@
                                     style="visibility: hidden"
                                     @click="resetChart('dc-empCat-barchart')">Reset</button>
                             </h3>
-                            <searchBox
-                                v-model="searchempCat"
-                                size="3"
-                                label="Search Employee Category"
-                                @sub="submit(searchempCat,'dc-empCat-barchart')"
-                                button="true"
-                            ></searchBox>
                         </div>
                     </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix">
-                            <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                class="btn btn-danger btn-sm btn-rounded reset" 
-                                style="visibility: hidden"
-                                @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                    
                     <div id="terr" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div id="dc-terr-geoChoroplethChart" class="center-block clearfix">
                             <h3>US Territories Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -86,6 +61,18 @@
                             </h3>
                         </div>
                     </div>                      
+                </div>
+                <div class="row">
+                    <div id="us" class="col-12">
+                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix">
+                            <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                class="btn btn-danger btn-sm btn-rounded reset" 
+                                style="visibility: hidden"
+                                @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
                 </div>
             </div>
         </transition-group>
@@ -355,7 +342,7 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.minHeight = 250
                 gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 70}
-                var c = d3.rgb(51,172,255)
+                gradeConfig.colors = this.chartSpecs.gradeChartColorScale
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .elasticX(true)
@@ -363,12 +350,6 @@ import largeBarChart from '@/components/largeBarChart'
                         return d.key;
                     })
                     .controlsUseVisibility(true)
-                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "BG", "MG", "LTG", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
-                    .range([c.brighter(1).toString(), c.brighter(0.8).toString(), c.brighter(0.7).toString(), 
-                                            c.brighter(0.6).toString(), c.brighter(0.5).toString(), c.brighter(0.4).toString(),  
-                                            c.brighter(0.3).toString(), c.brighter(0.2).toString(), c.brighter(0.1).toString(), c.toString(),
-                                            c.darker(0.2).toString(), c.darker(0.4).toString(), c.darker(0.6).toString(), c.darker(0.8).toString(), 
-                                            c.darker(0.9).toString()]))
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
@@ -439,7 +420,7 @@ import largeBarChart from '@/components/largeBarChart'
                 terrConfig.xRatio = 2.2
                 terrConfig.yRatio = 2.2 
                 // the overall scale of colors used in this chlororpleth
-                terrConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                terrConfig.colors = this.chartSpecs.mapColorScale 
                 terrConfig.valueAccessor = function(d) {
                     if (d) {
                         return d.value
