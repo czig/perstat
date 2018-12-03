@@ -4,7 +4,7 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col">
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
@@ -31,11 +31,18 @@
                         </div>
                     </div>
                     <div class="col-auto">
+                        <button type="button" id="demo"
+                                              class="btn btn-primary btn-sm"
+                                              @click="startDemo">
+                            Demo 
+                        </button>
                         <button type="button" id="download"
                                         class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                        data-step="5" data-intro="Download data in tabular form here!"
                                         >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                data-step="4" data-intro="Click here to reset filters on all charts."
                                 @click="resetAll">Reset All</button>
                     </div>
                 </div>
@@ -43,7 +50,7 @@
                     <div class="col-auto">
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here.">
                     <div class="col-auto">
                         Assigned:
                         <span id="asgn"></span>
@@ -81,11 +88,11 @@
 
                     <div class="row">
                     <div id="grade" class="col-4">
-                        <div id="dc-grade-rowchart">
+                        <div id="dc-grade-rowchart" data-step="3" data-intro="Click the bars to filter the chart!">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-grade-rowchart')">Reset</button>
                             </h3>
                         </div>
@@ -95,7 +102,7 @@
                             <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-afscGroup-barchart')">Reset</button>
                             </h3>
                         </div>
@@ -215,6 +222,9 @@ import overviewBarChart from '@/components/overviewBarChart'
 
         },
         methods: {
+          startDemo: function() {
+            introJs().start()
+          },
           resetAll: (event)=>{
             dc.filterAll()
             dc.redrawAll()
@@ -372,6 +382,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                 //grade
                 var gradeChart = dchelpers.getRowChart(this.gradeConfig)
                 gradeChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
@@ -384,6 +395,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                 var afscGroupChart = dchelpers.getOrdinalBarChart(this.afscGroupConfig)
                 afscGroupChart
                     .elasticX(true)
+                    .controlsUseVisibility(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })

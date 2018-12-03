@@ -81,7 +81,7 @@ module.exports = {
             $: 'jquery',
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
-            Popper: ['popper.js', 'default']
+            Popper: ['popper.js', 'default'],
         }),
         new webpack.ProvidePlugin({
           d3: 'd3',
@@ -89,6 +89,9 @@ module.exports = {
           'FileSaver': 'file-saver',
           dc: 'dc',
           _: 'lodash',
+        }),
+        new webpack.ProvidePlugin({
+          introJs: 'intro.js'
         })
     ]
 }
