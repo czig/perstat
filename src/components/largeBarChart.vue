@@ -117,6 +117,16 @@ export default {
             w: document.documentElement.clientWidth*this.widthFactor - this.margin.left - this.margin.right,
             rendered: false,
             allSort: true,
+            listeners: d3.dispatch(
+                'preRender',
+                'postRender',
+                'preRedraw',
+                'postRedraw',
+                'filtered',
+                'zoomed',
+                'renderlet',
+                'pretransition'
+            )
         } 
     },
     props: {
@@ -443,6 +453,9 @@ export default {
                 .property("disabled",true);
 
             this.dimension.filterFunction(d => _.includes(this.filters,d))
+            if (this.filters !== undefined) {
+                this.listeners.filtered(this.chart,this.filters)
+            }
             dc.redrawAll()
         },
         render: function() {
@@ -451,6 +464,8 @@ export default {
                 console.log('render')
                 // assign vm to this to prevent conflicts
                 var vm = this
+                // call preRender
+                vm.listeners.preRender(vm.chart)
                 //key funciton for accessing key properties in data
                 var key = function(d) {
                     return d.key;
@@ -550,6 +565,8 @@ export default {
                 console.log('redraw')
                 //allow use of 'this' within scoped functions
                 var vm = this
+                //call preRedraw
+                vm.listeners.preRedraw(vm.chart)
                 //key function for getting key for each object
                 var key = function(d) {
                     return d.key;
@@ -682,6 +699,10 @@ export default {
         this.chart.filterAll = this.filterAll
         this.chart.filter = this.filterAll 
         this.chart.filters = function() { return vm.filters }
+        this.chart.on = function (event, listener) {
+            vm.listeners.on(event, listener);
+            return vm.chart;
+        }
         //register chart for dc
         dc.chartRegistry.register(this.chart)
         //call render (redraw always happens after render) if component is destroyed then created again
