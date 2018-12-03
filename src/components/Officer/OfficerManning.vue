@@ -11,7 +11,7 @@
                                 Percentage
                             </label>
                         </div>
-                        <div class="custom-control custom-radio custom-control-inline" data-step="6" data-intro="Assigned">
+                        <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio2">
                                 Assigned 
@@ -38,7 +38,7 @@
                         </button>
                         <button type="button" id="download"
                                         class="btn btn-info btn-rounded btn-sm waves-effect" 
-                                        data-step="5" data-intro="Download data in tabular form here!"
+                                        data-step="6" data-intro="Download data in tabular form here!"
                                         >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
@@ -50,7 +50,7 @@
                     <div class="col-auto">
                     </div>
                 </div>
-                <div class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here.">
+                <div class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
                     <div class="col-auto">
                         Assigned:
                         <span id="asgn"></span>
@@ -88,7 +88,7 @@
 
                     <div class="row">
                     <div id="grade" class="col-4">
-                        <div id="dc-grade-rowchart" data-step="3" data-intro="Click the bars to filter the chart!">
+                        <div id="dc-grade-rowchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
