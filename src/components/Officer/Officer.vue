@@ -15,7 +15,7 @@
                 <a class="nav-link" @click="dynamicComponent='off-promo'" data-toggle="tab">Promotions</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='off-yrgp'" data-toggle="tab">Education</a>
+                <a class="nav-link" @click="dynamicComponent='off-edu'" data-toggle="tab">Education</a>
             </li>
         </ul>
         <transition name="fade" mode="out-in">
@@ -27,7 +27,7 @@
 <script>
 import OfficerManning from '@/components/Officer/OfficerManning'
 import OfficerPromo from '@/components/Officer/OfficerPromo'
-import OfficerPromYRGP from '@/components/Officer/OfficerPromYRGP'
+import OfficerEducation from '@/components/Officer/OfficerEducation'
 import { store } from '@/store/store'
 
 export default {
@@ -44,7 +44,7 @@ export default {
     components: {
         'off-manning': OfficerManning,
         'off-promo': OfficerPromo,
-        'off-yrgp': OfficerPromYRGP
+        'off-edu': OfficerEducation
     }
 }
 </script>

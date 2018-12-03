@@ -104,7 +104,6 @@
                         </div>
                     </div>
                 </div>
-                <br>
                 <largeBarChart :id="'yrgp'"         
                                :dimension="yrgpDim"
                                :group="removeError(yrgpGroup)"

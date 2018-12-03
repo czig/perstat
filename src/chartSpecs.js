@@ -26,7 +26,7 @@ var majcomChart = {
 var coreChart = {
     minHeight: 250,
     aspectRatio: 4,
-    margins: {top: 5, left: 30, right: 10, bottom: 50},
+    margins: {top: 5, left: 50, right: 10, bottom: 50},
     color: "#35978f"
 }
 

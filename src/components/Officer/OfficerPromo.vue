@@ -59,12 +59,12 @@
                         </div>
                     </div>
                     <div id="zone" class="col-4">
-                        <div id="dc-zone-barchart">
-                            <h3 class="mb-0">Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                        <div id="dc-zone-rowchart">
+                            <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="visibility: hidden"
-                                    @click="resetChart('dc-zone-barchart')">Reset</button>
+                                    style="display: none"
+                                    @click="resetChart('dc-zone-rowchart')">Reset</button>
                             </h3>
                         </div>
                     </div>
@@ -478,8 +478,8 @@ import largeBarChart from '@/components/largeBarChart'
                 zoneConfig.minHeight = 180 
                 zoneConfig.aspectRatio = 5 
                 zoneConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
-                zoneConfig.colors = ["#7570b3"]
-                var zoneChart = dchelpers.getOrdinalBarChart(zoneConfig)
+                zoneConfig.colors = d3.scale.ordinal().range(["#1b9e77","#7570b3","#d95f02"])
+                var zoneChart = dchelpers.getRowChart(zoneConfig)
                 zoneChart
                     .controlsUseVisibility(true)
                     .valueAccessor((d) => {
@@ -488,11 +488,6 @@ import largeBarChart from '@/components/largeBarChart'
                     .ordering(function(d){
                       return formats.zoneOrder[d.key]
                     })                                    
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                    })
 
                 zoneChart.filter('IPZ')
 

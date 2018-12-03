@@ -6,7 +6,7 @@
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
                     <div class="col-auto">
-                        TOTAL:
+                        Total:
                         <span id="totalCount"></span>
                     </div>
                     <div class="col-auto">
@@ -14,10 +14,11 @@
                         <span id="stemTotal"></span>
                     </div>
                     <div class="col-auto">
-                        NON STEM:
+                        Non-STEM:
                         <span id="nonStemTotal"></span>
                     </div>   
-                    <div class="col-6" align="right">
+                    <div class="col"></div>
+                    <div class="col-auto">
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect" 
                                 >Download Raw Data</button>
@@ -27,43 +28,40 @@
                     </div>      
                 </div>       
                 <div class='row'>
-                    <div id="fyr" class="col-6">
+                    <div id="fyr" class="col-3">
                         <div id="dc-fyr-barchart">
-                            <h3>Year [{{fyr}}]<span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Fiscal Year<span style="font-size: 14pt; opacity: 0.87;"></span>
                             </h3>
                         </div>
                     </div>
-                    <div id="offgroup" class="col-6">
+                    <div id="offgroup" class="col-3">
                         <div id="dc-offgroup-barchart">
-                            <h3>GROUP<span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Group<span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-offgroup-barchart')">Reset
                             </button>
                             </h3>
                         </div>
                     </div>
-                </div>
-                <br>
-                <div class='row'>
-                    <div id="grade" class="col-6">
+                    <div id="grade" class="col-3">
                         <div id="dc-grade-rowchart">
-                            <h3>GRADE <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-grade-rowchart')">Reset
                             </button>
                             </h3>
                         </div>
                     </div> 
-                    <div id="edlevel" class="col-6">
+                    <div id="edlevel" class="col-3">
                         <div id="dc-edlevel-barchart">
-                            <h3>EDUCATION LEVEL <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Degree Type <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-edlevel-barchart')">Reset
                             </button>
                             </h3>
@@ -75,40 +73,18 @@
                                :dimension="coreDim"
                                :group="removeError(coreGroup)"
                                :widthFactor="0.90"
-                               :aspectRatio="3"
-                               :minHeight="300"
+                               :aspectRatio="chartSpecs.coreChart.aspectRatio"
+                               :minHeight="chartSpecs.coreChart.minHeight"
                                :reducer="edAdd"
                                :accumulator="edInitial"
                                :numBars="30"
                                :margin="chartSpecs.coreChart.margins"
                                :colorScale="coreColorScale"
-                               :title="'CORE'"
+                               :title="'Core'"
                                :loaded="loaded">
                 </largeBarChart>
                 
-<!--                 <div class='row'>
-                    <div id="core" class="col-12">
-                        <div id="dc-core-barchart">
-                            <h3>CORE<span style="font-size: 14pt; opacity: 0.87"></span>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm btn-rounded reset"
-                                    style="display: none"
-                                    @click="resetChart('dc-core-barchart')">Reset
-                            </button>
-                            </h3>
-                            <searchBox
-                                v-model="searchCore"
-                                size="3"
-                                label="Search CORE"
-                                @sub="submit(searchCore,'dc-core-barchart')"
-                                button="true"
-                                color="#1976d2"
-                                btnColor="coreColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->            </div>    
+            </div>    
         </transition-group>    
 	</div>
 </template>
@@ -129,7 +105,6 @@
 			return {
 					data: [],
                     loaded: false,
-                    fyr: '2018',
                     searchCore: "",
                     chartSpecs: chartSpecs,
                     coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
@@ -346,21 +321,21 @@
                 }                
 
                 //YEAR
-                 d3.selectAll("#row1")
                 var fyrConfig = {};
                 fyrConfig.id = 'fyr';
                 fyrConfig.dim = this.ndx.dimension(function (d) {
                     return d.fyr;
                 })
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
-                fyrConfig.minHeight = chartSpecs.yearChart.minHeight
-                fyrConfig.aspectRatio = chartSpecs.yearChart.aspectRatio
-                fyrConfig.margins = chartSpecs.yearChart.margins
+                fyrConfig.minHeight = 200 
+                fyrConfig.aspectRatio = 2 
+                fyrConfig.margins = chartSpecs.standardBarChart.margins
                 fyrConfig.colors = [chartSpecs.yearChart.color]
                 var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
 
                 fyrChart
                     .elasticX(true)
+                    .controlsUseVisibility(true)
                     .valueAccessor(function(d) {return d.value.totalCount;})
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
@@ -375,7 +350,6 @@
                             this.singleSubmit(d.data.key, 'dc-fyr-barchart')
                         });
                     })
-                fyrChart.barPadding(0.2)
                 fyrChart.filter('2018')
  
                 //Group Barchart
@@ -386,11 +360,12 @@
                 })
                 var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 groupConfig.group = removeError(groupGroup)
-                groupConfig.minHeight = chartSpecs.offGroupChart.minHeight
-                groupConfig.aspectRatio = chartSpecs.offGroupChart.aspectRatio
+                groupConfig.minHeight = 200 
+                groupConfig.aspectRatio = 2 
                 groupConfig.margins = chartSpecs.offGroupChart.margins
                 groupConfig.colors = [chartSpecs.offGroupChart.color]
                 var groupChart = dchelpers.getOrdinalBarChart(groupConfig)
+                    .controlsUseVisibility(true)
                     .valueAccessor(function(d) {return d.value.totalCount;})               
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
@@ -410,14 +385,18 @@
                 })
                 var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
-                edLevelConfig.minHeight = chartSpecs.highEdChart.minHeight
-                edLevelConfig.aspectRatio = chartSpecs.highEdChart.aspectRatio
+                edLevelConfig.minHeight = 200 
+                edLevelConfig.aspectRatio = 2 
                 edLevelConfig.margins = chartSpecs.highEdChart.margins
                 edLevelConfig.colors = [chartSpecs.highEdChart.color]
                 var edLevelChart = dchelpers.getOrdinalBarChart(edLevelConfig)
                 edLevelChart
-                    .valueAccessor(function(d) {return d.value.totalCount;})               
+                    .controlsUseVisibility(true)
+                    .valueAccessor(function(d) {return d.value.totalCount;})        
                     .elasticX(true)
+                    .ordering(d=>{
+                        return formats.edLevelOrder[d.key]
+                    })
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
@@ -427,9 +406,6 @@
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
-                    edLevelChart.ordering(d=>{
-                        return formats.edLevelOrder[d.key]
-                    })
 
                 //Grade Rowchart               
                 var gradeConfig = {}                    
@@ -439,11 +415,10 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 270
-                gradeConfig.aspectRatio = 3
-                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
-                var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
+                gradeConfig.minHeight = 180
+                gradeConfig.aspectRatio = 2
+                gradeConfig.margins = {top: 10, left: 20, right: 10, bottom: 20}
+                gradeConfig.colors = chartSpecs.gradeChartColorScale
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 
                 gradeChart
