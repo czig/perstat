@@ -11,7 +11,7 @@
                                 Percentage
                             </label>
                         </div>
-                        <div class="custom-control custom-radio custom-control-inline">
+                        <div class="custom-control custom-radio custom-control-inline" data-step="6" data-intro="Assigned">
                            <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio2">
                                 Assigned 
