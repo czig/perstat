@@ -29,7 +29,7 @@
                 <div id="tf-card" class="card hoverable click" @click="$router.push('/totalforce')">
                     <img class="card-img-top" src="../../static/admanning.jpg" height="200px">
                     <div class="card-body">
-                        <h4 class="card-title">TF Military</h4>
+                        <h4 class="card-title">Total Force</h4>
                     </div>
                 </div>
             </div>
