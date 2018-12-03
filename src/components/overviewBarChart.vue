@@ -383,6 +383,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         chart.selectAll('g.x text')
                         .style('text-anchor', 'end')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d) => {
+                            chart.filter(d) 
+                            dc.redrawAll()
+                        })
                     });
                 //override turnOnControls and turnOffControls for bottom bar chart to allow reset button to be shown in first chart header
                 overviewNormalChart.turnOnControls = function() {

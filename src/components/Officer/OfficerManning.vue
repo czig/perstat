@@ -242,23 +242,8 @@ import overviewBarChart from '@/components/overviewBarChart'
                 dc.redrawAll()
             },10)
           },
-          submit: (text,id) => {
-            dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == id 
-            }).forEach(chart=>{
-                var mainArray = []
-                chart.dimension().group().all().forEach((d) => {
-                    mainArray.push(String(d.key))
-                })
-                var filterArray = mainArray.filter((d) => {
-                    var element = d.toUpperCase() 
-                    return element.indexOf(text.toUpperCase()) !== -1
-                })
-                chart.filter(null)
-                if (filterArray.length != mainArray.length) {
-                    chart.filter([filterArray])
-                }
-            })
+          submit: (chart,element) => {
+            chart.filter(element)
             dc.redrawAll()
           },
             manningAdd: function(p,v) {
@@ -403,7 +388,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-afscGroup-barchart')
+                            this.submit(chart, d)
                         })
                     })
                 this.afscGroupChart = afscGroupChart

@@ -540,7 +540,17 @@ export default {
                     .call(this.xAxis)
                     .selectAll("text")
                     .style("text-anchor","end")
-                    .attr("transform","translate(-8,3)rotate(-45)");
+                    .style("cursor","pointer")
+                    .attr("transform","translate(-8,3)rotate(-45)")
+                    .on('click', function(d) {
+                        //update filters expects object with key as property, spoof this for now
+                        var obj = {key: d}
+                        if (d3.event.ctrlKey) {
+                            vm.nextLevel(obj);
+                        } else {
+                            vm.updateFilters(obj);
+                        }
+                    });
 
                 svg.append("g")
                     .attr("class", "y axis")
@@ -669,7 +679,21 @@ export default {
                               .call(this.xAxis)
                               .selectAll("text")
                               .style("text-anchor","end")
+                              .style("cursor","pointer")
                               .attr("transform","translate(-8,3)rotate(-45)");
+
+                d3.select("#" + this.id + "svg")
+                                .select(".x.axis")
+                                .selectAll("text")
+                                .on('click',function(d) {
+                                    //update filters expects object with key as property, spoof this for now
+                                    var obj = {key: d}
+                                    if (d3.event.ctrlKey) {
+                                        vm.nextLevel(obj);
+                                    } else {
+                                        vm.updateFilters(obj);
+                                    }
+                                });
 
                 d3.select("#" + this.id + "svg")
                               .select(".y.axis")
