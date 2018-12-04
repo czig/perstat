@@ -12,7 +12,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body row">
-                        <img class="col-lg-3 col-md-4 d-none d-md-block card-img-left" src="../../static/afpc_log.png" width="150px" height="150px">
+                        <img class="ml-3 d-none d-md-block card-img-left" src="../../static/afpc_log.png" width="150px" height="150px">
                         <h4 class="col-lg-9 col-md-8 col-sm-12 pl-3">AFPC's Personnel Statistics
                             <br>
                             <br>
