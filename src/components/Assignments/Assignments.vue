@@ -9,31 +9,21 @@
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" @click="dynamicComponent='offTOS'" data-toggle="tab">Average TOS</a>
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'offTOS'}" 
+                    @click="dynamicComponent='offTOS'" data-toggle="tab">Average TOS</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='join'" data-toggle="tab">Join Spouse</a>
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'join'}" 
+                    @click="dynamicComponent='join'" data-toggle="tab">Join Spouse</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" @click="dynamicComponent='efmp'" data-toggle="tab">EFMP/Humi</a>
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'efmp'}" 
+                    @click="dynamicComponent='efmp'" data-toggle="tab">EFMP/Humi</a>
             </li>
         </ul>
-        <div class="row" v-if="dynamicComponent=='offTOS' || dynamicComponent=='enlTOS'">
-            <div class="padded">
-                <div id="radioSelect" class="col form-group">
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radio" type="radio" id="radio1" value="offTOS" v-model="dynamicComponent">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Officer</span>
-                    </label>
-                    <label class="custom-control custom-radio" >
-                        <input class="custom-control-input" name="radio" type="radio" id="radio2" value="enlTOS" v-model="dynamicComponent">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Enlisted</span>
-                    </label>
-                </div>
-            </div>
-        </div>
         <transition name="fade" mode="out-in">
             <component :is="dynamicComponent"></component>
         </transition>
@@ -43,7 +33,7 @@
 <script>
 import offTOS from '@/components/Assignments/OfficerTos'
 import enlTOS from '@/components/Assignments/EnlistedTos'
-import Join from '@/components/Assignments/Joint'
+import join from '@/components/Assignments/Joint'
 import efmp from '@/components/Assignments/EFMP'
 
 import { store } from '@/store/store'
@@ -51,18 +41,33 @@ import { store } from '@/store/store'
 export default {
     data() {
         return {
-           dynamicComponent: "offTOS" 
         }
     },
     computed:{
         asDate: function(){
             return store.state.asDate;
         },
+        dynamicComponent: {
+            get: function() {
+                //check if page in store refers to a component on this page,
+                //and if so, show that page, else show the manning page
+                var components = Object.keys(this.$options.components)
+                var page = store.getters.getPage
+                //returns array
+                var componentToShow = components.filter((d) => {
+                    return d === page;
+                })
+                return componentToShow[0] || "offTOS";
+            },
+            set: function(newPage) {
+                store.commit('changePage',newPage)
+            }
+        }
     },
     components: {
         offTOS,
         enlTOS,
-        Join,
+        join,
         efmp
     }
 }

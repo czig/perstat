@@ -9,12 +9,56 @@
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
           <router-link class="nav-item" to="/" tag="li" active-class="active" exact><a class="nav-link">Home</a></router-link>
-        <router-link class="nav-item" to="/totalforce" tag="li" active-class="active"><a class="nav-link">TF Military</a></router-link>
-          <router-link class="nav-item" to="/officer" tag="li" active-class="active"><a class="nav-link">AD Officer</a></router-link>
-          <router-link class="nav-item" to="/enlisted" tag="li" active-class="active"><a class="nav-link">AD Enlisted</a></router-link>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Total Force 
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('adman')">Active Duty</router-link>
+                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('ang')">ANG</router-link>
+                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('afr')">AFR</router-link>
+              </div>
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Officer 
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-manning')">Manning</router-link>
+                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-promo')">Promotions</router-link>
+                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-edu')">Education</router-link>
+              </div>
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 Enlisted 
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('manning')">Manning</router-link>
+                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('retention')">Retention</router-link>
+                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('promotions')">Promotions</router-link>
+              </div>
+          </li>
           <router-link class="nav-item" to="/civilian" tag="li" active-class="active"><a class="nav-link">Civilian</a></router-link>
-          <router-link class="nav-item" to="/assignments" tag="li" active-class="active"><a class="nav-link">Assignments</a></router-link>
-          <router-link class="nav-item" to="/education" tag="li" active-class="active"><a class="nav-link">Highest Education</a></router-link>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 Assignments 
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('offTOS')">Time on Station</router-link>
+                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('join')">Join Spouse</router-link>
+                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('efmp')">EFMP/Humi</router-link>
+              </div>
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 Education
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('offHighEd')">Officer</router-link>
+                  <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('enlHighEd')">Enlisted</router-link>
+              </div>
+          </li>
           <!-- <router-link class="nav-item" to="/officer" tag="li" active-class="active"><a class="nav-link">ANG Officer</a></router-link>
           <router-link class="nav-item" to="/enlisted" tag="li" active-class="active"><a class="nav-link">ANG Enlisted</a></router-link> -->
          <!-- 
@@ -29,6 +73,20 @@
 </template>
 
 <script>
+import { store } from '@/store/store'
+export default {
+    data() {
+        return {
+            
+        }
+    },
+    methods: {
+        goToPage: function(page) {
+            console.log('goto: ',page)
+            store.commit('changePage',page)
+        }
+    }
+}
     
 </script>
 

@@ -26,7 +26,7 @@
                                     <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
+                                            style="visibility: hidden"
                                             @click="resetChart('dc-type-rowchart')">Reset</button>
                                     </h3>
                                 </div>
@@ -38,7 +38,7 @@
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-grade-barchart')">Reset</button>
                             </h3>
                         </div>
@@ -59,26 +59,6 @@
                                :loaded="loaded">
                 </largeBarChart>
                 
-<!--                 <div class="row">
-                    <div id="majcom" class="col-12">
-                        <div id="dc-majcom-barchart">
-                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-majcom-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchMajcom"
-                                size="3"
-                                label="Search MAJCOM"
-                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                button="true"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->  
                  <largeBarChart :id="'base'"         
                                :dimension="baseDim"
                                :group="removeError(baseGroup)"
@@ -94,30 +74,6 @@
                                :loaded="loaded">
                 </largeBarChart>
               
-<!--                 <div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-barchart">
-                            <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-base-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchBase"
-                                size="3"
-                                label="Search Installation"
-                                @sub="submit(searchBase,'dc-base-barchart')"
-                                button="true"
-                                :color="baseColor"
-                                :btnColor="baseColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->                <!--<div class ="row">-->
-                    <!--<div id="majcom-chart-wrapper" class="col-12"></div>-->
-                <!--</div>-->
             </div>
         </transition-group>
     </div>
@@ -137,9 +93,6 @@ import largeBarChart from '@/components/largeBarChart'
         data() {
             return {
                 data: [],
-                //searchMajcom: '',
-                //searchBase: '',
-                //selected: "percent",
                 ylabel: 'Inventory',
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
@@ -148,7 +101,6 @@ import largeBarChart from '@/components/largeBarChart'
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),                
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                                
                 gradeChart: {},
-                gradeColor: d3.rgb(51,172,255),
                 typeChart: {}
             }
         },
@@ -202,20 +154,8 @@ import largeBarChart from '@/components/largeBarChart'
                             'group': this.removeError(this.gradeDim.group().reduceSum(function(d) {return +d.Inventory;})),
                             'minHeight': 250,
                             'aspectRatio': 3,
-                            'margins': {top: 10, left: 50, right: 30, bottom: 70},
-                            'colors': d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
-                                                        .range([this.gradeColor.brighter(1).toString(),
-                                                                this.gradeColor.brighter(0.8).toString(), 
-                                                                this.gradeColor.brighter(0.6).toString(), 
-                                                                this.gradeColor.brighter(0.4).toString(), 
-                                                                this.gradeColor.brighter(0.2).toString(), 
-                                                                this.gradeColor.brighter(0.1).toString(), 
-                                                                this.gradeColor.toString(),
-                                                                this.gradeColor.darker(0.2).toString(),
-                                                                this.gradeColor.darker(0.4).toString(),
-                                                                this.gradeColor.darker(0.6).toString(),
-                                                                this.gradeColor.darker(0.8).toString(),
-                                                                this.gradeColor.darker(0.9).toString()])
+                            'margins': {top: 10, left: 50, right: 30, bottom: 60},
+                            'colors': this.chartSpecs.gradeChartColorScale 
                        }
             }                    
         },
@@ -322,12 +262,6 @@ import largeBarChart from '@/components/largeBarChart'
                 return output;
             },
             renderCharts: function() {
-                dc.dataCount(".dc-data-count")
-                  .dimension(this.ndx)
-                  .group(this.allGroup)
-
-                //console.log(this.data[0])
-                //reduce functions
 
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
@@ -339,56 +273,6 @@ import largeBarChart from '@/components/largeBarChart'
                         }
                     }
                 }
-                //type 
-                var typeChart = dchelpers.getRowChart(this.typeConfig)  
-                
-                this.typeChart = typeChart
-
-                //Location
-/*                 var majcomConfig = {}
-                majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM})
-                var majcomPercent = majcomConfig.dim.group().reduceSum(function(d){
-                    return +d.Inventory 
-                })
-                majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
-                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
-                majcomConfig.margins = chartSpecs.majcomChart.margins 
-                majcomConfig.colors = [chartSpecs.majcomChart.color]
-                var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-                majcomChart
-                    .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('transform', 'translate(-8,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                this.submit(d, 'dc-majcom-barchart')
-                             })
-                    })
- */
-                //base(mpf)
-/*                 var baseConfig = {}
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF})
-                var basePercent = baseConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
-                baseConfig.group = removeEmptyBins(basePercent)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('transform', 'translate(-9,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                 this.submit(d, 'dc-base-barchart')
-                             })
-                    })
- */
                 //Number Display for Auth, Asgn, STP - show total for filtered content
                 var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory })
                 var invND = dc.numberDisplay("#inv")
@@ -399,11 +283,17 @@ import largeBarChart from '@/components/largeBarChart'
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number</span>"
                     })
 
+                //type 
+                var typeChart = dchelpers.getRowChart(this.typeConfig)  
+                typeChart.controlsUseVisibility(true)
+                
+                this.typeChart = typeChart
+
                  //grade
                 var gradeChart = dchelpers.getOrdinalBarChart(this.gradeConfig)
                 gradeChart
                     .elasticX(true)
-                    //.colorDomain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
+                    .controlsUseVisibility(true)
                     .colorAccessor(function(d,i){
                         return d.key;
                     })
@@ -414,12 +304,11 @@ import largeBarChart from '@/components/largeBarChart'
                             this.submit(d, 'dc-grade-barchart')
                         })
                     })
-                    .yAxis().tickFormat(function(v) {return v + "%";})
-
-                gradeChart
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  
+                    .yAxis().tickFormat(function(v) {return v + "%";})
+
 
                 this.gradeChart = gradeChart
 

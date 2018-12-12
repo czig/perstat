@@ -9,17 +9,23 @@
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" @click="dynamicComponent='manning'">
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'manning'}" 
+                    data-toggle="tab" @click="dynamicComponent='manning'">
                     Manning
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" @click="dynamicComponent='retention'">
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'retention'}" 
+                    data-toggle="tab" @click="dynamicComponent='retention'">
                     Retention
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" @click="dynamicComponent='promotions'">
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'promotions'}" 
+                    data-toggle="tab" @click="dynamicComponent='promotions'">
                     Promotions
                 </a>
             </li>
@@ -39,18 +45,37 @@ import { store } from '@/store/store'
     export default {
         data() {
             return {
-               dynamicComponent: 'manning' ,
             }
         },
         computed:{
             asDate: function(){
                 return store.state.asDate;
             },
+            dynamicComponent: {
+                get: function() {
+                    //check if page in store refers to a component on this page,
+                    //and if so, show that page, else show the manning page
+                    var components = Object.keys(this.$options.components)
+                    var page = store.getters.getPage
+                    //returns array
+                    var componentToShow = components.filter((d) => {
+                        return d === page;
+                    })
+                    return componentToShow[0] || "manning";
+                },
+                set: function(newPage) {
+                    store.commit('changePage',newPage)
+                }
+            }
         },
         components:{
             manning,
             retention,
             promotions
+        },
+        created() {
+            console.log('created')
+            console.log(store.state.page)
         }
     }
 </script>
@@ -62,7 +87,6 @@ import { store } from '@/store/store'
 .nav-tabs .nav-link.active{
     font-weight:bold;
     color:teal;
-    //background-color:red;
 }
 .fade-enter{
     opacity: 0;

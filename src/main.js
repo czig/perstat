@@ -5,6 +5,9 @@ import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/mdbootstrap/css/mdb.min.css'
 
+//intro.js styles
+import '../node_modules/intro.js/introjs.css'
+
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -15,7 +18,6 @@ import axios from 'axios'
 //UNCOMMENT baseURL to run in PRODUCTION
 //axios.defaults.baseURL = 'https://starsraw.afpc.randolph.af.mil/SASStoredProcess/do'
 axios.defaults.headers.get['Accepts'] = 'application/json'
-
 
 import fontawesome from '@fortawesome/fontawesome'
 import faSpinner from '@fortawesome/fontawesome-free-solid/faSpinner'

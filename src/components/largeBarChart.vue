@@ -55,6 +55,41 @@ Props:
                                          >
                         </fontAwesomeIcon>
                     </span>
+                    <button :id="this.id + 'level'"
+                            class="btn btn-success btn-sm"
+                            style="visibility: hidden;"
+                            @click="moveUp()">
+                        Move Up
+                    </button>
+                    <button :id="this.id + 'reset'"
+                            class="btn btn-danger btn-sm reset"
+                            style="visibility: hidden;"
+                            @click="filterAll()">
+                        Reset
+                    </button>
+                    <button :id="this.id + 'sortAll'"
+                            class="btn btn-primary btn-sm"
+                            @click="sortAll()">
+                        Sort 
+                    </button>
+                    <div :id="this.id + 'slider-container'"
+                         style="display: inline-block;"
+                         class="mb-0 pb-0">
+                        <label  :id="this.id + 'slider-label'"
+                                class="pt-0 pb-0 mt-0 mb-0"
+                                style="font-size: 12px;">
+                            Bars Displayed: {{ Number(lastBar) + 1 }}
+                        </label>
+                        <input  :id="this.id + 'slider'"
+                                type="range"
+                                class="form-control slider pt-0 pb-0 mt-0 mb-0"
+                                style="cursor: pointer;"
+                                min=1
+                                :max="Math.min(dataAll().length,60)"
+                                step="1"
+                                v-model="lastBar"
+                                @change="redraw()">
+                    </div>
                 </h3>
             </div>
         </div>
@@ -73,6 +108,7 @@ export default {
             filters: [],
             nextData: [],
             lastBar: this.numBars || 30,
+            sliderDisabled: false,
             svg: {},
             //chart object for registering with dc
             chart: {
@@ -81,6 +117,16 @@ export default {
             w: document.documentElement.clientWidth*this.widthFactor - this.margin.left - this.margin.right,
             rendered: false,
             allSort: true,
+            listeners: d3.dispatch(
+                'preRender',
+                'postRender',
+                'preRedraw',
+                'postRedraw',
+                'filtered',
+                'zoomed',
+                'renderlet',
+                'pretransition'
+            )
         } 
     },
     props: {
@@ -288,10 +334,7 @@ export default {
              d3.select("#" + this.id + "level")
                  .style("visibility","hidden");
              // enable slider
-             d3.select("#" + this.id + "slider")
-                 .property("disabled", !all)
-                 .style('cursor',  all ? 'pointer' : "default")
-                 .style('opacity', all ? 1 : 0.5);
+             this.sliderDisabled = !all 
              //enable sort
              d3.select("#" + this.id + "sortAll")
                 .property("disabled",false);
@@ -317,6 +360,27 @@ export default {
         sortAll: function() {
             this.allSort = !this.allSort
             this.redraw()
+        },
+        moveUp: function() {
+            this.level = Math.max(this.level-1, 0)
+            this.direction = 'up'
+            this.original = true //always at original filter when go to new level
+            console.log('moved up')
+            this.updateData()
+
+            this.dimension.filterAll() //remove filters from dimension
+            if (this.level == 0) {
+                //if top level, always remove all filters, but if no extra data to add, do a full reset
+                this.filterAll(true)
+            }
+            else {
+                // reset filters and reapply for new level
+                this.filters = [] 
+                this.filters = this.filters.concat(this.data.map(d => d.key).concat(this.nextData.map(g => g.key)))
+                this.dimension.filterFunction(d => _.includes(this.filters,d))
+            }
+            console.log(this.filters)
+            dc.redrawAll();
         },
         nextLevel: function(d) {
             if (d.key == "Others") {
@@ -383,15 +447,15 @@ export default {
             d3.select("#" + this.id + "reset")
               .style("visibility","visible");
             //disable slider
-            d3.select("#" + this.id + "slider")
-                .property("disabled",true)
-                .style("cursor","default")
-                .style("opacity", 0.5);
+            this.sliderDisabled = true
             //disable sort button
             d3.select("#" + this.id + "sortAll")
                 .property("disabled",true);
 
             this.dimension.filterFunction(d => _.includes(this.filters,d))
+            if (this.filters !== undefined) {
+                this.listeners.filtered(this.chart,this.filters)
+            }
             dc.redrawAll()
         },
         render: function() {
@@ -400,6 +464,8 @@ export default {
                 console.log('render')
                 // assign vm to this to prevent conflicts
                 var vm = this
+                // call preRender
+                vm.listeners.preRender(vm.chart)
                 //key funciton for accessing key properties in data
                 var key = function(d) {
                     return d.key;
@@ -408,87 +474,6 @@ export default {
                 this.updateData()
                 //clear any svg elements before rebuilding
                 d3.select("#" + this.id + "svg").remove();
-                //set title
-                var btnUp = d3.select("#" + this.id + "title")
-                                .selectAll("h3")
-                                .append("button")
-                                .attr("id",this.id + "level")
-                                .text("Move Up")
-                                .classed("btn btn-success btn-sm",true)
-                                .style("visibility","hidden")
-                                .on("click", function() {
-                                    vm.level = Math.max(vm.level-1, 0)
-                                    vm.direction = 'up'
-                                    vm.original = true //always at original filter when go to new level
-                                    console.log('moved up')
-                                    vm.updateData()
-
-                                    vm.dimension.filterAll() //remove filters from dimension
-                                    if (vm.level == 0) {
-                                        //if top level, always remove all filters, but if no extra data to add, do a full reset
-                                        vm.filterAll(true)
-                                    }
-                                    else {
-                                        // reset filters and reapply for new level
-                                        vm.filters = [] 
-                                        vm.filters = vm.filters.concat(vm.data.map(d => d.key).concat(vm.nextData.map(g => g.key)))
-                                        vm.dimension.filterFunction(d => _.includes(vm.filters,d))
-                                    }
-                                    console.log(vm.filters)
-                                    dc.redrawAll();
-                                })
-
-                var btnReset = d3.select("#" + this.id + "title")
-                                .selectAll("h3")
-                                .append("button")
-                                .attr("id",this.id + "reset")
-                                .text("Reset")
-                                .classed("btn btn-danger btn-sm reset",true)
-                                .style("visibility","hidden")
-                                .on("click", function() {
-                                    vm.filterAll()
-                                });
-
-                var sliderContainer = d3.select("#" + this.id + "title")
-                                        .selectAll("h3")
-                                        .append("div")
-                                        .attr("id",this.id + "slider-container")
-                                        .style("display","inline-block")
-                                        .classed("mb-0 pb-0",true);
-
-                sliderContainer.append("label")
-                   .attr("id",this.id + "slider-label")
-                   .classed("pt-0 pb-0 mt-0 mb-0",true)
-                   .text("Bars Displayed: " + Number(this.lastBar + 1))
-                   .style("font-size","12px");
-
-                sliderContainer.append("input")
-                               .attr("id", this.id + "slider")
-                               .attr("type","range")
-                               .classed("form-control slider pt-0 pb-0 mt-0 mb-0",true)
-                               .attr("min",1)
-                               .attr("max",Math.min(this.dataAll().length,60))
-                               .attr("value",this.data.length)
-                               .style('cursor','pointer')
-                               .on("input", function() {
-                                   //'vm' is vue context and 'this' is context for this callback 
-                                    vm.lastBar = +this.value
-                                    d3.select('#' + vm.id + 'slider-label')
-                                      .text('Bars Displayed: ' + Math.min(+this.value+1,Number(d3.select('#' + vm.id + 'slider').attr('max'))));
-                                    vm.redraw() 
-                                    this.value = vm.data.length
-                               })
-                               ;
-
-                var btnSortAll = d3.select("#" + this.id + "title")
-                                .selectAll("h3")
-                                .append("button")
-                                .attr("id",this.id + "sortAll")
-                                .text("Sort")
-                                .classed("btn btn-primary btn-sm",true)
-                                .on("click", function() {
-                                    vm.sortAll()
-                                });
 
                 var svg = d3.select("#" + this.id + "wrapper")
                             .append("svg")
@@ -498,7 +483,6 @@ export default {
                             .classed("mt-0 pt-0",true)
                             .append("g")
                             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
-
                             
                 var firstBars = svg.append("g")
                     .attr("id", this.id + "chart")
@@ -556,7 +540,17 @@ export default {
                     .call(this.xAxis)
                     .selectAll("text")
                     .style("text-anchor","end")
-                    .attr("transform","translate(-8,3)rotate(-45)");
+                    .style("cursor","pointer")
+                    .attr("transform","translate(-8,3)rotate(-45)")
+                    .on('click', function(d) {
+                        //update filters expects object with key as property, spoof this for now
+                        var obj = {key: d}
+                        if (d3.event.ctrlKey) {
+                            vm.nextLevel(obj);
+                        } else {
+                            vm.updateFilters(obj);
+                        }
+                    });
 
                 svg.append("g")
                     .attr("class", "y axis")
@@ -581,6 +575,8 @@ export default {
                 console.log('redraw')
                 //allow use of 'this' within scoped functions
                 var vm = this
+                //call preRedraw
+                vm.listeners.preRedraw(vm.chart)
                 //key function for getting key for each object
                 var key = function(d) {
                     return d.key;
@@ -588,7 +584,7 @@ export default {
                 //calculate new width (height computed prop) 
                 this.w = document.getElementById(this.id + "wrapper").offsetWidth - this.margin.left - this.margin.right 
 
-                d3.select("#" + this.id + "level") .style("visibility", this.level <= 0 ? "hidden" : "visible");
+                d3.select("#" + this.id + "level").style("visibility", this.level <= 0 ? "hidden" : "visible");
 
                 d3.select("#" + this.id + "svg").attr("width",this.w + this.margin.left + this.margin.right)
                             .attr("height",this.h + this.margin.top + this.margin.bottom);
@@ -599,16 +595,16 @@ export default {
 
                 this.updateData()
 
-                //update number in slider to reflect length of data
-                d3.select('#' + this.id + 'slider-label')
-                  .text('Bars Displayed: ' + this.data.length);
+                ////update number in slider to reflect length of data
+                //d3.select('#' + this.id + 'slider-label')
+                //  .text('Bars Displayed: ' + this.data.length);
 
-                d3.select('#' + this.id + 'slider')
-                   .attr("value",this.data.length)
-                   .attr("max",Math.min(this.dataAll().length,60));
+                //d3.select('#' + this.id + 'slider')
+                //   .attr("value",this.data.length)
+                //   .attr("max",Math.min(this.dataAll().length,60));
 
                 //setting value with d3 doesn't work, so use document element
-                document.getElementById(this.id + 'slider').value = this.data.length
+                //document.getElementById(this.id + 'slider').value = this.data.length
 
                 //select bars for entering, updating, and exiting bars
                 var bars = d3.select("#" + this.id + "chart").selectAll("rect")
@@ -683,7 +679,21 @@ export default {
                               .call(this.xAxis)
                               .selectAll("text")
                               .style("text-anchor","end")
+                              .style("cursor","pointer")
                               .attr("transform","translate(-8,3)rotate(-45)");
+
+                d3.select("#" + this.id + "svg")
+                                .select(".x.axis")
+                                .selectAll("text")
+                                .on('click',function(d) {
+                                    //update filters expects object with key as property, spoof this for now
+                                    var obj = {key: d}
+                                    if (d3.event.ctrlKey) {
+                                        vm.nextLevel(obj);
+                                    } else {
+                                        vm.updateFilters(obj);
+                                    }
+                                });
 
                 d3.select("#" + this.id + "svg")
                               .select(".y.axis")
@@ -700,17 +710,23 @@ export default {
     mounted: function() {
         console.log('mounted: large bar chart')
         //initialize tooltips
-        $(function() {
+        $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
         //allow use of vue 'this' within scoped functions (need this for this.chart.filters --> function has to return vm.filters, this.filters causes the function to return itself)
         var vm = this
         //define chart object
         this.chart.anchorName = this.anchorName
+        this.chart.dimension = function() { return vm.dimension }
         this.chart.redraw = this.redraw
         this.chart.render = this.render
         this.chart.filterAll = this.filterAll
+        this.chart.filter = this.filterAll 
         this.chart.filters = function() { return vm.filters }
+        this.chart.on = function (event, listener) {
+            vm.listeners.on(event, listener);
+            return vm.chart;
+        }
         //register chart for dc
         dc.chartRegistry.register(this.chart)
         //call render (redraw always happens after render) if component is destroyed then created again

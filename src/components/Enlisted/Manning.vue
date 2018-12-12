@@ -4,28 +4,31 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-
-                    <div id="radioSelect" class="col form-group">
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Percentage</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Assigned</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Authorized</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">STP</span>
-                        </label>
+                    <div id="radioSelect" class="col">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Percentage
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio2">
+                                Assigned 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio3">
+                                Authorized 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio4">
+                                STP 
+                            </label>
+                        </div>
                     </div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -386,12 +389,14 @@ import overviewBarChart from '@/components/overviewBarChart'
                 gradeConfig.minHeight = 200
                 gradeConfig.aspectRatio = 4
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
-                var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.8).toString(), c.brighter(0.6).toString(), c.brighter(0.4).toString(),c.brighter(0.2).toString(),c.darker(0.2).toString(),c.darker(0.4).toString()])
+                gradeConfig.colors = this.chartSpecs.gradeChartColorScale 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
+                    })
+                    .colorAccessor((d) => {
+                        return d.key;
                     })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
@@ -469,11 +474,16 @@ import overviewBarChart from '@/components/overviewBarChart'
 <style src="../../../node_modules/dc/dc.css">
 </style>
 <style scoped>
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+div[id*="-barchart"] .x.axis text{
+    text-anchor: end !important;
+    transform: rotate(-45deg);
+  }
+
+div[id*="-rowchart"] g.row text{
+    fill: black;
+}
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 .fade-enter-active {
     transition: all 0.5s;

@@ -87,7 +87,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 chartSpecs: chartSpecs,
                 overviewChart: {},
                 overviewNormalChart: {},
-                sortKey: true 
+                sortKey: true,
+                keys: []
             }
         },
         props: {
@@ -162,19 +163,16 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
             overviewGroup: function() {
                 return this.dimension.group().reduce(this.reducerAdd,this.reducerRemove,this.accumulator)
             },
-            keys: function() {
-                return this.overviewGroup.all().map(dc.pluck('key')).slice();    
-            },
             overviewConfig: function() {
                 return {
                     'id': 'overview' + this.id,
                     'dim': this.dimension,
-                    'group': this.removeEmptyBins(this.id_group(this.overviewGroup)),
+                    'group': this.id_group(this.overviewGroup),
                     'minHeight': this.aspectRatio/this.normalToOverviewFactor,
                     'aspectRatio': this.aspectRatio*this.normalToOverviewFactor,
                     'margins': {top: this.margin.top, left: this.margin.left, right: this.margin.right, bottom: 10},
                     'x': d3.scale.linear().domain([0,this.keys.length]),
-                    'xUnits': this.overviewGroup.all().length,
+                    'xUnits': this.keys.length,
                     'colors': this.colorScale,
                 }
             },
@@ -182,7 +180,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 return {
                     'id': this.id,
                     'dim': this.dimension,
-                    'group': this.removeEmptyBinsAndNonBrush(this.overviewGroup),
+                    'group': this.removeNonBrush(this.overviewGroup),
                     'minHeight': this.minHeight,
                     'aspectRatio': this.aspectRatio,
                     'margins': {top: 10, left: this.margin.left, right: this.margin.right, bottom: this.margin.bottom},
@@ -205,6 +203,15 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     all: () => {
                         return source_group.all().filter((d) => {
                             return (d.value[this.selected] === undefined ? d.value : d.value[this.selected]) != 0
+                        })
+                    }
+                }
+            },
+            removeNonBrush: function(source_group) {
+                return {
+                    all: () => {
+                        return source_group.all().filter((d) => {
+                            return _.includes(this.filterArray,d.key);
                         })
                     }
                 }
@@ -243,6 +250,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 }
             },
             renderOverviewCharts: function() {
+                var vm = this
+                this.keys = this.overviewGroup.all().map(dc.pluck('key')).slice()
                 var overviewChart = dchelpers.getBrushBarChart(this.overviewConfig)
                 overviewChart
                     .controlsUseVisibility(true)
@@ -253,37 +262,38 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     .xAxis().ticks([]);
 
                 //set up filter to enable brush (by default no brush for ordinal chart)
-                var vm = this
                 overviewChart.hasFilterHandler(function(filters, filter) {
-                    console.log('hasFilterHandler')
-                    console.log(filters)
-                    console.log(filter)
                     if (filter === null || typeof(filter) === 'undefined') {
                         if (filters.length > 0) {
                             return filters[0][0] !== vm.keys[0] || filters[0][1] !== vm.keys[14];    
                         } else {
                             return filters.length === 0;
                         }
+                    } else {
+                        //if filter is defined, we are in the process of applying filters,
+                        //so return false
+                        return false;
                     } 
-                    return filters.some(function(f) {
-                        console.log(f)
-                        return filter <= f && filter >= f;
-                    })
+
                 })
                 //prevent "resetAll" function from wiping out brush by replacing default filterAll function with our own
                 //note: do not call filter(null) on this chart!
                 overviewChart.filterAll = function() {
-                    overviewChart.replaceFilter(dc.filters.RangedFilter(0,vm.numBars-1));
+                    //subtract by 0.01 to keep numBars correct but set brush to correct point
+                    overviewChart.replaceFilter(dc.filters.RangedFilter(0,vm.numBars-0.01));
                 }
                 overviewChart.filterHandler(function(dimension, filters) {
                     //apply filters (have to go from number to string as specified in dimension)
                     var rangeFilterDecode = filters.map(function(rangefilt) {
+                        //both pairs (low,high) and (lowNum,highNum) are required!
                         //find units on low end and high end of range
-                        var low = vm.keys[Math.ceil(rangefilt[0])]
-                        var high = vm.keys[Math.ceil(rangefilt[1])] || 'zzz';
+                        //note: floor on low end and ceil on high end to keep bars at ends of brush
+                        var low = vm.keys[Math.floor(rangefilt[0])]
+                        var high = vm.keys[Math.floor(rangefilt[1])] || 'zzz';
                         //find number corresponding to high and low end of range
-                        var lowNum = Math.max(Math.ceil(rangefilt[0]),0) 
-                        var highNum = Math.min(Math.ceil(rangefilt[1]),vm.overviewGroup.all().length)
+                        //note: floor on low end and ceil on high end to keep bars at ends of brush
+                        var lowNum = Math.max(Math.floor(rangefilt[0]),0) 
+                        var highNum = Math.min(Math.floor(rangefilt[1]),vm.overviewGroup.all().length)
                         //reset filter array
                         vm.filterArray = []
                         //put all units within range to an array (creates array of length (highNum - lowNum)
@@ -294,12 +304,6 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     });
                     return rangeFilterDecode;
                 });
-                //once user moves brush, store starting position of brush
-                overviewChart.brushStart = []
-                var b = overviewChart.brush()
-                b.on('brushstart.custom', function() {
-                    overviewChart.brushStart = overviewChart.extendBrush()
-                })
                 //override existing filter function - makes filter(null) a no-op to prevent wiping out brush
                 var existingFunction = overviewChart.filter
                 overviewChart.oldFilter = existingFunction
@@ -315,6 +319,12 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     }  
                     return overviewChart;
                 }
+                //once user moves brush, store starting position of brush
+                overviewChart.brushStart = []
+                var b = overviewChart.brush()
+                b.on('brushstart.custom', function() {
+                    overviewChart.brushStart = overviewChart.extendBrush()
+                })
                 //override existing _brushing function (_brushing is called everytime brush moves), which does:
                 //1. renames old _brushing function to __brushing
                 //2. uses function supplied as last argument to dc.override as new _brushing function
@@ -330,6 +340,27 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     } 
                     overviewChart.__brushing();
                 })
+                //override existing fadeDeselectedArea function to make sure selected area (non-gray bars) aligns
+                //with bars in normal bar chart
+                overviewChart.fadeDeselectedArea = function() {
+                    //change of context, 'this' refers to chart object, not vue 
+                    var _chart = this;
+                    var bars = _chart.chartBodyG().selectAll('rect.bar');
+                    var extent = _chart.brush().extent();
+                    if (!_chart.brushIsEmpty(extent)) {
+                        //start and end are decimal numbers representing start and end of brush
+                        var start = extent[0]
+                        var end = extent[1]
+
+                        //bar x values(d.x) will be integers, but start and end are decimal
+                        //if bar is within brush or ends of brush sit on bar, highlight bar
+                        bars.classed(dc.constants.DESELECTED_CLASS, function(d) {
+                            return d.x < Math.floor(start) || d.x > end;
+                        })
+                    } else {
+                        bars.classed(dc.constants.DESELECTED_CLASS, false);
+                    }
+                }
                 //override turnOnControls and turnOffControls for top brush chart to make only "Reset Top" button shown when filtering brush chart 
                 overviewChart.turnOnControls = function() {
                     d3.select('#btn-overview-'+vm.id+'-reset').style('visibility','visible');
@@ -352,6 +383,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         chart.selectAll('g.x text')
                         .style('text-anchor', 'end')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d) => {
+                            chart.filter(d) 
+                            dc.redrawAll()
+                        })
                     });
                 //override turnOnControls and turnOffControls for bottom bar chart to allow reset button to be shown in first chart header
                 overviewNormalChart.turnOnControls = function() {
@@ -364,7 +399,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 //render and redraw
                 this.overviewChart.render()
                 this.overviewNormalChart.render()
-                this.overviewChart.filter(dc.filters.RangedFilter(0,this.numBars-1)) 
+                //move brush to 'reset' position - subtract 0.01 to keep selection correct and only use number of bars inputted
+                this.overviewChart.filter(dc.filters.RangedFilter(0,this.numBars-0.01)) 
                 this.overviewChart.redraw()
                 this.overviewNormalChart.redraw()
             },
@@ -378,7 +414,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     console.log('loaded true')
                     this.renderOverviewCharts()
                 }
-            }
+            },
         },
         components: {
             FontAwesomeIcon

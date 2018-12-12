@@ -4,6 +4,14 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
+                    <div id="radioSelect" class="col form-group">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Promotion Rate
+                            </label>
+                        </div>
+                    </div>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -377,13 +385,14 @@ import { store } from '@/store/store'
                 gradeConfig.minHeight = 240 
                 gradeConfig.aspectRatio = 2
                 gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.8).toString(), c.brighter(0.6).toString(), c.brighter(0.4).toString(),c.brighter(0.2).toString(),c.darker(0.2).toString(),c.darker(0.4).toString()])
-
+                gradeConfig.colors = this.chartSpecs.gradeChartColorScale 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
                     .valueAccessor((d) => {
                         return d.value[this.selected]
+                    })
+                    .colorAccessor((d) => {
+                        return d.key;
                     })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
@@ -513,11 +522,8 @@ import { store } from '@/store/store'
 <style src="@/../node_modules/dc/dc.css">
 </style>
 <style scoped>
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 .fade-enter-active {
     transition: all 0.5s;

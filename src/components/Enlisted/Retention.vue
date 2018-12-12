@@ -5,17 +5,19 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div class="col">
-                        <label class="custom-control custom-radio">
-                           <input class="custom-control-input" checked="checked" name="group4" type="radio" id="radio4" value="reEnlRate" v-model="selected" @click="radioButton">
-                           <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Reenlistment Rate</span>
-                        </label>
-                        <label class="custom-control custom-radio">
-                            <input class="custom-control-input" name="group5" type="radio" id="radio5" value="keepRate" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Keep Rate</span>
-                        </label>
+                    <div id="radioSelect" class="col">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="reEnlRate" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Reenlistment Rate 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="keepRate" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio2">
+                                Keep Rate 
+                            </label>
+                        </div>
                     </div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -565,12 +567,8 @@
 </style>
 <style scoped>
 /* need to make this scoped */
-
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 
 .form-group{

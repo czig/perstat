@@ -101,28 +101,7 @@
                                :loaded="loaded">
                 </largeBarChart>
 
-<!--                 <div class="row">
-                    <div id="majcom" class="col-12">
-                        <div id="dc-majcom-barchart">
-                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-majcom-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model:value="searchMajcom"
-                                size="3"
-                                label="Search MAJCOM"
-                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                button="true"
-                                :color="majcomColor"
-                                :btnColor="majcomColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->                <largeBarChart :id="'loc'"         
+                 <largeBarChart :id="'loc'"         
                                :dimension="locDim"
                                :group="locGroup"
                                :widthFactor="0.90"
@@ -137,27 +116,6 @@
                                :title="'Servicing MPF'"
                                :loaded="loaded">
                 </largeBarChart>
-                <!--<div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-barchart">
-                            <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-base-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model:value="searchBase"
-                                size="3"
-                                label="Search Installation"
-                                @sub="submit(searchBase,'dc-base-barchart')"
-                                button="true"
-                                :color="baseColor"
-                                :btnColor="baseColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>-->
             </div>
         </transition-group>
     </div>
@@ -184,7 +142,7 @@ import largeBarChart from '@/components/largeBarChart'
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color,
                 chartSpecs: chartSpecs,
-                locColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+                locColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color])
             }
         },
@@ -466,49 +424,6 @@ import largeBarChart from '@/components/largeBarChart'
                 var c = d3.rgb("violet")
                 priorConfig.colors = d3.scale.ordinal().range([c.brighter(0.5).toString(), c.toString(),c.darker(0.5).toString(),c.darker(1).toString()])
                 var priorChart = dchelpers.getRowChart(priorConfig)
-
-                //Majcom
-/*                 var majcomConfig = {}
-                majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM })
-                var majcomPercent = majcomConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                majcomConfig.group = removeEmptyBins(majcomPercent)
-                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
-                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
-                majcomConfig.margins = chartSpecs.majcomChart.margins 
-                majcomConfig.colors = [chartSpecs.majcomChart.color]
-                var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-                majcomChart
-                    .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-majcom-barchart')
-                        })
-                    })
- */
-               // //base(mpf)
-               // var baseConfig = {}
-               // baseConfig.id = 'base'
-               // baseConfig.dim = this.ndx.dimension(function(d){return d.MPF })
-               // var basePercent = baseConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-               // baseConfig.group = removeEmptyBins(basePercent)
-               // baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-               // baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-               // baseConfig.margins = chartSpecs.baseChart.margins 
-               // baseConfig.colors = [chartSpecs.baseChart.color]
-               // var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-               // baseChart
-               //     .elasticX(true)
-               //     .on('pretransition', (chart)=> {
-               //         chart.selectAll('g.x text')
-               //         .attr('transform', 'translate(-8,0)rotate(-45)')
-               //         .on('click', (d)=>{
-               //             this.submit(d, 'dc-base-barchart')
-               //         })
-               //     })
 
                 //Download Raw Data button
                 d3.select('#download')

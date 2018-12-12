@@ -4,6 +4,14 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
+                    <div id="radioSelect" class="col form-group">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Promotion Rate
+                            </label>
+                        </div>
+                    </div>
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -40,28 +48,16 @@
                 </div>
                 <div class="row">
                     <div id="grade" class="col-4">
-                        <div id="dc-grade-rowchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                        <div id="dc-grade-barchart">
+                            <h3 class="mb-0">Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <!--<font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>-->
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-grade-rowchart')">Reset</button>
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-grade-barchart')">Reset</button>
                             </h3>
                         </div>
                     </div>
-                    <div id="compCat" class="col-8">
-                        <div id="dc-compCat-barchart">
-                            <h3>CompCat <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-compCat-barchart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
                     <div id="zone" class="col-4">
                         <div id="dc-zone-rowchart">
                             <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
@@ -72,24 +68,46 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="recommend" class="col-5">
+                    <div id="highestPme" class="col-4">
+                        <div id="dc-highestPme-barchart">
+                            <h3 class="mb-0">Highest PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-highestPme-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="compCat" class="col-4">
+                        <div id="dc-compCat-rowchart">
+                            <h3 class="mb-0">CompCat <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-compCat-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="recommend" class="col-4">
                         <div id="dc-recommend-rowchart">
-                            <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <h3 class="mb-0">Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                 <transition>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
                             </h3>
                         </div>
                     </div>
-                    <div id="pmeSelect" class="col-3">
-                        <div id="dc-pmeSelect-rowchart">
-                            <h3>PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                    <div id="pmeMethod" class="col-4">
+                        <div id="dc-pmeMethod-rowchart">
+                            <h3 class="mb-0">PME Method<span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-pmeSelect-rowchart')">Reset</button>
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-pmeMethod-rowchart')">Reset</button>
                             </h3>
                         </div>
                     </div>
@@ -133,7 +151,7 @@
                             <h3>Board <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-board-barchart')">Reset</button>
                             </h3>
                         </div>
@@ -177,16 +195,13 @@ import largeBarChart from '@/components/largeBarChart'
           },
           ylabel: function() {
             if (this.selected === "percent") {
-                return "Promotion Rate (%)"
+                return "(%)"
             }
             else if (this.selected === "sel") {
                 return "Selects"
             }
             else if (this.selected === "elig") {
                 return "Eligibles"
-            }
-            else {
-                return "PME Complete Rate (%)"
             }
           },
           downloadDim: function() {
@@ -284,17 +299,52 @@ import largeBarChart from '@/components/largeBarChart'
             axios.post(axios_url_off_pro).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var promoData = response.data.data
-                var formattedData = []
-                var obj = {}
-                promoData.forEach((d)=>{
-                    obj = formatData(d)
-                    formattedData.push(obj)
-                })
-                //console.log(formattedData   )
-                this.data = formattedData
+                var objData = makeObject(promoData)
+                this.data = objData 
                 this.loaded = true
                 renderCharts()
             }).catch(console.error)
+
+            //TODO: import makeObject function and add new data
+            var makeObject = (data) => {
+                var keys = data.shift()
+                var i = 0
+                var k = 0
+                var obj = null
+                var obj2 = null
+                var output = [];
+
+                for (i=0; i < data.length; i++) {
+                    obj = {};
+                    for (k = 0; k < keys.length; k++) {
+                        obj[keys[k]] = data[i][k];
+                    }
+                    obj2 = {};
+                    obj2 = formatData(obj)
+                    output.push(obj2);
+                }
+                return output;
+            }
+
+            var pmeMethodDecode = {
+                'RES': 'Residence',
+                'DES': 'Designee',
+                'COR': 'Correspondence',
+                'COM': 'Correspondence',
+                'N/A': 'N/A'
+            }
+            var pmeMethodOrder = {
+                'Residence': 0,
+                'Designee': 1,
+                'Correspondence': 2,
+                'N/A': 3
+            }
+            var highestPmeOrder = {
+                'SDE': 3,
+                'IDE': 2,
+                'PDE': 1,
+                'NONE': 0
+            }
 
             var formatData = (given) =>{
                 var obj = {}
@@ -304,6 +354,8 @@ import largeBarChart from '@/components/largeBarChart'
                 obj.Zone = formats.zoneFormat[given.Zone]
                 obj.Recomendation = formats.recommendFormat[given.Promo_Recomendation];
                 obj.PME = formats.pmeFormat[given.PME_Complete]
+                obj.HighestPME = given.highpme.trim().split(" ")[0];
+                obj.pmeMethod = pmeMethodDecode[given.highpme.trim().split(" ")[1] || 'N/A'];
                 obj.Board = formats.gradeFormat[given.Board_ID.substring(1,3)] + "20" + given.Board_ID.substring(3,6)
                 obj.Core = given.Core
                 obj.sel = +given.num_select
@@ -385,44 +437,6 @@ import largeBarChart from '@/components/largeBarChart'
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
-
-
-                //Compcat
-                var compCatConfig = {}
-                compCatConfig.id = 'compCat'
-                compCatConfig.dim = this.ndx.dimension(function(d){
-                    return d.Competitive_Category;
-                })
-                compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                compCatConfig.minHeight = 260
-                compCatConfig.aspectRatio = 5
-                compCatConfig.margins = {top: 30, left: 40, right: 30, bottom: 100}
-                compCatConfig.colors = ["#1976d2"]
-                var compCatChart = dchelpers.getOrdinalBarChart(compCatConfig)
-                compCatChart
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('rect.bar')
-                            .classed('stack-deselected', function(d) {
-                                //d.x is compCat and d.layer is assigned or selRate
-                                return chart.filter() && chart.filters().indexOf(d.x) === -1
-                            })
-                            .on('click', function(d) {
-                                chart.filter(d.x)
-                                dc.redrawAll()
-                            })
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-compCat-barchart')
-                        })
-                    })
-                    .yAxis().tickFormat(function(v) {return v + "%";})
-
                     
                     
                 //grade
@@ -431,20 +445,28 @@ import largeBarChart from '@/components/largeBarChart'
                 gradeConfig.dim = this.ndx.dimension(function (d) {
                     return d.Grade;
                 })
-                gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                gradeConfig.minHeight = 175 
-                gradeConfig.aspectRatio = 3 
-                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
-                var c = d3.rgb(51,172,255)
-                gradeConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
-                var gradeChart = dchelpers.getRowChart(gradeConfig)
+                gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial))
+                gradeConfig.minHeight = 180 
+                gradeConfig.aspectRatio = 5 
+                gradeConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
+                gradeConfig.colors = chartSpecs.gradeChartColorScale 
+                var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
                     .ordering(function(d){
-                      return formats.gradeOrder[d.key]
+                        return formats.gradeOrder[d.key]
                     })                                    
+                    .colorAccessor(function(d) {
+                        return d.key;
+                    })
+                    .elasticX(true)
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
 
                 //zone
                 var zoneConfig = {};
@@ -453,12 +475,13 @@ import largeBarChart from '@/components/largeBarChart'
                     return d.Zone;
                 })
                 zoneConfig.group = zoneConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                zoneConfig.minHeight = 150 
-                zoneConfig.aspectRatio = 3
-                zoneConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                zoneConfig.minHeight = 180 
+                zoneConfig.aspectRatio = 5 
+                zoneConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
                 zoneConfig.colors = d3.scale.ordinal().range(["#1b9e77","#7570b3","#d95f02"])
                 var zoneChart = dchelpers.getRowChart(zoneConfig)
                 zoneChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
@@ -471,6 +494,54 @@ import largeBarChart from '@/components/largeBarChart'
                 zoneChart.on("filtered", (d)=>{
                     this.showAlert = false;
                 })
+
+                //highestPme
+                var highestPmeConfig = {}
+                highestPmeConfig.id = 'highestPme'
+                highestPmeConfig.dim = this.ndx.dimension(function(d){
+                    return d.HighestPME;
+                })
+                highestPmeConfig.group = removeEmptyBins(highestPmeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial))
+                highestPmeConfig.minHeight = 180 
+                highestPmeConfig.aspectRatio = 5
+                highestPmeConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
+                highestPmeConfig.colors = ["#fe9929"]
+                var highestPmeChart = dchelpers.getOrdinalBarChart(highestPmeConfig)
+                highestPmeChart
+                    .controlsUseVisibility(true)
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+                    .ordering((d) => {
+                        return highestPmeOrder[d.key]
+                    })
+                    .elasticX(true)
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
+                    .yAxis().tickFormat(function(v) {return v + "%";})
+
+
+                //Compcat
+                //TODO: lighter blue
+                var compCatConfig = {}
+                compCatConfig.id = 'compCat'
+                compCatConfig.dim = this.ndx.dimension(function(d){
+                    return d.Competitive_Category;
+                })
+                compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                compCatConfig.minHeight = 260
+                compCatConfig.aspectRatio = 3
+                compCatConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
+                compCatConfig.colors = d3.scale.ordinal().range(["#6baed6"])
+                var compCatChart = dchelpers.getRowChart(compCatConfig)
+                compCatChart
+                    .controlsUseVisibility(true)
+                    .valueAccessor((d) => {
+                        return d.value[this.selected]
+                    })
+
                 //recommend
                 var recommendConfig = {};
                 recommendConfig.id = 'recommend'
@@ -479,11 +550,12 @@ import largeBarChart from '@/components/largeBarChart'
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 recommendConfig.minHeight = 150 
-                recommendConfig.aspectRatio = 3
-                recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                recommendConfig.aspectRatio = 2
+                recommendConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 recommendConfig.colors = d3.scale.ordinal().range(["#1a9641","#a6d96a","#fdae61","#d7191c"])
                 var recommendChart = dchelpers.getRowChart(recommendConfig)
                 recommendChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
@@ -492,55 +564,28 @@ import largeBarChart from '@/components/largeBarChart'
                     })
 
                 //pme
-                var pmeConfig = {};
-                pmeConfig.id = 'pmeSelect'
-                pmeConfig.dim = this.ndx.dimension(function (d) {
-                    return d.PME;
+                var pmeMethodConfig = {};
+                pmeMethodConfig.id = 'pmeMethod'
+                pmeMethodConfig.dim = this.ndx.dimension(function (d) {
+                    return d.pmeMethod;
                 })
-                pmeConfig.group = pmeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                pmeConfig.minHeight = 150 
-                pmeConfig.aspectRatio = 3
-                pmeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
-                pmeConfig.colors = d3.scale.ordinal().range(["#1a9641","#d7191c"])
-                var pmeChart = dchelpers.getRowChart(pmeConfig)
-                pmeChart
+                pmeMethodConfig.group = pmeMethodConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
+                pmeMethodConfig.minHeight = 150 
+                pmeMethodConfig.aspectRatio = 2
+                pmeMethodConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
+                pmeMethodConfig.colors = d3.scale.ordinal().range(["#1a9850","#91cf60","#d9ef8b","#fee08b"])
+                var pmeMethodChart = dchelpers.getRowChart(pmeMethodConfig)
+                pmeMethodChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d) => {
                         return d.value[this.selected]
                     })
                     .ordering(function(d){
-                      return formats.pmeOrder[d.key]
+                      return pmeMethodOrder[d.key]
                     })                                    
                 
-                //board
-/*                 var boardConfig = {}
-                boardConfig.id = 'board'
-                boardConfig.dim = this.ndx.dimension(function(d){return  d.Board})
-                var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                boardConfig.group = removeEmptyBins(boardGroup)
-                boardConfig.minHeight = 250
-                boardConfig.aspectRatio = 5
-                boardConfig.margins = {top: 30, left: 40, right: 30, bottom: 60}
-                boardConfig.colors = ["#1976d2"]
-                var boardChart = dchelpers.getOrdinalBarChart(boardConfig)
 
-                boardChart
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .ordering(function(d) {
-                        return formats.gradeOrder[d.key.substring(0,3)] + d.key.substring(3,8)
-                    })
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-board-barchart')
-                        })
-                    })
-
- */                //Download Raw Data button
+                //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
                     var data = this.downloadDim.top(Infinity);
@@ -589,11 +634,8 @@ import largeBarChart from '@/components/largeBarChart'
 <style src="@/../node_modules/dc/dc.css">
 </style>
 <style>  /*should be scoped*/
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 .fade-enter-active {
     transition: all 0.5s;

@@ -4,34 +4,45 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col form-group">
-                       <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Percentage</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Assigned</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">Authorized</span>
-                        </label>
-                        <label class="custom-control custom-radio" >
-                            <input class="custom-control-input" name="radio4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
-                            <span class="custom-control-indicator"></span>
-                            <span class="custom-control-description">STP</span>
-                        </label>
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio1">
+                                Percentage
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio2" type="radio" id="radio2" value="asgn" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio2">
+                                Assigned 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio3" type="radio" id="radio3" value="auth" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio3">
+                                Authorized 
+                            </label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                           <input class="custom-control-input" name="radio4" type="radio" id="radio4" value="stp" v-model="selected" @click="radioButton">
+                           <label class="custom-control-label" for="radio4">
+                                STP 
+                            </label>
+                        </div>
                     </div>
                     <div class="col-auto">
+                        <button type="button" id="demo"
+                                              class="btn btn-primary btn-sm"
+                                              @click="startDemo">
+                            Demo 
+                        </button>
                         <button type="button" id="download"
                                         class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                        data-step="6" data-intro="Download data in tabular form here!"
                                         >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                data-step="4" data-intro="Click here to reset filters on all charts."
                                 @click="resetAll">Reset All</button>
                     </div>
                 </div>
@@ -39,7 +50,7 @@
                     <div class="col-auto">
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
                     <div class="col-auto">
                         Assigned:
                         <span id="asgn"></span>
@@ -77,11 +88,11 @@
 
                     <div class="row">
                     <div id="grade" class="col-4">
-                        <div id="dc-grade-rowchart">
+                        <div id="dc-grade-rowchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-grade-rowchart')">Reset</button>
                             </h3>
                         </div>
@@ -91,7 +102,7 @@
                             <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-afscGroup-barchart')">Reset</button>
                             </h3>
                         </div>
@@ -141,8 +152,6 @@ import overviewBarChart from '@/components/overviewBarChart'
                 chartSpecs: chartSpecs,
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
-                gradeChart: {},
-                gradeColor: d3.rgb(51,172,255),
                 afscGroupChart: {},
             }
         },
@@ -193,12 +202,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                         'minHeight': 220,
                         'aspectRatio': 4,
                         'margins': {top: 10, left: 50, right: 30, bottom: 20},
-                        'colors': d3.scale.ordinal().range([this.gradeColor.brighter(1).toString(),
-                                                            this.gradeColor.brighter(0.7).toString(), 
-                                                            this.gradeColor.brighter(0.3).toString(), 
-                                                            this.gradeColor.toString(),
-                                                            this.gradeColor.darker(0.3).toString(),
-                                                            this.gradeColor.darker(0.6).toString()]),
+                        'colors': this.chartSpecs.gradeChartColorScale
                     }
           },
           afscGroupDim: function() {
@@ -218,6 +222,9 @@ import overviewBarChart from '@/components/overviewBarChart'
 
         },
         methods: {
+          startDemo: function() {
+            introJs().start()
+          },
           resetAll: (event)=>{
             dc.filterAll()
             dc.redrawAll()
@@ -235,23 +242,8 @@ import overviewBarChart from '@/components/overviewBarChart'
                 dc.redrawAll()
             },10)
           },
-          submit: (text,id) => {
-            dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == id 
-            }).forEach(chart=>{
-                var mainArray = []
-                chart.dimension().group().all().forEach((d) => {
-                    mainArray.push(String(d.key))
-                })
-                var filterArray = mainArray.filter((d) => {
-                    var element = d.toUpperCase() 
-                    return element.indexOf(text.toUpperCase()) !== -1
-                })
-                chart.filter(null)
-                if (filterArray.length != mainArray.length) {
-                    chart.filter([filterArray])
-                }
-            })
+          submit: (chart,element) => {
+            chart.filter(element)
             dc.redrawAll()
           },
             manningAdd: function(p,v) {
@@ -375,6 +367,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                 //grade
                 var gradeChart = dchelpers.getRowChart(this.gradeConfig)
                 gradeChart
+                    .controlsUseVisibility(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
@@ -387,6 +380,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                 var afscGroupChart = dchelpers.getOrdinalBarChart(this.afscGroupConfig)
                 afscGroupChart
                     .elasticX(true)
+                    .controlsUseVisibility(true)
                     .valueAccessor((d)=> {
                         return d.value[this.selected];
                     })
@@ -394,7 +388,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-afscGroup-barchart')
+                            this.submit(chart, d)
                         })
                     })
                 this.afscGroupChart = afscGroupChart
@@ -490,11 +484,8 @@ div[id*="-barchart"] .x.axis text{
 div[id*="-rowchart"] g.row text{
     fill: black;
 }
-.custom-control.custom-radio{
-    padding-left:20px;
-    padding-right:10px;
-    margin-right: 0;
-    cursor:pointer;
+#radioSelect div,input,label{
+    cursor: pointer;
 }
 .fade-enter-active {
     transition: all 0.5s;

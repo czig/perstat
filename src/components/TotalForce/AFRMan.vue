@@ -26,7 +26,7 @@
                                     <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
+                                            style="visibility: hidden"
                                             @click="resetChart('dc-type-rowchart')">Reset</button>
                                     </h3>
                                 </div>
@@ -38,7 +38,7 @@
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-grade-barchart')">Reset</button>
                             </h3>
                         </div>
@@ -50,62 +50,12 @@
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
+                                    style="visibility: hidden"
                                     @click="resetChart('dc-empCat-barchart')">Reset</button>
                             </h3>
-                            <searchBox
-                                v-model="searchempCat"
-                                size="3"
-                                label="Search Employee Category"
-                                @sub="submit(searchempCat,'dc-empCat-barchart')"
-                                button="true"
-                            ></searchBox>
                         </div>
                     </div>
                 </div>
-<!--                 <div class="row">
-                    <div id="majcom" class="col-12">
-                        <div id="dc-majcom-barchart">
-                            <h3>MAJCOM <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-majcom-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchMajcom"
-                                size="3"
-                                label="Search MAJCOM"
-                                @sub="submit(searchMajcom,'dc-majcom-barchart')"
-                                button="true"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div id="base" class="col-12">
-                        <div id="dc-base-barchart">
-                            <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-base-barchart')">Reset</button>
-                            </h3>
-                            <searchBox
-                                v-model="searchBase"
-                                size="3"
-                                label="Search Installation"
-                                @sub="submit(searchBase,'dc-base-barchart')"
-                                button="true"
-                                :color="baseColor"
-                                :btnColor="baseColor"
-                            ></searchBox>
-                        </div>
-                    </div>
-                </div>
- -->                <!--<div class ="row">-->
-                    <!--<div id="majcom-chart-wrapper" class="col-12"></div>-->
-                <!--</div>-->
             </div>
         </transition-group>
     </div>
@@ -125,12 +75,9 @@ import searchBox from '@/components/searchBox'
         data() {
             return {
                 data: [],
-                searchMajcom: '',
-                searchBase: '',
-                searchempCat: '',
-                selected: "percent",
                 ylabel: 'Inventory',
                 loaded: false,
+                chartSpecs: chartSpecs,
                 baseColor: chartSpecs.baseChart.color,
                 majcomColor: chartSpecs.majcomChart.color,
             }
@@ -138,6 +85,9 @@ import searchBox from '@/components/searchBox'
         computed: {
           ndx: function(){
             return crossfilter(this.data)
+          },
+          downloadDim: function() {
+            return this.ndx.dimension(d => d)
           },
           asDate: function(){
             return store.state.asDate;
@@ -258,51 +208,12 @@ import searchBox from '@/components/searchBox'
                   .dimension(this.ndx)
                   .group(this.allGroup)
 
-                //console.log(this.data[0])
-
-                //reduce functions
-                function highEdAdd(p,v) {
-                    //p.stemCount = p.stemCount + +v.stem
-                    p.totalCount = p.totalCount + +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
-                    return p
-                }
-
-                function highEdRemove(p,v) {
-                    //p.stemCount = p.stemCount - +v.stem
-                    p.totalCount = p.totalCount - +v.count
-                    //if divide by 0, set to 0, and if NaN, set to zero
-                    //p.stemPercent = p.stemCount/p.totalCount === Infinity ? 0 : Math.round((p.stemCount/p.totalCount)*1000/10) || 0
-                    return p
-                }
-
-                function highEdInitial() {
-                    return {
-                        //stemCount: 0,
-                        totalCount: 0
-                        //stemPercent: 0,
-                    }
-                }                  
-
-
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
                     return {
                         all: () => {
                             return source_group.all().filter((d) => {
                                 return d.value != 0
-                            })
-                        }
-                    }
-                }
-
-                //remove empty function (es6 syntax to keep correct scope)
-                var removeEmptyBins = (source_group) => {
-                    return {
-                        all: () => {
-                            return source_group.all().filter((d) => {
-                                return d.value.inventory != 0
                             })
                         }
                     }
@@ -318,7 +229,6 @@ import searchBox from '@/components/searchBox'
                         }
                     }
                 }                
-                
 
                 //type 
                 var typeConfig = {};
@@ -330,9 +240,11 @@ import searchBox from '@/components/searchBox'
                 typeConfig.group = removeError(typeGroup)
                 typeConfig.minHeight = 200
                 typeConfig.aspectRatio = 3
-                typeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
+                typeConfig.margins = chartSpecs.standardRowChart.margins 
                 typeConfig.colors = chartSpecs.typeChart.color
                 var typeChart = dchelpers.getRowChart(typeConfig)   
+                typeChart
+                    .controlsUseVisibility(true)
 
                 //empCat
                 var empCatConfig = {}
@@ -341,73 +253,24 @@ import searchBox from '@/components/searchBox'
                 var empCatGroup = removeEmptyBins(empCatConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 empCatConfig.group = removeError(empCatGroup)
                 empCatConfig.minHeight = chartSpecs.empCatChart.minHeight
-                empCatConfig.aspectRatio = chartSpecs.empCatChart.aspectRatio
-                empCatConfig.margins = chartSpecs.empCatChart.margins
+                empCatConfig.aspectRatio = 4 
+                empCatConfig.margins = {top: 10, left: 40, right: 10, bottom: 80}
                 empCatConfig.colors = [chartSpecs.empCatChart.color]
                 var empCatChart = dchelpers.getOrdinalBarChart(empCatConfig)
                 empCatChart
+                    .controlsUseVisibility(true)
                     .elasticX(true)
                     //.ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                              .attr('transform', 'translate(-8,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                this.submit(d, 'dc-empCat-barchart')
-                             })
                     })
                 
                 empCatChart.filter([['ART','HQ AGR','HQ AGR RECRUIT','IMA','TRAD','UNIT AGR']])
                 
 
-                //MAJCOM
-/*                 var majcomConfig = {}
-                majcomConfig.id = 'majcom'
-                majcomConfig.dim = this.ndx.dimension(function(d){return d.MAJCOM;})
-                var majcomPercent = majcomConfig.dim.group().reduceSum(function(d){
-                    return +d.Inventory 
-                })
-                var majcomGroup = removeEmptyBins(majcomConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                majcomConfig.group = removeError(majcomGroup)
-                majcomConfig.minHeight = chartSpecs.majcomChart.minHeight 
-                majcomConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
-                majcomConfig.margins = chartSpecs.majcomChart.margins 
-                majcomConfig.colors = [chartSpecs.majcomChart.color]
-                console.log('majcomid = ' + majcomConfig.id)
-                var majcomChart = dchelpers.getOrdinalBarChart(majcomConfig)
-                majcomChart
-                    .elasticX(true)
-                    .ordinalColors(["#1976d2","#ff4500"])
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('transform', 'translate(-8,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                this.submit(d, 'dc-majcom-barchart')
-                             })
-                    })
- */
-                //base(mpf)
-/*                 var baseConfig = {}
-                console.log('here')
-                baseConfig.id = 'base'
-                baseConfig.dim = this.ndx.dimension(function(d){return d.MPF;})
-                var baseGroup = removeEmptyBins(baseConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                baseConfig.group = removeError(baseGroup)
-                baseConfig.minHeight = chartSpecs.baseChart.minHeight 
-                baseConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                baseConfig.margins = chartSpecs.baseChart.margins 
-                baseConfig.colors = [chartSpecs.baseChart.color]
-                var baseChart = dchelpers.getOrdinalBarChart(baseConfig)
-                baseChart
-                    .elasticX(true)
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                             .attr('transform', 'translate(-9,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                 this.submit(d, 'dc-base-barchart')
-                             })
-                    })
 
- */                //Number Display for Auth, Asgn, STP - show total for filtered content
+                //Number Display for Auth, Asgn, STP - show total for filtered content
                 var inv = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory })
                 var invND = dc.numberDisplay("#inv")
                 invND.group(inv)
@@ -428,37 +291,29 @@ import searchBox from '@/components/searchBox'
                 gradeConfig.group = removeError(gradeGroup)
                 gradeConfig.minHeight = 250
                 gradeConfig.aspectRatio = 3
-                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 70}
-                var c = d3.rgb(51,172,255)
+                gradeConfig.margins = {top: 10, left: 50, right: 10, bottom: 60}
+                gradeConfig.colors = this.chartSpecs.gradeChartColorScale
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
                     .elasticX(true)
+                    .controlsUseVisibility(true)
                     .colorAccessor(function(d){
                         return d.key;
                     })
-                    .colors(d3.scale.ordinal().domain(["[01-02] LT", "CPT", "MAJ", "LTC", "COL", "[31-33] AMN", "SRA", "SSG", "TSG", "MSG", "SMS", "CMS"])
-                    .range([c.brighter(1).toString(), c.brighter(0.8).toString(), c.brighter(0.6).toString(), 
-                                            c.brighter(0.4).toString(), c.brighter(0.2).toString(), c.brighter(0.2).toString(), c.toString(), 
-                                            c.darker(0.2).toString(), c.darker(0.4).toString(), c.darker(0.6).toString(), c.darker(0.8).toString(), 
-                                            c.darker(0.9).toString()]))
-                    .on('pretransition', (chart)=> {
-                        chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d)=>{
-                            this.submit(d, 'dc-grade-barchart')
-                        })
-                    })
-                    .yAxis().tickFormat(function(v) {return v + "%";})
-
-                gradeChart
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  
+                    .on('pretransition', (chart)=> {
+                        chart.selectAll('g.x text')
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                    })
+                    .yAxis().tickFormat(function(v) {return v + "%";})
+
 
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
-                    var data = typeConfig.dim.top(Infinity);
+                    var data = this.downloadDim.top(Infinity);
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
                     var myFilters = '';
