@@ -21,7 +21,7 @@
           </li>
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  AD Officer 
+                  Officer 
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-manning')">Manning</router-link>
@@ -31,7 +31,7 @@
           </li>
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                 AD Enlisted 
+                 Enlisted 
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('manning')">Manning</router-link>
