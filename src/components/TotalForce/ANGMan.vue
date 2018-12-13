@@ -4,17 +4,26 @@
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
                 <div class="row">
-                    <div class="col-auto">
-                        Inventory:
-                        <span id="inv"></span>
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Total number of ANG personnel.">
+                        <div class="col-auto">
+                            Inventory:
+                            <span id="inv"></span>
+                        </div>
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="demo"
+                            class="btn btn-primary btn-sm"
+                            @click="startDemo">
+                            Demo 
+                        </button>
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                data-step="5" data-intro="Download data in tabular form here!"
                                 >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                data-step="4" data-intro="Click here to reset filters on all charts."
                                 @click="resetAll">Reset All</button>
                     </div>
                 </div>
@@ -42,7 +51,7 @@
                 </div>
                 <div class="row">
                     <div id="empCat" class="col-6">
-                        <div id="dc-empCat-barchart">
+                        <div id="dc-empCat-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
@@ -64,7 +73,7 @@
                 </div>
                 <div class="row">
                     <div id="us" class="col-12">
-                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix">
+                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="3" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                 class="btn btn-danger btn-sm btn-rounded reset" 
@@ -126,6 +135,9 @@ import largeBarChart from '@/components/largeBarChart'
  */
         },
         methods: {
+          startDemo: function() {
+            introJs().start()
+          },
           resetAll: (event)=>{
             dc.filterAll()
             dc.redrawAll()
