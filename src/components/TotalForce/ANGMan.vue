@@ -387,7 +387,8 @@ import largeBarChart from '@/components/largeBarChart'
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2.1 
                 usConfig.xRatio = 2.0
-                usConfig.yRatio = 2.0 
+                usConfig.yRatio = 2.0
+                //default color scale from #E2F2FF to #0061B5.
                 usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
                 usConfig.valueAccessor = function(d) {
                     if (d) {
@@ -589,6 +590,16 @@ import largeBarChart from '@/components/largeBarChart'
     font-family: sans-serif; 
     font-size: 11px;
     transform: translate(-18,0) rotate(45deg);
+}
+/* dc.css file overrides */
+.dc-chart g.state path {
+    stroke: #aaa; 
+}
+.dc-chart .selected path, .dc-chart .selected circle {
+  stroke-width: 2;
+  stroke: #ccc;
+  fill-opacity: 1;
+  fill: #0061B5; 
 }
 rect:hover {
     cursor: pointer;
