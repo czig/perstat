@@ -413,7 +413,17 @@ import largeBarChart from '@/components/largeBarChart'
                 usChart.title(function(d) {
                     return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
                 });
-                usChart.controlsUseVisibility(true);
+                usChart.controlsUseVisibility(true)
+                       .on('filtered',(chart,filter) => {
+                           //exit on reset, but if normal filter and territory chart has filters, then
+                           //reset filters on territory chart
+                           if (filter === null) {
+                              return;
+                           }
+                           else if (terrChart.filters().length != 0) {
+                              terrChart.filterAll()
+                           }
+                       })
 
                 // Territories
                 var terrConfig = {}
@@ -466,14 +476,24 @@ import largeBarChart from '@/components/largeBarChart'
 
                 var terrChart = dchelpers.getGeoChart(terrConfig)
                 terrChart.controlsUseVisibility(true)
-                terrChart.title(function(d) {
-                    var myCount = 0;
-                    if (d){
-                        myCount = d.value;                       
-                    }
-                    //return formats.("99":"FullName")[formats.("AA":"99")[d.key]] + " " + myCount ;
-                    return formats.geoCS[formats.stateFormat[d.key]] + ": " + myCount ;
-                });
+                         .on('filtered',(chart,filter) => {
+                             //exit on reset, but if normal filter and US chart has filters, then
+                             //reset filters on US chart
+                             if (filter === null) {
+                                 return;
+                             }
+                             else if (usChart.filters().length != 0) {
+                                 usChart.filterAll();
+                             }
+                         })
+                         .title(function(d) {
+                             var myCount = 0;
+                             if (d){
+                                 myCount = d.value;                       
+                             }
+                             //return formats.("99":"FullName")[formats.("AA":"99")[d.key]] + " " + myCount ;
+                             return formats.geoCS[formats.stateFormat[d.key]] + ": " + myCount ;
+                         });
                 
                 terrChart.on('pretransition', (chart)=> {
                     var color = 'orange'
