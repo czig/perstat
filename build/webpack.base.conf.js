@@ -14,11 +14,15 @@ module.exports = {
     app: ['babel-polyfill','./src/main.js']
   },
   output: {
-    path: config.build.assetsRoot,
+    path: process.env.NODE_ENV === 'production'
+      ? config.build.assetsRoot
+      : config.buildFla.assetsRoot,
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production'
       ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+      : process.env.NODE_ENV === 'fla'
+        ? config.buildFla.assetsPublicPath
+        : config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -44,7 +48,6 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          //added ../
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
@@ -61,9 +64,8 @@ module.exports = {
         loader: 'url-loader',
         options: {
           limit: 10000,
-          name: process.env.NODE_ENV === 'production'
-                ? utils.assetsPath('../../fonts/[name].[hash:7].[ext]')
-                : utils.assetsPath('fonts/[name].[hash:7].[ext]')
+          name: utils.assetsPath('fonts/[name].[hash:7].[ext]'),
+          publicPath: '../../'
         }
       },
       {
