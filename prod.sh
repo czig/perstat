@@ -12,4 +12,4 @@ branchName=$(git rev-parse --abbrev-ref HEAD)
 #push code up to github ps_prod
 git -C ../ps_prod add . ;
 git -C ../ps_prod commit -m "Push on: `(date "+%F %T")` from ${lastCommitHash} on branch ${branchName}" -m "Built version of: ${lastCommit}";
-#git -C ../ps_prod push origin master;
+git -C ../ps_prod push origin master;

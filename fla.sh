@@ -12,4 +12,4 @@ branchName=$(git rev-parse --abbrev-ref HEAD)
 #push code up to github ps_fla
 git -C ./dist add . ;
 git -C ./dist commit -m "Push on: `(date "+%F %T")` from ${lastCommitHash} on branch ${branchName}" -m "Built version of: ${lastCommit}";
-#git -C ./dist push origin master;
+git -C ./dist push origin master;
