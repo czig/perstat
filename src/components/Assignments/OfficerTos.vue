@@ -568,7 +568,19 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 usConfig.projection = d3.geo.albersUsa()
 
                 var usChart = dchelpers.getGeoChart(usConfig)
+                // usChart.controlsUseVisibility(true)
                 usChart.controlsUseVisibility(true)
+                       .on('filtered',(chart,filter) => {
+                           //exit on reset, but if normal filter and territory chart has filters, then
+                           //reset filters on territory chart
+                           if (filter === null) {
+                              return;
+                           }
+                           else if (jpChart.filters().length != 0) {
+                              jpChart.filterAll()
+                           }
+                       })
+
                 usChart.title(function(d) {
                     var myCount = 0;
                     var myAverage = 0;
@@ -578,13 +590,13 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     }
                     return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
                 });
-                usChart.on('filtered',(chart) => {
-                    if (chart.hasFilter()) {
-                        this.conusFiltered = true
-                    } else {
-                        this.conusFiltered = false
-                    }
-                })
+                // usChart.on('filtered',(chart) => {
+                //     if (chart.hasFilter()) {
+                //         this.conusFiltered = true
+                //     } else {
+                //         this.conusFiltered = false
+                //     }
+                // })
 
                 //oconus
                 var jpConfig = {}
@@ -612,7 +624,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     } else {
                         return 0;
                     }
-                } 
+                }; 
             
                 var jpJson = require('../../assets/oconus.json')
                 jpConfig.json = jpJson
@@ -625,23 +637,46 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
         
                 var jpChart = dchelpers.getGeoChart(jpConfig)
                 jpChart.controlsUseVisibility(true)
-                jpChart.title(function(d) {
-                        var myCount = 0;
-                        var myAverage = 0;
-                        if (d.value){
-                            myCount = d.value.cnt;
-                            myAverage = d.value.average;
-                        }
-                        return formats.countryLong[d.key] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
-                    });
+                         .on('filtered',(chart,filter) => {
+                             //exit on reset, but if normal filter and US chart has filters, then
+                             //reset filters on US chart
+                             if (filter === null) {
+                                 return;
+                             }
+                             else if (usChart.filters().length != 0) {
+                                 usChart.filterAll();
+                             }
+                         })
+                         .title(function(d) {
+                             var jpCount = 0;
+                             var jpAverage = 0;
+                             if (d.value){
+                                 jpCount = d.value.cnt;
+                                 jpAverage = d.value.average;                      
+                             }
+                             //return formats.("99":"FullName")[formats.("AA":"99")[d.key]] + " " + myCount ;
+//                             return formats.geoCS[formats.stateFormat[d.key]] + ": " + myCount ;
+                                return formats.countryLong[d.key] + "\n Average TOS: " + jpAverage + "\n Completed Tours: " + jpCount ;
+                         });
 
-                jpChart.on('filtered',(chart) => {
-                    if (chart.hasFilter()) {
-                        this.oconusFiltered = true
-                    } else {
-                        this.oconusFiltered = false
-                    }
-                })
+                //jpChart.controlsUseVisibility(true)
+                // jpChart.title(function(d) {
+                //         var myCount = 0;
+                //         var myAverage = 0;
+                //         if (d.value){
+                //             myCount = d.value.cnt;
+                //             myAverage = d.value.average;
+                //         }
+                //         return formats.countryLong[d.key] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
+                //     });
+
+                // jpChart.on('filtered',(chart) => {
+                //     if (chart.hasFilter()) {
+                //         this.oconusFiltered = true
+                //     } else {
+                //         this.oconusFiltered = false
+                //     }
+                // })
 
                 jpChart.on('pretransition', (chart)=> {
                     var color = 'orange'

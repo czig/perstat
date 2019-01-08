@@ -12,22 +12,18 @@ const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
-  : config.build.env
-
-var fla = '';
-if (process.env.PROD_TYPE)
-  fla = process.env.PROD_TYPE;
+  : config.buildFla.env
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
+      sourceMap: config.buildFla.productionSourceMap,
       extract: true
     })
   },
-  devtool: config.build.productionSourceMap ? '#source-map' : false,
+  devtool: config.buildFla.productionSourceMap ? '#source-map' : false,
   output: {
-    path: config.build.assetsRoot,
+    path: config.buildFla.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
   },
@@ -56,19 +52,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       'axios_url_high_ed_level': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_high_ed_level.js"',
       'axios_url_prom_year_group': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_prom_year_group.js"',
     }),
-    // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
-    new webpack.optimize.UglifyJsPlugin({
-      //Eliminate comments
-      comments: false,
-
-      compress: {
-        //remove warnings
-        warnings: false,
-        //remove console statements
-        drop_console: true
-      },
-      sourceMap: true
-    }),
+    //no uglify js because fla code
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css')
@@ -84,19 +68,12 @@ const webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: process.env.NODE_ENV === 'production'
+      filename: process.env.NODE_ENV === 'fla'
         ? 'index.html'
-        : config.build.index,
+        : config.buildFla.index,
       template: 'index.html',
       inject: true,
-      //changed minify props from true to false
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true 
-        // more options:
-        // https://github.com/kangax/html-minifier#options-quick-reference
-      },
+      //don't minify for fla
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),
@@ -122,18 +99,10 @@ const webpackConfig = merge(baseWebpackConfig, {
       name: 'manifest',
       chunks: ['vendor']
     }),
-    // copy custom static assets
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, '../static'),
-        to: config.build.assetsSubDirectory,
-        ignore: ['.*']
-      }
-    ])
   ]
 })
 
-if (config.build.productionGzip) {
+if (config.buildFla.productionGzip) {
   const CompressionWebpackPlugin = require('compression-webpack-plugin')
 
   webpackConfig.plugins.push(
@@ -142,7 +111,7 @@ if (config.build.productionGzip) {
       algorithm: 'gzip',
       test: new RegExp(
         '\\.(' +
-        config.build.productionGzipExtensions.join('|') +
+        config.buildFla.productionGzipExtensions.join('|') +
         ')$'
       ),
       threshold: 10240,
@@ -151,7 +120,7 @@ if (config.build.productionGzip) {
   )
 }
 
-if (config.build.bundleAnalyzerReport) {
+if (config.buildFla.bundleAnalyzerReport) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }

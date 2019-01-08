@@ -1,23 +1,15 @@
 #!/bin/bash
+#begin by resetting ps_prod working directory to last commit state
+git -C ../ps_prod reset --hard;
+#git pull to sync with remote
+git -C ../ps_prod pull origin master;
+#build for prod (need prod endpoints)
 yarn run build;
-mv ./fonts ./dist/static/.;
-rm ./dist/static/js/*.map;
-rm ./dist/static/*.png;
-rm ./dist/static/*.jpg;
-rm ./dist/static/*.JPG;
-
-cd ../ps_prod;
-git pull origin master;
-cd ../perstat/dist;
-
-rm -rf ../../ps_prod/static;
-rm -rf ../../ps_prod/index.html;
-
-cp -a ./static ../../ps_prod;
-cp -a ./index.html ../../ps_prod/index.html;
-
-cd ../../ps_prod;
-
-git add . ;
-git commit -m "`(date +%F%T)`";
-git push origin master;
+#get most recent commit and current branch in perstat
+lastCommitHash=$(git rev-parse --short HEAD)
+lastCommit=$(git log -n 1 --oneline)
+branchName=$(git rev-parse --abbrev-ref HEAD)
+#push code up to github ps_prod
+git -C ../ps_prod add . ;
+git -C ../ps_prod commit -m "Push on: `(date "+%F %T")` from ${lastCommitHash} on branch ${branchName}" -m "Built version of: ${lastCommit}";
+git -C ../ps_prod push origin master;
