@@ -405,16 +405,65 @@ import largeBarChart from '@/components/largeBarChart'
                     }
                 }
             
-                var tfConusJson = require('../../assets/geoUS.json')
-                usConfig.json = tfConusJson
+                var tfJson = require('../../assets/geoUS.json')
+                usConfig.json = tfJson
                 usConfig.geoName = "state"
                 usConfig.propName = 'name' 
                 usConfig.projection = d3.geo.albersUsa()
 
-                var usChart = dchelpers.getGeoChart(usConfig)
+                var usChart = dchelpers.getGeoChart(usConfig)                
                 usChart.title(function(d) {
-                    return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
+                    if (d.key == 'VI'){
+                    console.log("**************************************************");
+                    // d.key = AA from json file
+                    console.log("d.key: "+d.key);
+                    //stateFormat { AA : ## }
+                    console.log("stateFormat: "+formats.stateFormat[d.key]);                    
+                    //geoCS { ## : Full Name }
+                    console.log("geoCS: "+formats.geoCS[formats.stateFormat[d.key]]);
+                    // d.value = object.Inventory ? 
+                    console.log("d.value: "+d.valueAccessor);
+                    console.log("**************************************************");                       
+                        return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value;
+                    } else {
+                        return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
+                    }
                 });
+
+                usChart.on('pretransition', (chart)=> {
+                    var color = 'orange'
+                    chart.select('svg').select(".textLabels").remove()
+                    chart.select('svg').append('g').attr("class", "textLabels")
+                    var textLabels = chart.select('.textLabels')
+                    var textStroke = 2
+                     textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.12)
+                        .attr("y", usConfig.height * 0.68)
+                        .attr("fill", color) 
+                        .attr("font-size", '0.9vw')
+                        .attr("font-weight", 'bold')  
+                        .text('Guam');
+
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.54)
+                        .attr("y", usConfig.height * 0.99)
+                        .attr("fill", color)  
+                        .attr("font-size", '0.9vw')
+                        .attr("font-weight", 'bold') 
+                        .text('Puerto Rico');
+
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.61)
+                        .attr("y", usConfig.height * 0.93)
+                        .attr("fill", color)  
+                        .attr("font-size", '0.9vw')
+                        .attr("font-weight", 'bold') 
+                        .text('US Virgin Islands');
+                }) 
+
                 usChart.controlsUseVisibility(true)
                        .on('filtered',(chart,filter) => {
                            //exit on reset, but if normal filter and territory chart has filters, then
@@ -425,38 +474,9 @@ import largeBarChart from '@/components/largeBarChart'
                            // else if (terrChart.filters().length != 0) {
                            //    terrChart.filterAll()
                            // }
-                       })
+                       });
 
-                usChart.on('pretransition', (chart)=> {
-                    var color = 'orange'
-                    chart.select('svg').select(".textLabels").remove()
-                    chart.select('svg').append('g').attr("class", "textLabels")
-                    var textLabels = chart.select('.textLabels')
-                    var textStroke = 0.5
-                     textLabels
-                        .append("text")
-                        .attr("x", terrConfig.width * 0.09)
-                        .attr("y", terrConfig.height * 0.95)
-                        .attr("fill", color) 
-                        .attr("font-weight", 'bold')  
-                        .text('Guam');
-
-                    textLabels
-                        .append("text")
-                        .attr("x", terrConfig.width * 0.38)
-                        .attr("y", terrConfig.height * 0.25)
-                        .attr("fill", color) 
-                        .attr("font-weight", 'bold') 
-                        .text('Puerto Rico');
-
-                    textLabels
-                        .append("text")
-                        .attr("x", terrConfig.width * 0.7)
-                        .attr("y", terrConfig.height * 0.87)
-                        .attr("fill", color) 
-                        .attr("font-weight", 'bold') 
-                        .text('US Virgin Islands');
-                })       
+      
 
                 // // Territories
                 // var terrConfig = {}

@@ -1696,12 +1696,12 @@ export default {
 		"TX":"48",
 		"UT":"49",
 		"VA":"51",
+		"VI":"78",		
 		"VT":"50",
 		"WA":"53",
 		"WI":"55",
 		"WV":"54",
-		"WY":"56",	
-		"VI":"78"
+		"WY":"56"
 	},
     geoCS:{
     	"10":"Delaware",
@@ -1760,7 +1760,7 @@ export default {
     	"72":"Puerto Rico",
     	"74":"U.S. Minor Outlying Islands",
     	"76":"Navassa Island",
-    	"78":"U.S. Virgin Islands",
+    	"78":"US Virgin Islands",
     	"79":"Wake Island",
     	"81":"Baker Island",
     	"84":"Howland Island",
@@ -1831,6 +1831,7 @@ export default {
 	    "VT": "Vermont",
 	    "VI": "Virgin Islands",
 	    "VA": "Virginia",
+	    "VI": "U.S. Virgin Islands",
 	    "WA": "Washington",
 	    "WV": "West Virginia",
 	    "WI": "Wisconsin",
@@ -2341,14 +2342,14 @@ export default {
 		//"72":"Puerto Rico",
     	// "74":"U.S. Minor Outlying Islands",
     	// "76":"Navassa Island",
-		"78":"VI"
-		//"78":"U.S. Virgin Islands"
+		"78":"VI",
+		//"78":"U.S. Virgin Islands",
     	// "79":"Wake Island",
     	// "81":"Baker Island",
     	// "84":"Howland Island",
     	// "86":"Jarvis Island",
     	// "89":"Kingman Reef",
-    	// "95":"Palmyra Atoll[4]",
+    	// "95":"Palmyra Atoll[4]"
 	},
     geoCSAb:{
     	"TW":"GU", 
