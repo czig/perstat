@@ -61,18 +61,7 @@
                         </div>
                     </div>
                 </div>
-<!--                 <div class="row">
-                    <div id="terr" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div id="dc-terr-geoChoroplethChart" class="center-block clearfix">
-                            <h3>US Territories Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="visibility: hidden"
-                                    @click="resetChart('dc-terr-geoChoroplethChart')">Reset</button>
-                            </h3>
-                        </div>
-                    </div>                      
-                </div> -->
+
                 <div class="row">
                     <div id="us" class="col-12">
                         <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="3" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
@@ -413,37 +402,44 @@ import largeBarChart from '@/components/largeBarChart'
 
                 var usChart = dchelpers.getGeoChart(usConfig)                
                 usChart.title(function(d) {
-                    if (d.key == 'VI'){
-                    console.log("**************************************************");
+                    //console.log("**************************************************");
                     // d.key = AA from json file
-                    console.log("d.key: "+d.key);
+                    //console.log("d.key: "+d.key);
                     //stateFormat { AA : ## }
-                    console.log("stateFormat: "+formats.stateFormat[d.key]);                    
+                    //console.log("stateFormat: "+formats.stateFormat[d.key]);                    
                     //geoCS { ## : Full Name }
-                    console.log("geoCS: "+formats.geoCS[formats.stateFormat[d.key]]);
+                    //console.log("geoCS: "+formats.geoCS[formats.stateFormat[d.key]]);
                     // d.value = object.Inventory ? 
-                    console.log("d.value: "+d.valueAccessor);
-                    console.log("**************************************************");                       
-                        return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value;
-                    } else {
-                        return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
-                    }
+                    //console.log('d.value: '+d.value);
+                    //console.log("**************************************************");
+                    if (d.value == undefined){ d.value = '0';}
+                    return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
+                    
                 });
 
                 usChart.on('pretransition', (chart)=> {
                     var color = 'orange'
                     chart.select('svg').select(".textLabels").remove()
                     chart.select('svg').append('g').attr("class", "textLabels")
+
                     var textLabels = chart.select('.textLabels')
+                    textLabels.attr("cursor","pointer")
+
                     var textStroke = 2
-                     textLabels
+                    textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.12)
                         .attr("y", usConfig.height * 0.68)
                         .attr("fill", color) 
                         .attr("font-size", '0.9vw')
                         .attr("font-weight", 'bold')  
-                        .text('Guam');
+                        .text('Guam')
+                        .on('click', ()=>{
+                            //alert("GU selected")
+                            //$('svg g.layer0 g').toggleClass('deselected');
+                            //$('svg g.layer0 g.gu').toggleClass('selected');
+                            this.submit('GU', 'dc-us-geoChoroplethChart');
+                        })
 
                     textLabels
                         .append("text")
@@ -452,7 +448,11 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("fill", color)  
                         .attr("font-size", '0.9vw')
                         .attr("font-weight", 'bold') 
-                        .text('Puerto Rico');
+                        .text('Puerto Rico')
+                        .on('click', ()=>{
+                            $('svg g.layer0 g.gu').attr("class","selected") ?
+                            this.submit('PR', 'dc-us-geoChoroplethChart') : this.redrawAll();
+                        })
 
                     textLabels
                         .append("text")
@@ -461,146 +461,13 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("fill", color)  
                         .attr("font-size", '0.9vw')
                         .attr("font-weight", 'bold') 
-                        .text('US Virgin Islands');
-                }) 
+                        .text('US Virgin Islands')
+                        .on('click', ()=>{
+                            this.submit('VI', 'dc-us-geoChoroplethChart');
+                        })
+                })
 
                 usChart.controlsUseVisibility(true)
-                       .on('filtered',(chart,filter) => {
-                           //exit on reset, but if normal filter and territory chart has filters, then
-                           //reset filters on territory chart
-                           if (filter === null) {
-                              return;
-                           }
-                           // else if (terrChart.filters().length != 0) {
-                           //    terrChart.filterAll()
-                           // }
-                       });
-
-      
-
-                // // Territories
-                // var terrConfig = {}
-                // terrConfig.id = 'terr';
-                // // return State Value from territories.json
-                // terrConfig.dim = this.ndx.dimension(function(d){
-                //     // Returns ##/ZZ array of Country identifiers from territories.json via propName name key below
-                //      return d.state;
-                // })
-            
-                // // this populates the numeric data for the Territory chart
-                // // Reads PR, not PQ; reads GU not TW; no VI counts
-                // terrConfig.group = terrConfig.dim.group().reduceSum(d => +d.Inventory)
-                // terrConfig.scale = 0.1
-                // terrConfig.minHeight = 200
-                // terrConfig.aspectRatio = 2.1 
-                // terrConfig.xRatio = 2.2
-                // terrConfig.yRatio = 2.2 
-                // // the overall scale of colors used in this chlororpleth
-                // terrConfig.colors = this.chartSpecs.mapColorScale 
-                // terrConfig.valueAccessor = function(d) {
-                //     if (d) {
-                //         return d.value
-                //     }
-                // }
-                // // the json reference for what value to use in the svg rendering
-                // terrConfig.colorAccessor = function(d) {
-                //     if (d) {
-                //         return d;   
-                //     } else {
-                //         return 0;
-                //     }
-                // }
-            
-                // // using geoUS.json format: pro- uses an ID reference, suspect required for charts; 
-                // // using this format rather than oconus format because properties are easier to see;
-                // var terrJson = require('../../assets/territories.json')
-                // terrConfig.json = terrJson
-                // // state and the two letter name are applied into the svg g tag class
-                // terrConfig.geoName = "state"                
-                // terrConfig.propName = "name" 
-                
-                // // CONUS uses d3_composite, this is an alternative...but it appears, GUAM is not visible
-                // // render the config json above using d3 geo centroid function
-                // var center = d3.geo.centroid(terrConfig.json);
-
-                // // use the mercator projection to calculate the svgs x/y from lat/lon
-                // terrConfig.projection =   d3.geo.mercator()
-                //                                 .center(center)                     
-
-                // var terrChart = dchelpers.getGeoChart(terrConfig)
-                // terrChart.controlsUseVisibility(true)
-                //          .on('filtered',(chart,filter) => {
-                //              //exit on reset, but if normal filter and US chart has filters, then
-                //              //reset filters on US chart
-                //              if (filter === null) {
-                //                  return;
-                //              }
-                //              else if (usChart.filters().length != 0) {
-                //                  usChart.filterAll();
-                //              }
-                //          })
-                //          .title(function(d) {
-                //              var myCount = 0;
-                //              if (d){
-                //                  myCount = d.value;                       
-                //              }
-                //              //return formats.("99":"FullName")[formats.("AA":"99")[d.key]] + " " + myCount ;
-                //              return formats.geoCS[formats.stateFormat[d.key]] + ": " + myCount ;
-                //          });
-                
-                // terrChart.on('pretransition', (chart)=> {
-                //     var color = 'orange'
-                //     chart.select('svg').select(".divider").remove()
-                //     chart.select('svg').append('g').attr("class", "divider")
-                //     var divider = chart.select('.divider')
-                //     var dividerStroke = 3
-
-                //     divider
-                //          .append("line")
-                //          .attr("x1", terrConfig.width * 0.20)
-                //          .attr("y1", terrConfig.width * 0)
-                //          .attr("x2", terrConfig.width * 0.25)
-                //          .attr("y2", terrConfig.width * 0.3)
-                //          .attr("stroke-width", dividerStroke)
-                //          .attr("stroke", color);
-                //     divider
-                //          .append("line")
-                //          .attr("x1", terrConfig.width * 0.25)
-                //          .attr("y1", terrConfig.width * 0.3)
-                //          .attr("x2", terrConfig.width * 0.45)
-                //          .attr("y2", terrConfig.width * 0.4)
-                //          .attr("stroke-width", dividerStroke)
-                //          .attr("stroke", color);
-
-
-                //     chart.select('svg').select(".textLabels").remove()
-                //     chart.select('svg').append('g').attr("class", "textLabels")
-                //     var textLabels = chart.select('.textLabels')
-                //     var textStroke = 0.5
-                //      textLabels
-                //         .append("text")
-                //         .attr("x", terrConfig.width * 0.09)
-                //         .attr("y", terrConfig.height * 0.95)
-                //         .attr("fill", color) 
-                //         .attr("font-weight", 'bold')  
-                //         .text('Guam');
-
-                //     textLabels
-                //         .append("text")
-                //         .attr("x", terrConfig.width * 0.38)
-                //         .attr("y", terrConfig.height * 0.25)
-                //         .attr("fill", color) 
-                //         .attr("font-weight", 'bold') 
-                //         .text('Puerto Rico');
-
-                //     textLabels
-                //         .append("text")
-                //         .attr("x", terrConfig.width * 0.7)
-                //         .attr("y", terrConfig.height * 0.87)
-                //         .attr("fill", color) 
-                //         .attr("font-weight", 'bold') 
-                //         .text('US Virgin Islands');
-                // })
 
 
                 //Download Raw Data button
@@ -612,9 +479,9 @@ import largeBarChart from '@/components/largeBarChart'
                     var myFilters = '';
                     dc.chartRegistry.list().forEach((d)=>{
                         if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'
+                            myFilters += ' (' + d.filters() + ')'                        
                     })
-
+                    //console.log(myFilters);
                     FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
