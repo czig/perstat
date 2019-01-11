@@ -435,10 +435,11 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("font-weight", 'bold')  
                         .text('Guam')
                         .on('click', ()=>{
-                            //alert("GU selected")
                             //$('svg g.layer0 g').toggleClass('deselected');
                             //$('svg g.layer0 g.gu').toggleClass('selected');
-                            this.submit('GU', 'dc-us-geoChoroplethChart');
+                            //this.submit('GU', 'dc-us-geoChoroplethChart');
+                            chart.filter([["GU"]]);
+                            dc.redrawAll();
                         })
 
                     textLabels
@@ -450,8 +451,8 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("font-weight", 'bold') 
                         .text('Puerto Rico')
                         .on('click', ()=>{
-                            $('svg g.layer0 g.gu').attr("class","selected") ?
-                            this.submit('PR', 'dc-us-geoChoroplethChart') : this.redrawAll();
+                            chart.filter([["PR"]]);
+                            dc.redrawAll();                            
                         })
 
                     textLabels
@@ -463,7 +464,8 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("font-weight", 'bold') 
                         .text('US Virgin Islands')
                         .on('click', ()=>{
-                            this.submit('VI', 'dc-us-geoChoroplethChart');
+                            chart.filter([["VI"]]);
+                            dc.redrawAll();                            
                         })
                 })
 
@@ -481,7 +483,7 @@ import largeBarChart from '@/components/largeBarChart'
                         if (d.filters()[0])
                             myFilters += ' (' + d.filters() + ')'                        
                     })
-                    //console.log(myFilters);
+                    console.log(myFilters);
                     FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
