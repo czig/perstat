@@ -420,7 +420,7 @@ import largeBarChart from '@/components/largeBarChart'
                 });
 
                 usChart.on('pretransition', (chart)=> {
-                            
+                                            
                     var color = 'orange'
                     chart.select('svg').select(".textLabels").remove()
                     chart.select('svg .layer0').append('g').attr("class", "textLabels")
@@ -471,7 +471,6 @@ import largeBarChart from '@/components/largeBarChart'
                             dc.redrawAll();                            
                         })
 
-                    //begin working area 
                     // set viewport for svg
                     chart.maxWidth = 950
                     chart.maxHeight = 450
@@ -491,9 +490,19 @@ import largeBarChart from '@/components/largeBarChart'
 
                             mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
                         }))
-                    // endworking area
                 })
 
+                /*
+                .dc-chart g.state path {
+                    stroke: #555; 
+                    stroke-width: 0.3;}
+
+                .dc-chart .selected path, .dc-chart .selected circle {
+                    stroke-width: 0.3;
+                }
+
+                */
+                                
                 usChart.controlsUseVisibility(true)
 
 
@@ -557,16 +566,6 @@ import largeBarChart from '@/components/largeBarChart'
     font-family: sans-serif; 
     font-size: 11px;
     transform: translate(-18,0) rotate(45deg);
-}
-/* dc.css file overrides */
-.dc-chart g.state path {
-    stroke: #aaa !important; 
-}
-.dc-chart .selected path, .dc-chart .selected circle { 
-  stroke-width: 2 !important;
-  stroke: #ee8800 !important;
-  fill-opacity: 1;
-  fill: #0061B5; 
 }
 rect:hover {
     cursor: pointer;
