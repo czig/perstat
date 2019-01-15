@@ -379,6 +379,8 @@ import largeBarChart from '@/components/largeBarChart'
                 usConfig.aspectRatio = 2.1 
                 usConfig.xRatio = 2.0
                 usConfig.yRatio = 2.0
+                                
+
                 //default color scale from #E2F2FF to #0061B5.
                 usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
                 usConfig.valueAccessor = function(d) {
@@ -418,9 +420,10 @@ import largeBarChart from '@/components/largeBarChart'
                 });
 
                 usChart.on('pretransition', (chart)=> {
+                            
                     var color = 'orange'
                     chart.select('svg').select(".textLabels").remove()
-                    chart.select('svg').append('g').attr("class", "textLabels")
+                    chart.select('svg .layer0').append('g').attr("class", "textLabels")
 
                     var textLabels = chart.select('.textLabels')
                     textLabels.attr("cursor","pointer")
@@ -467,6 +470,28 @@ import largeBarChart from '@/components/largeBarChart'
                             chart.filter([["VI"]]);
                             dc.redrawAll();                            
                         })
+
+                    //begin working area 
+                    // set viewport for svg
+                    chart.maxWidth = 950
+                    chart.maxHeight = 450
+
+                    var mapZoom = usChart.select('svg .layer0')
+                    mapZoom                        
+                        .attr("width", chart.maxWidth)
+                        .attr("height", chart.maxHeight)                        
+                        .call(d3.behavior.zoom()
+                            .scaleExtent([1, 10])
+                            .on("zoom", function () {                             
+                            var t = d3.event.translate,
+                                s = d3.event.scale;
+                            
+                            t[0] = Math.min(chart.maxWidth / 2 * (s - 1) + 400 * s, Math.max(chart.maxWidth / 2 * (1 - s) - 400 * s, t[0]));
+                            t[1] = Math.min(chart.maxHeight / 2 * (s - 1) + 250 * s, Math.max(chart.maxHeight / 2 * (1 - s) - 250 * s, t[1]));
+
+                            mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
+                        }))
+                    // endworking area
                 })
 
                 usChart.controlsUseVisibility(true)
@@ -537,9 +562,9 @@ import largeBarChart from '@/components/largeBarChart'
 .dc-chart g.state path {
     stroke: #aaa !important; 
 }
-.dc-chart .selected path, .dc-chart .selected circle {
-  stroke-width: 2;
-  stroke: #ccc;
+.dc-chart .selected path, .dc-chart .selected circle { 
+  stroke-width: 2 !important;
+  stroke: #ee8800 !important;
   fill-opacity: 1;
   fill: #0061B5; 
 }
