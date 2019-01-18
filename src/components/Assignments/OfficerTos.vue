@@ -598,6 +598,28 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 //     }
                 // })
 
+                usChart.on('pretransition', (chart)=> {
+                    // set viewport for svg
+                    chart.maxWidth = 950
+                    chart.maxHeight = 450
+
+                    var mapZoom = usChart.select('#dc-us-geoChoroplethChart svg .layer0')
+                    mapZoom                        
+                        .attr("width", chart.maxWidth)
+                        .attr("height", chart.maxHeight)                        
+                        .call(d3.behavior.zoom()
+                            .scaleExtent([1, 10])
+                            .on("zoom", function () {                             
+                            var t = d3.event.translate,
+                                s = d3.event.scale;
+                            
+                            t[0] = Math.min(chart.maxWidth / 2 * (s - 1) + 400 * s, Math.max(chart.maxWidth / 2 * (1 - s) - 400 * s, t[0]));
+                            t[1] = Math.min(chart.maxHeight / 2 * (s - 1) + 250 * s, Math.max(chart.maxHeight / 2 * (1 - s) - 250 * s, t[1]));
+
+                            mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
+                        }))
+                })
+
                 //oconus
                 var jpConfig = {}
                 jpConfig.id = 'jp';
@@ -681,23 +703,23 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 jpChart.on('pretransition', (chart)=> {
                     var color = 'orange'
                     chart.select('svg').select(".divider").remove()
-                    chart.select('svg').append('g').attr("class", "divider")
+                    chart.select('#dc-jp-geoChoroplethChart svg .layer0').append('g').attr("class", "divider")
                     var divider = chart.select('.divider')
                     var dividerStroke = 3
 
                     //lines must meet; set variables to represent where lines meet
                     //point where all areas meet
                     var tripleJunctionX = 0.25 * jpConfig.width 
-                    var tripleJunctionY = 0.2 * jpConfig.height
+                    var tripleJunctionY = 0.1 * jpConfig.height
                     //intersection between pacific and alaska
                     var pacificAlaskaX = 0.14 * jpConfig.width
                     var pacificAlaskaY = 0.55 * jpConfig.height
                     //corner (90 deg) between alaska and europe
                     var europeAlaskaTopX = 0.432 * jpConfig.width
-                    var europeAlaskaTopY = 0.2 * jpConfig.height
+                    var europeAlaskaTopY = 0.28 * jpConfig.height
                     //corner (>90 deg) between alaska and europe
                     var europeAlaskaBotX = 0.43 * jpConfig.width
-                    var europeAlaskaBotY = 0.552 * jpConfig.height
+                    var europeAlaskaBotY = 0.62 * jpConfig.height
                     //end of line between alaska and europe
                     var europeAlaskaEndX = 0.6 * jpConfig.width
                     var europeAlaskaEndY = 0.8 * jpConfig.height
@@ -709,7 +731,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                          .attr("x2", tripleJunctionX)
                          .attr("y2", tripleJunctionY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);
+                         .attr("stroke", color)
+                         .attr("stroke-linecap", "round");
 
                     //top left diagonal (left of alaska; pacific-alaska divider)
                     divider
@@ -719,7 +742,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                          .attr("x2", pacificAlaskaX)
                          .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);
+                         .attr("stroke", color)
+                         .attr("stroke-linecap", "round");
 
                     //left horizontal (pacific-alaska divider)
                     divider
@@ -729,7 +753,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                          .attr("x2", pacificAlaskaX)
                          .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);   
+                         .attr("stroke", color)
+                         .attr("stroke-linecap", "round");   
 
 
                     //top right horizontal (top of alaska; alaska-europe divider)
@@ -740,7 +765,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                          .attr("x2", europeAlaskaTopX)
                          .attr("y2", europeAlaskaTopY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);  
+                         .attr("stroke", color)
+                         .attr("stroke-linecap", "round");  
 
                     //right vertical (to the right of alaska; alaska-europe divider)
                     divider
@@ -750,7 +776,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                          .attr("x2", europeAlaskaBotX)
                          .attr("y2", europeAlaskaBotY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);  
+                         .attr("stroke", color)
+                         .attr("stroke-linecap", "round");  
 
                     //bottom right diagonal (slope ~= -1; alaska-europe divider)
                     divider
@@ -760,11 +787,12 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                          .attr("x2", europeAlaskaEndX)
                          .attr("y2", europeAlaskaEndY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color);  
+                         .attr("stroke", color)
+                         .attr("stroke-linecap", "round");  
 
 
                     chart.select('svg').select(".textLabels").remove()
-                    chart.select('svg').append('g').attr("class", "textLabels")
+                    chart.select('#dc-jp-geoChoroplethChart svg .layer0').append('g').attr("class", "textLabels")
                     var textLabels = chart.select('.textLabels')
                     var textStroke = 0.5
                      textLabels
@@ -790,8 +818,27 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("fill", color) 
                         .attr("font-weight", 'bold') 
                         .text('Europe');
-                })
+                
+                    // set viewport for svg
+                    chart.maxWidth = 950
+                    chart.maxHeight = 450
 
+                    var mapZoom = jpChart.select('svg .layer0')
+                    mapZoom                        
+                        .attr("width", chart.maxWidth)
+                        .attr("height", chart.maxHeight)                        
+                        .call(d3.behavior.zoom()
+                            .scaleExtent([1, 10])
+                            .on("zoom", function () {                             
+                            var t = d3.event.translate,
+                                s = d3.event.scale;
+                            
+                            t[0] = Math.min(chart.maxWidth / 2 * (s - 1) + 400 * s, Math.max(chart.maxWidth / 2 * (1 - s) - 400 * s, t[0]));
+                            t[1] = Math.min(chart.maxHeight / 2 * (s - 1) + 250 * s, Math.max(chart.maxHeight / 2 * (1 - s) - 250 * s, t[1]));
+
+                            mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
+                        }))
+                })
 
                  //Download Raw Data button
                 d3.select('#download')

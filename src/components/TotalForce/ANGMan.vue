@@ -434,7 +434,7 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("x", usConfig.width * 0.12)
                         .attr("y", usConfig.height * 0.68)
                         .attr("fill", color) 
-                        .attr("font-size", '0.9vw')
+                        .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold')  
                         .text('Guam')
                         .on('click', ()=>{
@@ -450,7 +450,7 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("x", usConfig.width * 0.54)
                         .attr("y", usConfig.height * 0.99)
                         .attr("fill", color)  
-                        .attr("font-size", '0.9vw')
+                        .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold') 
                         .text('Puerto Rico')
                         .on('click', ()=>{
@@ -463,7 +463,7 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr("x", usConfig.width * 0.61)
                         .attr("y", usConfig.height * 0.93)
                         .attr("fill", color)  
-                        .attr("font-size", '0.9vw')
+                        .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold') 
                         .text('US Virgin Islands')
                         .on('click', ()=>{
