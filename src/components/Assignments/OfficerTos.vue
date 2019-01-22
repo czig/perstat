@@ -588,7 +588,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         myCount = d.value.cnt;
                         myAverage = d.value.average;
                     }
-                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
+                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage + " months" + "\n Completed Tours: " + myCount ;
                 });
                 // usChart.on('filtered',(chart) => {
                 //     if (chart.hasFilter()) {
@@ -678,7 +678,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                              }
                              //return formats.("99":"FullName")[formats.("AA":"99")[d.key]] + " " + myCount ;
 //                             return formats.geoCS[formats.stateFormat[d.key]] + ": " + myCount ;
-                                return formats.countryLong[d.key] + "\n Average TOS: " + jpAverage + "\n Completed Tours: " + jpCount ;
+                                return formats.countryLong[d.key] + "\n Average TOS: " + jpAverage + " months" + "\n Completed Tours: " + jpCount ;
                          });
 
                 //jpChart.controlsUseVisibility(true)
