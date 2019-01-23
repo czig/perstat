@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 col-12">
                         <div class="row">
                             <div id="type" class="col-12">
                                 <div id="dc-type-rowchart">
@@ -33,7 +33,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="grade" class="col-8">
+                    <div id="grade" class="col-xl-8 col-lg-8 col-md-9 col-sm-12 col-12">
                         <div id="dc-grade-barchart">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 

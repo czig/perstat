@@ -1,17 +1,17 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col form-group">
+<!--                     <div id="radioSelect" class="col form-group">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
                                 Promotion Rate
                             </label>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -41,80 +41,76 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="row">
-                            <div id="grade" class="col-12">
-                                <div id="dc-grade-rowchart">
-                                    <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
-                                            @click="resetChart('dc-grade-rowchart')">Reset</button>
-                                    </h3>
-                                </div>
-                            </div>
-                            <div id="look" class="col-12">
-                                <div id="dc-look-rowchart">
-                                    <h3>Look <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="display: none"
-                                            @click="resetChart('dc-look-rowchart')">Reset</button>
-                                    </h3>
-                                </div>
-                            </div>
+
+                    <div id="grade" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
+                        <div id="dc-grade-rowchart">
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                <button type="button" 
+                                        class="btn btn-danger btn-sm btn-rounded reset" 
+                                        style="display: none"
+                                        @click="resetChart('dc-grade-rowchart')">Reset</button>
+                             </h3>
                         </div>
                     </div>
-                    <div class="col-8">
-                        <div class="row">
-                            <template class="AFSC-SECTION col-12">
-
-                                <div v-if="!startAfsc" class="col-12"> 
-                                    <h3>
-                                        AFSC 
-                                        <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
-                                        <button type="button" 
+                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-6 col-12">
+                        <template class="AFSC-SECTION col-12">
+                            <div v-if="!startAfsc" class="col-12"> 
+                                <h3>
+                                    AFSC 
+                                    <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
+                                    <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
                                             style="visibility: hidden"
                                             >Reset</button>
-                                    </h3>
-                                </div>
+                                </h3>
+                            </div>
                                
-                                <div v-else class="col-12">
-                                     
-                                    <afsc 
-                                        v-model="sa"
-                                        :ndx="ndx"
-                                        :ylabel="ylabel"
-                                        :selected="selected"
-                                        :reduceAdd = "promoAdd"
-                                        :reduceRemove = "promoRemove"
-                                        :reduceInitial = "promoInitial"
-                                        dataVar="ACA43"
-                                        :minHeight="200"
-                                        :aspectRatio="3"
+                            <div v-else class="col-12">                                  
+                                <afsc 
+                                    v-model="sa"
+                                    :ndx="ndx"
+                                    :ylabel="ylabel"
+                                    :selected="selected"
+                                    :reduceAdd = "promoAdd"
+                                    :reduceRemove = "promoRemove"
+                                    :reduceInitial = "promoInitial"
+                                    dataVar="ACA43"
+                                    :minHeight="200"
+                                    :aspectRatio="3"
                                     >
-                                    </afsc>
-                                    
-                                </div>
-                               
-                            </template>
-                            <div id="recommend" class="col-12">
-                                <div id="dc-recommend-rowchart">
-                                    <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                                        <transition>
+                                </afsc>
+                            </div>
+                                   
+                        </template>
+                    </div>
+                </div>
+                <div class="row">    
+                    <div id="look" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
+                        <div id="dc-look-rowchart">
+                            <h3>Look <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                <button type="button" 
+                                        class="btn btn-danger btn-sm btn-rounded reset" 
+                                        style="display: none"
+                                        @click="resetChart('dc-look-rowchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="recommend" class="col-xl-8 col-lg-8 col-md-8 col-sm-6 col-12">
+                        <div id="dc-recommend-rowchart">
+                            <h3>Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                <transition>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
                                             style="display: none"
                                             @click="resetChart('dc-recommend-rowchart')">Reset</button></transition>
-                                    </h3>
-                                </div>
-                            </div>
+                            </h3>
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                 </div>
+
                 <div class="row">
                     <div id="board" class="col-12">
                         <div id="dc-board-barchart">

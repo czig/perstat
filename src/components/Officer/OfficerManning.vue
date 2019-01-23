@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
@@ -86,8 +86,8 @@
                                 >
                 </largeBarChart>
 
-                    <div class="row">
-                    <div id="grade" class="col-4">
+                <div class="row">
+                    <div id="grade" class="col-md-4 col-sm-6 col-12">
                         <div id="dc-grade-rowchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -97,7 +97,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="afscGroup" class="col-8">
+                    <div id="afscGroup" class="col-md-8 col-sm-6 col-12">
                         <div id="dc-afscGroup-barchart">
                             <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -108,7 +108,9 @@
                         </div>
                     </div>
                 </div>
-                <overviewBarChart :id="'mpf'"
+                <div class="row">
+                    <div class="col-sm-12 col-12">
+                    <overviewBarChart :id="'mpf'"
                                   :dimension="mpfDim"
                                   :aspectRatio="3.8"
                                   :minHeight="240"
@@ -123,7 +125,9 @@
                                   :colorScale="baseColorScale"
                                   :title="'Servicing MPF'"
                                     :loaded="loaded">
-                </overviewBarChart>
+                    </overviewBarChart>
+                    </div>
+                </div>
             </div>
         </transition-group>
     </div>

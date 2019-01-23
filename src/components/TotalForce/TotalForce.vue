@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <h1 class="col">Total Force Military</h1>
             <div class="col-4 text-right" style="margin-top:15px;">

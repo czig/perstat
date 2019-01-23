@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="container">
+		<div class="container-fluid">
 	        <transition-group name="fade" mode="out-in">
 	        <loader v-show="!loaded" key="loader"></loader>
 	        <div v-show="loaded" key="content">
@@ -20,7 +20,7 @@
                     </div>
 		        </div> 
 		        <div class="row">
-                    <div class="col-3" id="year">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-6" id="year">
                     	<div id="dc-year-rowchart">
                             <h3>Year <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
@@ -30,7 +30,7 @@
 	                        </h3>
                     	</div>
                     </div>
-                    <div class="col-3" id="type">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6" id="type">
                         <div id="dc-type-rowchart">
                             <h3>Type <span style="font-size: 14pt; opacity: 0.87;"></span>
                                 <button type="button" 
@@ -40,7 +40,7 @@
                             </h3>
                         </div>
                     </div>
-                	<div class="col-6" id="grade">
+                	<div class="col-xl-7 col-lg-6 col-md-6 col-sm-12 col-12" id="grade">
                     	<div id="dc-grade-barchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3" id="marital">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12" id="marital">
                 		<div id="dc-marital-barchart">
                             <h3>Marital Status <span style="font-size: 14pt; opacity: 0.87;"></span>
 	                        	<button type="button" 
@@ -62,7 +62,7 @@
 	                        </h3>
                     	</div>
                 	</div>
-                    <div class="col-9">
+                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-8 col-12">
                         <largeBarChart :id="'majcom'"
                                        :dimension="majcomDim"
                                        :group="majcomGroup"

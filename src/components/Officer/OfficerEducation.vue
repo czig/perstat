@@ -1,6 +1,6 @@
 
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
@@ -70,7 +70,7 @@
                     </div>   
                 </div>
                 <div class='row'>
-                    <div id="offgroup" class="col-3">
+                    <div id="offgroup" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
                         <div id="dc-offgroup-barchart">
                             <h3>Group<span style="font-size: 14pt; opacity: 0.87"> {{ ylabel }}</span>
                             <button type="button"
@@ -81,7 +81,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="grade" class="col-4">
+                    <div id="grade" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
                         <div id="dc-grade-rowchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87">{{ ylabel }}</span>
                             <button type="button"
@@ -92,7 +92,7 @@
                             </h3>
                         </div>
                     </div> 
-                    <div id="edlevel" class="col-5">
+                    <div id="edlevel" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
                         <div id="dc-edlevel-barchart">
                             <h3>Highest Edu Level <span style="font-size: 14pt; opacity: 0.87">{{ ylabel }}</span>
                             <button type="button"

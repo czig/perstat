@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
        <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="type" class="col-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                    <div id="type" class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
                         <div id="dc-type-rowchart">
                             <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -38,7 +38,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="grade" class="col-5 col-lg-5 col-md-6 col-sm-12 col-xs-12">
+                    <div id="grade" class="col-xl-5 col-lg-5 col-md-6 col-sm-12 col-12">
                         <div id="dc-grade-barchart">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -50,7 +50,7 @@
                     </div>
 <!--                 </div>
                 <div class="row"> -->
-                    <div id="empCat" class="col-4 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                    <div id="empCat" class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
                         <div id="dc-empCat-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 

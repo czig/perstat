@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <h1 class="col">Civilian</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3">
                         <div class="row">
                             <div id="grade" class="col-12">
                                 <div id="dc-grade-rowchart">
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-8">
+                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9">
                         <div class="row">
                             <div id="careerField" class="col-12">
                                 <div id="dc-careerField-barchart">
@@ -52,7 +52,7 @@
                                     </h3>
                                 </div>
                             </div>
-                            <div id="age" class="col-4">
+                            <div id="age" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div id="dc-age-rowchart">
                                     <h3>Age <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
@@ -62,7 +62,7 @@
                                     </h3>
                                 </div>
                             </div>
-                            <div id="gender" class="col-4">
+                            <div id="gender" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div id="dc-gender-piechart">
                                     <h3>Gender <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
@@ -72,7 +72,7 @@
                                     </h3>
                                 </div>
                             </div>
-                            <div id="prior" class="col-4">
+                            <div id="prior" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                 <div id="dc-prior-rowchart">
                                     <h3>Prior Military Service <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 

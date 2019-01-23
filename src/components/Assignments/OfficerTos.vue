@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container-fluid">
 		<transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="row">
-            		<div id="tour" class="col-3">
+            		<div id="tour" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
 		                <div id="dc-tour-rowchart">
 		                    <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
 		                    	Avg. TOS
@@ -42,7 +42,7 @@
 		                    </h3>
                 		</div>
             		</div>
-		            <div id="type" class="col-3">
+		            <div id="type" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
 		                <div id="dc-type-rowchart">
 		                    <h3>Type <span style="font-size: 14pt; opacity: 0.87;">
 		                    	Avg. TOS
@@ -54,7 +54,7 @@
 		                    </h3>
                 		</div>
             		</div>
-            		<div id="grade" class="col-6">
+            		<div id="grade" class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div id="dc-grade-barchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
@@ -98,7 +98,7 @@
                     </button>
                 </div>
                 <div class="row">
-                    <div id="us" class="col-6">
+                    <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div id="dc-us-geoChoroplethChart">
                             <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
@@ -108,7 +108,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="jp" class="col-6">
+                    <div id="jp" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div id="dc-jp-geoChoroplethChart">
                             <h3>OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 

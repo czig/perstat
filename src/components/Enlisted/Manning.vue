@@ -75,7 +75,7 @@
                 </largeBarChart>
 
                  <div class="row">
-                    <div id="grade" class="col-4">
+                    <div id="grade" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
                         <div id="dc-grade-rowchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -85,7 +85,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="afscGroup" class="col-8">
+                    <div id="afscGroup" class="col-xl-8 col-lg-8 col-md-8 col-sm-6 col-12">
                         <div id="dc-afscGroup-barchart">
                             <h3>AFSC Group <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 

@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="row">
-                	<div id="grp" class="col-3">
+                	<div id="grp" class="col-sm-6 col-12">
                                 <div id="dc-grp-rowchart">
                                     <h3> Join Type <span style="font-size: 14pt; opacity: 0.87;"> {{ ylabel }} </span>
                                     <button type="button" 
@@ -46,7 +46,7 @@
                                     </h3>
                                 </div>
                     </div>
-					<div class="col-4">
+					<div class="col-sm-6 col-12">
 						<h3> Grade 
 							<button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 

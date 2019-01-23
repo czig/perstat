@@ -1,6 +1,6 @@
 
 <template>
-    <div>
+    <div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
@@ -69,8 +69,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
-                        <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
+                        <!-- <div class="row"> -->
                             <div id="year" class="col-12">
                                 <div id="dc-year-rowchart">
                                     <h3>Year<span style="font-size: 14pt; opacity: 0.87;"> &nbsp {{ylabel}}</span>
@@ -83,10 +83,10 @@
                                     </h3>
                                 </div>
                             </div>
-                        </div>
+                        <!-- </div> -->
                     </div>
                     <template class="AFSC-SECTION">
-                        <div  v-if="!startAfsc" class="col-8"> 
+                        <div  v-if="!startAfsc" class="col-xl-8 col-lg-8 col-md-8 col-sm-6 col-12"> 
                             <h3>
                                 AFSC 
                                 <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
@@ -96,7 +96,7 @@
                                     >Reset</button>
                             </h3>
                         </div>
-                        <div v-else class="col-8">
+                        <div v-else class="col-xl-8 col-lg-8 col-md-8 col-sm-6 col-12">
                             <afsc
                                 v-model="sa"
                                 :ndx="ndx"

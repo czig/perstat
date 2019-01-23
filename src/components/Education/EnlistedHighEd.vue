@@ -1,6 +1,6 @@
 
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
@@ -28,13 +28,13 @@
                     </div>      
                 </div>       
                 <div class='row'>
-                    <div id="fyr" class="col-4">
+                    <div id="fyr" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-fyr-barchart">
                             <h3>Fiscal Year<span style="font-size: 14pt; opacity: 0.87;"></span>
                             </h3>
                         </div>
                     </div>
-                    <div id="edlevel" class="col-8">
+                    <div id="edlevel" class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-12">
                         <div id="dc-edlevel-barchart">
                             <h3>Degree Type <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -48,7 +48,7 @@
                 </div>
                 <br>
                 <div class='row'>
-                    <div id="grade" class="col-5">
+                    <div id="grade" class="col-xl-5 col-lg-5 col-md-6 col-sm-6 col-12">
                         <div id="dc-grade-rowchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"
@@ -59,7 +59,7 @@
                             </h3>
                         </div>
                     </div> 
-                    <div id="cafsc" class="col-7">
+                    <div id="cafsc" class="col-xl-7 col-lg-7 col-md-6 col-sm-6 col-12">
                         <div id="dc-cafsc-rowchart">
                             <h3>CAFSC<span style="font-size: 14pt; opacity: 0.87"></span>
                             <button type="button"

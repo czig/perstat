@@ -1,17 +1,17 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col form-group">
+<!--                     <div id="radioSelect" class="col form-group">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
                                 Promotion Rate
                             </label>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="download"
@@ -47,7 +47,7 @@
                     </button>
                 </div>
                 <div class="row">
-                    <div id="grade" class="col-4">
+                    <div id="grade" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-grade-barchart">
                             <h3 class="mb-0">Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <!--<font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>-->
@@ -58,7 +58,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="zone" class="col-4">
+                    <div id="zone" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-zone-rowchart">
                             <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -68,7 +68,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="highestPme" class="col-4">
+                    <div id="highestPme" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-highestPme-barchart">
                             <h3 class="mb-0">Highest PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -78,9 +78,7 @@
                             </h3>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div id="compCat" class="col-4">
+                    <div id="compCat" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-compCat-rowchart">
                             <h3 class="mb-0">CompCat <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -90,7 +88,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="recommend" class="col-4">
+                    <div id="recommend" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-recommend-rowchart">
                             <h3 class="mb-0">Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                 <transition>
@@ -101,7 +99,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="pmeMethod" class="col-4">
+                    <div id="pmeMethod" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-pmeMethod-rowchart">
                             <h3 class="mb-0">PME Method<span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
