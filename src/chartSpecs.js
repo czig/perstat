@@ -120,7 +120,7 @@ var gradePairs = {
 var gradeDomain = Object.keys(gradePairs)
 var gradeRange = Object.values(gradePairs) 
 var gradeChartColorScale = d3.scale.ordinal().domain(gradeDomain).range(gradeRange)
-
+var empCatColorScale = d3.scale.ordinal().range(["#ffc663","#ffbb57","#ffb04a","#ffa63e","#ff9b32","#ff9025","#ff8519","#ff7a0c","#ff6f00"])
 var mapColorScale = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
 
 export default {
@@ -138,6 +138,7 @@ export default {
     boardChart,
     yrgpChart,
     stateChart,
+    empCatColorScale,
     gradeChartColorScale,
     mapColorScale
 }

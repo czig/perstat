@@ -423,7 +423,11 @@
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                          .attr('transform', 'translate(-8,0)rotate(-45)')
+                          .on('click', (d)=>{
+                            chart.filter(d);
+                            dc.redrawAll();                                
+                          })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
                 
@@ -448,7 +452,11 @@
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                          .attr('transform', 'translate(-8,0)rotate(-45)')
+                          .on('click', (d)=>{
+                            chart.filter(d);
+                            dc.redrawAll();                                
+                          })                        
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 

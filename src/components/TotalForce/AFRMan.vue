@@ -253,15 +253,21 @@ import searchBox from '@/components/searchBox'
                 empCatConfig.minHeight = chartSpecs.empCatChart.minHeight
                 empCatConfig.aspectRatio = 4 
                 empCatConfig.margins = {top: 10, left: 40, right: 10, bottom: 80}
-                empCatConfig.colors = [chartSpecs.empCatChart.color]
+                empCatConfig.colors = this.chartSpecs.empCatColorScale
                 var empCatChart = dchelpers.getOrdinalBarChart(empCatConfig)
                 empCatChart
                     .controlsUseVisibility(true)
                     .elasticX(true)
-                    //.ordinalColors(["#1976d2","#ff4500"])
+                    .colorAccessor(function(d){
+                        return d.key;
+                    })
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-                             .attr('transform', 'translate(-8,0)rotate(-45)')
+                            .attr('transform', 'translate(-8,0)rotate(-45)')
+                            .on('click', (d)=>{
+                                chart.filter(d);
+                                dc.redrawAll(); 
+                            })                             
                     })
                 
                 empCatChart.filter([['ART','HQ AGR','HQ AGR RECRUIT','IMA','TRAD','UNIT AGR']])
@@ -285,28 +291,37 @@ import searchBox from '@/components/searchBox'
                 gradeConfig.dim = this.ndx.dimension(function(d){
                     return d.Grade;
                 })
-                var gradeGroup = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
-                gradeConfig.group = removeError(gradeGroup)
+                // var gradeGroup = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
+                // gradeConfig.group = removeError(gradeGroup)
+                gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 gradeConfig.minHeight = 250
                 gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 50, right: 10, bottom: 60}
                 gradeConfig.colors = this.chartSpecs.gradeChartColorScale
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
-                    .elasticX(true)
-                    .controlsUseVisibility(true)
+                    .elasticX(true)                    
                     .colorAccessor(function(d){
                         return d.key;
                     })
-                    .ordering(function(d){
-                      return formats.gradeOrder[d.key]
-                    })  
+                    .controlsUseVisibility(true)
+                    // .ordering(function(d){
+                    //   return formats.gradeOrder[d.key]
+                    // })  
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
+                        .on('click', (d)=>{
+                            chart.filter(d);
+                            dc.redrawAll(); 
+                        })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
 
+                gradeChart
+                    .ordering(function(d){
+                      return formats.gradeOrder[d.key]
+                    })
 
                 //Download Raw Data button
                 d3.select('#download')

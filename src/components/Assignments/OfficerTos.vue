@@ -471,6 +471,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
 	                        .attr('transform', 'translate(-8,0)rotate(-45)')
+                             .on('click', (d)=>{
+                                chart.filter(d);
+                                dc.redrawAll();                                
+                             })
                     })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]

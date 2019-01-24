@@ -302,6 +302,7 @@ import largeBarChart from '@/components/largeBarChart'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
                             this.submit(d, 'dc-grade-barchart')
+                            console.log(d.key);
                         })
                     })
                     .ordering(function(d){

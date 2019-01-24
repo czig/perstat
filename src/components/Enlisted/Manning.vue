@@ -421,8 +421,9 @@ import overviewBarChart from '@/components/overviewBarChart'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-afscGroup-barchart')
-                        })
+                            chart.filter(d);
+                            dc.redrawAll();
+                        })                                     
                     })
 
                 //Download Raw Data button

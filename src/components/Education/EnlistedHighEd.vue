@@ -314,7 +314,7 @@
                     })
                 fyrChart.filter('2018')
   
-                //Education Level Barchart
+                //Education Level / Degree Type Barchart
                 var edLevelConfig = {}
                 edLevelConfig.id = 'edlevel'
                 edLevelConfig.dim = this.ndx.dimension(function(d){
@@ -335,7 +335,8 @@
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-edlevel-barchart')
+                            chart.filter(d);
+                            dc.redrawAll();
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})

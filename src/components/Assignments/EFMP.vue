@@ -323,6 +323,10 @@ export default {
                 .on('pretransition', (chart)=> {
                     chart.selectAll('g.x text')
                     .attr('transform', 'translate(-8,0)rotate(-45)')
+                    .on('click', (d)=>{
+                        chart.filter(d);
+                        dc.redrawAll();                                
+                    })
                 })
 
             //Marital marital
@@ -345,6 +349,10 @@ export default {
                 .on('pretransition', (chart)=> {
                     chart.selectAll('g.x text')
                     .attr('transform', 'translate(-8,0)rotate(-45)')
+                    .on('click', (d)=>{
+                        chart.filter(d);
+                        dc.redrawAll();                                
+                    })                    
                 })
                 //order by descending value
                 .ordering((d) => {

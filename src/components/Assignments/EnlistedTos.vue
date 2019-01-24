@@ -468,7 +468,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         chart.selectAll('g.x text')
                             .attr('transform', 'translate(-8,0)rotate(-45)')
                             .on('click', (d)=>{
-                                this.submit(d, 'dc-grade-barchart')
+                                chart.filter(d);
+                                dc.redrawAll();
                         })
                     })
                     .ordering(function(d){

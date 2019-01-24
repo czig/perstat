@@ -455,7 +455,8 @@ import { store } from '@/store/store'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-board-barchart')
+                            chart.filter(d);
+                            dc.redrawAll();
                         })
                     })
  

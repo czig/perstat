@@ -310,17 +310,20 @@ import largeBarChart from '@/components/largeBarChart'
                 empCatConfig.minHeight = chartSpecs.empCatChart.minHeight
                 empCatConfig.aspectRatio = chartSpecs.empCatChart.aspectRatio
                 empCatConfig.margins = chartSpecs.empCatChart.margins
-                empCatConfig.colors = [chartSpecs.empCatChart.color]
+                empCatConfig.colors = this.chartSpecs.empCatColorScale
                 var empCatChart = dchelpers.getOrdinalBarChart(empCatConfig)
                 empCatChart
                     .elasticX(true)
+                    .colorAccessor(function(d){
+                        return d.key;
+                    })
                     .controlsUseVisibility(true)
-                    //.ordinalColors(["#1976d2","#ff4500"])
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
                              .attr('transform', 'translate(-8,0)rotate(-45)')
                              .on('click', (d)=>{
-                                this.submit(d, 'dc-empCat-barchart')
+                                chart.filter(d);
+                                dc.redrawAll();                                
                              })
                     })
 
@@ -357,7 +360,9 @@ import largeBarChart from '@/components/largeBarChart'
                         chart.selectAll('g.x text')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d)=>{
-                            this.submit(d, 'dc-grade-barchart')
+                            //this.submit(d, 'dc-grade-barchart')
+                            chart.filter(d);
+                            dc.redrawAll();
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
@@ -366,6 +371,8 @@ import largeBarChart from '@/components/largeBarChart'
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
                     })  
+
+                //this.gradeChart = gradeChart
 
                 //CONUS 
                 var usConfig = {}
