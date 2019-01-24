@@ -428,7 +428,7 @@ import largeBarChart from '@/components/largeBarChart'
                 usChart.on('pretransition', (chart)=> {
                                             
                     var color = 'orange'
-                    chart.select('svg').attr("class", "border")
+                    chart.select('svg').attr("class", "border shadow p-1 mt-3 bg-white rounded")
                     chart.select('svg').select(".textLabels").remove()
                     chart.select('svg .layer0').append('g').attr("class", "textLabels")
 
