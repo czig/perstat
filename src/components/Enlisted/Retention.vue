@@ -114,7 +114,7 @@
                         </div>
                     </template>
                 </div>
-                <largeBarChart :id="'majcom'"         
+<!--                 <largeBarChart :id="'majcom'"         
                                 :dimension="majcomDim"
                                 :group="majcomGroup"
                                 :widthFactor="0.90"
@@ -129,9 +129,25 @@
                                 :colorScale="majcomColorScale"
                                 :title="'MAJCOM'"
                                 :loaded="loaded">
-                </largeBarChart>
- 
-                 <largeBarChart :id="'mpf'"         
+                </largeBarChart> -->
+                <overviewBarChart 
+                   :id="'majcom'"
+                   :dimension="majcomDim"
+                   :aspectRatio="3.8"
+                   :minHeight="240"
+                   :normalToOverviewFactor="2.5"
+                   :selected="selected"
+                   :ylabel="ylabel"
+                   :reducerAdd="retentionAdd"
+                   :reducerRemove="retentionRemove"
+                   :accumulator="retentionInitial"
+                   :numBars="15"
+                   :margin="chartSpecs.majcomChart.margins"
+                   :colorScale="majcomColorScale"
+                   :title="'MAJCOM'"
+                   :loaded="loaded">
+                </overviewBarChart>
+<!--                  <largeBarChart :id="'mpf'"         
                                 :dimension="mpfDim"
                                 :group="mpfGroup"
                                 :widthFactor="0.90"
@@ -146,8 +162,24 @@
                                 :colorScale="baseColorScale"
                                 :title="'Servicing MPF'"
                                 :loaded="loaded">
-                </largeBarChart>
-
+                </largeBarChart> -->
+                <overviewBarChart 
+                   :id="'mpf'"
+                   :dimension="mpfDim"
+                   :aspectRatio="3.8"
+                   :minHeight="240"
+                   :normalToOverviewFactor="2.5"
+                   :selected="selected"
+                   :ylabel="ylabel"
+                   :reducerAdd="retentionAdd"
+                   :reducerRemove="retentionRemove"
+                   :accumulator="retentionInitial"
+                   :numBars="15"
+                   :margin="chartSpecs.baseChart.margins"
+                   :colorScale="baseColorScale"
+                   :title="'Servicing MPF'"
+                   :loaded="loaded">
+                </overviewBarChart>
             </div>
          </transition-group>
     </div>
@@ -164,6 +196,7 @@
     import searchBox from '@/components/searchBox'
     import largeBarChart from '@/components/largeBarChart'    
     import fontAwesomeIcon from '@fortawesome/vue-fontawesome' 
+    import overviewBarChart from '@/components/overviewBarChart'
 
     export default {
         data() {
@@ -188,7 +221,8 @@
             'loader': Loader,
             'searchBox': searchBox,
             largeBarChart,
-            fontAwesomeIcon,   
+            fontAwesomeIcon,
+            overviewBarChart   
         },
         computed: {
           ndx: function(){

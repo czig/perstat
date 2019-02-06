@@ -19,7 +19,7 @@ TODO: Prevent typed text to overflow in the 'close-icon'
 		<div class="md-form">
 			<div  style="position:relative;top: 10px;">
 		        <div class='searchTip' :style="getColor">
-		            <span v-show="searchVar.length>0">
+		            <span v-show="searchVar.length>0" class="float:left">
 		                {{ label }}
 		            </span>
 		        </div>
@@ -28,15 +28,16 @@ TODO: Prevent typed text to overflow in the 'close-icon'
 										:style="[getShadow,getBorderBottom]">
 		        <div v-show="searchVar.length>0"
 		             class='searchRemove'
-		             @click="searchVar=''">
+		             @click="() => { this.$emit('input', ''); this.$emit('sub');}">
 		            <i 	class="close-icon" @mouseenter="hover=true" @mouseleave="hover=false"
 										:style="[getBackground, getIconShadow,]"></i>
 		        </div>
 		    </div>
 		</div>
 	</div>
-	<div class="col-auto" style="top:-3px">
+	<div class="col-auto" :style="getButtonHeight">
 		<button v-if="bIf" class="btn btn-primary btn-sm" @click="action" :style="getBackgroundColor"> {{ bLabel }} </button>
+		<button v-show="searchVar.length>0" class="btn btn-danger btn-sm btn-rounded waves-effect" @click="() => { this.$emit('input', ''); this.$emit('sub');}">Reset </button>
 	</div>
 </div>
 </template>
@@ -131,6 +132,15 @@ export default {
 					'border-bottom': '2px solid ' + this.colorGiven,
 				}
 			else return {}
+		},
+		getButtonHeight(){
+			if (this.searchVar.length>0)
+				return {
+					'top': '-9px'
+				}
+			else return {
+					'top': '-3px'
+				}
 		}
 	},
 	watch: {

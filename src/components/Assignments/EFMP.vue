@@ -63,7 +63,7 @@
                     	</div>
                 	</div>
                     <div class="col-xl-9 col-lg-9 col-md-9 col-sm-8 col-12">
-                        <largeBarChart :id="'majcom'"
+<!--                         <largeBarChart :id="'majcom'"
                                        :dimension="majcomDim"
                                        :group="majcomGroup"
                                        :widthFactor="0.90"
@@ -77,10 +77,27 @@
                                        :colorScale="majcomColorScale" 
                                        :title="'MAJCOM'"
                                        :loaded="loaded">
-                        </largeBarChart>
+                        </largeBarChart> -->
+                        <overviewBarChart 
+                            :id="'majcom'"
+                            :dimension="majcomDim"
+                            :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                            :minHeight="chartSpecs.majcomChart.minHeight"
+                            :normalToOverviewFactor="2.5"
+                            :selected="selected"
+                            :ylabel="ylabel"
+                            :reducerAdd="asgnAdd"
+                            :reducerRemove="asgnRemove"
+                            :accumulator="asgnInitial"
+                            :numBars="10"
+                            :margin="chartSpecs.majcomChart.margins"
+                            :colorScale="majcomColorScale"
+                            :title="'MAJCOM'"
+                            :loaded="loaded">
+                        </overviewBarChart>                         
                     </div>
                 </div>
-                <largeBarChart :id="'base'"
+<!--                 <largeBarChart :id="'base'"
                                :dimension="baseDim"
                                :group="baseGroup"
                                :widthFactor="0.90"
@@ -94,7 +111,24 @@
                              :colorScale="baseColorScale"
                              :title="'Servicing MPF'"
                              :loaded="loaded">
-                </largeBarChart>
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'base'"
+                    :dimension="baseDim"
+                    :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                    :minHeight="chartSpecs.baseChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="asgnAdd"
+                    :reducerRemove="asgnRemove"
+                    :accumulator="asgnInitial"
+                    :numBars="20"
+                    :margin="chartSpecs.baseChart.margins"
+                    :colorScale="baseColorScale"
+                    :title="'Servicing MPF'"
+                    :loaded="loaded">
+                </overviewBarChart>                
 	    	</div>
 	    	</transition-group>
 	    </div>
@@ -110,6 +144,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import largeBarChart from '@/components/largeBarChart'
+import overviewBarChart from '@/components/overviewBarChart'
 
 export default {
     data() {
@@ -137,17 +172,15 @@ export default {
             return this.ndx.dimension(function(d) {return d.Majcom;})
         },
         majcomGroup: function() {
-            return this.majcomDim.group().reduceSum((d) => {
-                return +d.Count;
-            })
+            //return this.majcomDim.group().reduceSum((d) => {return +d.Count;})
+            return this.removeError(this.majcomDim.group().reduce(this.asgnAdd,this.asgnRemove,this.asgnInitial));
         },
         baseDim: function() {
             return this.ndx.dimension(function(d) {return d.Mpf;})
         },
         baseGroup: function() {
-            return this.baseDim.group().reduceSum((d) => {
-                return +d.Count;
-            })
+            //return this.baseDim.group().reduceSum((d) => {return +d.Count;})
+            return this.removeError(this.baseDim.group().reduce(this.asgnAdd,this.asgnRemove,this.asgnInitial));
         }
     },
     methods: {
@@ -178,7 +211,12 @@ export default {
           }
       },
       asgnAdd: function(p,v) {
-        return p + v;
+        p = p + +v.Count
+        return p
+      },
+      asgnRemove: function(p,v) {
+        p = p - +v.Count        
+        return p
       },
       asgnInitial: function() {
         return 0;
@@ -407,7 +445,8 @@ export default {
     components: {
     	'loader': Loader,
         searchBox, 
-        largeBarChart
+        largeBarChart,
+        overviewBarChart
     }
 }
 

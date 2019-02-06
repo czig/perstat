@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
-                    Data prefiltered to IPZ Zone Promotion Rate
+                    Data prefiltered to In-the-Promotion-Zone
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -110,7 +110,7 @@
                         </div>
                     </div>
                 </div>
-                <largeBarChart :id="'core'"         
+<!--                 <largeBarChart :id="'core'"         
                                :dimension="coreDim"
                                :group="coreGroup"
                                :widthFactor="0.90"
@@ -125,8 +125,25 @@
                                :colorScale="coreColorScale"
                                :title="'Core'"
                                :loaded="loaded">
-                </largeBarChart>
-                <largeBarChart :id="'board'"         
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'core'"
+                    :dimension="coreDim"
+                    :aspectRatio="chartSpecs.coreChart.aspectRatio"
+                    :minHeight="chartSpecs.coreChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="promoAdd"
+                    :reducerRemove="promoRemove"
+                    :accumulator="promoInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.coreChart.margins"
+                    :colorScale="coreColorScale"
+                    :title="'Core'"
+                    :loaded="loaded">
+                </overviewBarChart>
+<!--                 <largeBarChart :id="'board'"         
                                :dimension="boardDim"
                                :group="boardGroup"
                                :widthFactor="0.90"
@@ -141,7 +158,24 @@
                                :colorScale="boardColorScale"
                                :title="'Board'"
                                :loaded="loaded">
-                </largeBarChart>
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'board'"
+                    :dimension="boardDim"
+                    :aspectRatio="chartSpecs.boardChart.aspectRatio"
+                    :minHeight="chartSpecs.boardChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="promoAdd"
+                    :reducerRemove="promoRemove"
+                    :accumulator="promoInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.boardChart.margins"
+                    :colorScale="boardColorScale"
+                    :title="'Board'"
+                    :loaded="loaded">
+                </overviewBarChart>
 
 <!--                 <div class="row">
                     <div id="board" class="col-12">
@@ -170,6 +204,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import largeBarChart from '@/components/largeBarChart'
+import overviewBarChart from '@/components/overviewBarChart'
 
     export default {
         data() {
@@ -282,7 +317,8 @@ import largeBarChart from '@/components/largeBarChart'
             'autocomplete': AutoComplete,
             'loader': Loader,
             FontAwesomeIcon,
-            largeBarChart
+            largeBarChart,
+            overviewBarChart
         },
         created: function(){
           console.log('created')

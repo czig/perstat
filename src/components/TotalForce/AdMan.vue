@@ -44,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-                <largeBarChart :id="'majcom'"         
+<!--                 <largeBarChart :id="'majcom'"         
                                :dimension="majcomDim"
                                :group="removeError(majcomGroup)"
                                :widthFactor="0.90"
@@ -57,9 +57,25 @@
                                :colorScale="majcomColorScale"
                                :title="'MAJCOM'"
                                :loaded="loaded">
-                </largeBarChart>
-                
-                 <largeBarChart :id="'base'"         
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'majcom'"
+                    :dimension="majcomDim"
+                    :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                    :minHeight="chartSpecs.majcomChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="tfAdd"
+                    :reducerRemove="tfRemove"
+                    :accumulator="tfInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.majcomChart.margins"
+                    :colorScale="majcomColorScale"
+                    :title="'MAJCOM'"
+                    :loaded="loaded">
+                </overviewBarChart>                
+<!--                  <largeBarChart :id="'base'"         
                                :dimension="baseDim"
                                :group="removeError(baseGroup)"
                                :widthFactor="0.90"
@@ -72,8 +88,24 @@
                                :colorScale="baseColorScale"
                                :title="'Servicing MPF'"
                                :loaded="loaded">
-                </largeBarChart>
-              
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'base'"
+                    :dimension="baseDim"
+                    :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                    :minHeight="chartSpecs.baseChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="tfAdd"
+                    :reducerRemove="tfRemove"
+                    :accumulator="tfInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.baseChart.margins"
+                    :colorScale="baseColorScale"
+                    :title="'Servicing MPF'"
+                    :loaded="loaded">
+                </overviewBarChart>
             </div>
         </transition-group>
     </div>
@@ -88,11 +120,13 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import largeBarChart from '@/components/largeBarChart'
+import overviewBarChart from '@/components/overviewBarChart'
 
     export default {
         data() {
             return {
                 data: [],
+                selected: 'percent',
                 ylabel: 'Inventory',
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
@@ -113,7 +147,7 @@ import largeBarChart from '@/components/largeBarChart'
             },
             allGroup: function(){
                 return this.ndx.groupAll()
-            },
+            },           
             downloadDim: function() {
                 return this.ndx.dimension(function(d) {return d;});    
             },                  
@@ -121,14 +155,16 @@ import largeBarChart from '@/components/largeBarChart'
                 return this.ndx.dimension(function(d) {return d.MAJCOM;});
             },
             majcomGroup: function() {
-                return this.majcomDim.group().reduceSum(function(d) {return d.Inventory;});
+                //return this.majcomDim.group().reduceSum(function(d) {return d.Inventory;});
+                return this.removeEmptyBins(this.majcomDim.group().reduce(this.tfAdd,this.tfRemove,this.tfInitial));
             },                      
             baseDim: function() {
                 return this.ndx.dimension(function(d) {return d.MPF;});
             },
             baseGroup: function() {
-                return this.baseDim.group().reduceSum(function(d) {return d.Inventory;});
-            },
+                //return this.baseDim.group().reduceSum(function(d) {return d.Inventory;});
+                return this.removeEmptyBins(this.baseDim.group().reduce(this.tfAdd,this.tfRemove,this.tfInitial));
+            },           
             typeDim: function() {
                 return this.ndx.dimension(function(d) {return d.File_Type});
             },
@@ -136,7 +172,7 @@ import largeBarChart from '@/components/largeBarChart'
                 return {
                             'id': 'type',
                             'dim': this.typeDim,
-                            'group': this.typeDim.group().reduceSum(function(d) {return +d.Inventory;}),
+                            'group': this.removeError(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
                             'minHeight': 200,
                             'aspectRatio': 3,
                             'margins': {top: 0,left: 30, right: 30, bottom: 20},
@@ -151,7 +187,7 @@ import largeBarChart from '@/components/largeBarChart'
                 return {
                             'id': 'grade',
                             'dim': this.gradeDim,
-                            'group': this.removeError(this.gradeDim.group().reduceSum(function(d) {return +d.Inventory;})),
+                            'group': this.removeEmptyBins(this.gradeDim.group().reduceSum(function(d) {return +d.Inventory;})),
                             'minHeight': 250,
                             'aspectRatio': 3,
                             'margins': {top: 10, left: 50, right: 30, bottom: 60},
@@ -191,14 +227,19 @@ import largeBarChart from '@/components/largeBarChart'
                 })
                 dc.redrawAll()
             },
-
             tfAdd: function(p,v) {
-                return p + v
+                p = p + +v.Inventory
+                //p = p/p === Infinity ? 0 : Math.round((p/p)*1000)/10 || 0
+                return p
+            },
+            tfRemove: function(p,v) {
+                p = p - +v.Inventory
+                //p = p/p === Infinity ? 0 : Math.round((p/p)*1000)/10 || 0                
+                return p
             },
             tfInitial: function() {
-                return 0;
-            },
-          
+                return 0 
+            },          
             //remove empty function (es6 syntax to keep correct scope)
             removeError: function(source_group) {
                 return {
@@ -345,7 +386,8 @@ import largeBarChart from '@/components/largeBarChart'
         components: {
             'loader': Loader,
             searchBox,
-            largeBarChart
+            largeBarChart,
+            overviewBarChart
         },
         created: function(){
           console.log('created')

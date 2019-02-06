@@ -104,7 +104,7 @@
                         </div>
                     </div>
                 </div>
-                <largeBarChart :id="'yrgp'"         
+<!--                 <largeBarChart :id="'yrgp'"         
                                :dimension="yrgpDim"
                                :group="removeError(yrgpGroup)"
                                :widthFactor="0.90"
@@ -121,8 +121,28 @@
                                :loaded="loaded"
                                :sortBy="'key'"
                                :orderBy="'desc'">
-                </largeBarChart>
-                <largeBarChart :id="'core'"         
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'yrgp'"
+                    :dimension="yrgpDim"
+                    :aspectRatio="chartSpecs.yrgpChart.aspectRatio"
+                    :minHeight="chartSpecs.yrgpChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="edAdd"
+                    :reducerRemove="edRemove"
+                    :accumulator="edInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.yrgpChart.margins"
+                    :colorScale="yrgpColorScale"
+                    :title="'Year Group'"
+                    :loaded="loaded"
+                    :orderBy="'desc'"
+                    >
+                </overviewBarChart>
+
+<!--                 <largeBarChart :id="'core'"         
                                :dimension="coreDim"
                                :group="removeError(coreGroup)"
                                :ylabel="ylabel"
@@ -137,7 +157,25 @@
                                :colorScale="coreColorScale"
                                :title="'Core'"
                                :loaded="loaded">
-                </largeBarChart>
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'core'"
+                    :dimension="coreDim"
+                    :aspectRatio="chartSpecs.coreChart.aspectRatio"
+                    :minHeight="chartSpecs.coreChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="edAdd"
+                    :reducerRemove="edRemove"
+                    :accumulator="edInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.coreChart.margins"
+                    :colorScale="coreColorScale"
+                    :title="'Core'"
+                    :loaded="loaded"
+                    >
+                </overviewBarChart>                
              </div>    
         </transition-group>    
 	</div>
@@ -152,7 +190,8 @@
 	import searchBox from '@/components/searchBox'
 	import Loader from '@/components/Loader'
 	import { store } from '@/store/store'
-    import largeBarChart from '@/components/largeBarChart'
+  import largeBarChart from '@/components/largeBarChart'
+  import overviewBarChart from '@/components/overviewBarChart'    
 
 	export default {
 		data() {
@@ -182,13 +221,15 @@
                 return this.ndx.dimension(function(d) {return d.core;});
             },
             coreGroup: function() {
-                return this.coreDim.group().reduce(this.edAdd,this.edRemove,this.edInitial)
+                return this.coreDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial)
             },
             yrgpDim: function() {
-                return this.ndx.dimension(function(d) {return d.yrgp;});
+                return this.ndx.dimension(function(d) {
+                  return d.yrgp;
+                });
             },
             yrgpGroup: function() {
-                return this.yrgpDim.group().reduce(this.edAdd,this.edRemove,this.edInitial);
+                return this.yrgpDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial);
             },            
             ylabel: function() {
               if (_.includes(this.selected,"Percent")) {
@@ -254,23 +295,31 @@
                   stemPercent: 0,
                   nonStemPercent: 0
               }
-          },                 
-          edAddLarge: function(p,v) {
-              p.totalCount = p.totalCount + +v.totalCount
-              p.stem = p.stem + +v.stem
-              p.nonStem = p.nonStem + +v.nonStem
-              p.stemPercent = p.stem/p.totalCount === Infinity ? 0 : Math.round((p.stem/p.totalCount)*1000)/10 || 0
-              p.nonStemPercent = p.nonStem/p.totalCount === Infinity ? 0 : Math.round((p.nonStem/p.totalCount)*1000)/10 || 0
-              return p 
-          },
-          edInitialLarge: function() {
-              return {
-                totalCount: 0,
-                stem: 0,
-                nonStem: 0,
-                stemPercent: 0,
-                nonStemPercent: 0
-              };
+          // },                 
+          // edAddLarge: function(p,v) {
+          //     p.totalCount = p.totalCount + +v.totalCount
+          //     p.stem = p.stem + +v.stem
+          //     p.nonStem = p.nonStem + +v.nonStem
+          //     p.stemPercent = p.stem/p.totalCount === Infinity ? 0 : Math.round((p.stem/p.totalCount)*1000)/10 || 0
+          //     p.nonStemPercent = p.nonStem/p.totalCount === Infinity ? 0 : Math.round((p.nonStem/p.totalCount)*1000)/10 || 0
+          //     return p 
+          // },
+          // edRemoveLarge: function(p,v) {
+          //     p.totalCount = p.totalCount - +v.totalCount
+          //     p.stem = p.stem - +v.stem
+          //     p.nonStem = p.nonStem - +v.nonstem
+          //     p.stemPercent = p.stem/p.totalCount === Infinity ? 0 : Math.round((p.stem/p.totalCount)*1000)/10 || 0
+          //     p.nonStemPercent = p.nonStem/p.totalCount === Infinity ? 0 : Math.round((p.nonStem/p.totalCount)*1000)/10 || 0
+          //     return p
+          // },
+          // edInitialLarge: function() {
+          //     return {
+          //       totalCount: 0,
+          //       stem: 0,
+          //       nonStem: 0,
+          //       stemPercent: 0,
+          //       nonStemPercent: 0
+          //     }
           }
 		},
 
@@ -278,7 +327,8 @@
 			'AutoComplete': AutoComplete,
             'Loader': Loader,
             searchBox,
-            largeBarChart
+            largeBarChart,
+            overviewBarChart
 		},
 
 		created: function() { 
@@ -323,7 +373,11 @@
 
                 obj.count = given.count
                 obj.edlevel = given.edlevel;
-                obj.core = given.core;
+                if (given.core == '**ERROR**' || given.core == '') {
+                    obj.core = 'Unknown'   
+                } else {
+                    obj.core = given.core
+                }
                 obj.grade = formats.gradeFormat[given.grade];
                 obj.group = given.grp
                 obj.type = given.type

@@ -68,24 +68,23 @@
                         <span id="percent"></span>
                     </div>
                 </div>
-                <largeBarChart :id="'majcom'"         
-                                :dimension="majcomDim"
-                                :group="majcomGroup"
-                                :widthFactor="0.90"
-                                :aspectRatio="chartSpecs.majcomChart.aspectRatio"
-                                :minHeight="chartSpecs.majcomChart.minHeight"
-                                :selected="selected"
-                                :ylabel="ylabel"
-                                :reducer="manningAddLarge"
-                                :accumulator="manningInitial"
-                                :numBars="30"
-                                :margin="chartSpecs.majcomChart.margins"
-                                :colorScale="majcomColorScale"
-                                :title="'MAJCOM'"
-                                :loaded="loaded"
-                                >
-                </largeBarChart>
-
+                <overviewBarChart 
+                    :id="'majcom'"
+                    :dimension="majcomDim"
+                    :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                    :minHeight="chartSpecs.majcomChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="manningAdd"
+                    :reducerRemove="manningRemove"
+                    :accumulator="manningInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.majcomChart.margins"
+                    :colorScale="majcomColorScale"
+                    :title="'MAJCOM'"
+                    :loaded="loaded">
+                </overviewBarChart>
                 <div class="row">
                     <div id="grade" class="col-md-4 col-sm-6 col-12">
                         <div id="dc-grade-rowchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
@@ -110,21 +109,22 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12 col-12">
-                    <overviewBarChart :id="'mpf'"
-                                  :dimension="mpfDim"
-                                  :aspectRatio="3.8"
-                                  :minHeight="240"
-                                  :normalToOverviewFactor="2.5"
-                                  :selected="selected"
-                                  :ylabel="ylabel"
-                                  :reducerAdd="manningAdd"
-                                  :reducerRemove="manningRemove"
-                                  :accumulator="manningInitial"
-                                  :numBars="15"
-                                  :margin="chartSpecs.baseChart.margins"
-                                  :colorScale="baseColorScale"
-                                  :title="'Servicing MPF'"
-                                    :loaded="loaded">
+                    <overviewBarChart 
+                        :id="'mpf'"
+                        :dimension="mpfDim"
+                        :aspectRatio="3.8"
+                        :minHeight="240"
+                        :normalToOverviewFactor="2.5"
+                        :selected="selected"
+                        :ylabel="ylabel"
+                        :reducerAdd="manningAdd"
+                        :reducerRemove="manningRemove"
+                        :accumulator="manningInitial"
+                        :numBars="15"
+                        :margin="chartSpecs.baseChart.margins"
+                        :colorScale="baseColorScale"
+                        :title="'Servicing MPF'"
+                        :loaded="loaded">
                     </overviewBarChart>
                     </div>
                 </div>
@@ -187,13 +187,13 @@ import overviewBarChart from '@/components/overviewBarChart'
             return this.ndx.dimension(function(d) {return d.MAJCOM;});
           },
           majcomGroup: function() {
-            return this.majcomDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial);
+            return this.removeEmptyBins(this.majcomDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial));
           },
           mpfDim: function() {
             return this.ndx.dimension(function(d) {return d.MPF;});
           },
           mpfGroup: function() {
-            return this.mpfDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial);
+            return this.removeEmptyBins(this.mpfDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial));
           },
           gradeDim: function() {
             return this.ndx.dimension(function(d) {return d.Grade;});

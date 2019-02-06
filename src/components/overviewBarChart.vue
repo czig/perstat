@@ -1,5 +1,6 @@
 <!--######################################
 USAGE:
+
     <overviewBarChart :id="'Units'"
                       :dimension="unitDim"
                       :aspectRatio="3.8"
@@ -15,7 +16,10 @@ USAGE:
                       :colorScale="baseColorScale"
                       :colorFunction="dcBarColorFun"
                       :title="'Units'"
-                      :loaded="loaded">
+                      :loaded="loaded"
+                      :sortBy="'value'"
+                      :orderBy="'desc'"
+                      >
     </overviewBarChart>
 
 Props:
@@ -32,10 +36,11 @@ Props:
     numBars: default number of bars to display on bar chart (sets brush size on overview chart)
     margin: object giving top, right, bottom, and right margins (all numbers)
     colorScale: d3 scale that returns a color (needs domain and range - ensure range is an array of color values)
-    colorFunction: function that tells chart how to choose colors for different bars  
+    colorFunction: NOT REQUIRED; function that tells chart how to choose colors for different bars; default to first color value 
     title: string for chart title
     loaded: Boolean indicating where data has been loaded
-    
+    sortBy: key or value.  If this prop is used, you must also use orderBy
+    orderBy: asc or desc.  If this prop is used, you must also use sortBy    
 
 ###########################################-->
 <template>
@@ -51,6 +56,11 @@ Props:
                                      >
                     </FontAwesomeIcon>
                 </span>
+<!--                 <button :id="this.id + 'sortAll'"
+                        class="btn btn-primary btn-sm"
+                        @click="sortAll()">
+                    Sort 
+                </button> -->
                 <button type="button" 
                         class="btn btn-danger btn-sm btn-rounded reset" 
                         :id="'btn-overview-' + id + '-reset'"
@@ -87,7 +97,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 chartSpecs: chartSpecs,
                 overviewChart: {},
                 overviewNormalChart: {},
-                sortKey: true,
+                rendered: false,
+                allSort: true,
                 keys: []
             }
         },
@@ -158,10 +169,18 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 type: Boolean,
                 required: true,
             },
+            sortBy: {
+                type: String,
+                required: false,
+            },
+            orderBy: {
+                type: String,
+                required: false,
+            }
         },
         computed: {
             overviewGroup: function() {
-                return this.dimension.group().reduce(this.reducerAdd,this.reducerRemove,this.accumulator)
+                return this.removeError(this.dimension.group().reduce(this.reducerAdd,this.reducerRemove,this.accumulator))
             },
             overviewConfig: function() {
                 return {
@@ -180,13 +199,20 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 return {
                     'id': this.id,
                     'dim': this.dimension,
-                    'group': this.removeNonBrush(this.overviewGroup),
+                    //'group': this.removeNonBrush(this.overviewGroup),
+                    'group': this.removeEmptyBinsAndNonBrush(this.overviewGroup),
                     'minHeight': this.minHeight,
                     'aspectRatio': this.aspectRatio,
                     'margins': {top: 10, left: this.margin.left, right: this.margin.right, bottom: this.margin.bottom},
                     'colors': this.colorScale,
                 }
             },
+            sortedBy: function() {
+                return this.sortBy || 'value';
+            },
+            orderedBy: function() {
+                return this.orderBy || 'desc';
+            }
         },
         methods: {
             resetChart: (id)=>{
@@ -201,12 +227,22 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
             removeEmptyBins: function(source_group) {
                 return {
                     all: () => {
-                        return source_group.all().filter((d) => {
+                        return source_group.all().filter((d) => {  
                             return (d.value[this.selected] === undefined ? d.value : d.value[this.selected]) != 0
                         })
                     }
                 }
             },
+            //remove empty function (es6 syntax to keep correct scope)
+            removeError: (source_group) => {
+                return {
+                    all: () => {
+                        return source_group.all().filter((d) => {
+                            return d.key != "error" && d.key != "**ERROR**"
+                        })
+                    }
+                }
+            },              
             removeNonBrush: function(source_group) {
                 return {
                     all: () => {
@@ -242,12 +278,120 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 }
             },
             //sort by Value (TODO: enable sorting)
-            sortGroup: function(group) {
-                return {
-                    all: () => {
-                        return group.all().concat().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]))
+            // sortGroup: function(group) {
+            //     return {
+            //         all: () => {
+            //             return group.all().concat().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]))
+            //         }
+            //     }
+            // },
+            // sortKey: function(order) {
+            //     if (order == 'desc') {
+            //         console.log("sortKey order is desc")                    
+            //         return this.overviewGroup.all().sort((a,b) => b.key.localeCompare(a.key));
+            //     } else {
+            //         console.log("sortKey order is asc+")
+            //         return this.overviewGroup.all().sort((a,b) => a.key.localeCompare(b.key));
+            //     }
+            // },
+            // sortValue: function(order) {
+            //     if (order == 'desc') {
+            //         console.log("sortValue order is desc+1.1.1")
+            //         return this.overviewGroup.all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+            //     } else {
+            //         console.log("sortValue order is asc")
+            //         return this.overviewGroup.all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
+            //     }
+                
+            // },
+            dataAll: function() {    
+                //allSort toggles between key and value sort 
+                if (this.allSort == true) {                    
+                    //sortedBy is initial sort type (key or value), orderedBy is ascending or descending
+                    if (this.sortedBy == "value") {
+                        if (this.orderedBy == 'desc') {
+                            console.log("Quantity sort: allSort true, sortedBy value, orderedBy desc+")
+                            return this.overviewGroup.all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+                        } else {
+                            console.log("allSort true, sortedBy value, orderedBy asc")
+                            //return this.overviewGroup.all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
+                        }
+                        //return this.sortValue(this.orderedBy);
+                    } else {
+                        if (this.orderedBy == 'desc') {
+                            console.log("allSort true, sortedBy key, orderedBy desc")                    
+                            //return this.overviewGroup.all().sort((a,b) => b.key.localeCompare(a.key));
+                        } else {
+                            console.log("allSort true, sortedBy key, orderedBy asc")
+                            //return this.overviewGroup.all().sort((a,b) => a.key.localeCompare(b.key));
+                        }                        
+                        //return this.sortKey(this.orderedBy);
+                    }
+                } else {
+                    if (this.sortedBy == "value") {
+                        if (this.orderedBy == 'desc') {
+                            console.log("Alpha sort: allSort false, sortedBy key, orderedBy desc+")                    
+                            return this.overviewGroup.all().sort((a,b) => a.key.localeCompare(b.key));
+                        } else {
+                            console.log("allSort false, sortedBy key, orderedBy asc")
+                            //return this.overviewGroup.all().sort((a,b) => b.key.localeCompare(a.key));                            
+                        }                        
+                        //return this.sortKey('asc');
+                    } else {
+                        if (this.orderedBy == 'desc') {
+                            console.log("allSort false, sortedBy value, orderedBy desc")
+                            //return this.overviewGroup.all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
+                        } else {
+                            console.log("allSort false, sortedBy value, orderedBy asc")
+                            //return this.overviewGroup.all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
+                        }                        
+                        //return this.sortValue('desc');
                     }
                 }
+            },
+            filterAll: function(all) {
+                 //all is boolean. true for all, false for partial
+                 console.log('filterAll: no filters')
+                 var all = all == undefined ? true : all 
+                 d3.select("#" + this.id)
+                    .selectAll("rect")
+                    // on reset, always fill all with first color in color domain
+                    .attr("fill",this.colorScale(this.colorScale.domain()[0]))
+                    .attr("opacity",1);
+                 //hide reset button
+                 d3.select("#" + this.id + "reset")
+                     .style("visibility",  all ? "hidden" : "visible");
+                 //hide 'move up' button
+                 d3.select("#" + this.id + "level")
+                     .style("visibility","hidden");
+                 // enable slider
+                 this.sliderDisabled = !all 
+                 //enable sort
+                 d3.select("#" + this.id + "sortAll")
+                    .property("disabled",false);
+                 this.filters = []
+                 this.dimension.filterAll()
+                 this.level = 0
+                 this.original = true
+                 dc.redrawAll()
+            },
+            updateData: function() {                
+                //data to display now
+                this.data = this.dataAll().slice(this.lastBar*this.level,this.lastBar*(this.level+1)) 
+                //remaining data that gets group into others
+                this.nextData = this.dataAll().slice(this.lastBar*(this.level+1))
+                // pull out value object from all data
+                var nextVal = this.nextData.map(d => d.value)
+                this.data = this.data.filter(d => (d.value[this.selected] === undefined ? d.value : d.value[this.selected]) != 0)
+            },
+            sortAll: function() {
+                this.allSort = !this.allSort
+                //key function for accessing key properties in data
+                var key = function(d) {
+                    return d.key;
+                }                
+                this.updateData()
+                this.renderOverviewCharts()
             },
             renderOverviewCharts: function() {
                 var vm = this
@@ -315,7 +459,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     else if (args == null || args.length == 0) {
                         return overviewChart;
                     } else {
-                        overviewChart.oldFilter(args); 
+                        overviewChart.oldFilter(args);
                     }  
                     return overviewChart;
                 }
@@ -394,14 +538,15 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 }
                 overviewNormalChart.turnOffControls = function() {
                     d3.select('#btn-'+vm.id+'-reset').style('visibility','hidden');
-                }
+                }                
                 this.overviewNormalChart = overviewNormalChart
+                this.updateData()
                 //render and redraw
                 this.overviewChart.render()
                 this.overviewNormalChart.render()
                 //move brush to 'reset' position - subtract 0.01 to keep selection correct and only use number of bars inputted
                 this.overviewChart.filter(dc.filters.RangedFilter(0,this.numBars-0.01)) 
-                this.overviewChart.redraw()
+                this.overviewChart.redraw()                
                 this.overviewNormalChart.redraw()
             },
             
@@ -415,6 +560,12 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     this.renderOverviewCharts()
                 }
             },
+            //force redraw after rendered changes to true
+            rendered: function() {
+                if (this.rendered == true) {
+                    this.updateData()
+                }
+            }            
         },
         components: {
             FontAwesomeIcon

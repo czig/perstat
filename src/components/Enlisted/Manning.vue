@@ -57,7 +57,7 @@
                         <span id="percent"></span>
                     </div>
                 </div>
-                <largeBarChart :id="'majcom'"         
+<!--                 <largeBarChart :id="'majcom'"         
                                 :dimension="majcomDim"
                                 :group="majcomGroup"
                                 :widthFactor="0.90"
@@ -72,7 +72,24 @@
                                 :colorScale="majcomColorScale"
                                 :title="'MAJCOM'"
                                 :loaded="loaded">
-                </largeBarChart>
+                </largeBarChart> -->
+                <overviewBarChart 
+                        :id="'majcom'"
+                        :dimension="majcomDim"
+                        :aspectRatio="3.8"
+                        :minHeight="240"
+                        :normalToOverviewFactor="2.5"
+                        :selected="selected"
+                        :ylabel="ylabel"
+                        :reducerAdd="manningAdd"
+                        :reducerRemove="manningRemove"
+                        :accumulator="manningInitial"
+                        :numBars="15"
+                        :margin="chartSpecs.majcomChart.margins"
+                        :colorScale="majcomColorScale"
+                        :title="'MAJCOM'"
+                        :loaded="loaded">
+                </overviewBarChart>
 
                  <div class="row">
                     <div id="grade" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">

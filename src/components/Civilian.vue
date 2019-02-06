@@ -85,7 +85,7 @@
                         </div>
                     </div>
                 </div>
-                <largeBarChart :id="'majcom'"         
+<!--                 <largeBarChart :id="'majcom'"         
                                :dimension="majcomDim"
                                :group="majcomGroup"
                                :widthFactor="0.90"
@@ -99,9 +99,25 @@
                                :colorScale="majcomColorScale"
                                :title="'MAJCOM'"
                                :loaded="loaded">
-                </largeBarChart>
-
-                 <largeBarChart :id="'loc'"         
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'majcom'"
+                    :dimension="majcomDim"
+                    :aspectRatio="3.8"
+                    :minHeight="240"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="inventoryAdd"
+                    :reducerRemove="inventoryRemove"
+                    :accumulator="inventoryInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.majcomChart.margins"
+                    :colorScale="majcomColorScale"
+                    :title="'MAJCOM'"
+                    :loaded="loaded">
+                </overviewBarChart>
+<!--                  <largeBarChart :id="'loc'"         
                                :dimension="locDim"
                                :group="locGroup"
                                :widthFactor="0.90"
@@ -115,7 +131,24 @@
                                :colorScale="locColorScale"
                                :title="'Servicing MPF'"
                                :loaded="loaded">
-                </largeBarChart>
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'loc'"
+                    :dimension="locDim"
+                    :aspectRatio="3.8"
+                    :minHeight="240"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="inventoryAdd"
+                    :reducerRemove="inventoryRemove"
+                    :accumulator="inventoryInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.baseChart.margins"
+                    :colorScale="locColorScale"
+                    :title="'Servicing MPF'"
+                    :loaded="loaded">
+                </overviewBarChart>                
             </div>
         </transition-group>
     </div>
@@ -131,6 +164,7 @@ import searchBox from '@/components/searchBox'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import largeBarChart from '@/components/largeBarChart'
+import overviewBarChart from '@/components/overviewBarChart'
 
     export default {
         data() {
@@ -166,13 +200,15 @@ import largeBarChart from '@/components/largeBarChart'
               return this.ndx.dimension(d => d.MPF);
           },
           locGroup: function() {
-              return this.locDim.group().reduceSum(function(d) {return d.Inventory;}) 
+              //return this.locDim.group().reduceSum(function(d) {return d.Inventory;}) 
+              return this.removeError(this.locDim.group().reduce(this.inventoryAdd,this.inventoryRemove,this.inventoryInitial));
           },
           majcomDim: function() {
               return this.ndx.dimension(d => d.MAJCOM);
           },
           majcomGroup: function() {
-              return this.majcomDim.group().reduceSum(function(d) {return d.Inventory;}) 
+              //return this.majcomDim.group().reduceSum(function(d) {return d.Inventory;}) 
+              return this.removeError(this.majcomDim.group().reduce(this.inventoryAdd,this.inventoryRemove,this.inventoryInitial));
           }
 
         },
@@ -214,7 +250,10 @@ import largeBarChart from '@/components/largeBarChart'
             dc.redrawAll()
           },
           inventoryAdd: function(p,v) {
-              return p + v
+              return p = p + v.Inventory
+          },
+          inventoryRemove: function(p,v) {
+              return p = p - v.Inventory
           },
           inventoryInitial: function() {
             return 0;
@@ -224,7 +263,8 @@ import largeBarChart from '@/components/largeBarChart'
             'autocomplete': AutoComplete,
             'loader': Loader,
             searchBox,
-            largeBarChart
+            largeBarChart,
+            overviewBarChart
         },
         created: function(){
           console.log('created')

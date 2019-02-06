@@ -65,39 +65,50 @@
                         </div>
                     </div>
             	</div>
-                 <div class="row">
+                <div class="row pt-2">
                         <div id="base" class="col-12">
                                 <div id="dc-base-select">
                                 </div>
-                                <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
-                                <button type="button"
+                                <h3>Installation 
+                                    <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
+                                    <span data-toggle="tooltip" 
+                                          data-placement="bottom"
+                                          class="pl-1"
+                                          style="font-size: 12pt;"
+                                          title="Type in the full, or partial, installation name and press the Search Button to Filter by Installation.">
+                                        <fontAwesomeIcon icon="info-circle">
+                                        </fontAwesomeIcon>
+                                    </span>
+                                    <!--@click="resetChart('dc-base-barchart');resetChart('dc-base-select') -->
+<!--                                     <button type="button"
                                         id="btn-base-reset"
-                                        class="btn btn-danger btn-sm btn-rounded reset" 
+                                        class="btn btn-danger btn-sm btn-rounded waves-effect" 
                                         style="visibility: hidden"
-                                        @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
+                                        @click="submit(searchBase,'dc-base-select');">Reset
+                                    </button> -->
                                 </h3>
                                 <searchBox
                                     v-model="searchBase"
-                                    size="3"
+                                    size="5"
                                     label="Enter Installation"
                                     @sub="submit(searchBase,'dc-base-select')"
                                     button="true"
                                     :color="baseColor"
                                     :btnColor="baseColor"
-                                ></searchBox>
-                            <transition name="expand" key="1">
-                            <div id="dc-base-barchart" v-show="loaded&&showBase">
-                            </div>
-                             </transition>
+                                    ></searchBox>
+<!--                             <transition name="expand" key="1">
+                                <div id="dc-base-barchart" v-show="loaded&&showBase">
+                                </div>
+                            </transition> -->
                         </div>
                 </div>
-                <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+<!--                 <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
                     Please select from maps below to display Installation graph
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
-                <div class="row">
+                </div> -->
+                <div class="row pt-2">
                     <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div id="dc-us-geoChoroplethChart">
                             <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
@@ -547,6 +558,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     return d.State;
                 })
                 usConfig.group = usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
+                //alert(_.values(usConfig.group))
+                //alert(Object.values(usConfig.group))
+                //alert(Object.valueOf(usConfig.group))
+                //alert(Object.keys(usConfig.group))
                 usConfig.scale = 1
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2

@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <br>
-                <largeBarChart :id="'core'"         
+<!--                 <largeBarChart :id="'core'"         
                                :dimension="coreDim"
                                :group="removeError(coreGroup)"
                                :widthFactor="0.90"
@@ -82,7 +82,25 @@
                                :colorScale="coreColorScale"
                                :title="'Core'"
                                :loaded="loaded">
-                </largeBarChart>
+                </largeBarChart> -->
+                <overviewBarChart 
+                    :id="'core'"
+                    :dimension="coreDim"
+                    :aspectRatio="chartSpecs.coreChart.aspectRatio"
+                    :minHeight="chartSpecs.coreChart.minHeight"
+                    :normalToOverviewFactor="2.5"
+                    :selected="selected"
+                    :ylabel="ylabel"
+                    :reducerAdd="edAdd"
+                    :reducerRemove="edRemove"
+                    :accumulator="edInitial"
+                    :numBars="15"
+                    :margin="chartSpecs.coreChart.margins"
+                    :colorScale="coreColorScale"
+                    :title="'Core'"
+                    :loaded="loaded"
+                    >
+                </overviewBarChart>                 
                 
             </div>    
         </transition-group>    
@@ -99,6 +117,7 @@
 	import Loader from '@/components/Loader'
 	import { store } from '@/store/store'
     import largeBarChart from '@/components/largeBarChart'
+  import overviewBarChart from '@/components/overviewBarChart' 
 
 	export default {
 		data() {
@@ -125,7 +144,8 @@
                 return this.ndx.dimension(function(d) {return d.core;});
             },
             coreGroup: function() {
-                return this.coreDim.group().reduceSum(function(d) {return d.count;});
+                //return this.coreDim.group().reduceSum(function(d) {return d.count;});
+                return this.coreDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial);
             }                        
 		},
 
@@ -171,38 +191,44 @@
                 dc.redrawAll()
             },10)
           },
- */          submit: (text,id) => {
-            dc.chartRegistry.list().filter(chart=>{
-                return chart.anchorName() == id 
-            }).forEach(chart=>{
-                var mainArray = []
-                chart.dimension().group().all().forEach((d) => {
-                    mainArray.push(String(d.key))
+ */         submit: (text,id) => {
+                dc.chartRegistry.list().filter(chart=>{
+                    return chart.anchorName() == id 
+                }).forEach(chart=>{
+                    var mainArray = []
+                    chart.dimension().group().all().forEach((d) => {
+                        mainArray.push(String(d.key))
+                    })
+                    var filterArray = mainArray.filter((d) => {
+                        var element = d.toUpperCase() 
+                        return element.indexOf(text.toUpperCase()) !== -1
+                    })
+                    chart.filter(null)
+                    if (filterArray.length != mainArray.length) {
+                        chart.filter([filterArray])
+                    }
                 })
-                var filterArray = mainArray.filter((d) => {
-                    var element = d.toUpperCase() 
-                    return element.indexOf(text.toUpperCase()) !== -1
-                })
-                chart.filter(null)
-                if (filterArray.length != mainArray.length) {
-                    chart.filter([filterArray])
-                }
-            })
-            dc.redrawAll()
-          },
-          edAdd: function(p,v) {
-              return p + v
-          },
-          edInitial: function() {
-            return 0;
-          }          
+                dc.redrawAll()
+              },
+              edAdd: function(p,v) {
+                p = p + +v.count
+                return p
+              },
+              edRemove: function(p,v) {
+                p = p - +v.count
+                return p
+              },          
+              edInitial: function() {
+                return 0;
+              }          
 		},
 
 		components: {
 			'AutoComplete': AutoComplete,
             'Loader': Loader,
             searchBox,
-            largeBarChart
+            largeBarChart,
+            overviewBarChart
 		},
 
 		created: function() { 
