@@ -13,9 +13,9 @@
                         <span id="count"></span>
                         <span data-toggle="tooltip" 
                               data-placement="bottom"
-                              class="pl-1"
+                              class="h3 pl-1"
                               title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
-                            <fontAwesomeIcon icon="info-circle">
+                            <fontAwesomeIcon icon="info-circle" size="xs">
                             </fontAwesomeIcon>
                         </span>
                     </div>
@@ -73,10 +73,9 @@
                                     <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
                                     <span data-toggle="tooltip" 
                                           data-placement="bottom"
-                                          class="pl-1"
-                                          style="font-size: 12pt;"
+                                          class="pl-1"                                          
                                           title="Type in the full, or partial, installation name and press the Search Button to Filter by Installation.">
-                                        <fontAwesomeIcon icon="info-circle">
+                                        <fontAwesomeIcon icon="info-circle" size="xs">
                                         </fontAwesomeIcon>
                                     </span>
                                     <!--@click="resetChart('dc-base-barchart');resetChart('dc-base-select') -->

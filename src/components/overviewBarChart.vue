@@ -199,7 +199,6 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 return {
                     'id': this.id,
                     'dim': this.dimension,
-                    //'group': this.removeNonBrush(this.overviewGroup),
                     'group': this.removeEmptyBinsAndNonBrush(this.overviewGroup),
                     'minHeight': this.minHeight,
                     'aspectRatio': this.aspectRatio,
@@ -277,52 +276,25 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     }
                 }
             },
-            //sort by Value (TODO: enable sorting)
-            // sortGroup: function(group) {
-            //     return {
-            //         all: () => {
-            //             return group.all().concat().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]))
-            //         }
-            //     }
-            // },
-            // sortKey: function(order) {
-            //     if (order == 'desc') {
-            //         console.log("sortKey order is desc")                    
-            //         return this.overviewGroup.all().sort((a,b) => b.key.localeCompare(a.key));
-            //     } else {
-            //         console.log("sortKey order is asc+")
-            //         return this.overviewGroup.all().sort((a,b) => a.key.localeCompare(b.key));
-            //     }
-            // },
-            // sortValue: function(order) {
-            //     if (order == 'desc') {
-            //         console.log("sortValue order is desc+1.1.1")
-            //         return this.overviewGroup.all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
-            //     } else {
-            //         console.log("sortValue order is asc")
-            //         return this.overviewGroup.all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
-            //     }
-                
-            // },
             dataAll: function() {    
                 //allSort toggles between key and value sort 
                 if (this.allSort == true) {                    
                     //sortedBy is initial sort type (key or value), orderedBy is ascending or descending
                     if (this.sortedBy == "value") {
                         if (this.orderedBy == 'desc') {
-                            console.log("Quantity sort: allSort true, sortedBy value, orderedBy desc+")
+                            //console.log("Quantity sort: allSort true, sortedBy value, orderedBy desc+")
                             return this.overviewGroup.all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
                         } else {
-                            console.log("allSort true, sortedBy value, orderedBy asc")
+                            //console.log("allSort true, sortedBy value, orderedBy asc")
                             //return this.overviewGroup.all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
                         }
                         //return this.sortValue(this.orderedBy);
                     } else {
                         if (this.orderedBy == 'desc') {
-                            console.log("allSort true, sortedBy key, orderedBy desc")                    
+                            //console.log("allSort true, sortedBy key, orderedBy desc")                    
                             //return this.overviewGroup.all().sort((a,b) => b.key.localeCompare(a.key));
                         } else {
-                            console.log("allSort true, sortedBy key, orderedBy asc")
+                            //console.log("allSort true, sortedBy key, orderedBy asc")
                             //return this.overviewGroup.all().sort((a,b) => a.key.localeCompare(b.key));
                         }                        
                         //return this.sortKey(this.orderedBy);
@@ -330,19 +302,19 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 } else {
                     if (this.sortedBy == "value") {
                         if (this.orderedBy == 'desc') {
-                            console.log("Alpha sort: allSort false, sortedBy key, orderedBy desc+")                    
+                            //console.log("Alpha sort: allSort false, sortedBy key, orderedBy desc+")                    
                             return this.overviewGroup.all().sort((a,b) => a.key.localeCompare(b.key));
                         } else {
-                            console.log("allSort false, sortedBy key, orderedBy asc")
+                            //console.log("allSort false, sortedBy key, orderedBy asc")
                             //return this.overviewGroup.all().sort((a,b) => b.key.localeCompare(a.key));                            
                         }                        
                         //return this.sortKey('asc');
                     } else {
                         if (this.orderedBy == 'desc') {
-                            console.log("allSort false, sortedBy value, orderedBy desc")
+                            //console.log("allSort false, sortedBy value, orderedBy desc")
                             //return this.overviewGroup.all().sort((a,b) => (b.value[this.selected] === undefined ? b.value : b.value[this.selected]) - (a.value[this.selected] === undefined ? a.value : a.value[this.selected]));
                         } else {
-                            console.log("allSort false, sortedBy value, orderedBy asc")
+                            //console.log("allSort false, sortedBy value, orderedBy asc")
                             //return this.overviewGroup.all().sort((a,b) => (a.value[this.selected] === undefined ? a.value : a.value[this.selected]) - (b.value[this.selected] === undefined ? b.value : b.value[this.selected]));
                         }                        
                         //return this.sortValue('desc');

@@ -30,13 +30,13 @@
                 <div class='row'>
                     <div id="fyr" class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
                         <div id="dc-fyr-barchart">
-                            <h3>Fiscal Year<span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Fiscal Year<span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             </h3>
                         </div>
                     </div>
                     <div id="offgroup" class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
                         <div id="dc-offgroup-barchart">
-                            <h3>Group<span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Group<span style="font-size: 14pt; opacity: 0.87">{{ylabel}}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="visibility: hidden"
@@ -47,7 +47,7 @@
                     </div>
                     <div id="grade" class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
                         <div id="dc-grade-rowchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87">{{ylabel}}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="visibility: hidden"
@@ -58,7 +58,7 @@
                     </div> 
                     <div id="edlevel" class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
                         <div id="dc-edlevel-barchart">
-                            <h3>Degree Type <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Degree Type <span style="font-size: 14pt; opacity: 0.87">{{ylabel}}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="visibility: hidden"
@@ -125,6 +125,7 @@
 					data: [],
                     loaded: false,
                     searchCore: "",
+                    selected: "Count",
                     chartSpecs: chartSpecs,
                     coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
 			}
@@ -146,7 +147,10 @@
             coreGroup: function() {
                 //return this.coreDim.group().reduceSum(function(d) {return d.count;});
                 return this.coreDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial);
-            }                        
+            },
+            ylabel: function() {
+                return "(Count)"
+            }
 		},
 
         methods: {

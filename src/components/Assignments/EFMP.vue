@@ -22,7 +22,7 @@
 		        <div class="row">
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-6" id="year">
                     	<div id="dc-year-rowchart">
-                            <h3>Year <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
 	                                style="visibility: hidden"
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6" id="type">
                         <div id="dc-type-rowchart">
-                            <h3>Type <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                 <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -42,7 +42,7 @@
                     </div>
                 	<div class="col-xl-7 col-lg-6 col-md-6 col-sm-12 col-12" id="grade">
                     	<div id="dc-grade-barchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
 	                                style="visibility: hidden"
@@ -54,7 +54,7 @@
                 <div class="row">
                     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-12" id="marital">
                 		<div id="dc-marital-barchart">
-                            <h3>Marital Status <span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Marital Status <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
 	                                style="visibility: hidden"
@@ -230,7 +230,7 @@ export default {
         	var axiosData = response.data.data
         	store.state.asDate = response.data.ASOFDATE
             var objData = makeObject(axiosData)
-            console.log(objData)
+            // console.log(objData)
             this.data = objData
             this.loaded = true
             renderCharts()
@@ -274,8 +274,8 @@ export default {
         var testData = (formatted, original) =>{
             for (var key in formatted) {
                 if (formatted[key] === undefined){
-                    console.log('Empty Value of ' + key)
-                    console.log(original)
+                    // console.log('Empty Value of ' + key)
+                    // console.log(original)
                     formatted[key] = "UNKNOWN"
                 }
             }

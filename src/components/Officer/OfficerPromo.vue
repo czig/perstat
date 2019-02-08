@@ -50,7 +50,7 @@
                     <div id="grade" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-grade-barchart">
                             <h3 class="mb-0">Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <!--<font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>-->
+<!--                             <font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon> -->
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -59,18 +59,29 @@
                         </div>
                     </div>
                     <div id="zone" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
-                        <div id="dc-zone-rowchart">
-                            <h3>Zone <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <button type="button" 
-                                    class="btn btn-danger btn-sm btn-rounded reset" 
-                                    style="display: none"
-                                    @click="resetChart('dc-zone-rowchart')">Reset</button>
-                            </h3>
-                        </div>
+                        <h3 class="mb-0">Zone 
+                            <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <span data-toggle="tooltip" 
+                                  data-placement="top"
+                                  class="pl-1"
+                                  title="Below-the-Promotion Zone, In-the-Promotion-Zone, Above-the-Promotion-Zone.">
+                                <fontAwesomeIcon icon="info-circle" size="xs">
+                                </fontAwesomeIcon>
+                            </span> 
+                        </h3>
+                        <div id="dc-zone-rowchart"></div>
                     </div>
                     <div id="highestPme" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-highestPme-barchart">
                             <h3 class="mb-0">Highest PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <span data-toggle="tooltip" 
+                                  data-placement="top"
+                                  class="pl-1"
+                                  title="Below-the-Promotion Zone, In-the-Promotion-Zone, Above-the-Promotion-Zone.">
+                                <fontAwesomeIcon v-if="HpmeLoaded" icon="info-circle" size="xs">
+                                </fontAwesomeIcon>
+                            </span>   
+                            <!-- <font-awesome-icon v-show="ok" icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>  -->     
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -202,9 +213,9 @@ import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import largeBarChart from '@/components/largeBarChart'
 import overviewBarChart from '@/components/overviewBarChart'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
     export default {
         data() {
@@ -212,6 +223,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                 data: [],
                 selected: "percent",
                 loaded: false,
+                HpmeLoaded: false,
                 showAlert: true,
                 width: document.documentElement.clientWidth,
                 chartSpecs: chartSpecs,
@@ -316,9 +328,9 @@ import overviewBarChart from '@/components/overviewBarChart'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            FontAwesomeIcon,
             largeBarChart,
-            overviewBarChart
+            overviewBarChart,
+            'fontAwesomeIcon': FontAwesomeIcon
         },
         created: function(){
           console.log('created')
@@ -337,6 +349,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                 this.data = objData 
                 this.loaded = true
                 renderCharts()
+                this.completed = true
             }).catch(console.error)
 
             //TODO: import makeObject function and add new data
@@ -402,8 +415,8 @@ import overviewBarChart from '@/components/overviewBarChart'
             var testData = (formatted, original) =>{
                 for (var key in formatted) {
                     if (formatted[key] === undefined){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
+                        // console.log('Empty Value of ' + key)
+                        // console.log(original)
                         formatted[key] = "UNKNOWN"
                     }
                 }
@@ -559,11 +572,11 @@ import overviewBarChart from '@/components/overviewBarChart'
                           .attr('transform', 'translate(-8,0)rotate(-45)')
                           .on('click', (d)=>{
                             chart.filter(d);
-                            dc.redrawAll();                                
+                            dc.redrawAll();                               
                           })                        
                     })
-                    .yAxis().tickFormat(function(v) {return v + "%";})
-
+                    .yAxis().tickFormat(function(v) {return v})
+                 
 
                 //Compcat
                 //TODO: lighter blue
@@ -645,6 +658,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
+                    this.HpmeLoaded = true
                 })
 
                 //make responsive
@@ -653,7 +667,7 @@ import overviewBarChart from '@/components/overviewBarChart'
                     clearTimeout(temp)
                     temp = setTimeout(dc.redrawAll(), 500)
                 }
-
+                
                 //create charts
                 dc.renderAll()
                 dc.redrawAll()

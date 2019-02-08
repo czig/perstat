@@ -301,11 +301,11 @@ import overviewBarChart from '@/components/overviewBarChart'
                     obj2 = formatData(obj)
                     obj2 = testData(obj2, obj)
                    
-                    if (obj2.MAJCOM == "UNKNOWN"){
-                        console.log('UNKNOWN MAJCOM')
-                        console.log(obj)
-                        console.log(obj2)
-                    }
+                    // if (obj2.MAJCOM == "UNKNOWN"){
+                    //     console.log('UNKNOWN MAJCOM')
+                    //     console.log(obj)
+                    //     console.log(obj2)
+                    // }
                   
                     output.push(obj2);
                 }
@@ -330,8 +330,8 @@ import overviewBarChart from '@/components/overviewBarChart'
             var testData = (formatted, original) =>{
                 for (var key in formatted) {
                     if (formatted[key] === undefined){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
+                        // console.log('Empty Value of ' + key)
+                        // console.log(original)
                         formatted[key] = "UNKNOWN"
                     }
                 }

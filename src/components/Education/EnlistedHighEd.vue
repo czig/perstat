@@ -30,13 +30,13 @@
                 <div class='row'>
                     <div id="fyr" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-fyr-barchart">
-                            <h3>Fiscal Year<span style="font-size: 14pt; opacity: 0.87;"></span>
+                            <h3>Fiscal Year<span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             </h3>
                         </div>
                     </div>
                     <div id="edlevel" class="col-xl-8 col-lg-8 col-md-6 col-sm-6 col-12">
                         <div id="dc-edlevel-barchart">
-                            <h3>Degree Type <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Degree Type <span style="font-size: 14pt; opacity: 0.87">{{ylabel}}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="visibility: hidden"
@@ -50,7 +50,7 @@
                 <div class='row'>
                     <div id="grade" class="col-xl-5 col-lg-5 col-md-6 col-sm-6 col-12">
                         <div id="dc-grade-rowchart">
-                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>Grade <span style="font-size: 14pt; opacity: 0.87">{{ylabel}}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="visibility: hidden"
@@ -61,7 +61,7 @@
                     </div> 
                     <div id="cafsc" class="col-xl-7 col-lg-7 col-md-6 col-sm-6 col-12">
                         <div id="dc-cafsc-rowchart">
-                            <h3>CAFSC<span style="font-size: 14pt; opacity: 0.87"></span>
+                            <h3>CAFSC<span style="font-size: 14pt; opacity: 0.87">{{ylabel}}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
                                     style="visibility: hidden"
@@ -106,6 +106,9 @@
             },
             allGroup: function(){
                 return this.ndx.groupAll()
+            },
+            ylabel: function() {
+                return "(Count)"
             }
 		},
 

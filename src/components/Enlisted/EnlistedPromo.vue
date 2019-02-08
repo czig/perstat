@@ -299,8 +299,8 @@ import { store } from '@/store/store'
             var testData = (formatted, original) =>{
                 for (var key in formatted) {
                     if (formatted[key] === undefined){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
+                        // console.log('Empty Value of ' + key)
+                        // console.log(original)
                         formatted[key] = "UNKNOWN"
                     }
                 }
@@ -468,7 +468,7 @@ import { store } from '@/store/store'
 
                     var myFilters = '';
                     dc.chartRegistry.list().forEach((d)=>{
-                        console.log(d.anchorName().toUpperCase())
+                        //console.log(d.anchorName().toUpperCase())
                         if (_.includes(d.anchorName().toUpperCase(),'AFSC')){
                             //console.log('AFSC Filter: ' + this.sa)
                             if (_.includes(d.anchorName().toUpperCase(),'ROW') && this.sa){

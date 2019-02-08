@@ -1,7 +1,7 @@
 <template>
 
     <nav class="navbar navbar-expand-lg navbar-dark primary-color-dark fixed-top">
-      <img src="../../static/afpc_log.png" height="30px">
+      <router-link class="white-text" to="/"><img src="../../static/afpc_log.png" height="30px"></router-link>
       <div class="navbar-brand white-text"><router-link class="white-text" to="/">PERS-STAT</router-link></div>
       <button class="navbar-toggler hoverable" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

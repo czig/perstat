@@ -28,6 +28,17 @@
                            <label class="custom-control-label" for="radio4">
                                 STP 
                             </label>
+                            <span class="h3 ml-2">
+                                <span data-toggle="tooltip" 
+                                      data-placement="top"
+                                      title="Student, Trainee, and Personnel Hold.">
+                                    <FontAwesomeIcon icon="info-circle"
+                                                     style="vertical-align: 3px"
+                                                     size="xs"
+                                                     >
+                                    </FontAwesomeIcon>
+                                </span>
+                            </span>                            
                         </div>
                     </div>
                     <div class="col-auto">
@@ -144,6 +155,7 @@ import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import largeBarChart from '@/components/largeBarChart'
 import overviewBarChart from '@/components/overviewBarChart'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
     export default {
         data() {
@@ -434,6 +446,7 @@ import overviewBarChart from '@/components/overviewBarChart'
             'autocomplete': AutoComplete,
             'loader': Loader,
             searchBox,
+            FontAwesomeIcon,
             largeBarChart,
             overviewBarChart
         },
