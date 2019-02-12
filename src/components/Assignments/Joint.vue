@@ -226,6 +226,16 @@ import { store } from '@/store/store'
                         }
                     }
             },
+            //remove empty function (es6 syntax to keep correct scope)
+            removeError: (source_group) => {
+                return {
+                    all: () => {
+                        return source_group.all().filter((d) => {
+                            return d.key != "error" && d.key != "**ERROR**"
+                        })
+                    }
+                }
+            }            
 	    },
         components: {
             'loader': Loader,
@@ -283,6 +293,16 @@ import { store } from '@/store/store'
                     }
                 }
 
+                //remove empty function (es6 syntax to keep correct scope)
+                var removeError = (source_group) => {
+                    return {
+                        all: () => {
+                            return source_group.all().filter((d) => {
+                                return d.key != "error" && d.key != "**ERROR**"
+                            })
+                        }
+                    }
+                } 
                 //reduce functions
                 function jointAdd(p,v) {
                     p.count = p.count + +v.count
@@ -412,7 +432,7 @@ import { store } from '@/store/store'
                 barConfig.id = 'bar'
                 barConfig.dim = this.ndx.dimension(function(d){return d.gradeB})
                 var barPercent = barConfig.dim.group().reduce(jointAdd,jointRemove,jointInitial)
-                barConfig.group = removeEmptyBins(barPercent)
+                barConfig.group = removeError(removeEmptyBins(barPercent))
                 barConfig.minHeight = chartSpecs.majcomChart.minHeight 
                 barConfig.aspectRatio = chartSpecs.majcomChart.aspectRatio 
                 barConfig.margins = chartSpecs.majcomChart.margins 
