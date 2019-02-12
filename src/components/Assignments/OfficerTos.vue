@@ -108,9 +108,9 @@
                     </button>
                 </div> -->
                 <div class="row pt-2">
-                    <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div id="us" class="col-lg-6 col-md-6 col-sm-12 col-12">
                         <div id="dc-us-geoChoroplethChart">
-                            <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
+                            <h3 class="mt-2 mb-0">CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -118,9 +118,9 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="jp" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <div id="jp" class="col-lg-6 col-md-6 col-sm-12 col-12">
                         <div id="dc-jp-geoChoroplethChart">
-                            <h3>OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
+                            <h3 class="mt-2 mb-0">OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"

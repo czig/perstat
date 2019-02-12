@@ -408,6 +408,10 @@ import largeBarChart from '@/components/largeBarChart'
                 usConfig.propName = 'name' 
                 usConfig.projection = d3.geo.albersUsa()
 
+                var guText = ''
+                var viText = ''
+                var prText = ''
+
                 var usChart = dchelpers.getGeoChart(usConfig)                
                 usChart.title(function(d) {
                     //console.log("**************************************************");
@@ -421,10 +425,12 @@ import largeBarChart from '@/components/largeBarChart'
                     //console.log('d.value: '+d.value);
                     //console.log("**************************************************");
                     if (d.value == undefined){ d.value = '0';}
+                    if (d.key == 'GU') {guText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    if (d.key == 'VI') {viText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    if (d.key == 'PR') {prText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
                     return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
-                    
                 });
-
+                
                 usChart.on('pretransition', (chart)=> {
                                             
                     var color = 'orange'
@@ -451,6 +457,8 @@ import largeBarChart from '@/components/largeBarChart'
                             chart.filter([["GU"]]);
                             dc.redrawAll();
                         })
+                        .append("title")                        
+                        .text(guText)
 
                     textLabels
                         .append("text")
@@ -464,7 +472,9 @@ import largeBarChart from '@/components/largeBarChart'
                             chart.filter([["PR"]]);
                             dc.redrawAll();                            
                         })
-
+                        .append("title")                        
+                        .text(prText)
+                    
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.61)
@@ -477,7 +487,8 @@ import largeBarChart from '@/components/largeBarChart'
                             chart.filter([["VI"]]);
                             dc.redrawAll();                            
                         })
-
+                        .append("title")                        
+                        .text(viText)
                     // set viewport for svg
                     chart.maxWidth = 950
                     chart.maxHeight = 450
@@ -498,17 +509,6 @@ import largeBarChart from '@/components/largeBarChart'
                             mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
                         }))
                 })
-
-                /*
-                .dc-chart g.state path {
-                    stroke: #555; 
-                    stroke-width: 0.3;}
-
-                .dc-chart .selected path, .dc-chart .selected circle {
-                    stroke-width: 0.3;
-                }
-
-                */
                                 
                 usChart.controlsUseVisibility(true)
 
