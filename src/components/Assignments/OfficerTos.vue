@@ -867,23 +867,41 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     var data = tourConfig.dim.top(Infinity);
                     console.log(data)
                     data.forEach(d=>{
-                        if (d.Country=="02"){
-                            d.Country='';
-                            d.State='AK';
+                        if (!d.Country && !d.State) {
+                            //console.log("Country_State already defined.")
+                            delete d.State; delete d.Country;
                         }
-                        if (d.Country=="15"){
-                            d.Country='';
-                            d.State='HI';
+                        else {
+                            if (d.Country=="02"){
+                                d.Country='';
+                                d.State='AK';
+                            }
+                            if (d.Country=="15"){
+                                d.Country='';
+                                d.State='HI';
+                            }
+                            if (d.Country=="AL"){
+                                d.Country='ALB';
+                                d.State='';
+                            }
+                            //if (formats.countryLong[d.Country] == 'undefined' ) {console.log(d.Country)}//AL albania
+                            //if (formats.stateLong[d.State] == 'undefined' ) {console.log(d.State);}
+                            if (d.State !=='undefined' && d.State.length > 0) {
+                                d.Country_State= formats.stateLong[d.State].toUpperCase();                            
+                            }
+                            else if (d.Country !=='undefined' && d.Country.length > 0) {
+                                d.Country_State= formats.countryLong[d.Country].toUpperCase();
+                            }
+                            else {
+                                d.Country_State = '';                                                  
+                            } 
+
+                            if (d.State) { delete d.State; delete d.Country;}
+                            if (d.Country ) { delete d.State; delete d.Country; }
+                            else {delete d.State; delete d.Country;}
                         }
+                        
 
-                        if (d.State)
-                            d.Country_State= formats.stateLong[d.State].toUpperCase();
-                        else if (d.Country)
-                            d.Country_State= formats.countryLong[d.Country].toUpperCase();
-                        else d.Country_State = ''
-
-                        delete d.State;
-                        delete d.Country;  
                     })
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
@@ -892,7 +910,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         if (d.filters()[0])
                             myFilters += ' (' + d.filters() + ')'
                     })
-
+                    
+                    console.log(myFilters)
                     FileSaver.saveAs(blob, 'PERSTAT Officer_Average_TOS' + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
