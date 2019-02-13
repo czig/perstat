@@ -100,7 +100,7 @@
                     :reducerAdd="tfAdd"
                     :reducerRemove="tfRemove"
                     :accumulator="tfInitial"
-                    :numBars="15"
+                    :numBars="20"
                     :margin="chartSpecs.baseChart.margins"
                     :colorScale="baseColorScale"
                     :title="'Servicing MPF'"
