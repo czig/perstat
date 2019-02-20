@@ -33,6 +33,7 @@
     "lodash": "^4.17.5",
     "mdbootstrap": "^4.4.1",
     "popper.js": "^1.12.3",
+    "toastr": "^2.1.4",
     "topojson": "^3.0.2",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",

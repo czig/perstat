@@ -5,7 +5,7 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                    <div id="radioSelect" class="col-8">
+                    <div id="radioSelect" class="col-7">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="totalCount" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
@@ -37,14 +37,17 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-4" align="right">
+                    <div class="col-5" align="right">
+                        <button type="button" id="showMyFilters"
+                                class="btn btn-info btn-rounded btn-sm waves-effect"                                
+                                >Current Filters</button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect" 
                                 >Download Raw Data</button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 @click="searchCore='';resetAll()">Reset All</button>
-                    </div>      
+                    </div>    
                 </div>       
                 <div class="row"></div>
                 <div class="row">
@@ -192,18 +195,19 @@
 	import { store } from '@/store/store'
   import largeBarChart from '@/components/largeBarChart'
   import overviewBarChart from '@/components/overviewBarChart'    
+  import toastr from "toastr";
 
 	export default {
 		data() {
 			return {
 					data: [],
-                    loaded: false,
-                    selected: "totalCount",
-                    searchCore: "",
-                    searchYRGP: "",
-                    chartSpecs: chartSpecs,
-                    coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
-                    yrgpColorScale: d3.scale.ordinal().range([chartSpecs.yrgpChart.color]),                    
+          loaded: false,
+          selected: "totalCount",
+          searchCore: "",
+          searchYRGP: "",
+          chartSpecs: chartSpecs,
+          coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+          yrgpColorScale: d3.scale.ordinal().range([chartSpecs.yrgpChart.color]),                    
 			}
 		},
 
@@ -211,34 +215,34 @@
 			ndx: function() {
 				return crossfilter (this.data)
 			},
-            asDate: function() {
-                return store.state.asDate;
-            },
-            allGroup: function(){
-                return this.ndx.groupAll()
-            },
-            coreDim: function() {
-                return this.ndx.dimension(function(d) {return d.core;});
-            },
-            coreGroup: function() {
-                return this.coreDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial)
-            },
-            yrgpDim: function() {
-                return this.ndx.dimension(function(d) {
-                  return d.yrgp;
-                });
-            },
-            yrgpGroup: function() {
-                return this.yrgpDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial);
-            },            
-            ylabel: function() {
-              if (_.includes(this.selected,"Percent")) {
-                  return "(%)"
-              }
-              else {
-                  return "(Count)"
-              }
-            },
+      asDate: function() {
+          return store.state.asDate;
+      },
+      allGroup: function(){
+          return this.ndx.groupAll()
+      },
+      coreDim: function() {
+          return this.ndx.dimension(function(d) {return d.core;});
+      },
+      coreGroup: function() {
+          return this.coreDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial)
+      },
+      yrgpDim: function() {
+          return this.ndx.dimension(function(d) {
+            return d.yrgp;
+          });
+      },
+      yrgpGroup: function() {
+          return this.yrgpDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial);
+      },            
+      ylabel: function() {
+        if (_.includes(this.selected,"Percent")) {
+            return "(%)"
+        }
+        else {
+            return "(Count)"
+        }
+      }
 
 		},
 
@@ -542,13 +546,30 @@
                       return formats.gradeOrder[d.key]                      
                     })  
 
+                //Curent Filters button
+                d3.select('#showMyFilters')
+                  .on('click', ()=>{
+                    var myFilters = 'Current filters include ';
+                    dc.chartRegistry.list().forEach((d)=>{ 
+                      if (d.filters()[0])
+                        myFilters += '\n (' + d.filters() + ')'
+                    })
+                    if (myFilters !== undefined) {
+                      // Override global options
+                      toastr.options = {
+                        "positionClass": "toast-bottom-full-width",
+                        "closeButton":"true",
+                        "preventDuplicates":"true"
+                      }
+                      toastr.info(myFilters);
+                    }                   
+                  });
 
                 //Download Raw Data button
                 d3.select('#download')
                 .on('click', ()=>{
                     var data = gradeConfig.dim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
-
+                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});                  
                     var myFilters = '';
                     dc.chartRegistry.list().forEach((d)=>{
                         if (d.filters()[0])
@@ -592,7 +613,8 @@
 	}
 
 </script>
-
+<!-- <script src="../../../node_modules/toastr/build/toastr.min.js"></script> -->
+<style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="../../../node_modules/dc/dc.css">
 </style>
 <style scoped>
