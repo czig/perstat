@@ -15,18 +15,37 @@
                               data-placement="bottom"
                               class="h3 pl-1"
                               title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
-                            <fontAwesomeIcon icon="info-circle" size="xs">
-                            </fontAwesomeIcon>
+                            <FontAwesomeIcon icon="info-circle" size="xs">
+                            </FontAwesomeIcon>
                         </span>
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="showMyFilters"
+                                class="btn btn-info btn-rounded btn-sm waves-effect"
+                                title="Filter">
+                        Filter&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="filter" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button> 
                         <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect" 
-                                >Download Raw Data</button>
+                                class="btn btn-info btn-rounded btn-sm waves-effect"
+                                title="Download Raw Data">
+                        Download&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="download" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button>
                         <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                @click="resetAll">Reset All</button>
+                                class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                title="Reset All"
+                                @click="resetAll">
+                        Reset All&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="redo-alt" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button>                         
                     </div>
                 </div>
                 <div class="row">
@@ -75,8 +94,8 @@
                                           data-placement="bottom"
                                           class="pl-1"                                          
                                           title="Type in the full, or partial, installation name and press the Search Button to Filter by Installation.">
-                                        <fontAwesomeIcon icon="info-circle" size="xs">
-                                        </fontAwesomeIcon>
+                                        <FontAwesomeIcon icon="info-circle" size="xs">
+                                        </FontAwesomeIcon>
                                     </span>
                                     <!--@click="resetChart('dc-base-barchart');resetChart('dc-base-select') -->
 <!--                                     <button type="button"
@@ -144,6 +163,7 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import toastr from 'toastr'
 
 	export default {
         data() {
@@ -202,7 +222,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            'fontAwesomeIcon': FontAwesomeIcon,
+            FontAwesomeIcon,
             searchBox
         },
         created: function(){
@@ -860,6 +880,25 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                             mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
                         }))
                 })
+
+                //Curent Filters button
+                d3.select('#showMyFilters')
+                  .on('click', ()=>{
+                    var myFilters = 'Current filters include ';
+                    dc.chartRegistry.list().forEach((d)=>{ 
+                      if (d.filters()[0])
+                        myFilters += '\n (' + d.filters() + ')'
+                    })
+                    if (myFilters !== undefined) {
+                      // Override global options
+                      toastr.options = {
+                        "positionClass": "toast-bottom-full-width",
+                        "closeButton":"true",
+                        "preventDuplicates":"true"
+                      }
+                      toastr.info(myFilters);
+                    }                   
+                  });
 
                  //Download Raw Data button
                 d3.select('#download')

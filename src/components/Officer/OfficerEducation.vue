@@ -39,14 +39,30 @@
                     </div>
                     <div class="col-5" align="right">
                         <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"                                
-                                >Current Filters</button> 
+                                class="btn btn-info btn-rounded btn-sm waves-effect"
+                                title="Filter">
+                        Filter&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="filter" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button> 
                         <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect" 
-                                >Download Raw Data</button>
+                                class="btn btn-info btn-rounded btn-sm waves-effect"
+                                title="Download Raw Data">
+                        Download&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="download" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                @click="searchCore='';resetAll()">Reset All</button>
+                                title="Reset All"
+                                @click="searchCore='';resetAll()">
+                        Reset All&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="redo-alt" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button>
                     </div>    
                 </div>       
                 <div class="row"></div>
@@ -195,7 +211,8 @@
 	import { store } from '@/store/store'
   import largeBarChart from '@/components/largeBarChart'
   import overviewBarChart from '@/components/overviewBarChart'    
-  import toastr from "toastr";
+  import toastr from "toastr"
+  import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
 	export default {
 		data() {
@@ -299,40 +316,16 @@
                   stemPercent: 0,
                   nonStemPercent: 0
               }
-          // },                 
-          // edAddLarge: function(p,v) {
-          //     p.totalCount = p.totalCount + +v.totalCount
-          //     p.stem = p.stem + +v.stem
-          //     p.nonStem = p.nonStem + +v.nonStem
-          //     p.stemPercent = p.stem/p.totalCount === Infinity ? 0 : Math.round((p.stem/p.totalCount)*1000)/10 || 0
-          //     p.nonStemPercent = p.nonStem/p.totalCount === Infinity ? 0 : Math.round((p.nonStem/p.totalCount)*1000)/10 || 0
-          //     return p 
-          // },
-          // edRemoveLarge: function(p,v) {
-          //     p.totalCount = p.totalCount - +v.totalCount
-          //     p.stem = p.stem - +v.stem
-          //     p.nonStem = p.nonStem - +v.nonstem
-          //     p.stemPercent = p.stem/p.totalCount === Infinity ? 0 : Math.round((p.stem/p.totalCount)*1000)/10 || 0
-          //     p.nonStemPercent = p.nonStem/p.totalCount === Infinity ? 0 : Math.round((p.nonStem/p.totalCount)*1000)/10 || 0
-          //     return p
-          // },
-          // edInitialLarge: function() {
-          //     return {
-          //       totalCount: 0,
-          //       stem: 0,
-          //       nonStem: 0,
-          //       stemPercent: 0,
-          //       nonStemPercent: 0
-          //     }
           }
 		},
 
 		components: {
 			'AutoComplete': AutoComplete,
-            'Loader': Loader,
-            searchBox,
-            largeBarChart,
-            overviewBarChart
+      'Loader': Loader,
+      searchBox,
+      largeBarChart,
+      overviewBarChart,
+      FontAwesomeIcon
 		},
 
 		created: function() { 
@@ -613,7 +606,6 @@
 	}
 
 </script>
-<!-- <script src="../../../node_modules/toastr/build/toastr.min.js"></script> -->
 <style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="../../../node_modules/dc/dc.css">
 </style>

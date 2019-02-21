@@ -14,12 +14,31 @@
                     </div> -->
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="showMyFilters"
+                                class="btn btn-info btn-rounded btn-sm waves-effect"
+                                title="Filter">
+                        Filter&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="filter" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button> 
                         <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect" 
-                                >Download Raw Data</button>
+                                class="btn btn-info btn-rounded btn-sm waves-effect"
+                                title="Download Raw Data">
+                        Download&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="download" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                @click="resetAll">Reset All</button>
+                                title="Reset All"
+                                @click="resetAll">
+                        Reset All&nbsp;&nbsp;  
+                        <FontAwesomeIcon icon="redo-alt" 
+                                         size="lg">
+                        </FontAwesomeIcon>
+                        </button>
                     </div>
                 </div>
                 <div class="row">
@@ -65,8 +84,8 @@
                                   data-placement="top"
                                   class="pl-1"
                                   title="Below-the-Promotion Zone, In-the-Promotion-Zone, Above-the-Promotion-Zone.">
-                                <fontAwesomeIcon icon="info-circle" size="xs">
-                                </fontAwesomeIcon>
+                                <FontAwesomeIcon icon="info-circle" size="xs">
+                                </FontAwesomeIcon>
                             </span> 
                         </h3>
                         <div id="dc-zone-rowchart"></div>
@@ -78,8 +97,8 @@
                                   data-placement="top"
                                   class="pl-1"
                                   title="Below-the-Promotion Zone, In-the-Promotion-Zone, Above-the-Promotion-Zone.">
-                                <fontAwesomeIcon v-if="HpmeLoaded" icon="info-circle" size="xs">
-                                </fontAwesomeIcon>
+                                <FontAwesomeIcon v-if="HpmeLoaded" icon="info-circle" size="xs">
+                                </FontAwesomeIcon>
                             </span>   
                             <!-- <font-awesome-icon v-show="ok" icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>  -->     
                             <button type="button" 
@@ -216,6 +235,7 @@ import { store } from '@/store/store'
 import largeBarChart from '@/components/largeBarChart'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import toastr from 'toastr'
 
     export default {
         data() {
@@ -330,7 +350,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
             'loader': Loader,
             largeBarChart,
             overviewBarChart,
-            'fontAwesomeIcon': FontAwesomeIcon
+            FontAwesomeIcon
         },
         created: function(){
           console.log('created')
@@ -639,6 +659,24 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                       return pmeMethodOrder[d.key]
                     })                                    
                 
+                //Curent Filters button
+                d3.select('#showMyFilters')
+                  .on('click', ()=>{
+                    var myFilters = 'Current filters include ';
+                    dc.chartRegistry.list().forEach((d)=>{ 
+                      if (d.filters()[0])
+                        myFilters += '\n (' + d.filters() + ')'
+                    })
+                    if (myFilters !== undefined) {
+                      // Override global options
+                      toastr.options = {
+                        "positionClass": "toast-bottom-full-width",
+                        "closeButton":"true",
+                        "preventDuplicates":"true"
+                      }
+                      toastr.info(myFilters);
+                    }                   
+                  });
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -686,7 +724,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
         }
     }
 </script>
-
+<style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="@/../node_modules/dc/dc.css">
 </style>
 <style>  /*should be scoped*/
