@@ -10,7 +10,6 @@
                             <span id="inv"></span>
                         </div>
                     </div>
-                    <div class="col"></div>
                     <div class="col-auto">
                         <button type="button" id="demo"
                             class="btn btn-primary btn-sm"
@@ -21,7 +20,7 @@
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -30,7 +29,7 @@
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="6" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -40,7 +39,7 @@
                                 data-step="4" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
                                 @click="resetAll">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -48,7 +47,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="type" class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                    <div id="type" class="col-xl-4 col-lg-5 col-md-5 col-sm-12 col-12">
                         <div id="dc-type-rowchart">
                             <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -58,7 +57,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="grade" class="col-xl-5 col-lg-5 col-md-6 col-sm-12 col-12">
+                    <div id="grade" class="col-xl-8 col-lg-7 col-md-7 col-sm-12 col-12">
                         <div id="dc-grade-barchart">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -317,9 +316,9 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     return d.File_Type;
                 })
                 typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
-                typeConfig.minHeight = chartSpecs.typeChart.minHeight
+                typeConfig.minHeight = 250
                 typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio
-                typeConfig.margins = chartSpecs.typeChart.margins
+                typeConfig.margins =  {top: 0,left: 20, right: 30, bottom: 60}
                 typeConfig.colors = chartSpecs.typeChart.color
                 var typeChart = dchelpers.getRowChart(typeConfig)   
                 typeChart.controlsUseVisibility(true)
@@ -369,8 +368,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 })
                 gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 gradeConfig.minHeight = 250
-                gradeConfig.aspectRatio = 3
-                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 70}
+                gradeConfig.aspectRatio = 5
+                gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 60}
                 gradeConfig.colors = this.chartSpecs.gradeChartColorScale
                 var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)
                 gradeChart
@@ -405,9 +404,9 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 usConfig.group = removeError(usConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 usConfig.scale = 1
                 usConfig.minHeight = 200
-                usConfig.aspectRatio = 2.1 
+                usConfig.aspectRatio = 2.01 
                 usConfig.xRatio = 2.0
-                usConfig.yRatio = 2.0
+                usConfig.yRatio = 2.2
                                 
 
                 //default color scale from #E2F2FF to #0061B5.
@@ -456,7 +455,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 
                 usChart.on('pretransition', (chart)=> {
                                             
-                    var color = 'orange'
+                    var color = '#555'
                     chart.select('svg').attr("class", "border shadow p-1 mt-3 bg-white rounded")
                     chart.select('svg').select(".textLabels").remove()
                     chart.select('svg .layer0').append('g').attr("class", "textLabels")
@@ -468,7 +467,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.12)
-                        .attr("y", usConfig.height * 0.68)
+                        .attr("y", usConfig.height * 0.63)
                         .attr("fill", color) 
                         .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold')  
@@ -486,7 +485,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.54)
-                        .attr("y", usConfig.height * 0.99)
+                        .attr("y", usConfig.height * 0.93)
                         .attr("fill", color)  
                         .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold') 
@@ -501,7 +500,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.61)
-                        .attr("y", usConfig.height * 0.93)
+                        .attr("y", usConfig.height * 0.87)
                         .attr("fill", color)  
                         .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold') 
@@ -550,8 +549,16 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (inv.value() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
 
                 //Download Raw Data button
@@ -600,8 +607,27 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
         }
     }
 </script>
-
-<style src="../../../node_modules/dc/dc.css">
+<style src="../../../node_modules/toastr/build/toastr.css"/>
+<style src="../../../node_modules/dc/dc.css"/>
+<style>
+#type, #grade, #empCat, #us {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+#us svg {
+    background-color: darkGray !important;
+}
+#us svg g.state path {
+  stroke:#555;
+}
+#us svg g.state:hover path {
+  fill: orange;
+  stroke:#ccc;
+}
+#us svg g.state.selected path {
+  stroke: orange;
+  stroke-width: 1px;
+}
 </style>
 <style scoped>
 .axis line,

@@ -22,7 +22,7 @@
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -30,7 +30,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -39,7 +39,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
                                 title="Reset All"
                                 @click="searchCore='';resetAll()">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -381,7 +381,7 @@
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
                 fyrConfig.minHeight = 200 
                 fyrConfig.aspectRatio = 2 
-                fyrConfig.margins = chartSpecs.standardBarChart.margins
+                fyrConfig.margins = chartSpecs.yearChart.margins
                 fyrConfig.colors = [chartSpecs.yearChart.color]
                 var fyrChart = dchelpers.getOrdinalBarChart(fyrConfig)
 
@@ -524,8 +524,16 @@
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (totalCountND.value() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
 
                 //Download Raw Data button
@@ -618,7 +626,12 @@
 
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="../../../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css"/>
+<style>
+#fyr, #offgroup, #grade, #edlevel, #core {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 </style>
 <style scoped>
 

@@ -13,7 +13,7 @@
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>   
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -21,7 +21,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p> 
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -30,7 +30,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
                                 title="Reset All"
                                 @click="resetAll">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -38,21 +38,17 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 col-12">
-                        <div class="row">
-                            <div id="type" class="col-12">
-                                <div id="dc-type-rowchart">
-                                    <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm btn-rounded reset" 
-                                            style="visibility: hidden"
-                                            @click="resetChart('dc-type-rowchart')">Reset</button>
-                                    </h3>
-                                </div>
-                            </div>
+                    <div id="type" class="col-xl-4 col-lg-5 col-md-5 col-sm-12 col-12">
+                        <div id="dc-type-rowchart">
+                            <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-type-rowchart')">Reset</button>
+                            </h3>
                         </div>
                     </div>
-                    <div id="grade" class="col-xl-8 col-lg-8 col-md-9 col-sm-12 col-12">
+                    <div id="grade" class="col-xl-8 col-lg-7 col-md-7 col-sm-12 col-12">
                         <div id="dc-grade-barchart">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -119,7 +115,7 @@
                     :reducerAdd="tfAdd"
                     :reducerRemove="tfRemove"
                     :accumulator="tfInitial"
-                    :numBars="20"
+                    :numBars="15"
                     :margin="chartSpecs.baseChart.margins"
                     :colorScale="baseColorScale"
                     :title="'Servicing MPF'"
@@ -194,9 +190,9 @@ import toastr from 'toastr'
                             'id': 'type',
                             'dim': this.typeDim,
                             'group': this.removeError(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
-                            'minHeight': 200,
+                            'minHeight': 250,
                             'aspectRatio': 3,
-                            'margins': {top: 0,left: 30, right: 30, bottom: 20},
+                            'margins': {top: 0,left: 20, right: 30, bottom: 60},
                             'colors': chartSpecs.typeChart.color
    
                 }
@@ -210,7 +206,7 @@ import toastr from 'toastr'
                             'dim': this.gradeDim,
                             'group': this.removeEmptyBins(this.gradeDim.group().reduceSum(function(d) {return +d.Inventory;})),
                             'minHeight': 250,
-                            'aspectRatio': 3,
+                            'aspectRatio': 5,
                             'margins': {top: 10, left: 50, right: 30, bottom: 60},
                             'colors': this.chartSpecs.gradeChartColorScale 
                        }
@@ -390,8 +386,16 @@ import toastr from 'toastr'
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (inv.value() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
 
                  //Download Raw Data button
@@ -474,7 +478,12 @@ import toastr from 'toastr'
     }
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="../../../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css"/>
+<style>
+#type, #grade, #majcom, #base {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 </style>
 <style scoped>
 .axis line,

@@ -24,7 +24,7 @@
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -32,7 +32,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -41,7 +41,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
                                 title="Reset All"
                                 @click="resetAll">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -668,11 +668,11 @@ import toastr from 'toastr'
                      return d.Country;
                 })
                 jpConfig.group = jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                jpConfig.scale = 2 
+                jpConfig.scale = 2.2 
                 jpConfig.minHeight = 200
-                jpConfig.aspectRatio = 2 
+                jpConfig.aspectRatio = 2
                 jpConfig.xRatio = 1.8 
-                jpConfig.yRatio = 2 
+                jpConfig.yRatio = 2.2 
 
                 jpConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
                 jpConfig.valueAccessor = function(d) {
@@ -741,7 +741,7 @@ import toastr from 'toastr'
                 // })
 
                 jpChart.on('pretransition', (chart)=> {
-                    var color = 'orange'
+                    var color = '#555'
                     chart.select('svg').attr("class", "border shadow p-3 mt-3 bg-white rounded")
                     chart.select('svg').select(".divider").remove()
                     chart.select('#dc-jp-geoChoroplethChart svg .layer0').append('g').attr("class", "divider")
@@ -750,17 +750,17 @@ import toastr from 'toastr'
 
                     //lines must meet; set variables to represent where lines meet
                     //point where all areas meet
-                    var tripleJunctionX = 0.25 * jpConfig.width 
+                    var tripleJunctionX = 0.28 * jpConfig.width 
                     var tripleJunctionY = 0.1 * jpConfig.height
                     //intersection between pacific and alaska
-                    var pacificAlaskaX = 0.14 * jpConfig.width
-                    var pacificAlaskaY = 0.55 * jpConfig.height
+                    var pacificAlaskaX = 0.17 * jpConfig.width
+                    var pacificAlaskaY = 0.50 * jpConfig.height
                     //corner (90 deg) between alaska and europe
-                    var europeAlaskaTopX = 0.432 * jpConfig.width
-                    var europeAlaskaTopY = 0.28 * jpConfig.height
+                    var europeAlaskaTopX = 0.45 * jpConfig.width
+                    var europeAlaskaTopY = 0.26 * jpConfig.height
                     //corner (>90 deg) between alaska and europe
-                    var europeAlaskaBotX = 0.43 * jpConfig.width
-                    var europeAlaskaBotY = 0.62 * jpConfig.height
+                    var europeAlaskaBotX = 0.47 * jpConfig.width
+                    var europeAlaskaBotY = 0.60 * jpConfig.height
                     //end of line between alaska and europe
                     var europeAlaskaEndX = 0.6 * jpConfig.width
                     var europeAlaskaEndY = 0.8 * jpConfig.height
@@ -839,8 +839,9 @@ import toastr from 'toastr'
                      textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.05)
-                        .attr("y", jpConfig.height * 0.05)
+                        .attr("y", jpConfig.height * 0.08)
                         .attr("fill", color) 
+                        .attr("font-size", '11pt')
                         .attr("font-weight", 'bold')  
                         .text('Pacific');
 
@@ -849,6 +850,7 @@ import toastr from 'toastr'
                         .attr("x", jpConfig.width * 0.05)
                         .attr("y", jpConfig.height * 0.8)
                         .attr("fill", color) 
+                        .attr("font-size", '11pt')
                         .attr("font-weight", 'bold') 
                         .text('Alaska & Hawaii');
 
@@ -857,6 +859,7 @@ import toastr from 'toastr'
                         .attr("x", jpConfig.width * 0.7)
                         .attr("y", jpConfig.height * 0.8)
                         .attr("fill", color) 
+                        .attr("font-size", '11pt')
                         .attr("font-weight", 'bold') 
                         .text('Europe');
                 
@@ -896,8 +899,16 @@ import toastr from 'toastr'
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (invND.value() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
 
                  //Download Raw Data button
@@ -988,8 +999,27 @@ import toastr from 'toastr'
     }
 
 </script>
-
-<style src="../../../node_modules/dc/dc.css">
+<style src="../../../node_modules/toastr/build/toastr.css"/>
+<style src="../../../node_modules/dc/dc.css"/>
+<style>
+#tour, #type, #grade, #base, #us, #jp {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+#us svg, #jp svg {
+    background-color: darkGray !important;
+}
+#us svg g.state path, #jp svg g.state path {
+  stroke:#555;
+}
+#us svg g.state:hover path, #jp svg g.state:hover path  {
+  fill: orange;
+  stroke:#ccc;
+}
+#us svg g.state.selected path, #jp svg g.state.selected path {
+  stroke: orange;
+  stroke-width: 1px;
+}
 </style>
 
 <style scoped>

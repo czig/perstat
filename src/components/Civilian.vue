@@ -20,7 +20,7 @@
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -28,7 +28,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -37,7 +37,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
                                 title="Reset All"
                                 @click="resetAll">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -125,7 +125,6 @@
                     :aspectRatio="3.8"
                     :minHeight="240"
                     :normalToOverviewFactor="2.5"
-                    :selected="selected"
                     :ylabel="ylabel"
                     :reducerAdd="inventoryAdd"
                     :reducerRemove="inventoryRemove"
@@ -157,7 +156,6 @@
                     :aspectRatio="3.8"
                     :minHeight="240"
                     :normalToOverviewFactor="2.5"
-                    :selected="selected"
                     :ylabel="ylabel"
                     :reducerAdd="inventoryAdd"
                     :reducerRemove="inventoryRemove"
@@ -503,9 +501,18 @@ import toastr from 'toastr'
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (invND.value() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
+                  
 
                 //Download Raw Data button
                 d3.select('#download')

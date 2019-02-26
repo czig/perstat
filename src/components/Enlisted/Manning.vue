@@ -45,7 +45,7 @@
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -53,7 +53,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -62,7 +62,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
                                 title="Reset All"
                                 @click="resetAll">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -485,14 +485,27 @@ import toastr from 'toastr'
                         myFilters += '\n (' + d.filters() + ')'
                     })
                     if (myFilters !== undefined) {
+                        var myCheckValue = 0;
+                        if (this.selected == "percent") {myCheckValue = percentND.value; };
+                        if (this.selected == "auth") { myCheckValue = authND.value };
+                        if (this.selected == "asgn") { myCheckValue = asgnND.value };
+                        if (this.selected == "stp") { myCheckValue = stpND.value };
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (myCheckValue() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
 
                 //Download Raw Data button
@@ -541,7 +554,12 @@ import toastr from 'toastr'
     }
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="../../../node_modules/dc/dc.css">
+<style src="../../../node_modules/dc/dc.css"/>
+<style>
+#majcom, #grade, #afscGroup, #mpf {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 </style>
 <style scoped>
 div[id*="-barchart"] .x.axis text{

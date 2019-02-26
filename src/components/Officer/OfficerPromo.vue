@@ -17,7 +17,7 @@
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>   
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -25,7 +25,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p> 
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -34,7 +34,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 title="Reset All"
                                 @click="resetAll">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -66,7 +66,7 @@
                     </button>
                 </div>
                 <div class="row">
-                    <div id="grade" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div id="grade" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-grade-barchart">
                             <h3 class="mb-0">Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
 <!--                             <font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon> -->
@@ -77,7 +77,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="zone" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div id="zone" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <h3 class="mb-0">Zone 
                             <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <span data-toggle="tooltip" 
@@ -90,7 +90,7 @@
                         </h3>
                         <div id="dc-zone-rowchart"></div>
                     </div>
-                    <div id="highestPme" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div id="highestPme" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-highestPme-barchart">
                             <h3 class="mb-0">Highest PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <span data-toggle="tooltip" 
@@ -108,7 +108,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="compCat" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div id="compCat" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-compCat-rowchart">
                             <h3 class="mb-0">CompCat <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -118,7 +118,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="recommend" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div id="recommend" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-recommend-rowchart">
                             <h3 class="mb-0">Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                 <transition>
@@ -129,7 +129,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="pmeMethod" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div id="pmeMethod" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-pmeMethod-rowchart">
                             <h3 class="mb-0">PME Method<span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -674,8 +674,16 @@ import toastr from 'toastr'
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (selRateND.value() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
 
                 //Download Raw Data button
@@ -725,7 +733,12 @@ import toastr from 'toastr'
     }
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="@/../node_modules/dc/dc.css">
+<style src="@/../node_modules/dc/dc.css"/>
+<style>
+#grade, #zone, #highestPme, #compCat, #recommend, #pmeMethod, #core, #board {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 </style>
 <style>  /*should be scoped*/
 #radioSelect div,input,label{

@@ -14,7 +14,7 @@
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -22,7 +22,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -31,7 +31,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
                                 title="Reset All"
                                 @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -418,24 +418,32 @@ export default {
                     return -d.value;
                 })
 
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
-                        myFilters += '\n (' + d.filters() + ')'
-                    })
-                    if (myFilters !== undefined) {
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      toastr.info(myFilters);
-                    }                   
-                  });
+            //Curent Filters button
+            d3.select('#showMyFilters')
+              .on('click', ()=>{
+                var myFilters = 'Current filters include ';
+                dc.chartRegistry.list().forEach((d)=>{ 
+                  if (d.filters()[0])
+                    myFilters += '\n (' + d.filters() + ')'
+                })
+                if (myFilters !== undefined) {
+                  // Override global options
+                  toastr.options = {
+                    "positionClass": "toast-bottom-full-width",
+                    "closeButton":"true",
+                    "preventDuplicates":"true"
+                  }
+                  if (invND.value() == 0) {
+                    toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                  }
+                  else {
+                    toastr.info(myFilters);  
+                  }                      
+                }
+                if (myFilters == 'undefined' || myFilters == undefined) {
+                    toastr.error('Something went wrong. Please reset and try again.')
+                }          
+              });
 
             //Download Raw Data button
             d3.select('#download')
@@ -490,7 +498,14 @@ export default {
 }
 
 </script>
-
+<style src="../../../node_modules/toastr/build/toastr.css"/>
+<style src="@/../node_modules/dc/dc.css"/>
+ <style>
+#year, #type, #grade, #marital, #majcom, #base {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+</style>
 <style scoped>
 div[id*="-barchart"] .x.axis text{
     text-anchor: end !important;

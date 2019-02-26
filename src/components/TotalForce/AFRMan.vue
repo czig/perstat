@@ -14,7 +14,7 @@
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
-                        Filter&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -22,7 +22,7 @@
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 title="Download Raw Data">
-                        Download&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>   
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -31,7 +31,7 @@
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
                                 title="Reset All"
                                 @click="resetAll">
-                        Reset All&nbsp;&nbsp;  
+                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                    <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 col-12">
                         <div class="row">
                             <div id="type" class="col-12">
                                 <div id="dc-type-rowchart">
@@ -53,7 +53,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="grade" class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-12">
+                    <div id="grade" class="col-xl-8 col-lg-7 col-md-7 col-sm-12 col-12">
                         <div id="dc-grade-barchart">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -216,9 +216,9 @@ import toastr from 'toastr'
             var testData = (formatted, original) =>{
                 for (var key in formatted) {
                     if (formatted[key] === undefined){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
-                        formatted[key] = "UNKNOWN"
+                        // console.log('Empty Value of ' + key)
+                        // console.log(original)
+                        // formatted[key] = "UNKNOWN"
                     }
                 }
                 return formatted;
@@ -361,8 +361,16 @@ import toastr from 'toastr'
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      toastr.info(myFilters);
-                    }                   
+                      if (inv.value() == 0) {
+                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      }
+                      else {
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
                   });
 
                 //Download Raw Data button
@@ -411,8 +419,13 @@ import toastr from 'toastr'
         }
     }
 </script>
-
-<style src="../../../node_modules/dc/dc.css">
+<style src="../../../node_modules/toastr/build/toastr.css"/>
+<style src="../../../node_modules/dc/dc.css"/>
+<style>
+.row {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 </style>
 <style scoped>
 .axis line,
