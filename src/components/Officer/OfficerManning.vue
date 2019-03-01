@@ -100,7 +100,7 @@
                     :dimension="majcomDim"
                     :aspectRatio="chartSpecs.majcomChart.aspectRatio"
                     :minHeight="chartSpecs.majcomChart.minHeight"
-                    :normalToOverviewFactor="2.5"
+                    :normalToOverviewFactor="1.5"
                     :selected="selected"
                     :ylabel="ylabel"
                     :reducerAdd="manningAdd"
@@ -139,8 +139,8 @@
                     <overviewBarChart 
                         :id="'mpf'"
                         :dimension="mpfDim"
-                        :aspectRatio="3.8"
-                        :minHeight="240"
+                        :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                        :minHeight="chartSpecs.baseChart.minHeight"
                         :normalToOverviewFactor="2.5"
                         :selected="selected"
                         :ylabel="ylabel"
@@ -232,9 +232,9 @@ import toastr from 'toastr'
                         'id': 'grade',
                         'dim': this.gradeDim,
                         'group': this.gradeDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial),
-                        'minHeight': 220,
-                        'aspectRatio': 4,
-                        'margins': {top: 10, left: 50, right: 30, bottom: 20},
+                        'minHeight': chartSpecs.gradeChart.minHeight,
+                        'aspectRatio': chartSpecs.gradeChart.aspectRatio,
+                        'margins': chartSpecs.gradeChart.margins,
                         'colors': this.chartSpecs.gradeChartColorScale
                     }
           },

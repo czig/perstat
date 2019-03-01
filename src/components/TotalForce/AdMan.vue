@@ -78,7 +78,7 @@
                     :dimension="majcomDim"
                     :aspectRatio="chartSpecs.majcomChart.aspectRatio"
                     :minHeight="chartSpecs.majcomChart.minHeight"
-                    :normalToOverviewFactor="2.5"
+                    :normalToOverviewFactor="1.5"
                     :selected="selected"
                     :ylabel="ylabel"
                     :reducerAdd="tfAdd"

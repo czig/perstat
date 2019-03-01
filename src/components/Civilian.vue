@@ -122,8 +122,8 @@
                 <overviewBarChart 
                     :id="'majcom'"
                     :dimension="majcomDim"
-                    :aspectRatio="3.8"
-                    :minHeight="240"
+                    :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                    :minHeight="chartSpecs.majcomChart.minHeight"
                     :normalToOverviewFactor="2.5"
                     :ylabel="ylabel"
                     :reducerAdd="inventoryAdd"
@@ -153,8 +153,8 @@
                 <overviewBarChart 
                     :id="'loc'"
                     :dimension="locDim"
-                    :aspectRatio="3.8"
-                    :minHeight="240"
+                    :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                    :minHeight="chartSpecs.baseChart.minHeight"
                     :normalToOverviewFactor="2.5"
                     :ylabel="ylabel"
                     :reducerAdd="inventoryAdd"

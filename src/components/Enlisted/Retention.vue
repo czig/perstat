@@ -126,8 +126,8 @@
                                 :reduceInitial = "retentionInitial"
                                 dataVar="AFSC"
                                 removeBin = "inv"
-                                :minHeight = "250"
-                                :aspectRatio = "2.5"
+                                :minHeight = "chartSpecs.afscGroupChart.minHeight"
+                                :aspectRatio = "chartSpecs.afscGroupChart.aspectRatio"
                             >
                             </afsc>
                         </div>
@@ -152,9 +152,9 @@
                 <overviewBarChart 
                    :id="'majcom'"
                    :dimension="majcomDim"
-                   :aspectRatio="3.8"
-                   :minHeight="240"
-                   :normalToOverviewFactor="2.5"
+                   :aspectRatio="chartSpecs.majcomChart.aspectRatio"
+                   :minHeight="chartSpecs.majcomChart.minHeight"
+                   :normalToOverviewFactor="1.5"
                    :selected="selected"
                    :ylabel="ylabel"
                    :reducerAdd="retentionAdd"
@@ -185,9 +185,9 @@
                 <overviewBarChart 
                    :id="'mpf'"
                    :dimension="mpfDim"
-                   :aspectRatio="3.8"
-                   :minHeight="240"
-                   :normalToOverviewFactor="2.5"
+                   :aspectRatio="chartSpecs.baseChart.aspectRatio"
+                   :minHeight="chartSpecs.baseChart.minHeight"
+                   :normalToOverviewFactor="1.5"
                    :selected="selected"
                    :ylabel="ylabel"
                    :reducerAdd="retentionAdd"
@@ -516,9 +516,9 @@
                     return d.Year;
                 })
                 yearConfig.group = yearConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                yearConfig.minHeight = 100
-                yearConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 30}
+                yearConfig.minHeight = (chartSpecs.yearChart.minHeight/2.9)
+                yearConfig.aspectRatio = chartSpecs.yearChart.aspectRatio                 
+                yearConfig.margins = chartSpecs.standardRowChart.margins
                 yearConfig.colors = [chartSpecs.baseChart.color]
                 var yearChart = dchelpers.getRowChart(yearConfig)
                 yearChart
@@ -542,9 +542,10 @@
                     return d.Category;
                 })
                 catConfig.group = catConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                catConfig.minHeight = 100 
-                catConfig.aspectRatio = 3 
-                catConfig.margins = {top: 10, left: 40, right: 20, bottom: 20}
+                //catConfig.minHeight = 125 
+                catConfig.minHeight = (chartSpecs.yearChart.minHeight/2.4)
+                catConfig.aspectRatio = chartSpecs.yearChart.aspectRatio 
+                catConfig.margins = chartSpecs.standardRowChart.margins
                 catConfig.colors = d3.scale.category10()
                 var catChart = dchelpers.getRowChart(catConfig)
                 catChart

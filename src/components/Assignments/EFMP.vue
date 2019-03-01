@@ -330,7 +330,7 @@ export default {
             	return d.Count
             })
             yearConfig.minHeight = chartSpecs.standardRowChart.minHeight 
-            yearConfig.aspectRatio = 1.5 
+            yearConfig.aspectRatio = chartSpecs.yearChart.aspectRatio 
             yearConfig.margins = chartSpecs.standardRowChart.margins 
             yearConfig.colors = d3.scale.ordinal().range([chartSpecs.baseChart.color])
             var yearChart = dchelpers.getRowChart(yearConfig)
@@ -347,7 +347,7 @@ export default {
             	return d.Count
             })
             typeConfig.minHeight = chartSpecs.standardRowChart.minHeight 
-            typeConfig.aspectRatio = 1.5 
+            typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio 
             typeConfig.margins = chartSpecs.standardRowChart.margins 
             typeConfig.colors = d3.scale.category10()
             var typeChart = dchelpers.getRowChart(typeConfig)
@@ -365,8 +365,8 @@ export default {
             gradeConfig.group = this.removeEmptyBins(gradeConfig.dim.group().reduceSum((d)=>{
             	return d.Count
             }))
-            gradeConfig.minHeight = 210
-            gradeConfig.aspectRatio = 3
+            gradeConfig.minHeight = chartSpecs.gradeChart.minHeight 
+            gradeConfig.aspectRatio = chartSpecs.standardBarChart.aspectRatio
             gradeConfig.margins = {top: 10, left: 40, right: 10, bottom: 45}
             gradeConfig.colors = chartSpecs.gradeChartColorScale
             var gradeChart = dchelpers.getOrdinalBarChart(gradeConfig)

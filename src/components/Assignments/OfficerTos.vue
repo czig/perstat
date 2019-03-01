@@ -437,7 +437,7 @@ import toastr from 'toastr'
                 })
 
                 typeConfig.group = typeConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                typeConfig.minHeight = 200
+                typeConfig.minHeight = chartSpecs.standardBarChart.minHeight
                 typeConfig.aspectRatio = 2.7
                 typeConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 typeConfig.colors = d3.scale.category10()
@@ -458,7 +458,7 @@ import toastr from 'toastr'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 200 
+                tourConfig.minHeight = chartSpecs.standardBarChart.minHeight
                 tourConfig.aspectRatio = 2.6
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
@@ -482,8 +482,8 @@ import toastr from 'toastr'
                     return d.Grade;
                 })
                 gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
-                gradeConfig.minHeight = 230
-                gradeConfig.aspectRatio = 3
+                gradeConfig.minHeight = chartSpecs.typeChart.minHeight
+                gradeConfig.aspectRatio = chartSpecs.baseChart.aspectRatio
                 gradeConfig.margins = {top: 10, left: 30, right: 10, bottom: 55}
                 gradeConfig.colors = chartSpecs.gradeChartColorScale
                 var c = d3.rgb(51,172,255)

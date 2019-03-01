@@ -94,8 +94,8 @@
                                     :reduceRemove = "promoRemove"
                                     :reduceInitial = "promoInitial"
                                     dataVar="ACA43"
-                                    :minHeight="200"
-                                    :aspectRatio="3"
+                                    :minHeight="chartSpecs.standardBarChart.minHeight"
+                                    :aspectRatio="chartSpecs.afscGroupChart.aspectRatio"
                                     >
                                 </afsc>
                             </div>
@@ -400,9 +400,10 @@ import toastr from 'toastr'
                     return d.Grade
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                gradeConfig.minHeight = 240 
-                gradeConfig.aspectRatio = 2
-                gradeConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                gradeConfig.minHeight = chartSpecs.gradeChart.minHeight 
+                gradeConfig.aspectRatio = chartSpecs.gradeChart.aspectRatio
+                gradeConfig.margins = {top: 20, left: 40, right: 30, bottom: 20}
+                //gradeConfig.margins = chartSpecs.gradeChart.margins          
                 gradeConfig.colors = this.chartSpecs.gradeChartColorScale 
                 var gradeChart = dchelpers.getRowChart(gradeConfig)
                 gradeChart
@@ -423,9 +424,9 @@ import toastr from 'toastr'
                     return d.Look;
                 })
                 lookConfig.group = lookConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                lookConfig.minHeight = 150 
-                lookConfig.aspectRatio = 2
-                lookConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                lookConfig.minHeight = chartSpecs.lookChart.minHeight 
+                lookConfig.aspectRatio = chartSpecs.lookChart.aspectRatio
+                lookConfig.margins = chartSpecs.lookChart.margins
                 lookConfig.colors = d3.scale.category10().domain([100,0])
                 var lookChart = dchelpers.getRowChart(lookConfig)
                 lookChart
@@ -440,9 +441,9 @@ import toastr from 'toastr'
                     return d.Recommendation;
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                recommendConfig.minHeight = 185 
-                recommendConfig.aspectRatio = 5
-                recommendConfig.margins = {top: 10, left: 40, right: 30, bottom: 20}
+                recommendConfig.minHeight = chartSpecs.lookChart.minHeight 
+                recommendConfig.aspectRatio = chartSpecs.lookChart.aspectRatio
+                recommendConfig.margins = chartSpecs.lookChart.margins
                 recommendConfig.colors = d3.scale.ordinal().range(["#1a9850","#91cf60","#d9ef8b","#fee08b","#fc8d59","#d73027"])
                 var recommendChart = dchelpers.getRowChart(recommendConfig)
                 recommendChart
@@ -459,8 +460,8 @@ import toastr from 'toastr'
                 boardConfig.dim = this.ndx.dimension(function(d){ return d.Board })
                 var boardGroup = boardConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
                 boardConfig.group = removeEmptyBins(boardGroup)
-                boardConfig.minHeight = 250
-                boardConfig.aspectRatio = 5
+                boardConfig.minHeight = chartSpecs.standardBarChart.minHeight 
+                boardConfig.aspectRatio = chartSpecs.baseChart.aspectRatio
                 boardConfig.margins = {top: 30, left: 40, right: 30, bottom: 60}
                 boardConfig.colors = ["#1976d2"]
                 var boardChart = dchelpers.getOrdinalBarChart(boardConfig)

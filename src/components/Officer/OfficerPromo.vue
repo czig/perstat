@@ -606,8 +606,8 @@ import toastr from 'toastr'
                     return d.Competitive_Category;
                 })
                 compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                compCatConfig.minHeight = 260
-                compCatConfig.aspectRatio = 3
+                compCatConfig.minHeight = 200
+                compCatConfig.aspectRatio = 2
                 compCatConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 compCatConfig.colors = d3.scale.ordinal().range(["#6baed6"])
                 var compCatChart = dchelpers.getRowChart(compCatConfig)
@@ -624,7 +624,7 @@ import toastr from 'toastr'
                     return d.Recomendation;
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                recommendConfig.minHeight = 150 
+                recommendConfig.minHeight = 200 
                 recommendConfig.aspectRatio = 2
                 recommendConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 recommendConfig.colors = d3.scale.ordinal().range(["#1a9641","#a6d96a","#fdae61","#d7191c"])
@@ -645,7 +645,7 @@ import toastr from 'toastr'
                     return d.pmeMethod;
                 })
                 pmeMethodConfig.group = pmeMethodConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                pmeMethodConfig.minHeight = 150 
+                pmeMethodConfig.minHeight = 200 
                 pmeMethodConfig.aspectRatio = 2
                 pmeMethodConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 pmeMethodConfig.colors = d3.scale.ordinal().range(["#1a9850","#91cf60","#d9ef8b","#fee08b"])

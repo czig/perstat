@@ -25,7 +25,7 @@ USAGE:
 Props:
     id: string that will act as substring for all element ids
     dimension: a crossfilter dimension for data element (suggest making this a computed property)
-    aspectRatio: width-to-height ratio of chart
+    aspectRatio: width-to-height ratio of chart   
     minHeight: minimum height for chart
     normalToOverviewFactor: factor changing size difference between overview chart and 'normal' bar chart 
     selected: data element to show for chosen dimension (percent, asgn, auth, etc.)
@@ -114,7 +114,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
             aspectRatio: {
                 type: Number,
                 required: true,
-            },
+            },           
             minHeight: {
                 type: Number,
                 required: true,
@@ -187,7 +187,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     'id': 'overview' + this.id,
                     'dim': this.dimension,
                     'group': this.id_group(this.overviewGroup),
-                    'minHeight': this.aspectRatio/this.normalToOverviewFactor,
+                    'minHeight': this.minHeight/(2*this.normalToOverviewFactor),
                     'aspectRatio': this.aspectRatio*this.normalToOverviewFactor,
                     'margins': {top: this.margin.top, left: this.margin.left, right: this.margin.right, bottom: 10},
                     'x': d3.scale.linear().domain([0,this.keys.length]),
