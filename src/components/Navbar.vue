@@ -8,15 +8,15 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
-          <router-link class="nav-item" to="/" tag="li" active-class="active" exact><a class="nav-link">Home</a></router-link>
+          <router-link class="nav-item" to="/" tag="li" active-class="active" exact><a class="nav-link" data-toggle="collapse" data-target="#navbarNavDropdown">Home</a></router-link>
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Total Force 
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('adman')">Active Duty</router-link>
-                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('ang')">ANG</router-link>
-                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('afr')">AFR</router-link>
+                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('adman')" data-toggle="collapse" data-target="#navbarNavDropdown">Active Duty</router-link>
+                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('ang')" data-toggle="collapse" data-target="#navbarNavDropdown">ANG</router-link>
+                  <router-link class="dropdown-item" to="/totalforce" tag="li" style="cursor: pointer;" @click.native="goToPage('afr')" data-toggle="collapse" data-target="#navbarNavDropdown">AFR</router-link>
               </div>
           </li>
           <li class="nav-item dropdown">
@@ -24,9 +24,9 @@
                   Officer 
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-manning')">Manning</router-link>
-                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-promo')">Promotions</router-link>
-                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-edu')">Education</router-link>
+                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-manning')" data-toggle="collapse" data-target="#navbarNavDropdown">Manning</router-link>
+                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-promo')" data-toggle="collapse" data-target="#navbarNavDropdown">Promotions</router-link>
+                  <router-link class="dropdown-item" to="/officer" tag="li" style="cursor: pointer;" @click.native="goToPage('off-edu')" data-toggle="collapse" data-target="#navbarNavDropdown">Education</router-link>
               </div>
           </li>
           <li class="nav-item dropdown">
@@ -34,20 +34,20 @@
                  Enlisted 
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('manning')">Manning</router-link>
-                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('retention')">Retention</router-link>
-                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('promotions')">Promotions</router-link>
+                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('manning')" data-toggle="collapse" data-target="#navbarNavDropdown">Manning</router-link>
+                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('retention')" data-toggle="collapse" data-target="#navbarNavDropdown">Retention</router-link>
+                  <router-link class="dropdown-item" to="/enlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('promotions')" data-toggle="collapse" data-target="#navbarNavDropdown">Promotions</router-link>
               </div>
           </li>
-          <router-link class="nav-item" to="/civilian" tag="li" active-class="active"><a class="nav-link">Civilian</a></router-link>
+          <router-link class="nav-item" to="/civilian" tag="li" active-class="active"><a class="nav-link" data-toggle="collapse" data-target="#navbarNavDropdown">Civilian</a></router-link>
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                  Assignments 
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('offTOS')">Time on Station</router-link>
-                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('join')">Join Spouse</router-link>
-                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('efmp')">EFMP/Humi</router-link>
+                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('offTOS')" data-toggle="collapse" data-target="#navbarNavDropdown">Time on Station</router-link>
+                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('join')" data-toggle="collapse" data-target="#navbarNavDropdown">Join Spouse</router-link>
+                  <router-link class="dropdown-item" to="/assignments" tag="li" style="cursor: pointer;" @click.native="goToPage('efmp')" data-toggle="collapse" data-target="#navbarNavDropdown">EFMP/Humi</router-link>
               </div>
           </li>
           <li class="nav-item dropdown">
@@ -55,8 +55,8 @@
                  Education
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('offHighEd')">Officer</router-link>
-                  <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('enlHighEd')">Enlisted</router-link>
+                  <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('offHighEd')" data-toggle="collapse" data-target="#navbarNavDropdown">Officer</router-link>
+                  <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('enlHighEd')" data-toggle="collapse" data-target="#navbarNavDropdown">Enlisted</router-link>
               </div>
           </li>
           <!-- <router-link class="nav-item" to="/officer" tag="li" active-class="active"><a class="nav-link">ANG Officer</a></router-link>
