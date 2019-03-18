@@ -175,6 +175,7 @@ export default {
             loaded: false,
             ylabel: '(Count)',
             chartSpecs: chartSpecs,
+            pageName: 'Exceptional Family Member Program & Humanitarian',
             baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
             majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color])
     	}
@@ -202,6 +203,9 @@ export default {
         baseGroup: function() {
             //return this.baseDim.group().reduceSum((d) => {return +d.Count;})
             return this.removeError(this.baseDim.group().reduce(this.asgnAdd,this.asgnRemove,this.asgnInitial));
+        },
+        pageLabel: function() {
+            return this.pageName
         }
     },
     methods: {
@@ -241,6 +245,10 @@ export default {
       },
       asgnInitial: function() {
         return 0;
+      },            
+      toProperCase: function(s) {
+        return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+          function($1) { return $1.toUpperCase(); });
       }
     },
     mounted() {
@@ -421,29 +429,38 @@ export default {
             //Curent Filters button
             d3.select('#showMyFilters')
               .on('click', ()=>{
-                var myFilters = 'Current filters include ';
+                var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                 dc.chartRegistry.list().forEach((d)=>{ 
-                  if (d.filters()[0])
-                    myFilters += '\n (' + d.filters() + ')'
-                })
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewbase-barchart') {
+                        //console.log(d.anchor(), d.filters())
+                        myFilters += '\n (' + d.filters() + ')'
+                    } 
+                    })
                 if (myFilters !== undefined) {
+                  var counterVars = invND;
                   // Override global options
                   toastr.options = {
                     "positionClass": "toast-bottom-full-width",
                     "closeButton":"true",
                     "preventDuplicates":"true"
-                  }
-                  if (invND.value() == 0) {
-                    toastr.warning('Your filter(s) returned no results. Please reset and try again.');
-                  }
-                  else {
-                    toastr.info(myFilters);  
-                  }                      
-                }
-                if (myFilters == 'undefined' || myFilters == undefined) {
-                    toastr.error('Something went wrong. Please reset and try again.')
-                }          
-              });
+                      }
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' result.'
+                        toastr.info(myFilters);                         
+                      }
+                      else {
+                        myFilters += ' return ' + counterVars.value() + ' results.'
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
+                  });
 
             //Download Raw Data button
             d3.select('#download')

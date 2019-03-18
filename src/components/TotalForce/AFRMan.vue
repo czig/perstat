@@ -99,6 +99,7 @@ import toastr from 'toastr'
                 loaded: false,
                 chartSpecs: chartSpecs,
                 baseColor: chartSpecs.baseChart.color,
+                pageName: 'Total Force AFR',
                 majcomColor: chartSpecs.majcomChart.color,
             }
         },
@@ -115,6 +116,9 @@ import toastr from 'toastr'
           allGroup: function(){
             return this.ndx.groupAll()
           },
+          pageLabel: function() {
+            return this.pageName
+          } 
         },
         methods: {
           resetAll: (event)=>{
@@ -152,7 +156,11 @@ import toastr from 'toastr'
                 }
             })
             dc.redrawAll()
-          }
+          },
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                function($1) { return $1.toUpperCase(); });
+          } 
         },
         components: {
             'loader': Loader,
@@ -349,22 +357,30 @@ import toastr from 'toastr'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
+                    dc.chartRegistry.list().forEach((d)=>{                                      
+                    if (d.hasFilter()) {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = inv; 
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (inv.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + counterVars.value() + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

@@ -185,6 +185,7 @@ import toastr from 'toastr'
                 chartSpecs: chartSpecs,
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
+                pageName: 'Officer Manning',
                 afscGroupChart: {},
             }
         },
@@ -197,7 +198,7 @@ import toastr from 'toastr'
           },
           ylabel: function() {
             if (this.selected === "percent") {
-                return "Manning Percent (%)"
+                return "% Manning"
             }
             else if (this.selected === "asgn") {
                 return "Assigned"
@@ -251,8 +252,10 @@ import toastr from 'toastr'
                         'margins': chartSpecs.afscGroupChart.margins,
                         'colors': [chartSpecs.afscGroupChart.color], 
                     }
+          },
+          pageLabel: function() {
+            return this.pageName
           }
-
         },
         methods: {
           startDemo: function() {
@@ -324,6 +327,10 @@ import toastr from 'toastr'
                     }
                 }
             },
+            toProperCase: function(s) {
+                return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                    function($1) { return $1.toUpperCase(); });
+            }, 
             formatData: function(given) {
                 var obj = {}
 
@@ -429,27 +436,36 @@ import toastr from 'toastr'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                                       
+                    if (d.hasFilter()) {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
-                        var myCheckValue = 0;
-                        if (this.selected == "percent") {myCheckValue = percentND.value; };
-                        if (this.selected == "auth") { myCheckValue = authND.value };
-                        if (this.selected == "asgn") { myCheckValue = asgnND.value };
-                        if (this.selected == "stp") { myCheckValue = stpND.value };
+                        var myCheckValue = '0';
+                        if (this.selected == "asgn") { myCheckValue = asgn.value() };
+                        if (this.selected == "stp") { myCheckValue = stp.value() };
+                        if (this.selected == "auth") { myCheckValue = auth.value() };
+                        if (this.selected == "percent") { myCheckValue = percent.innerText.substr(0, percent.innerText.length-1) };
+                        //console.log("myCheckvalue: "+ myCheckValue );
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (myCheckValue() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (myCheckValue == '0.0%' || myCheckValue == 0 ) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (myCheckValue == '1') {
+                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

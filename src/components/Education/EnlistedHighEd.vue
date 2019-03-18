@@ -115,6 +115,7 @@
                     loaded: false,
                     fyr: '2018',
                     searchCAFSC: "",
+                    pageName: 'Enlisted Education',
 			}
 		},
 
@@ -130,7 +131,10 @@
             },
             ylabel: function() {
                 return "(Count)"
-            }
+            },
+            pageLabel: function() {
+                return this.pageName
+            }  
 		},
 
         methods: {
@@ -182,7 +186,11 @@
                 }
             })
             dc.redrawAll()
-          }
+          },            
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+              function($1) { return $1.toUpperCase(); });
+          },
 		},
 
 		components: {
@@ -412,22 +420,31 @@
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    if (d.hasFilter()) {
+                        //console.log(d.anchor(), d.filters())
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = totalCountND;
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (totalCountND.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + counterVars.value() + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

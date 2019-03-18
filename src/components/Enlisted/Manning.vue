@@ -188,7 +188,8 @@ import toastr from 'toastr'
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
-                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                
+                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
+                pageName: 'Enlisted Manning',
             }
         },
         computed: {
@@ -200,7 +201,7 @@ import toastr from 'toastr'
           },
           ylabel: function() {
             if (this.selected === "percent") {
-                return "Manning Percent (%)"
+                return "% Manning"
             }
             else if (this.selected === "asgn") {
                 return "Assigned"
@@ -226,6 +227,9 @@ import toastr from 'toastr'
           },
           mpfGroup: function() {
             return this.mpfDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial);
+          },
+          pageLabel: function() {
+            return this.pageName
           }
 
         },
@@ -302,6 +306,10 @@ import toastr from 'toastr'
                 p.stpPercent = p.stp/p.auth === Infinity ? 0 : Math.round((p.stp/p.auth)*1000)/10 || 0
                 return p
             },
+            toProperCase: function(s) {
+                return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                    function($1) { return $1.toUpperCase(); });
+            }
 
         },
         components: {
@@ -479,10 +487,14 @@ import toastr from 'toastr'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewmpf-barchart') {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
                         var myCheckValue = 0;
@@ -496,10 +508,15 @@ import toastr from 'toastr'
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (myCheckValue() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (myCheckValue() == '0.0%' || myCheckValue() == 0 ) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (myCheckValue() == '1') {
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }
