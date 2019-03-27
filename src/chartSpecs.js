@@ -25,8 +25,8 @@ var majcomChart = {
 
 var coreChart = {
     minHeight: 200,
-    aspectRatio: 6,
-    margins: {top: 5, left: 50, right: 10, bottom: 50},
+    aspectRatio: 4.2,
+    margins: {top: 5, left: 50, right: 10, bottom: 100},
     color: "#35978f"
 }
 
@@ -70,6 +70,13 @@ var afscGroupChart = {
     aspectRatio: 4,
     margins: {top: 10, left: 40, right: 10, bottom: 100},
     color: "#108b52"
+}
+
+var skillLevelChart = {
+    minHeight: 275,
+    aspectRatio: 4,
+    margins: {top: 10, left: 40, right: 10, bottom: 100},
+    color: "#ff9900"
 }
 
 var yearChart = {
@@ -149,6 +156,7 @@ export default {
     typeChart,
     empCatChart,
     afscGroupChart,
+    skillLevelChart,
     yearChart,
     boardChart,
     lookChart,

@@ -1,11 +1,11 @@
 
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid"> 
         <transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col">
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="reEnlRate" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
@@ -20,34 +20,47 @@
                         </div>
                     </div>
                     <div class="col-auto">
-                        <button type="button" id="showMyFilters"
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
+                        <!-- <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="8" data-intro="See the currently applied filters here!"
                                 title="Filter">
                         <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button> 
+                        </button>  -->
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="7" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>  
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
                         </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                data-step="5" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
-                                @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">
+                                @click="searchCore='';resetAll()">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button>                        
+                        </button>                         
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
                     <div class="col-auto">
                         Inventory:
                         <span id="inv"></span>
@@ -79,33 +92,35 @@
                        <!-- <span data-toggle="tooltip" 
                           data-placement="bottom"
                           title="This is the percentage of people who reenlisted out of those who are eligible to reenlist or separate within the term.">
-                        <FontAwesomeIcon icon="info-circle" 
+                        <fontAwesomeIcon icon="info-circle" 
                                          size="sm"
                                          >
-                        </FontAwesomeIcon>
+                        </fontAwesomeIcon>
                     </span> -->
 
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                        <!-- <div class="row"> -->
-                            <div id="year" class="col-12">
+                    <div class="col-12">
+                        <div class="row">
+                            <div id="year" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div id="dc-year-rowchart">
                                     <h3>Year<span style="font-size: 14pt; opacity: 0.87;"> &nbsp {{ylabel}}</span>
                                     </h3>
                                 </div>
                             </div>
-                            <div v-show="true" id="cat" class="col-12">
-                                <div id="dc-cat-rowchart">
+                            <div v-show="true" id="cat" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div id="dc-cat-rowchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                                     <h3>Category <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}</span>
                                     </h3>
                                 </div>
                             </div>
-                        <!-- </div> -->
+                        </div>
                     </div>
+                </div>
+                <div class="row">
                     <template class="AFSC-SECTION">
-                        <div  v-if="!startAfsc" id="afsc" class="col-xl-8 col-lg-8 col-md-8 col-sm-6 col-12"> 
+                        <div  v-if="!startAfsc" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12"> 
                             <h3>
                                 AFSC 
                                 <span style="font-size: 14pt; opacity: 0.87;"> {{ylabel}}  </span>
@@ -115,7 +130,7 @@
                                     >Reset</button>
                             </h3>
                         </div>
-                        <div v-else id="afsc" class="col-xl-8 col-lg-8 col-md-8 col-sm-6 col-12">
+                        <div v-else class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <afsc
                                 v-model="sa"
                                 :ndx="ndx"
@@ -126,79 +141,41 @@
                                 :reduceInitial = "retentionInitial"
                                 dataVar="AFSC"
                                 removeBin = "inv"
-                                :minHeight = "225"
+                                :minHeight = "250"
                                 :aspectRatio = "2.5"
                             >
                             </afsc>
                         </div>
+                        <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="4" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
+                                <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                                <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
+                                </h3>
+                            </div>
+                        </div>
                     </template>
                 </div>
-<!--                 <largeBarChart :id="'majcom'"         
-                                :dimension="majcomDim"
-                                :group="majcomGroup"
-                                :widthFactor="0.90"
-                                :aspectRatio="chartSpecs.majcomChart.aspectRatio"
-                                :minHeight="chartSpecs.majcomChart.minHeight"
-                                :selected="selected"
-                                :ylabel="ylabel"
-                                :reducer="retentionAddLarge"
-                                :accumulator="retentionInitial"
-                                :numBars="30"
-                                :margin="chartSpecs.majcomChart.margins"
-                                :colorScale="majcomColorScale"
-                                :title="'MAJCOM'"
-                                :loaded="loaded">
-                </largeBarChart> -->
-                <overviewBarChart 
-                   :id="'majcom'"
-                   :dimension="majcomDim"
-                   :aspectRatio="chartSpecs.majcomChart.aspectRatio"
-                   :minHeight="chartSpecs.majcomChart.minHeight"
-                   :normalToOverviewFactor="1.5"
-                   :selected="selected"
-                   :ylabel="ylabel"
-                   :reducerAdd="retentionAdd"
-                   :reducerRemove="retentionRemove"
-                   :accumulator="retentionInitial"
-                   :numBars="15"
-                   :margin="chartSpecs.majcomChart.margins"
-                   :colorScale="majcomColorScale"
-                   :title="'MAJCOM'"
-                   :loaded="loaded">
+ 
+                <overviewBarChart :id="'mpf'"
+                                  :dimension="mpfDim"
+                                  :aspectRatio="3.8"
+                                  :minHeight="240"
+                                  :normalToOverviewFactor="2.5"
+                                  :selected="selected"
+                                  :ylabel="ylabel"
+                                  :reducerAdd="retentionAdd"
+                                  :reducerRemove="retentionRemove"
+                                  :accumulator="retentionInitial"
+                                  :numBars="15"
+                                  :margin="chartSpecs.baseChart.margins"
+                                  :colorScale="baseColorScale"
+                                  :title="'Servicing MPF'"
+                                    :loaded="loaded">
                 </overviewBarChart>
-<!--                  <largeBarChart :id="'mpf'"         
-                                :dimension="mpfDim"
-                                :group="mpfGroup"
-                                :widthFactor="0.90"
-                                :aspectRatio="chartSpecs.baseChart.aspectRatio"
-                                :minHeight="chartSpecs.baseChart.minHeight"
-                                :selected="selected"
-                                :ylabel="ylabel"
-                                :reducer="retentionAddLarge"
-                                :accumulator="retentionInitial"
-                                :numBars="30"
-                                :margin="chartSpecs.baseChart.margins"
-                                :colorScale="baseColorScale"
-                                :title="'Servicing MPF'"
-                                :loaded="loaded">
-                </largeBarChart> -->
-                <overviewBarChart 
-                   :id="'mpf'"
-                   :dimension="mpfDim"
-                   :aspectRatio="chartSpecs.baseChart.aspectRatio"
-                   :minHeight="chartSpecs.baseChart.minHeight"
-                   :normalToOverviewFactor="1.5"
-                   :selected="selected"
-                   :ylabel="ylabel"
-                   :reducerAdd="retentionAdd"
-                   :reducerRemove="retentionRemove"
-                   :accumulator="retentionInitial"
-                   :numBars="15"
-                   :margin="chartSpecs.baseChart.margins"
-                   :colorScale="baseColorScale"
-                   :title="'Servicing MPF'"
-                   :loaded="loaded">
-                </overviewBarChart>
+
             </div>
          </transition-group>
     </div>
@@ -213,17 +190,15 @@
     import { store } from '@/store/store'
     import Loader from '@/components/Loader'
     import searchBox from '@/components/searchBox'
-    import largeBarChart from '@/components/largeBarChart'    
-    import FontAwesomeIcon from '@fortawesome/vue-fontawesome' 
+    import fontAwesomeIcon from '@fortawesome/vue-fontawesome' 
     import overviewBarChart from '@/components/overviewBarChart'
-    import toastr from 'toastr'
+    import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
     export default {
         data() {
             return {
                 data: [],
                 selected:'reEnlRate',
-                searchMajcom: "",
                 searchBase: "",
                 sa: "",
                 startAfsc:false,
@@ -231,7 +206,6 @@
                 chartSpecs: chartSpecs,
                 asDate: 'Undetermined',
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                
-                majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
                 category: '1ST TERM',
                 year: '2018'
             }
@@ -240,9 +214,9 @@
             'afsc': afsc,
             'loader': Loader,
             'searchBox': searchBox,
-            largeBarChart,
-            FontAwesomeIcon,
-            overviewBarChart   
+            fontAwesomeIcon,   
+            overviewBarChart,
+
         },
         computed: {
           ndx: function(){
@@ -271,12 +245,6 @@
           downloadDim: function() {
             return this.ndx.dimension(function(d) {return d;});    
           },      
-          majcomDim: function() {
-            return this.ndx.dimension(function(d) {return d.MAJCOM;});
-          },
-          majcomGroup: function() {
-            return this.majcomDim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial);
-          },
           mpfDim: function() {
             return this.ndx.dimension(function(d) {return d.MPF;});
           },
@@ -294,6 +262,9 @@
             dc.filterAll();
             this.singleSubmit('2018', 'dc-year-rowchart')
             this.singleSubmit('1ST TERM', 'dc-cat-rowchart')
+          },
+          startDemo: function() {
+            introJs().start()
           },
           resetChart: function(id) {
             dc.chartRegistry.list().filter(chart=>{
@@ -398,16 +369,16 @@
         },
         created: function(){
           console.log('created')
-          //var data = require('@/assets/data/ps_off.csv')
-          //this.data = data
         },
         mounted() {
             console.log('mounted')
             //TEST AXIOS CALL:
-            axios.post(axios_url_enl_ret).then(response => {
+            axios.post(axios_url_enl_ret_ang).then(response => {
                 var axiosData = response.data.data
+                //console.log(axiosData);
                 store.state.asDate = response.data.ASOFDATE
                 var objData = makeObject(axiosData)
+                //console.log(objData);
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -428,7 +399,7 @@
                     }
                     obj2 = {};
                     obj2 = formatData(obj)
-                    obj2 = testData(obj2, obj)
+                    //obj2 = testData(obj2, obj)
                     output.push(obj2);
                 }
                 return output;
@@ -436,13 +407,13 @@
             var formatData = (given) =>{
                 var obj = {}
 
-                obj.MAJCOM = formats.majFormat[given.MAJ]
                 obj.AFSC = given.AFSC
                 obj.MPF = formats.mpfFormat[given.MPF]
                 obj.Year = "20" + given.FY
                 obj.Category = formats.catFormat[given.CAT]
                 obj.Inventory = given.INV
                 obj.Eligible  = given.ELIG
+                obj.state = given.ANG_STATE  
                 obj.Keep = given.KEEP
                 obj.Keep_Rate = obj.Keep/obj.Inventory === Infinity ? 0 : Math.round((obj.Keep/obj.Inventory)*1000)/10 || 0;
                 obj.Reenlistment_Rate = obj.Keep/obj.Eligible === Infinity ? 0 : Math.round((obj.Keep/obj.Eligible)*1000)/10 || 0;
@@ -450,16 +421,16 @@
                 return obj;
             }
 
-            var testData = (formatted, original) =>{
-                for (var key in formatted) {
-                    if (formatted[key] === undefined){
-                        console.log('Empty Value of ' + key)
-                        console.log(original)
-                        formatted[key] = "UNKNOWN"
-                    }
-                }
-                return formatted;
-            }
+            // var testData = (formatted, original) =>{
+            //     for (var key in formatted) {
+            //         if (formatted[key] === undefined){
+            //             console.log('Empty Value of ' + key)
+            //             console.log(original)
+            //             formatted[key] = "UNKNOWN"
+            //         }
+            //     }
+            //     return formatted;
+            // }
             
             var renderCharts = () => {
                 dc.dataCount(".dc-data-count")
@@ -516,9 +487,9 @@
                     return d.Year;
                 })
                 yearConfig.group = yearConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                yearConfig.minHeight = 150
+                yearConfig.minHeight = 100
                 yearConfig.aspectRatio = chartSpecs.baseChart.aspectRatio 
-                yearConfig.margins = {top: 10, left: 40, right: 20, bottom: 20}
+                yearConfig.margins = {top: 10, left: 45, right: 30, bottom: 30}
                 yearConfig.colors = [chartSpecs.baseChart.color]
                 var yearChart = dchelpers.getRowChart(yearConfig)
                 yearChart
@@ -542,7 +513,7 @@
                     return d.Category;
                 })
                 catConfig.group = catConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial)
-                catConfig.minHeight = 210
+                catConfig.minHeight = 100 
                 catConfig.aspectRatio = 3 
                 catConfig.margins = {top: 10, left: 40, right: 20, bottom: 20}
                 catConfig.colors = d3.scale.category10()
@@ -564,35 +535,137 @@
                 //Call The AFSC Component HERE
                 this.startAfsc = true;
 
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
-                        myFilters += '\n (' + d.filters() + ')'
-                    })
-                     if (myFilters !== undefined) {
-                        var myCheckValue = 0;
-                        if (this.selected == "reEnlRate") {myCheckValue = reEnlRateND.value; };
-                        if (this.selected == "keepRate") { myCheckValue = keepRateND.value };
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (myCheckValue() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
-                      }
-                      else {
-                        toastr.info(myFilters);  
-                      }                      
+                //CONUS 
+                var usConfig = {}
+                usConfig.id = 'us';
+                usConfig.dim = this.ndx.dimension(function(d){
+                    return d.state;
+                })
+
+                // var dimData = usConfig.dim.top(10);
+                //     dimData.forEach(function (x) {
+                //     console.log(JSON.stringify(x));
+                // });
+                usConfig.group = removeError(usConfig.dim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial))
+                usConfig.scale = 1
+                usConfig.minHeight = 200
+                usConfig.aspectRatio = 2.1 
+                usConfig.xRatio = 2.0
+                usConfig.yRatio = 2.0
+                //default color scale from #E2F2FF to #0061B5.
+                usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                
+                usConfig.valueAccessor = (d) => {
+                    if (d) {                        
+                        return d.value[this.selected];
                     }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
+                }
+                usConfig.colorAccessor = function(d) {
+                    if (d) {
+                        return d;   
+                    } else {
+                        return 0;
+                    }
+                }
+            
+                var tfJson = require('../../assets/geoUS.json')
+                usConfig.json = tfJson
+                usConfig.geoName = "state"
+                usConfig.propName = 'name' 
+                usConfig.projection = d3.geo.albersUsa()
+
+                var guText = ''
+                var viText = ''
+                var prText = ''
+
+                var usChart = dchelpers.getGeoChart(usConfig)                
+                usChart.title(function(d) {
+                    if (d.value == undefined){ d.value = '0';}
+                    if (d.key == 'GU') {guText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    if (d.key == 'VI') {viText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    if (d.key == 'PR') {prText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
+                });
+                
+                usChart.on('pretransition', (chart)=> {
+                                            
+                    var color = '#555'
+                    chart.select('svg').attr("class", "border shadow p-1 mt-3 bg-white rounded")
+                    chart.select('svg').select(".textLabels").remove()
+                    chart.select('svg .layer0').append('g').attr("class", "textLabels")
+
+                    var textLabels = chart.select('.textLabels')
+                    textLabels.attr("cursor","pointer")
+
+                    var textStroke = 2
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.12)
+                        .attr("y", usConfig.height * 0.63)
+                        .attr("fill", color) 
+                        .attr("font-size", '0.7vw')
+                        .attr("font-weight", 'bold')  
+                        .text('Guam')
+                        .on('click', ()=>{
+                            chart.filter([["GU"]]);
+                            dc.redrawAll();
+                        })
+                        .append("title")                        
+                        .text(guText)
+
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.54)
+                        .attr("y", usConfig.height * 0.93)
+                        .attr("fill", color)  
+                        .attr("font-size", '0.7vw')
+                        .attr("font-weight", 'bold') 
+                        .text('Puerto Rico')
+                        .on('click', ()=>{
+                            chart.filter([["PR"]]);
+                            dc.redrawAll();                            
+                        })
+                        .append("title")                        
+                        .text(prText)
+                    
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.61)
+                        .attr("y", usConfig.height * 0.87)
+                        .attr("fill", color)  
+                        .attr("font-size", '0.7vw')
+                        .attr("font-weight", 'bold') 
+                        .text('US Virgin Islands')
+                        .on('click', ()=>{
+                            chart.filter([["VI"]]);
+                            dc.redrawAll();                            
+                        })
+                        .append("title")                        
+                        .text(viText)
+                    // set viewport for svg
+                    chart.maxWidth = 950
+                    chart.maxHeight = 450
+
+                    var mapZoom = usChart.select('svg .layer0')
+                    mapZoom                        
+                        .attr("width", chart.maxWidth)
+                        .attr("height", chart.maxHeight)                        
+                        .call(d3.behavior.zoom()
+                            .scaleExtent([1, 10])
+                            .on("zoom", function () {                             
+                            var t = d3.event.translate,
+                                s = d3.event.scale;
+                            
+                            t[0] = Math.min(chart.maxWidth / 2 * (s - 1) + 400 * s, Math.max(chart.maxWidth / 2 * (1 - s) - 400 * s, t[0]));
+                            t[1] = Math.min(chart.maxHeight / 2 * (s - 1) + 250 * s, Math.max(chart.maxHeight / 2 * (1 - s) - 250 * s, t[1]));
+
+                            mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
+                        }))
+                })
+                                
+                usChart.controlsUseVisibility(true)
+
+
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -646,24 +719,60 @@
         },
     }
 </script>
+
 <style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="../../../node_modules/dc/dc.css"/>
 <style>
-#year, #cat, #afsc, #majcom, #mpf {
+#afscGroup, #us {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+#us svg {
+    background-color: darkGray !important;
+}
+#us svg g.state path {
+  stroke:#555;
+}
+#us svg g.state:hover path {
+  fill: orange;
+  stroke:#ccc;
+}
+#us svg g.state.selected path {
+  stroke: orange;
+  stroke-width: 1px;
+}
 </style>
 <style scoped>
-/* need to make this scoped */
-#radioSelect div,input,label{
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: sans-serif; 
+    font-size: 11px;
+    transform: translate(-18,0) rotate(45deg);
+}
+rect:hover {
     cursor: pointer;
+    opacity: 0.5;
+}
+</style>
+<style scoped>
+#base >>> text{
+    font: 8px sans-serif;
 }
 
-.form-group{
-    align-content: center;
+text.baseText{
+    font: 8px sans-serif;
 }
-
+.custom-control.custom-radio{
+    padding-left:20px;
+    padding-right:10px;
+    margin-right: 0;
+    cursor:pointer;
+}
 .fade-enter-active {
     transition: all 0.5s;
 }
@@ -677,15 +786,4 @@
     opacity: 1;
 }
 
-#category .custom-control-input:checked~.custom-control-indicator {
-    background-color: rgb(18, 153, 60);
-}
-
-#category .custom-control-input:focus~.custom-control-indicator {
-    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(18, 153, 60,.25);
-}
-
-#category{
-    margin-top: .5rem;
-}
 </style>

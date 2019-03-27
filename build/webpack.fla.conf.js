@@ -51,6 +51,14 @@ const webpackConfig = merge(baseWebpackConfig, {
       'axios_url_afrman': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_off_enl_ar.js"',      
       'axios_url_high_ed_level': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_high_ed_level.js"',
       'axios_url_prom_year_group': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_prom_year_group.js"',
+      'axios_url_off_tos_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/officer_tos.js"',
+      'axios_url_enl_tos_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/enlisted_tos.js"',
+      'axios_url_high_ed_level_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_high_ed_level_ang.js"',
+      'axios_url_off_man_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/PS_OFF_ANG.js"',
+      'axios_url_enl_man_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/PS_ENL_ANG.js"',
+      'axios_url_off_promo_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_officer_promo_ang.json"',
+      'axios_url_enl_promo_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/ps_enlisted_promo_ang.json"',
+      'axios_url_enl_ret_ang': '"https://stars.afpc.randolph.af.mil/FLA/perstat_json/PS_ENL_RET_ANG.js"',
     }),
     //no uglify js because fla code
     // extract css into its own file

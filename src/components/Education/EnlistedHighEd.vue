@@ -203,9 +203,9 @@
             axios.post(axios_url_high_ed_level).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var invData = response.data.data
-                //console.log(invData)
+                console.log(invData)
                 var objData = makeObject(invData)
-                //console.log(objData)
+                console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -315,7 +315,7 @@
                     return d.fyr;
                 })
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
-                fyrConfig.minHeight = 200 
+                fyrConfig.minHeight = 290
                 fyrConfig.aspectRatio = 2
                 fyrConfig.margins = {top: 10, left: 50, right: 10, bottom: 40}
                 fyrConfig.colors = [chartSpecs.yearChart.color]
@@ -378,7 +378,7 @@
                 })
                 var gradegroup = removeEmptyBins(gradeConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 gradeConfig.group = removeError(gradegroup)
-                gradeConfig.minHeight = 260
+                gradeConfig.minHeight = 298
                 gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 gradeConfig.colors = chartSpecs.gradeChartColorScale

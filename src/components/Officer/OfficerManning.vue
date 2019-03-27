@@ -43,9 +43,14 @@
                     </div>
                     <div class="col-auto">
                         <button type="button" id="demo"
-                                              class="btn btn-primary btn-sm"
-                                              @click="startDemo">
-                            Demo 
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
                         </button>
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
@@ -232,9 +237,9 @@ import toastr from 'toastr'
                         'id': 'grade',
                         'dim': this.gradeDim,
                         'group': this.gradeDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial),
-                        'minHeight': chartSpecs.gradeChart.minHeight,
-                        'aspectRatio': chartSpecs.gradeChart.aspectRatio,
-                        'margins': chartSpecs.gradeChart.margins,
+                        'minHeight': 260,
+                        'aspectRatio': 4,
+                        'margins': {top: 10, left: 50, right: 30, bottom: 20},
                         'colors': this.chartSpecs.gradeChartColorScale
                     }
           },

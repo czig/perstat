@@ -379,7 +379,7 @@
                     return d.fyr;
                 })
                 fyrConfig.group = removeEmptyBins(fyrConfig.dim.group().reduce(highEdAdd,highEdRemove,highEdInitial))
-                fyrConfig.minHeight = 200 
+                fyrConfig.minHeight = 221
                 fyrConfig.aspectRatio = 2 
                 fyrConfig.margins = chartSpecs.yearChart.margins
                 fyrConfig.colors = [chartSpecs.yearChart.color]
@@ -412,7 +412,7 @@
                 })
                 var groupGroup = removeEmptyBins(groupConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 groupConfig.group = removeError(groupGroup)
-                groupConfig.minHeight = 200 
+                groupConfig.minHeight = 221 
                 groupConfig.aspectRatio = 2 
                 groupConfig.margins = chartSpecs.offGroupChart.margins
                 groupConfig.colors = [chartSpecs.offGroupChart.color]
@@ -438,7 +438,7 @@
                 })
                 var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(highEdAdd, highEdRemove, highEdInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
-                edLevelConfig.minHeight = 200 
+                edLevelConfig.minHeight = 221
                 edLevelConfig.aspectRatio = 2 
                 edLevelConfig.margins = chartSpecs.highEdChart.margins
                 edLevelConfig.colors = [chartSpecs.highEdChart.color]

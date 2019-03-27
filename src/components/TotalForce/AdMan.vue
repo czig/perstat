@@ -190,7 +190,7 @@ import toastr from 'toastr'
                             'id': 'type',
                             'dim': this.typeDim,
                             'group': this.removeError(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
-                            'minHeight': 250,
+                            'minHeight': 300,
                             'aspectRatio': 3,
                             'margins': {top: 0,left: 20, right: 30, bottom: 60},
                             'colors': chartSpecs.typeChart.color

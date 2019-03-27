@@ -329,8 +329,8 @@ export default {
             yearConfig.group = yearConfig.dim.group().reduceSum((d)=>{
             	return d.Count
             })
-            yearConfig.minHeight = chartSpecs.standardRowChart.minHeight 
-            yearConfig.aspectRatio = chartSpecs.yearChart.aspectRatio 
+            yearConfig.minHeight = 270 
+            yearConfig.aspectRatio = 1.5 
             yearConfig.margins = chartSpecs.standardRowChart.margins 
             yearConfig.colors = d3.scale.ordinal().range([chartSpecs.baseChart.color])
             var yearChart = dchelpers.getRowChart(yearConfig)
@@ -346,8 +346,8 @@ export default {
             typeConfig.group = typeConfig.dim.group().reduceSum((d)=>{
             	return d.Count
             })
-            typeConfig.minHeight = chartSpecs.standardRowChart.minHeight 
-            typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio 
+            typeConfig.minHeight = 270
+            typeConfig.aspectRatio = 1.5 
             typeConfig.margins = chartSpecs.standardRowChart.margins 
             typeConfig.colors = d3.scale.category10()
             var typeChart = dchelpers.getRowChart(typeConfig)
@@ -397,7 +397,7 @@ export default {
             maritalConfig.group = this.removeEmptyBins(maritalConfig.dim.group().reduceSum((d)=>{
             	return d.Count
             }))
-            maritalConfig.minHeight = chartSpecs.majcomChart.minHeight 
+            maritalConfig.minHeight = 325
             maritalConfig.aspectRatio = 2
             maritalConfig.margins = {top: 10, left: 40, right: 10, bottom: 50}
             maritalConfig.colors = ["#7570b3"]

@@ -25,6 +25,12 @@
                                 @click="resetAll">Reset All</button>
                     </div>
                 </div>
+                <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                    These numbers do not reflect those located at data masked locations
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             	<div class="row">
                     <div class="col-auto">
                         Marriages (RegAF to RegAF):
@@ -347,10 +353,6 @@ import { store } from '@/store/store'
 	                    
                     return p
                 }
-                
-
-
-                
 
                 //Number Display for Count
                 var count = this.ndx.groupAll().reduceSum(function(d) { 
@@ -414,7 +416,6 @@ import { store } from '@/store/store'
                     .html({
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
-
 
                 //Percent
                 var percentGroup2 = this.ndx.groupAll().reduce(jointAdd2,jointRemove2,jointInitial)

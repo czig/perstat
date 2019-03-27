@@ -4,41 +4,46 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-<!--                     <div id="radioSelect" class="col form-group">
-                        <div class="custom-control custom-radio custom-control-inline">
-                           <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
-                           <label class="custom-control-label" for="radio1">
-                                Promotion Rate
-                            </label>
-                        </div>
-                    </div> -->
                     <div class="col"></div>
                     <div class="col-auto">
-                        <button type="button" id="showMyFilters"
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
+                        <!-- <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
-                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>   
+                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button> 
+                        </button>  -->
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="5" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p> 
+                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
                                          size="lg">
                         </FontAwesomeIcon>
                         </button>
                         <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                data-step="4" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
-                                @click="resetAll">
+                                @click="searchCore='';resetAll()">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="redo-alt" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button>
+                        </button>                         
                     </div>
                 </div>
                 <div class="row">
@@ -59,17 +64,11 @@
                         <span id="selRate"></span>
                     </div>
                 </div>
-                <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
-                    Data prefiltered to In-the-Promotion-Zone
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
                 <div class="row">
                     <div id="grade" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
-                        <div id="dc-grade-barchart">
+                        <div id="dc-grade-barchart" data-step="1" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3 class="mb-0">Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-<!--                             <font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon> -->
+                            <!--<font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>-->
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -77,30 +76,9 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="zone" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
-                        <h3 class="mb-0">Zone 
-                            <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <span data-toggle="tooltip" 
-                                  data-placement="top"
-                                  class="pl-1"
-                                  title="Below-the-Promotion Zone, In-the-Promotion-Zone, Above-the-Promotion-Zone.">
-                                <FontAwesomeIcon icon="info-circle" size="xs">
-                                </FontAwesomeIcon>
-                            </span> 
-                        </h3>
-                        <div id="dc-zone-rowchart"></div>
-                    </div>
                     <div id="highestPme" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                         <div id="dc-highestPme-barchart">
                             <h3 class="mb-0">Highest PME <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-                            <span data-toggle="tooltip" 
-                                  data-placement="top"
-                                  class="pl-1"
-                                  title="Below-the-Promotion Zone, In-the-Promotion-Zone, Above-the-Promotion-Zone.">
-                                <FontAwesomeIcon v-if="HpmeLoaded" icon="info-circle" size="xs">
-                                </FontAwesomeIcon>
-                            </span>   
-                            <!-- <font-awesome-icon v-show="ok" icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>  -->     
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -118,7 +96,9 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="recommend" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                </div>
+                <div class="row">
+                    <div id="recommend" class="col-4 col-lg-4 col-md-6 col-sm-12 col-xs-12">
                         <div id="dc-recommend-rowchart">
                             <h3 class="mb-0">Recommendation <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                 <transition>
@@ -129,7 +109,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="pmeMethod" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                    <div id="pmeMethod" class="col-4 col-lg-4 col-md-6 col-sm-12 col-xs-12">
                         <div id="dc-pmeMethod-rowchart">
                             <h3 class="mb-0">PME Method<span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -139,8 +119,18 @@
                             </h3>
                         </div>
                     </div>
+                    <div id="us" class="col-4 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="2" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
+                            <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                class="btn btn-danger btn-sm btn-rounded reset" 
+                                style="visibility: hidden"
+                                @click="resetChart('dc-us-geoChoroplethChart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
                 </div>
-<!--                 <largeBarChart :id="'core'"         
+                <largeBarChart :id="'core'"         
                                :dimension="coreDim"
                                :group="coreGroup"
                                :widthFactor="0.90"
@@ -155,32 +145,15 @@
                                :colorScale="coreColorScale"
                                :title="'Core'"
                                :loaded="loaded">
-                </largeBarChart> -->
-                <overviewBarChart 
-                    :id="'core'"
-                    :dimension="coreDim"
-                    :aspectRatio="chartSpecs.coreChart.aspectRatio"
-                    :minHeight="chartSpecs.coreChart.minHeight"
-                    :normalToOverviewFactor="2.5"
-                    :selected="selected"
-                    :ylabel="ylabel"
-                    :reducerAdd="promoAdd"
-                    :reducerRemove="promoRemove"
-                    :accumulator="promoInitial"
-                    :numBars="15"
-                    :margin="chartSpecs.coreChart.margins"
-                    :colorScale="coreColorScale"
-                    :title="'Core'"
-                    :loaded="loaded">
-                </overviewBarChart>
-<!--                 <largeBarChart :id="'board'"         
+                </largeBarChart>
+                <largeBarChart :id="'board'"         
                                :dimension="boardDim"
                                :group="boardGroup"
                                :widthFactor="0.90"
                                :aspectRatio="chartSpecs.boardChart.aspectRatio"
                                :minHeight="chartSpecs.boardChart.minHeight"
                                :selected="selected"
-                               :ylabel="ylabel"
+                               :ylabel="ylabel"/
                                :reducer="promoAdd"
                                :accumulator="promoInitial"
                                :numBars="30"
@@ -188,24 +161,7 @@
                                :colorScale="boardColorScale"
                                :title="'Board'"
                                :loaded="loaded">
-                </largeBarChart> -->
-                <overviewBarChart 
-                    :id="'board'"
-                    :dimension="boardDim"
-                    :aspectRatio="chartSpecs.boardChart.aspectRatio"
-                    :minHeight="chartSpecs.boardChart.minHeight"
-                    :normalToOverviewFactor="2.5"
-                    :selected="selected"
-                    :ylabel="ylabel"
-                    :reducerAdd="promoAdd"
-                    :reducerRemove="promoRemove"
-                    :accumulator="promoInitial"
-                    :numBars="15"
-                    :margin="chartSpecs.boardChart.margins"
-                    :colorScale="boardColorScale"
-                    :title="'Board'"
-                    :loaded="loaded">
-                </overviewBarChart>
+                </largeBarChart>
 
 <!--                 <div class="row">
                     <div id="board" class="col-12">
@@ -232,10 +188,8 @@ import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
-import largeBarChart from '@/components/largeBarChart'
-import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
-import toastr from 'toastr'
+import largeBarChart from '@/components/largeBarChart'
 
     export default {
         data() {
@@ -243,7 +197,6 @@ import toastr from 'toastr'
                 data: [],
                 selected: "percent",
                 loaded: false,
-                HpmeLoaded: false,
                 showAlert: true,
                 width: document.documentElement.clientWidth,
                 chartSpecs: chartSpecs,
@@ -290,6 +243,9 @@ import toastr from 'toastr'
           resetAll: (event)=>{
             dc.filterAll()
             dc.redrawAll()
+          },
+          startDemo: function() {
+            introJs().start()
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
@@ -348,9 +304,8 @@ import toastr from 'toastr'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            largeBarChart,
-            overviewBarChart,
-            FontAwesomeIcon
+            FontAwesomeIcon,
+            largeBarChart
         },
         created: function(){
           console.log('created')
@@ -362,14 +317,15 @@ import toastr from 'toastr'
 
             
             //TEST AXIOS CALL:
-            axios.post(axios_url_off_pro).then(response => {
+            axios.post(axios_url_off_promo_ang).then(response => {
                 store.state.asDate = response.data.ASOFDATE
                 var promoData = response.data.data
+                console.log(promoData);
                 var objData = makeObject(promoData)
+                console.log(objData);                
                 this.data = objData 
                 this.loaded = true
                 renderCharts()
-                this.completed = true
             }).catch(console.error)
 
             //TODO: import makeObject function and add new data
@@ -415,19 +371,20 @@ import toastr from 'toastr'
 
             var formatData = (given) =>{
                 var obj = {}
+                //console.log("B1=" + given.grade)
 
                 obj.Grade = formats.gradeFormat[given.Board_ID.substring(1,3)]
                 obj.Competitive_Category = formats.compCatFormat[given.Compcat]
-                obj.Zone = formats.zoneFormat[given.Zone]
                 obj.Recomendation = formats.recommendFormat[given.Promo_Recomendation];
                 obj.PME = formats.pmeFormat[given.PME_Complete]
                 obj.HighestPME = given.highpme.trim().split(" ")[0];
                 obj.pmeMethod = pmeMethodDecode[given.highpme.trim().split(" ")[1] || 'N/A'];
                 obj.Board = formats.gradeFormat[given.Board_ID.substring(1,3)] + "20" + given.Board_ID.substring(3,6)
-                //console.log("B=" + given.Board_ID.substring(1,3))
+                //console.log("state=" + given.ANG_State)
                 obj.Core = given.Core
                 obj.sel = +given.num_select
                 obj.elig = +given.num_eligible
+                obj.state = given.ANG_State  
                 obj.Percent =  obj.sel/obj.elig === Infinity ? 0 : Math.round((obj.sel/obj.elig)*1000)/10 || 0;
 
                 return obj;
@@ -436,8 +393,8 @@ import toastr from 'toastr'
             var testData = (formatted, original) =>{
                 for (var key in formatted) {
                     if (formatted[key] === undefined){
-                        // console.log('Empty Value of ' + key)
-                        // console.log(original)
+                        console.log('Empty Value of ' + key)
+                        console.log(original)
                         formatted[key] = "UNKNOWN"
                     }
                 }
@@ -506,6 +463,16 @@ import toastr from 'toastr'
                         one:"<span style=\"color:steelblue; font-size: 20px;\">%number%</span>"
                     })
                     
+                //remove empty function (es6 syntax to keep correct scope)
+                var removeError = (source_group) => {
+                    return {
+                        all: () => {
+                            return source_group.all().filter((d) => {
+                                return d.key != "**ERROR**"
+                            })
+                        }
+                    }
+                }     
                     
                 //grade
                 var gradeConfig = {};
@@ -514,7 +481,7 @@ import toastr from 'toastr'
                     return d.Grade;
                 })
                 gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial))
-                gradeConfig.minHeight = 275 
+                gradeConfig.minHeight = 260 
                 gradeConfig.aspectRatio = 5 
                 gradeConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
                 gradeConfig.colors = chartSpecs.gradeChartColorScale 
@@ -533,39 +500,8 @@ import toastr from 'toastr'
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-                          .attr('transform', 'translate(-8,0)rotate(-45)')
-                          .on('click', (d)=>{
-                            chart.filter(d);
-                            dc.redrawAll();                                
-                          })
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
-
-                //zone
-                var zoneConfig = {};
-                zoneConfig.id = 'zone'
-                zoneConfig.dim = this.ndx.dimension(function (d) {
-                    return d.Zone;
-                })
-                zoneConfig.group = zoneConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                zoneConfig.minHeight = 285 
-                zoneConfig.aspectRatio = 5 
-                zoneConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
-                zoneConfig.colors = d3.scale.ordinal().range(["#1b9e77","#7570b3","#d95f02"])
-                var zoneChart = dchelpers.getRowChart(zoneConfig)
-                zoneChart
-                    .controlsUseVisibility(true)
-                    .valueAccessor((d) => {
-                        return d.value[this.selected]
-                    })
-                    .ordering(function(d){
-                      return formats.zoneOrder[d.key]
-                    })                                    
-
-                zoneChart.filter('IPZ')
-
-                zoneChart.on("filtered", (d)=>{
-                    this.showAlert = false;
-                })
 
                 //highestPme
                 var highestPmeConfig = {}
@@ -574,7 +510,7 @@ import toastr from 'toastr'
                     return d.HighestPME;
                 })
                 highestPmeConfig.group = removeEmptyBins(highestPmeConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial))
-                highestPmeConfig.minHeight = 245 
+                highestPmeConfig.minHeight = 260 
                 highestPmeConfig.aspectRatio = 5
                 highestPmeConfig.margins = {top: 10, left: 30, right: 10, bottom: 40}
                 highestPmeConfig.colors = ["#fe9929"]
@@ -590,14 +526,10 @@ import toastr from 'toastr'
                     .elasticX(true)
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
-                          .attr('transform', 'translate(-8,0)rotate(-45)')
-                          .on('click', (d)=>{
-                            chart.filter(d);
-                            dc.redrawAll();                               
-                          })                        
+                        .attr('transform', 'translate(-8,0)rotate(-45)')
                     })
-                    .yAxis().tickFormat(function(v) {return v})
-                 
+                    .yAxis().tickFormat(function(v) {return v + "%";})
+
 
                 //Compcat
                 //TODO: lighter blue
@@ -607,8 +539,8 @@ import toastr from 'toastr'
                     return d.Competitive_Category;
                 })
                 compCatConfig.group = compCatConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                compCatConfig.minHeight = 200
-                compCatConfig.aspectRatio = 2
+                compCatConfig.minHeight = 260
+                compCatConfig.aspectRatio = 3
                 compCatConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 compCatConfig.colors = d3.scale.ordinal().range(["#6baed6"])
                 var compCatChart = dchelpers.getRowChart(compCatConfig)
@@ -625,7 +557,7 @@ import toastr from 'toastr'
                     return d.Recomendation;
                 })
                 recommendConfig.group = recommendConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                recommendConfig.minHeight = 225
+                recommendConfig.minHeight = 150 
                 recommendConfig.aspectRatio = 2
                 recommendConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 recommendConfig.colors = d3.scale.ordinal().range(["#1a9641","#a6d96a","#fdae61","#d7191c"])
@@ -646,7 +578,7 @@ import toastr from 'toastr'
                     return d.pmeMethod;
                 })
                 pmeMethodConfig.group = pmeMethodConfig.dim.group().reduce(promoAdd, promoRemove, promoInitial)
-                pmeMethodConfig.minHeight = 225
+                pmeMethodConfig.minHeight = 150 
                 pmeMethodConfig.aspectRatio = 2
                 pmeMethodConfig.margins = {top: 10, left: 30, right: 10, bottom: 20}
                 pmeMethodConfig.colors = d3.scale.ordinal().range(["#1a9850","#91cf60","#d9ef8b","#fee08b"])
@@ -660,32 +592,135 @@ import toastr from 'toastr'
                       return pmeMethodOrder[d.key]
                     })                                    
                 
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
-                        myFilters += '\n (' + d.filters() + ')'
-                    })
-                    if (myFilters !== undefined) {
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (selRateND.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
-                      }
-                      else {
-                        toastr.info(myFilters);  
-                      }                      
+                //CONUS 
+                var usConfig = {}
+                usConfig.id = 'us';
+                usConfig.dim = this.ndx.dimension(function(d){
+                    return d.state;
+                })
+
+                // var dimData = usConfig.dim.top(10);
+                //     dimData.forEach(function (x) {
+                //     console.log(JSON.stringify(x));
+                // });
+                usConfig.group = removeError(usConfig.dim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial))
+                usConfig.scale = 1
+                usConfig.minHeight = 200
+                usConfig.aspectRatio = 2.1 
+                usConfig.xRatio = 2.0
+                usConfig.yRatio = 2.0
+                //default color scale from #E2F2FF to #0061B5.
+                usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
+                
+                usConfig.valueAccessor = (d) => {
+                    if (d) {                        
+                        return d.value[this.selected];
                     }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
+                }
+                usConfig.colorAccessor = function(d) {
+                    if (d) {
+                        return d;   
+                    } else {
+                        return 0;
+                    }
+                }
+            
+                var tfJson = require('../../assets/geoUS.json')
+                usConfig.json = tfJson
+                usConfig.geoName = "state"
+                usConfig.propName = 'name' 
+                usConfig.projection = d3.geo.albersUsa()
+
+                var guText = ''
+                var viText = ''
+                var prText = ''
+
+                var usChart = dchelpers.getGeoChart(usConfig)                
+                usChart.title(function(d) {
+                    if (d.value == undefined){ d.value = '0';}
+                    if (d.key == 'GU') {guText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    if (d.key == 'VI') {viText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    if (d.key == 'PR') {prText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
+                    return formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value ;
+                });
+                
+                usChart.on('pretransition', (chart)=> {
+                                            
+                    var color = '#555'
+                    chart.select('svg').attr("class", "border shadow p-1 mt-3 bg-white rounded")
+                    chart.select('svg').select(".textLabels").remove()
+                    chart.select('svg .layer0').append('g').attr("class", "textLabels")
+
+                    var textLabels = chart.select('.textLabels')
+                    textLabels.attr("cursor","pointer")
+
+                    var textStroke = 2
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.12)
+                        .attr("y", usConfig.height * 0.63)
+                        .attr("fill", color) 
+                        .attr("font-size", '0.7vw')
+                        .attr("font-weight", 'bold')  
+                        .text('Guam')
+                        .on('click', ()=>{
+                            chart.filter([["GU"]]);
+                            dc.redrawAll();
+                        })
+                        .append("title")                        
+                        .text(guText)
+
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.54)
+                        .attr("y", usConfig.height * 0.93)
+                        .attr("fill", color)  
+                        .attr("font-size", '0.7vw')
+                        .attr("font-weight", 'bold') 
+                        .text('Puerto Rico')
+                        .on('click', ()=>{
+                            chart.filter([["PR"]]);
+                            dc.redrawAll();                            
+                        })
+                        .append("title")                        
+                        .text(prText)
+                    
+                    textLabels
+                        .append("text")
+                        .attr("x", usConfig.width * 0.61)
+                        .attr("y", usConfig.height * 0.87)
+                        .attr("fill", color)  
+                        .attr("font-size", '0.7vw')
+                        .attr("font-weight", 'bold') 
+                        .text('US Virgin Islands')
+                        .on('click', ()=>{
+                            chart.filter([["VI"]]);
+                            dc.redrawAll();                            
+                        })
+                        .append("title")                        
+                        .text(viText)
+                    // set viewport for svg
+                    chart.maxWidth = 950
+                    chart.maxHeight = 450
+
+                    var mapZoom = usChart.select('svg .layer0')
+                    mapZoom                        
+                        .attr("width", chart.maxWidth)
+                        .attr("height", chart.maxHeight)                        
+                        .call(d3.behavior.zoom()
+                            .scaleExtent([1, 10])
+                            .on("zoom", function () {                             
+                            var t = d3.event.translate,
+                                s = d3.event.scale;
+                            
+                            t[0] = Math.min(chart.maxWidth / 2 * (s - 1) + 400 * s, Math.max(chart.maxWidth / 2 * (1 - s) - 400 * s, t[0]));
+                            t[1] = Math.min(chart.maxHeight / 2 * (s - 1) + 250 * s, Math.max(chart.maxHeight / 2 * (1 - s) - 250 * s, t[1]));
+
+                            mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
+                        }))
+                })
+                                
+                usChart.controlsUseVisibility(true)
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -705,7 +740,6 @@ import toastr from 'toastr'
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
-                    this.HpmeLoaded = true
                 })
 
                 //make responsive
@@ -714,7 +748,7 @@ import toastr from 'toastr'
                     clearTimeout(temp)
                     temp = setTimeout(dc.redrawAll(), 500)
                 }
-                
+
                 //create charts
                 dc.renderAll()
                 dc.redrawAll()
@@ -733,13 +767,8 @@ import toastr from 'toastr'
         }
     }
 </script>
-<style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="@/../node_modules/dc/dc.css"/>
-<style>
-#grade, #zone, #highestPme, #compCat, #recommend, #pmeMethod, #core, #board {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-}
+
+<style src="@/../node_modules/dc/dc.css">
 </style>
 <style>  /*should be scoped*/
 #radioSelect div,input,label{

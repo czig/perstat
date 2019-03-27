@@ -29,8 +29,9 @@ import faRedoAlt from '@fortawesome/fontawesome-free-solid/faRedoAlt'
 import faCheckCircle from '@fortawesome/fontawesome-free-solid/faCheckCircle'
 import faExclamationTriangle from '@fortawesome/fontawesome-free-solid/faExclamationTriangle'
 import faTimesCircle from '@fortawesome/fontawesome-free-solid/faTimesCircle'
+import faEye from '@fortawesome/fontawesome-free-solid/faEye'
 
-fontawesome.library.add(faSpinner,faQuestionCircle, faInfoCircle, faFilter, faDownload, faRedoAlt, faCheckCircle, faExclamationTriangle, faTimesCircle)
+fontawesome.library.add(faSpinner,faQuestionCircle, faInfoCircle, faFilter, faDownload, faRedoAlt, faCheckCircle, faExclamationTriangle, faTimesCircle, faEye)
 
 import { store } from '@/store/store'
 

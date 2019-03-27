@@ -1,9 +1,9 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <h1 class="col">AD Officer</h1>
+            <h1 class="col">ANG Officer</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
-                <span data-step="5" data-intro="The data on this page is current as of the date shown here.">
+                <span data-step="6" data-intro="The data on this page is current as of the date shown here.">
                     Data as of: 
                     <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
                 </span>
@@ -12,18 +12,18 @@
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link"
-                   :class="{ active: dynamicComponent == 'off-manning'}" 
-                   @click="dynamicComponent='off-manning'" data-toggle="tab">Manning</a>
+                   :class="{ active: dynamicComponent == 'ang-off-manning'}" 
+                   @click="dynamicComponent='ang-off-manning'" data-toggle="tab">Manning</a>
             </li>
+            <!-- <li class="nav-item">
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'ang-off-promo'}" 
+                    @click="dynamicComponent='ang-off-promo'" data-toggle="tab">Promotions</a>
+            </li> -->
             <li class="nav-item">
                 <a class="nav-link" 
-                   :class="{ active: dynamicComponent == 'off-promo'}" 
-                    @click="dynamicComponent='off-promo'" data-toggle="tab">Promotions</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" 
-                   :class="{ active: dynamicComponent == 'off-edu'}" 
-                    @click="dynamicComponent='off-edu'" data-toggle="tab">Education</a>
+                   :class="{ active: dynamicComponent == 'ang-off-edu'}" 
+                    @click="dynamicComponent='ang-off-edu'" data-toggle="tab">Education</a>
             </li>
         </ul>
         <transition name="fade" mode="out-in">
@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import OfficerManning from '@/components/Officer/OfficerManning'
-import OfficerPromo from '@/components/Officer/OfficerPromo'
-import OfficerEducation from '@/components/Officer/OfficerEducation'
+import ANGOfficerManning from '@/components/ANGOfficer/ANGOfficerManning'
+import ANGOfficerPromo from '@/components/ANGOfficer/ANGOfficerPromo'
+import ANGOfficerHighEd from '@/components/ANGOfficer/ANGOfficerHighEd'
 import { store } from '@/store/store'
 
 export default {
@@ -57,7 +57,7 @@ export default {
                 var componentToShow = components.filter((d) => {
                     return d === page;
                 })
-                return componentToShow[0] || "off-manning";
+                return componentToShow[0] || "ang-off-manning";
             },
             set: function(newPage) {
                 store.commit('changePage',newPage)
@@ -65,9 +65,9 @@ export default {
         }
     },
     components: {
-        'off-manning': OfficerManning,
-        'off-promo': OfficerPromo,
-        'off-edu': OfficerEducation
+        'ang-off-manning': ANGOfficerManning,
+        'ang-off-promo': ANGOfficerPromo,
+        'ang-off-edu': ANGOfficerHighEd,
     },
     created() {
         console.log('create')

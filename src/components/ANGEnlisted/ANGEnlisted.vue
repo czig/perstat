@@ -1,33 +1,40 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <h1 class=col>AD Enlisted</h1>
+            <h1 class=col>ANG Enlisted</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
-                        Data as of: 
-                        <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
+                <span data-step="6" data-intro="The data on this page is current as of the date shown here.">
+                    Data as of: 
+                    <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
+                </span>
             </div>
         </div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link" 
-                   :class="{ active: dynamicComponent == 'manning'}" 
-                    data-toggle="tab" @click="dynamicComponent='manning'">
+                   :class="{ active: dynamicComponent == 'ang-enl-manning'}" 
+                    data-toggle="tab" @click="dynamicComponent='ang-enl-manning'">
                     Manning
                 </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link" 
-                   :class="{ active: dynamicComponent == 'retention'}" 
-                    data-toggle="tab" @click="dynamicComponent='retention'">
+                   :class="{ active: dynamicComponent == 'ang-enl-retention'}" 
+                    data-toggle="tab" @click="dynamicComponent='ang-enl-retention'">
                     Retention
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" 
-                   :class="{ active: dynamicComponent == 'promotions'}" 
-                    data-toggle="tab" @click="dynamicComponent='promotions'">
+                   :class="{ active: dynamicComponent == 'ang-enl-promo'}" 
+                    data-toggle="tab" @click="dynamicComponent='ang-enl-promo'">
                     Promotions
                 </a>
+            </li> -->
+            <li class="nav-item">
+                <a class="nav-link" 
+                   :class="{ active: dynamicComponent == 'ang-enl-edu'}" 
+                    @click="dynamicComponent='ang-enl-edu'" data-toggle="tab">Education</a>
             </li>
         </ul>
         <transition name="fade" mode="out-in">
@@ -37,9 +44,10 @@
 </template>
 
 <script>
-import manning from '@/components/Enlisted/Manning'
-import retention from '@/components/Enlisted/Retention'
-import promotions from '@/components/Enlisted/EnlistedPromo'
+import ANGEnlistedManning from '@/components/ANGEnlisted/ANGEnlistedManning'
+import ANGRetention from '@/components/ANGEnlisted/ANGRetention'
+import ANGEnlistedPromo from '@/components/ANGEnlisted/ANGEnlistedPromo'
+import ANGEnlistedHighEd from '@/components/ANGEnlisted/ANGEnlistedHighEd'
 import { store } from '@/store/store'
 
     export default {
@@ -61,7 +69,7 @@ import { store } from '@/store/store'
                     var componentToShow = components.filter((d) => {
                         return d === page;
                     })
-                    return componentToShow[0] || "manning";
+                    return componentToShow[0] || "ang-enl-manning";
                 },
                 set: function(newPage) {
                     store.commit('changePage',newPage)
@@ -69,9 +77,10 @@ import { store } from '@/store/store'
             }
         },
         components:{
-            manning,
-            retention,
-            promotions
+        'ang-enl-manning': ANGEnlistedManning,
+        'ang-enl-promo': ANGEnlistedPromo,
+        'ang-enl-retention': ANGRetention,
+        'ang-enl-edu': ANGEnlistedHighEd
         },
         created() {
             console.log('created')

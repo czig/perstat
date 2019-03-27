@@ -436,7 +436,7 @@ import toastr from 'toastr'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial)
-                gradeConfig.minHeight = 200
+                gradeConfig.minHeight = 267
                 gradeConfig.aspectRatio = 4
                 gradeConfig.margins = {top: 10, left: 50, right: 30, bottom: 20}
                 gradeConfig.colors = this.chartSpecs.gradeChartColorScale 

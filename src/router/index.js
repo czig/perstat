@@ -5,6 +5,9 @@ import TotalForce from '@/components/TotalForce/TotalForce'
 import Officer from '@/components/Officer/Officer'
 import Enlisted from '@/components/Enlisted/Enlisted'
 import Civilian from '@/components/Civilian'
+import ANGOfficer from '@/components/ANGOfficer/ANGOfficer'
+import ANGEnlisted from '@/components/ANGEnlisted/ANGEnlisted'
+import ANGAssignments from '@/components/ANGAssignments/ANGAssignments'
 import Assignments from '@/components/Assignments/Assignments'
 import Education from '@/components/Education/Education'
 import Care from '@/components/Care'
@@ -39,6 +42,21 @@ export default new Router({
       path: '/civilian',
       name: 'civilian',
       component: Civilian 
+    },
+    {
+      path: '/angofficer',
+      name: 'angofficer',
+      component: ANGOfficer
+    },
+     {
+       path: '/angenlisted',
+       name: 'angenlisted',
+       component: ANGEnlisted 
+     },
+     {
+      path: '/angassignments',
+      name: 'angassignments',
+      component: ANGAssignments 
     },
     {
       path: '/assignments',

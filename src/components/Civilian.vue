@@ -416,7 +416,7 @@ import toastr from 'toastr'
                     return d.Grade;
                 })
                 gradeConfig.group = gradeConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                gradeConfig.minHeight = 450 
+                gradeConfig.minHeight = 559 
                 gradeConfig.aspectRatio = 1
                 gradeConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
                 var c = d3.rgb(51,172,255)
@@ -479,7 +479,7 @@ import toastr from 'toastr'
                     return d.Prior_Military;
                 })
                 priorConfig.group = priorConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                priorConfig.minHeight = 120 
+                priorConfig.minHeight = 180 
                 priorConfig.aspectRatio = 3
                 priorConfig.margins = {top: 0, left: 30, right: 30, bottom: 20}
                 var c = d3.rgb("violet")

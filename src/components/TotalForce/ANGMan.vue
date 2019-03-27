@@ -12,9 +12,14 @@
                     </div>
                     <div class="col-auto">
                         <button type="button" id="demo"
-                            class="btn btn-primary btn-sm"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
                             @click="startDemo">
-                            Demo 
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
                         </button>
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
@@ -47,7 +52,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div id="type" class="col-xl-4 col-lg-5 col-md-5 col-sm-12 col-12">
+                    <div id="type" class="col-xl-6 col-lg-3 col-md-6 col-sm-12 col-12">
                         <div id="dc-type-rowchart">
                             <h3>Type <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -57,7 +62,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="grade" class="col-xl-8 col-lg-7 col-md-7 col-sm-12 col-12">
+                    <div id="grade" class="col-xl-6 col-lg-5 col-md-6 col-sm-12 col-12">
                         <div id="dc-grade-barchart">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -69,7 +74,7 @@
                     </div>
 <!--                 </div>
                 <div class="row"> -->
-                    <div id="empCat" class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+                    <div id="empCat" class="col-xl-6 col-lg-4 col-md-6 col-sm-12 col-12">
                         <div id="dc-empCat-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -79,10 +84,7 @@
                             </h3>
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div id="us" class="col-12">
+                    <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="3" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -205,8 +207,6 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     }
                 }
             },                
-               
-
         },
         components: {
             'loader': Loader,
@@ -229,6 +229,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 var axiosData = response.data.data
                 //console.log(axiosData)
                 var objData = makeObject(axiosData)
+                //console.log(objData)
                 this.data = objData
                 this.loaded = true
                 renderCharts()
@@ -406,7 +407,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2.01 
                 usConfig.xRatio = 2.0
-                usConfig.yRatio = 2.2
+                usConfig.yRatio = 2.0
                                 
 
                 //default color scale from #E2F2FF to #0061B5.
@@ -436,16 +437,6 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 
                 var usChart = dchelpers.getGeoChart(usConfig)                
                 usChart.title(function(d) {
-                    //console.log("**************************************************");
-                    // d.key = AA from json file
-                    //console.log("d.key: "+d.key);
-                    //stateFormat { AA : ## }
-                    //console.log("stateFormat: "+formats.stateFormat[d.key]);                    
-                    //geoCS { ## : Full Name }
-                    //console.log("geoCS: "+formats.geoCS[formats.stateFormat[d.key]]);
-                    // d.value = object.Inventory ? 
-                    //console.log('d.value: '+d.value);
-                    //console.log("**************************************************");
                     if (d.value == undefined){ d.value = '0';}
                     if (d.key == 'GU') {guText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
                     if (d.key == 'VI') {viText = formats.geoCS[formats.stateFormat[d.key]] + ": " + d.value }
@@ -473,9 +464,6 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("font-weight", 'bold')  
                         .text('Guam')
                         .on('click', ()=>{
-                            //$('svg g.layer0 g').toggleClass('deselected');
-                            //$('svg g.layer0 g.gu').toggleClass('selected');
-                            //this.submit('GU', 'dc-us-geoChoroplethChart');
                             chart.filter([["GU"]]);
                             dc.redrawAll();
                         })

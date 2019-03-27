@@ -1,7 +1,7 @@
 <template>
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
-            <h1 class="col">AD Officer</h1>
+            <h1 class="col">ANG Time On Station</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
                 <span data-step="5" data-intro="The data on this page is current as of the date shown here.">
                     Data as of: 
@@ -9,23 +9,23 @@
                 </span>
             </div>
         </div>
-        <ul class="nav nav-tabs">
+        <!-- <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link"
-                   :class="{ active: dynamicComponent == 'off-manning'}" 
-                   @click="dynamicComponent='off-manning'" data-toggle="tab">Manning</a>
+                   :class="{ active: dynamicComponent == 'ang-tos'}" 
+                   @click="dynamicComponent='ang-tos'" data-toggle="tab">TOS</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" 
-                   :class="{ active: dynamicComponent == 'off-promo'}" 
-                    @click="dynamicComponent='off-promo'" data-toggle="tab">Promotions</a>
+                   :class="{ active: dynamicComponent == 'ang-off-promo'}" 
+                    @click="dynamicComponent='ang-off-promo'" data-toggle="tab">Promotions</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" 
-                   :class="{ active: dynamicComponent == 'off-edu'}" 
-                    @click="dynamicComponent='off-edu'" data-toggle="tab">Education</a>
+                   :class="{ active: dynamicComponent == 'ang-off-edu'}" 
+                    @click="dynamicComponent='ang-off-edu'" data-toggle="tab">Education</a>
             </li>
-        </ul>
+        </ul> -->
         <transition name="fade" mode="out-in">
             <component :is="dynamicComponent"></component>
         </transition>
@@ -33,9 +33,7 @@
 </template>
 
 <script>
-import OfficerManning from '@/components/Officer/OfficerManning'
-import OfficerPromo from '@/components/Officer/OfficerPromo'
-import OfficerEducation from '@/components/Officer/OfficerEducation'
+import ANGTos from '@/components/ANGAssignments/ANGTos'
 import { store } from '@/store/store'
 
 export default {
@@ -46,6 +44,7 @@ export default {
     computed:{
         asDate: function(){
             return store.state.asDate;
+            console.log("test");
         },
         dynamicComponent: {
             get: function() {
@@ -57,7 +56,7 @@ export default {
                 var componentToShow = components.filter((d) => {
                     return d === page;
                 })
-                return componentToShow[0] || "off-manning";
+                return componentToShow[0] || "ang-tos";
             },
             set: function(newPage) {
                 store.commit('changePage',newPage)
@@ -65,9 +64,7 @@ export default {
         }
     },
     components: {
-        'off-manning': OfficerManning,
-        'off-promo': OfficerPromo,
-        'off-edu': OfficerEducation
+        'ang-tos': ANGTos
     },
     created() {
         console.log('create')

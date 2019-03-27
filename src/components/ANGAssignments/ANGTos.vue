@@ -1,11 +1,11 @@
 <template>
-	<div class="container-fluid">
+	<div class="container">
 		<transition-group name="fade" mode="out-in">
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2">
                     <div class="col-auto pt-1">
-                        Average TOS: 
+                        ANG Average TOS: 
                         <span id="average"></span>
                     </div>
                     <div class="col-auto pt-1">
@@ -13,43 +13,24 @@
                         <span id="count"></span>
                         <span data-toggle="tooltip" 
                               data-placement="bottom"
-                              class="h3 pl-1"
+                              class="pl-1"
                               title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
-                            <FontAwesomeIcon icon="info-circle" size="xs">
-                            </FontAwesomeIcon>
+                            <fontAwesomeIcon icon="info-circle">
+                            </fontAwesomeIcon>
                         </span>
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
-                        <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                title="Filter">
-                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="filter" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button> 
                         <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
-                        <FontAwesomeIcon icon="download" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
+                                class="btn btn-info btn-rounded btn-sm waves-effect" 
+                                >Download Raw Data</button>
                         <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect"
-                                title="Reset All"
-                                @click="resetAll">
-                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="redo-alt" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>                         
+                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                @click="resetAll">Reset All</button>
                     </div>
                 </div>
                 <div class="row">
-            		<div id="tour" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
+            		<div id="tour" class="col-3">
 		                <div id="dc-tour-rowchart">
 		                    <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
 		                    	Avg. TOS
@@ -61,7 +42,7 @@
 		                    </h3>
                 		</div>
             		</div>
-		            <div id="type" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
+		            <div id="type" class="col-3">
 		                <div id="dc-type-rowchart">
 		                    <h3>Type <span style="font-size: 14pt; opacity: 0.87;">
 		                    	Avg. TOS
@@ -73,7 +54,7 @@
 		                    </h3>
                 		</div>
             		</div>
-            		<div id="grade" class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            		<div id="grade" class="col-6">
                         <div id="dc-grade-barchart">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
@@ -84,52 +65,42 @@
                         </div>
                     </div>
             	</div>
-                <div class="row pt-2">
+                 <div class="row">
                         <div id="base" class="col-12">
                                 <div id="dc-base-select">
                                 </div>
-                                <h3>Installation 
-                                    <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
-                                    <span data-toggle="tooltip" 
-                                          data-placement="bottom"
-                                          class="pl-1"                                          
-                                          title="Type in the full, or partial, installation name and press the Search Button to Filter by Installation.">
-                                        <FontAwesomeIcon icon="info-circle" size="xs">
-                                        </FontAwesomeIcon>
-                                    </span>
-                                    <!--@click="resetChart('dc-base-barchart');resetChart('dc-base-select') -->
-<!--                                     <button type="button"
+                                <h3>Installation <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS </span>
+                                <button type="button"
                                         id="btn-base-reset"
-                                        class="btn btn-danger btn-sm btn-rounded waves-effect" 
+                                        class="btn btn-danger btn-sm btn-rounded reset" 
                                         style="visibility: hidden"
-                                        @click="submit(searchBase,'dc-base-select');">Reset
-                                    </button> -->
+                                        @click="resetChart('dc-base-barchart');resetChart('dc-base-select')">Reset</button>
                                 </h3>
                                 <searchBox
                                     v-model="searchBase"
-                                    size="5"
+                                    size="3"
                                     label="Enter Installation"
                                     @sub="submit(searchBase,'dc-base-select')"
                                     button="true"
                                     :color="baseColor"
                                     :btnColor="baseColor"
-                                    ></searchBox>
-<!--                             <transition name="expand" key="1">
-                                <div id="dc-base-barchart" v-show="loaded&&showBase">
-                                </div>
-                            </transition> -->
+                                ></searchBox>
+                            <transition name="expand" key="1">
+                            <div id="dc-base-barchart" v-show="loaded&&showBase">
+                            </div>
+                             </transition>
                         </div>
                 </div>
-<!--                 <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
+                <div v-show="loaded&&!showBase" class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
                     Please select from maps below to display Installation graph
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="cursor: pointer;">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div> -->
-                <div class="row pt-2">
-                    <div id="us" class="col-lg-6 col-md-6 col-sm-12 col-12">
+                </div>
+                <div class="row">
+                    <div id="us" class="col-6">
                         <div id="dc-us-geoChoroplethChart">
-                            <h3 class="mt-2 mb-0">CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
+                            <h3>CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -137,9 +108,9 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="jp" class="col-lg-6 col-md-6 col-sm-12 col-12">
+                    <div id="jp" class="col-6">
                         <div id="dc-jp-geoChoroplethChart">
-                            <h3 class="mt-2 mb-0">OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
+                            <h3>OCONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -163,7 +134,6 @@ import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
-import toastr from 'toastr'
 
 	export default {
         data() {
@@ -222,7 +192,7 @@ import toastr from 'toastr'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            FontAwesomeIcon,
+            'fontAwesomeIcon': FontAwesomeIcon,
             searchBox
         },
         created: function(){
@@ -233,8 +203,8 @@ import toastr from 'toastr'
             console.log('mounted')
             var postArray = []
             
-            postArray.push(axios.post(axios_url_off_tos))
-            postArray.push(axios.post(axios_url_enl_tos))
+            postArray.push(axios.post(axios_url_ang_off_tos))
+            postArray.push(axios.post(axios_url_ang_enl_tos))
             
             Promise.all(postArray).then(payload => {
                 //payload is an array of arrays
@@ -437,7 +407,7 @@ import toastr from 'toastr'
                 })
 
                 typeConfig.group = typeConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                typeConfig.minHeight = 220
+                typeConfig.minHeight = 200
                 typeConfig.aspectRatio = 2.7
                 typeConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 typeConfig.colors = d3.scale.category10()
@@ -458,7 +428,7 @@ import toastr from 'toastr'
                 })
 
                 tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 222 
+                tourConfig.minHeight = 200 
                 tourConfig.aspectRatio = 2.6
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
@@ -482,8 +452,8 @@ import toastr from 'toastr'
                     return d.Grade;
                 })
                 gradeConfig.group = removeEmptyBins(gradeConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial))
-                gradeConfig.minHeight = chartSpecs.typeChart.minHeight
-                gradeConfig.aspectRatio = chartSpecs.baseChart.aspectRatio
+                gradeConfig.minHeight = 230
+                gradeConfig.aspectRatio = 3
                 gradeConfig.margins = {top: 10, left: 30, right: 10, bottom: 55}
                 gradeConfig.colors = chartSpecs.gradeChartColorScale
                 var c = d3.rgb(51,172,255)
@@ -501,10 +471,6 @@ import toastr from 'toastr'
                     .on('pretransition', (chart)=> {
                         chart.selectAll('g.x text')
 	                        .attr('transform', 'translate(-8,0)rotate(-45)')
-                             .on('click', (d)=>{
-                                chart.filter(d);
-                                dc.redrawAll();                                
-                             })
                     })
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]
@@ -577,10 +543,6 @@ import toastr from 'toastr'
                     return d.State;
                 })
                 usConfig.group = usConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                //alert(_.values(usConfig.group))
-                //alert(Object.values(usConfig.group))
-                //alert(Object.valueOf(usConfig.group))
-                //alert(Object.keys(usConfig.group))
                 usConfig.scale = 1
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2
@@ -626,7 +588,7 @@ import toastr from 'toastr'
                         myCount = d.value.cnt;
                         myAverage = d.value.average;
                     }
-                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage + " months" + "\n Completed Tours: " + myCount ;
+                    return formats.geoCS[formats.stateFormat[d.key]] + "\n Average TOS: " + myAverage + "\n Completed Tours: " + myCount ;
                 });
                 // usChart.on('filtered',(chart) => {
                 //     if (chart.hasFilter()) {
@@ -636,30 +598,6 @@ import toastr from 'toastr'
                 //     }
                 // })
 
-                usChart.on('pretransition', (chart)=> {
-
-                    chart.select('svg').attr("class", "border shadow p-1 mt-3 bg-white rounded")
-                    // set viewport for svg
-                    chart.maxWidth = 950
-                    chart.maxHeight = 450
-
-                    var mapZoom = usChart.select('#dc-us-geoChoroplethChart svg .layer0')
-                    mapZoom                        
-                        .attr("width", chart.maxWidth)
-                        .attr("height", chart.maxHeight)                        
-                        .call(d3.behavior.zoom()
-                            .scaleExtent([1, 10])
-                            .on("zoom", function () {                             
-                            var t = d3.event.translate,
-                                s = d3.event.scale;
-                            
-                            t[0] = Math.min(chart.maxWidth / 2 * (s - 1) + 400 * s, Math.max(chart.maxWidth / 2 * (1 - s) - 400 * s, t[0]));
-                            t[1] = Math.min(chart.maxHeight / 2 * (s - 1) + 250 * s, Math.max(chart.maxHeight / 2 * (1 - s) - 250 * s, t[1]));
-
-                            mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
-                        }))
-                })
-
                 //oconus
                 var jpConfig = {}
                 jpConfig.id = 'jp';
@@ -668,11 +606,11 @@ import toastr from 'toastr'
                      return d.Country;
                 })
                 jpConfig.group = jpConfig.dim.group().reduce(tosAdd, tosRemove, tosInitial)
-                jpConfig.scale = 2.2 
+                jpConfig.scale = 2 
                 jpConfig.minHeight = 200
-                jpConfig.aspectRatio = 2
+                jpConfig.aspectRatio = 2 
                 jpConfig.xRatio = 1.8 
-                jpConfig.yRatio = 2.2 
+                jpConfig.yRatio = 2 
 
                 jpConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
                 jpConfig.valueAccessor = function(d) {
@@ -718,7 +656,7 @@ import toastr from 'toastr'
                              }
                              //return formats.("99":"FullName")[formats.("AA":"99")[d.key]] + " " + myCount ;
 //                             return formats.geoCS[formats.stateFormat[d.key]] + ": " + myCount ;
-                                return formats.countryLong[d.key] + "\n Average TOS: " + jpAverage + " months" + "\n Completed Tours: " + jpCount ;
+                                return formats.countryLong[d.key] + "\n Average TOS: " + jpAverage + "\n Completed Tours: " + jpCount ;
                          });
 
                 //jpChart.controlsUseVisibility(true)
@@ -741,26 +679,25 @@ import toastr from 'toastr'
                 // })
 
                 jpChart.on('pretransition', (chart)=> {
-                    var color = '#555'
-                    chart.select('svg').attr("class", "border shadow p-3 mt-3 bg-white rounded")
+                    var color = 'orange'
                     chart.select('svg').select(".divider").remove()
-                    chart.select('#dc-jp-geoChoroplethChart svg .layer0').append('g').attr("class", "divider")
+                    chart.select('svg').append('g').attr("class", "divider")
                     var divider = chart.select('.divider')
                     var dividerStroke = 3
 
                     //lines must meet; set variables to represent where lines meet
                     //point where all areas meet
-                    var tripleJunctionX = 0.28 * jpConfig.width 
-                    var tripleJunctionY = 0.1 * jpConfig.height
+                    var tripleJunctionX = 0.25 * jpConfig.width 
+                    var tripleJunctionY = 0.2 * jpConfig.height
                     //intersection between pacific and alaska
-                    var pacificAlaskaX = 0.17 * jpConfig.width
-                    var pacificAlaskaY = 0.50 * jpConfig.height
+                    var pacificAlaskaX = 0.14 * jpConfig.width
+                    var pacificAlaskaY = 0.55 * jpConfig.height
                     //corner (90 deg) between alaska and europe
-                    var europeAlaskaTopX = 0.45 * jpConfig.width
-                    var europeAlaskaTopY = 0.26 * jpConfig.height
+                    var europeAlaskaTopX = 0.432 * jpConfig.width
+                    var europeAlaskaTopY = 0.2 * jpConfig.height
                     //corner (>90 deg) between alaska and europe
-                    var europeAlaskaBotX = 0.47 * jpConfig.width
-                    var europeAlaskaBotY = 0.60 * jpConfig.height
+                    var europeAlaskaBotX = 0.43 * jpConfig.width
+                    var europeAlaskaBotY = 0.552 * jpConfig.height
                     //end of line between alaska and europe
                     var europeAlaskaEndX = 0.6 * jpConfig.width
                     var europeAlaskaEndY = 0.8 * jpConfig.height
@@ -772,8 +709,7 @@ import toastr from 'toastr'
                          .attr("x2", tripleJunctionX)
                          .attr("y2", tripleJunctionY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color)
-                         .attr("stroke-linecap", "round");
+                         .attr("stroke", color);
 
                     //top left diagonal (left of alaska; pacific-alaska divider)
                     divider
@@ -783,8 +719,7 @@ import toastr from 'toastr'
                          .attr("x2", pacificAlaskaX)
                          .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color)
-                         .attr("stroke-linecap", "round");
+                         .attr("stroke", color);
 
                     //left horizontal (pacific-alaska divider)
                     divider
@@ -794,8 +729,7 @@ import toastr from 'toastr'
                          .attr("x2", pacificAlaskaX)
                          .attr("y2", pacificAlaskaY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color)
-                         .attr("stroke-linecap", "round");   
+                         .attr("stroke", color);   
 
 
                     //top right horizontal (top of alaska; alaska-europe divider)
@@ -806,8 +740,7 @@ import toastr from 'toastr'
                          .attr("x2", europeAlaskaTopX)
                          .attr("y2", europeAlaskaTopY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color)
-                         .attr("stroke-linecap", "round");  
+                         .attr("stroke", color);  
 
                     //right vertical (to the right of alaska; alaska-europe divider)
                     divider
@@ -817,8 +750,7 @@ import toastr from 'toastr'
                          .attr("x2", europeAlaskaBotX)
                          .attr("y2", europeAlaskaBotY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color)
-                         .attr("stroke-linecap", "round");  
+                         .attr("stroke", color);  
 
                     //bottom right diagonal (slope ~= -1; alaska-europe divider)
                     divider
@@ -828,20 +760,18 @@ import toastr from 'toastr'
                          .attr("x2", europeAlaskaEndX)
                          .attr("y2", europeAlaskaEndY)
                          .attr("stroke-width", dividerStroke)
-                         .attr("stroke", color)
-                         .attr("stroke-linecap", "round");  
+                         .attr("stroke", color);  
 
 
                     chart.select('svg').select(".textLabels").remove()
-                    chart.select('#dc-jp-geoChoroplethChart svg .layer0').append('g').attr("class", "textLabels")
+                    chart.select('svg').append('g').attr("class", "textLabels")
                     var textLabels = chart.select('.textLabels')
                     var textStroke = 0.5
                      textLabels
                         .append("text")
                         .attr("x", jpConfig.width * 0.05)
-                        .attr("y", jpConfig.height * 0.08)
+                        .attr("y", jpConfig.height * 0.05)
                         .attr("fill", color) 
-                        .attr("font-size", '11pt')
                         .attr("font-weight", 'bold')  
                         .text('Pacific');
 
@@ -850,7 +780,6 @@ import toastr from 'toastr'
                         .attr("x", jpConfig.width * 0.05)
                         .attr("y", jpConfig.height * 0.8)
                         .attr("fill", color) 
-                        .attr("font-size", '11pt')
                         .attr("font-weight", 'bold') 
                         .text('Alaska & Hawaii');
 
@@ -859,57 +788,10 @@ import toastr from 'toastr'
                         .attr("x", jpConfig.width * 0.7)
                         .attr("y", jpConfig.height * 0.8)
                         .attr("fill", color) 
-                        .attr("font-size", '11pt')
                         .attr("font-weight", 'bold') 
                         .text('Europe');
-                
-                    // set viewport for svg
-                    chart.maxWidth = 950
-                    chart.maxHeight = 450
-
-                    var mapZoom = jpChart.select('svg .layer0')
-                    mapZoom                        
-                        .attr("width", chart.maxWidth)
-                        .attr("height", chart.maxHeight)                        
-                        .call(d3.behavior.zoom()
-                            .scaleExtent([1, 10])
-                            .on("zoom", function () {                             
-                            var t = d3.event.translate,
-                                s = d3.event.scale;
-                            
-                            t[0] = Math.min(chart.maxWidth / 2 * (s - 1) + 400 * s, Math.max(chart.maxWidth / 2 * (1 - s) - 400 * s, t[0]));
-                            t[1] = Math.min(chart.maxHeight / 2 * (s - 1) + 250 * s, Math.max(chart.maxHeight / 2 * (1 - s) - 250 * s, t[1]));
-
-                            mapZoom.style("stroke-width", 1 / s).attr("transform", "translate(" + t + ")" + " scale(" + s + ")")
-                        }))
                 })
 
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
-                        myFilters += '\n (' + d.filters() + ')'
-                    })
-                    if (myFilters !== undefined) {
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (invND.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
-                      }
-                      else {
-                        toastr.info(myFilters);  
-                      }                      
-                    }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
 
                  //Download Raw Data button
                 d3.select('#download')
@@ -917,41 +799,23 @@ import toastr from 'toastr'
                     var data = tourConfig.dim.top(Infinity);
                     console.log(data)
                     data.forEach(d=>{
-                        if (!d.Country && !d.State) {
-                            //console.log("Country_State already defined.")
-                            delete d.State; delete d.Country;
+                        if (d.Country=="02"){
+                            d.Country='';
+                            d.State='AK';
                         }
-                        else {
-                            if (d.Country=="02"){
-                                d.Country='';
-                                d.State='AK';
-                            }
-                            if (d.Country=="15"){
-                                d.Country='';
-                                d.State='HI';
-                            }
-                            if (d.Country=="AL"){
-                                d.Country='ALB';
-                                d.State='';
-                            }
-                            //if (formats.countryLong[d.Country] == 'undefined' ) {console.log(d.Country)}//AL albania
-                            //if (formats.stateLong[d.State] == 'undefined' ) {console.log(d.State);}
-                            if (d.State !=='undefined' && d.State.length > 0) {
-                                d.Country_State= formats.stateLong[d.State].toUpperCase();                            
-                            }
-                            else if (d.Country !=='undefined' && d.Country.length > 0) {
-                                d.Country_State= formats.countryLong[d.Country].toUpperCase();
-                            }
-                            else {
-                                d.Country_State = '';                                                  
-                            } 
-
-                            if (d.State) { delete d.State; delete d.Country;}
-                            if (d.Country ) { delete d.State; delete d.Country; }
-                            else {delete d.State; delete d.Country;}
+                        if (d.Country=="15"){
+                            d.Country='';
+                            d.State='HI';
                         }
-                        
 
+                        if (d.State)
+                            d.Country_State= formats.stateLong[d.State].toUpperCase();
+                        else if (d.Country)
+                            d.Country_State= formats.countryLong[d.Country].toUpperCase();
+                        else d.Country_State = ''
+
+                        delete d.State;
+                        delete d.Country;  
                     })
                     var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
 
@@ -960,8 +824,7 @@ import toastr from 'toastr'
                         if (d.filters()[0])
                             myFilters += ' (' + d.filters() + ')'
                     })
-                    
-                    console.log(myFilters)
+
                     FileSaver.saveAs(blob, 'PERSTAT Officer_Average_TOS' + ' ' + store.state.asDate + myFilters + ' .csv');
                 });
 
@@ -999,27 +862,8 @@ import toastr from 'toastr'
     }
 
 </script>
-<style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="../../../node_modules/dc/dc.css"/>
-<style>
-#tour, #type, #grade, #base, #us, #jp {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-}
-#us svg, #jp svg {
-    background-color: darkGray !important;
-}
-#us svg g.state path, #jp svg g.state path {
-  stroke:#555;
-}
-#us svg g.state:hover path, #jp svg g.state:hover path  {
-  fill: orange;
-  stroke:#ccc;
-}
-#us svg g.state.selected path, #jp svg g.state.selected path {
-  stroke: orange;
-  stroke-width: 1px;
-}
+
+<style src="../../../node_modules/dc/dc.css">
 </style>
 
 <style scoped>
