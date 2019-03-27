@@ -189,16 +189,8 @@ import toastr from 'toastr'
                 return {
                             'id': 'type',
                             'dim': this.typeDim,
-<<<<<<< HEAD
-                            'group': this.removeError(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
-                            'minHeight': 300,
-||||||| merged common ancestors
-                            'group': this.removeError(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
-                            'minHeight': 250,
-=======
                             'group': this.removeEmptyBins(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
                             'minHeight': 250,
->>>>>>> 6f8be204e7e1468abc4a8945ce999ea7c8c130bb
                             'aspectRatio': 3,
                             'margins': {top: 0,left: 20, right: 30, bottom: 60},
                             'colors': chartSpecs.typeChart.color

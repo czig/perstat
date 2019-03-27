@@ -209,20 +209,12 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         return d.key != "error" && d.key != "**ERROR**"
                     })
                 }
-<<<<<<< HEAD
-            },                
-||||||| merged common ancestors
-            },                
-               
-
-=======
             }
           },
           toProperCase: function(s) {
             return s.toLowerCase().replace(/^(.)|\s(.)/g, 
                 function($1) { return $1.toUpperCase(); });
           }
->>>>>>> 6f8be204e7e1468abc4a8945ce999ea7c8c130bb
         },
         components: {
             'loader': Loader,
