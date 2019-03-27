@@ -168,7 +168,8 @@ import toastr from 'toastr'
                 sa: '',
                 loaded: false,
                 chartSpecs: chartSpecs,
-                boardColor: chartSpecs.boardChart.color
+                boardColor: chartSpecs.boardChart.color,
+                pageName: 'Enlisted Promotions',
             }
         },
         computed: {
@@ -180,7 +181,7 @@ import toastr from 'toastr'
           },
           ylabel: function() {
             if (this.selected === "percent") {
-                return "Promotion Rate (%)"
+                return "% Promotion Rate"
             }
             else if (this.selected === "Selects") {
                 return "Selects"
@@ -191,6 +192,9 @@ import toastr from 'toastr'
             else {
                 return "PME Complete Rate (%)"
             }
+          },
+          pageLabel: function() {
+            return this.pageName
           }
 
         },
@@ -253,6 +257,10 @@ import toastr from 'toastr'
                     Selects: 0,
                     percent: 0,
                 }
+            },
+            toProperCase: function(s) {
+                return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                    function($1) { return $1.toUpperCase(); });
             }
         },
         components: {
@@ -485,22 +493,30 @@ import toastr from 'toastr'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    if (d.hasFilter() && d.anchor()!='#dc-afsc-select') {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = SelectsRateND; 
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (SelectsRateND.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' ' + this.ylabel + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + counterVars.value() + ' ' + this.ylabel + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

@@ -249,6 +249,7 @@ import toastr from 'toastr'
                 chartSpecs: chartSpecs,
                 coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
                 boardColorScale: d3.scale.ordinal().range([chartSpecs.boardChart.color]),
+                pageName: 'Officer Promotions',
             }
         },
         computed: {
@@ -283,7 +284,10 @@ import toastr from 'toastr'
           },
           boardGroup: function() {
             return this.boardDim.group().reduce(this.promoAdd,this.promoRemove,this.promoInitial);
-          }
+          },
+          pageLabel: function() {
+            return this.pageName
+          } 
 
         },
         methods: {
@@ -343,7 +347,11 @@ import toastr from 'toastr'
                   sel: 0,
                   percent: 0,
               }
-          }
+          },
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                function($1) { return $1.toUpperCase(); });
+          } 
         },
         components: {
             'autocomplete': AutoComplete,
@@ -663,22 +671,26 @@ import toastr from 'toastr'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
+                    dc.chartRegistry.list().forEach((d)=>{                                        
+                    if (d.hasFilter()) {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = selRateND;
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (selRateND.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
                       }
-                      else {
+                      else  {
+                        myFilters += ' return a Promotion Rate of ' + counterVars.value() + '%.'
                         toastr.info(myFilters);  
                       }                      
                     }

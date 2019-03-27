@@ -224,7 +224,8 @@
           searchYRGP: "",
           chartSpecs: chartSpecs,
           coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
-          yrgpColorScale: d3.scale.ordinal().range([chartSpecs.yrgpChart.color]),                    
+          yrgpColorScale: d3.scale.ordinal().range([chartSpecs.yrgpChart.color]),
+          pageName: 'Officer Education',                    
 			}
 		},
 
@@ -253,14 +254,31 @@
           return this.yrgpDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial);
       },            
       ylabel: function() {
-        if (_.includes(this.selected,"Percent")) {
-            return "(%)"
+        // if (_.includes(this.selected,"Percent")) {
+        //     return "(%)"
+        // }
+        // else {
+        //     return "(Count)"
+        // }
+        if (this.selected === "totalCount") {
+            return "Total"
+        }
+        else if (this.selected === "stem") {
+            return "STEM Count"
+        }
+        else if (this.selected === "nonStem") {
+            return "Non-STEM Count"
+        }
+        else if (this.selected === "stemPercent") {
+            return "% STEM"
         }
         else {
-            return "(Count)"
-        }
+            return "% Non-STEM"
+        }        
+      },
+      pageLabel: function() {
+        return this.pageName
       }
-
 		},
 
         methods: {
@@ -316,6 +334,10 @@
                   stemPercent: 0,
                   nonStemPercent: 0
               }
+          },
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                function($1) { return $1.toUpperCase(); });
           }
 		},
 
@@ -539,13 +561,16 @@
                       return formats.gradeOrder[d.key]                      
                     })  
 
-                //Curent Filters button
+                //Current Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewyrgp-barchart' && d.anchor()!='#dc-overviewcore-barchart') {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
                         var myCheckValue = 0;
@@ -560,10 +585,15 @@
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (myCheckValue() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (myCheckValue() == '0.0%' || myCheckValue() == 0 ) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (myCheckValue() == '1') {
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

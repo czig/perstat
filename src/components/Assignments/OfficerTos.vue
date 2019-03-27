@@ -106,6 +106,7 @@
                                     </button> -->
                                 </h3>
                                 <searchBox
+                                    id="installationSearchBar"
                                     v-model="searchBase"
                                     size="5"
                                     label="Enter Installation"
@@ -171,6 +172,7 @@ import toastr from 'toastr'
                 loaded: false,
                 searchBase: '',
                 baseColor: chartSpecs.baseChart.color,
+                pageName: 'Average Time On Station',
                 conusFiltered: false,
                 oconusFiltered: false,
             }
@@ -185,9 +187,13 @@ import toastr from 'toastr'
           showBase: function() {
             return this.conusFiltered || this.oconusFiltered;
           },
+          pageLabel: function() {
+            return this.pageName
+          }  
         },
         methods: {
           resetAll: (event)=>{
+            document.querySelector('#installationSearchBar i.close-icon').click()
             dc.filterAll()
             dc.redrawAll()
           },
@@ -217,6 +223,11 @@ import toastr from 'toastr'
                 }
             })
             dc.redrawAll()
+          },
+            
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+              function($1) { return $1.toUpperCase(); });
           },
         },
         components: {
@@ -436,8 +447,8 @@ import toastr from 'toastr'
                     return d.type;
                 })
 
-                typeConfig.group = typeConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                typeConfig.minHeight = 220
+                typeConfig.group = removeEmptyBins(typeConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial))
+                typeConfig.minHeight = chartSpecs.standardBarChart.minHeight
                 typeConfig.aspectRatio = 2.7
                 typeConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 typeConfig.colors = d3.scale.category10()
@@ -457,8 +468,8 @@ import toastr from 'toastr'
                     return d.Tour;
                 })
 
-                tourConfig.group = tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial)
-                tourConfig.minHeight = 222 
+                tourConfig.group = removeEmptyBins(tourConfig.dim.group().reduce(tosAdd,tosRemove,tosInitial))
+                tourConfig.minHeight = chartSpecs.standardBarChart.minHeight
                 tourConfig.aspectRatio = 2.6
                 tourConfig.margins = {top: 10, left: 10, right: 30, bottom: 20}
                 tourConfig.colors = d3.scale.category10()
@@ -887,22 +898,30 @@ import toastr from 'toastr'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    if (d.hasFilter()) {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = invND; 
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (invND.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + counterVars.value() + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

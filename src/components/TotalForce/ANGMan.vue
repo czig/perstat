@@ -123,6 +123,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 /*                 baseColor: chartSpecs.baseChart.color, */
                 chartSpecs: chartSpecs,
                 baseColor: chartSpecs.baseChart.color,
+                pageName: 'Total Force ANG',
                 baseLen: 0,
                 baseHasFilter: false,
                 showBase: false
@@ -140,6 +141,9 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
           allGroup: function(){
             return this.ndx.groupAll()
           },
+          pageLabel: function() {
+            return this.pageName
+          }  
 /*             stateDim: function() {
                 return this.ndx.dimension(function(d) {return d.state;});
             },
@@ -197,16 +201,28 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
           angInitial: function() {
             return 0;
           },
-                //remove empty function (es6 syntax to keep correct scope)
-            removeError: (source_group) => {
-                return {
-                    all: () => {
-                        return source_group.all().filter((d) => {
-                            return d.key != "error" && d.key != "**ERROR**"
-                        })
-                    }
+          //remove empty function (es6 syntax to keep correct scope)
+          removeError: (source_group) => {
+            return {
+                all: () => {
+                    return source_group.all().filter((d) => {
+                        return d.key != "error" && d.key != "**ERROR**"
+                    })
                 }
+<<<<<<< HEAD
             },                
+||||||| merged common ancestors
+            },                
+               
+
+=======
+            }
+          },
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                function($1) { return $1.toUpperCase(); });
+          }
+>>>>>>> 6f8be204e7e1468abc4a8945ce999ea7c8c130bb
         },
         components: {
             'loader': Loader,
@@ -316,7 +332,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 typeConfig.dim = this.ndx.dimension(function (d) {
                     return d.File_Type;
                 })
-                typeConfig.group = typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;})
+                typeConfig.group = removeEmptyBins(typeConfig.dim.group().reduceSum(function(d) {return +d.Inventory;}))
                 typeConfig.minHeight = 250
                 typeConfig.aspectRatio = chartSpecs.typeChart.aspectRatio
                 typeConfig.margins =  {top: 0,left: 20, right: 30, bottom: 60}
@@ -525,22 +541,31 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                                       
+                    if (d.hasFilter()) {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = inv; 
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (inv.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + counterVars.value() + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

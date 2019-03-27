@@ -230,8 +230,9 @@
                 loaded: false,
                 chartSpecs: chartSpecs,
                 asDate: 'Undetermined',
-                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                
+                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
+                pageName: 'Enlisted Retention',
                 category: '1ST TERM',
                 year: '2018'
             }
@@ -262,10 +263,10 @@
                 return "Keep"
             }
             else if (this.selected === "reEnlRate") {
-                return "Reenlist Rate(%)"
+                return "% Reenlist Rate"
             }
             else {
-                return "Keep Rate(%)"
+                return "% Keep Rate"
             }
           },
           downloadDim: function() {
@@ -282,8 +283,10 @@
           },
           mpfGroup: function() {
             return this.mpfDim.group().reduce(this.retentionAdd,this.retentionRemove,this.retentionInitial);
+          },
+          pageLabel: function() {
+            return this.pageName
           }
-
         },
         methods: {
           resetAll(){
@@ -394,6 +397,10 @@
                     })
                 }
             }
+          },
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                function($1) { return $1.toUpperCase(); });
           }  
         },
         created: function(){
@@ -567,10 +574,12 @@
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewmpf-barchart') {
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                      if (myFilters !== undefined) {
                         var myCheckValue = 0;
@@ -582,10 +591,15 @@
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (myCheckValue() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (myCheckValue() <= '0') {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (myCheckValue() == '1') {
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

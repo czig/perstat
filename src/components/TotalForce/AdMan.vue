@@ -147,7 +147,7 @@ import toastr from 'toastr'
                 ylabel: 'Inventory',
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
-                pageName: 'Total Force Inventory',
+                pageName: 'Total Force Active Duty',
                 chartSpecs: chartSpecs,
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),                
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                                
@@ -189,8 +189,16 @@ import toastr from 'toastr'
                 return {
                             'id': 'type',
                             'dim': this.typeDim,
+<<<<<<< HEAD
                             'group': this.removeError(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
                             'minHeight': 300,
+||||||| merged common ancestors
+                            'group': this.removeError(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
+                            'minHeight': 250,
+=======
+                            'group': this.removeEmptyBins(this.typeDim.group().reduceSum(function(d) {return +d.Inventory;})),
+                            'minHeight': 250,
+>>>>>>> 6f8be204e7e1468abc4a8945ce999ea7c8c130bb
                             'aspectRatio': 3,
                             'margins': {top: 0,left: 20, right: 30, bottom: 60},
                             'colors': chartSpecs.typeChart.color
@@ -210,6 +218,9 @@ import toastr from 'toastr'
                             'margins': {top: 10, left: 50, right: 30, bottom: 60},
                             'colors': this.chartSpecs.gradeChartColorScale 
                        }
+            },
+            pageLabel: function() {
+                return this.pageName
             }                    
         },
         methods: {
@@ -287,7 +298,12 @@ import toastr from 'toastr'
                 obj.Inventory = given.freq
 
                 return obj;
+            },            
+            toProperCase: function(s) {
+                return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                    function($1) { return $1.toUpperCase(); });
             },
+
             testData: function(formatted, original) {
                 for (var key in formatted) {
                     if (formatted[key] === undefined){
@@ -371,25 +387,38 @@ import toastr from 'toastr'
 
                 this.gradeChart = gradeChart
 
+
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
+                    dc.chartRegistry.list().forEach((d)=>{                    
+                    //console.log("d.filter(): "+d.filter())
+                    //if (d.hasFilter()) {console.log("d.filter(): "+d.filters())}
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewbase-barchart') {
+                        //console.log(d.anchor(), d.filters())
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = inv;
+                      //console.log("counterVars.value: "+counterVars.value());
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (inv.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + counterVars.value() + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }

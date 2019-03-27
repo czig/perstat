@@ -193,6 +193,7 @@ import toastr from 'toastr'
                 searchBase: "",
                 loaded: false,
                 baseColor: chartSpecs.baseChart.color,
+                pageName: 'Civilian',
                 majcomColor: chartSpecs.majcomChart.color,
                 chartSpecs: chartSpecs,
                 locColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
@@ -228,6 +229,9 @@ import toastr from 'toastr'
           majcomGroup: function() {
               //return this.majcomDim.group().reduceSum(function(d) {return d.Inventory;}) 
               return this.removeError(this.majcomDim.group().reduce(this.inventoryAdd,this.inventoryRemove,this.inventoryInitial));
+          },
+            pageLabel: function() {
+              return this.pageName
           }
 
         },
@@ -276,6 +280,10 @@ import toastr from 'toastr'
           },
           inventoryInitial: function() {
             return 0;
+          },
+          toProperCase: function(s) {
+            return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+              function($1) { return $1.toUpperCase(); });
           }
         },
         components: {
@@ -489,22 +497,31 @@ import toastr from 'toastr'
                 //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
-                    var myFilters = 'Current filters include ';
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
                     dc.chartRegistry.list().forEach((d)=>{ 
-                      if (d.filters()[0])
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewloc-barchart') {
+                        //console.log(d.anchor(), d.filters())
                         myFilters += '\n (' + d.filters() + ')'
+                    } 
                     })
                     if (myFilters !== undefined) {
+                      var counterVars = invND;
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (invND.value() == 0) {
-                        toastr.warning('Your filter(s) returned no results. Please reset and try again.');
+                      if (counterVars.value() == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (counterVars.value() == 1) {
+                        myFilters += ' return ' + counterVars.value() + ' result.'
+                        toastr.info(myFilters);                         
                       }
                       else {
+                        myFilters += ' return ' + counterVars.value() + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }
