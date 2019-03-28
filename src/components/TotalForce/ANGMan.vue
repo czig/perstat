@@ -415,7 +415,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 usConfig.minHeight = 200
                 usConfig.aspectRatio = 2.01 
                 usConfig.xRatio = 2.0
-                usConfig.yRatio = 2.0
+                usConfig.yRatio = 2.2
                                 
 
                 //default color scale from #E2F2FF to #0061B5.
@@ -468,7 +468,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("x", usConfig.width * 0.12)
                         .attr("y", usConfig.height * 0.63)
                         .attr("fill", color) 
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold')  
                         .text('Guam')
                         .on('click', ()=>{
@@ -483,7 +483,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("x", usConfig.width * 0.54)
                         .attr("y", usConfig.height * 0.93)
                         .attr("fill", color)  
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
                         .text('Puerto Rico')
                         .on('click', ()=>{
@@ -496,9 +496,9 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.61)
-                        .attr("y", usConfig.height * 0.87)
+                        .attr("y", usConfig.height * 0.86)
                         .attr("fill", color)  
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
                         .text('US Virgin Islands')
                         .on('click', ()=>{

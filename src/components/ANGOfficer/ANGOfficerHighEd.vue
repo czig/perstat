@@ -592,7 +592,7 @@
                 });
 
                 usChart.on('pretransition', (chart)=> {
-                    var color = 'orange'
+                    var color = '#555'
                     chart.select('svg').select(".textLabels").remove()
                     chart.select('svg').append('g').attr("class", "textLabels")
 
@@ -605,7 +605,7 @@
                         .attr("x", usConfig.width * 0.12)
                         .attr("y", usConfig.height * 0.68)
                         .attr("fill", color) 
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold')  
                         .text('Guam')
                         .on('click', ()=>{
@@ -621,7 +621,7 @@
                         .attr("x", usConfig.width * 0.54)
                         .attr("y", usConfig.height * 0.99)
                         .attr("fill", color)  
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
                         .text('Puerto Rico')
                         .on('click', ()=>{
@@ -634,7 +634,7 @@
                         .attr("x", usConfig.width * 0.61)
                         .attr("y", usConfig.height * 0.93)
                         .attr("fill", color)  
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
                         .text('US Virgin Islands')
                         .on('click', ()=>{

@@ -561,7 +561,7 @@
                 });
 
                 usChart.on('pretransition', (chart)=> {
-                    var color = 'orange'
+                    var color = '#555'
                     chart.select('svg').select(".textLabels").remove()
                     chart.select('svg .layer0').append('g').attr("class", "textLabels")
 

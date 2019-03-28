@@ -115,9 +115,9 @@
                 </div>
                 <overviewBarChart :id="'mpf'"
                                   :dimension="mpfDim"
-                                  :aspectRatio="3.8"
-                                  :minHeight="240"
-                                  :normalToOverviewFactor="2.5"
+                                  :aspectRatio="7"
+                                  :minHeight="100"
+                                  :normalToOverviewFactor="2"
                                   :selected="selected"
                                   :ylabel="ylabel"
                                   :reducerAdd="manningAdd"
@@ -459,7 +459,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 usConfig.group = removeError(usConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial))
                 usConfig.scale = 1
                 usConfig.minHeight = 200
-                usConfig.aspectRatio = 2.1 
+                usConfig.aspectRatio = 2.01 
                 usConfig.xRatio = 2.0
                 usConfig.yRatio = 2.0
                 //default color scale from #E2F2FF to #0061B5.
@@ -511,7 +511,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.12)
-                        .attr("y", usConfig.height * 0.63)
+                        .attr("y", usConfig.height * 0.67)
                         .attr("fill", color) 
                         .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold')  
@@ -526,7 +526,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.54)
-                        .attr("y", usConfig.height * 0.93)
+                        .attr("y", usConfig.height * 0.97)
                         .attr("fill", color)  
                         .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold') 
@@ -541,7 +541,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.61)
-                        .attr("y", usConfig.height * 0.87)
+                        .attr("y", usConfig.height * 0.91)
                         .attr("fill", color)  
                         .attr("font-size", '0.7vw')
                         .attr("font-weight", 'bold') 
