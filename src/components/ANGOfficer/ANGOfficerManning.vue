@@ -53,7 +53,7 @@
                             </FontAwesomeIcon>
                             
                         </button>
-                        <!-- <button type="button" id="showMyFilters"
+                        <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="8" data-intro="See the currently applied filters here!"
                                 title="Filter">
@@ -61,7 +61,7 @@
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button>  -->
+                        </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="7" data-intro="Download data in tabular form here!"
@@ -141,7 +141,9 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="us" class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                </div>
+                <div class="row">
+                    <div id="us" class="col-12">
                         <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="4" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -168,6 +170,7 @@ import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import toastr from 'toastr'
 
     export default {
         data() {
@@ -178,6 +181,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 loaded: false,
                 chartSpecs: chartSpecs,
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
+                pageName: 'ANG Officer Manning',
                 afscGroupChart: {},
             }
         },
@@ -226,13 +230,15 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         'id': 'afscGroup',
                         'dim': this.afscGroupDim,
                         'group': this.removeEmptyBins(this.afscGroupDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial)),
-                        'minHeight': 400,
-                        'aspectRatio': 3,
-                        'margins': {top: 30, left: 40, right: 10, bottom: 65},
+                        'minHeight': 350,
+                        'aspectRatio': 7,
+                        'margins': chartSpecs.baseChart.margins,
                         'colors': [chartSpecs.afscGroupChart.color], 
                     }
-          }
-
+          },
+          pageLabel: function() {
+            return this.pageName
+          } 
         },
         methods: {
           startDemo: function() {
@@ -295,6 +301,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         })
                     }
                 }
+            },            
+            toProperCase: function(s) {
+                return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                    function($1) { return $1.toUpperCase(); });
             }
         },
         components: {
@@ -457,9 +467,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 //     console.log(JSON.stringify(x));
                 // });
                 usConfig.group = removeError(usConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial))
-                usConfig.scale = 1
-                usConfig.minHeight = 200
-                usConfig.aspectRatio = 2.01 
+                usConfig.scale = 1.0
+                usConfig.minHeight = 360
+                usConfig.maxHeight = '450 !important'
+                usConfig.aspectRatio = 2.0 
                 usConfig.xRatio = 2.0
                 usConfig.yRatio = 2.0
                 //default color scale from #E2F2FF to #0061B5.
@@ -513,7 +524,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("x", usConfig.width * 0.12)
                         .attr("y", usConfig.height * 0.67)
                         .attr("fill", color) 
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '1.2vw')
                         .attr("font-weight", 'bold')  
                         .text('Guam')
                         .on('click', ()=>{
@@ -528,7 +539,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("x", usConfig.width * 0.54)
                         .attr("y", usConfig.height * 0.97)
                         .attr("fill", color)  
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '1.2vw')
                         .attr("font-weight", 'bold') 
                         .text('Puerto Rico')
                         .on('click', ()=>{
@@ -543,7 +554,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("x", usConfig.width * 0.61)
                         .attr("y", usConfig.height * 0.91)
                         .attr("fill", color)  
-                        .attr("font-size", '0.7vw')
+                        .attr("font-size", '1.2vw')
                         .attr("font-weight", 'bold') 
                         .text('US Virgin Islands')
                         .on('click', ()=>{
@@ -561,7 +572,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         .attr("width", chart.maxWidth)
                         .attr("height", chart.maxHeight)                        
                         .call(d3.behavior.zoom()
-                            .scaleExtent([1, 10])
+                            .scaleExtent([1, 5])
                             .on("zoom", function () {                             
                             var t = d3.event.translate,
                                 s = d3.event.scale;
@@ -574,6 +585,50 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 })
                                 
                 usChart.controlsUseVisibility(true)
+
+                //Curent Filters button
+                d3.select('#showMyFilters')
+                  .on('click', ()=>{
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
+                    dc.chartRegistry.list().forEach((d)=>{
+
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewmpf-barchart') {
+                        //console.log(d.anchor(), d.filters())
+                        myFilters += '\n (' + d.filters() + ')'
+                    } 
+                    })
+                    if (myFilters !== undefined) {
+                      var myCheckValue = '0';
+                        if (this.selected == "asgn") { myCheckValue = asgn.value() };                        
+                        if (this.selected == "auth") { myCheckValue = auth.value() };
+                        if (this.selected == "gains") { myCheckValue = gains.value() };
+                        if (this.selected == "losses") { myCheckValue = losses.value() };
+                        if (this.selected == "vacancies") { myCheckValue = vacancies.value() };
+                        if (this.selected == "excess") { myCheckValue = excess.value() };
+                      //console.log("myCheckValue.value: "+myCheckValue.value());
+                      // Override global options
+                      toastr.options = {
+                        "positionClass": "toast-bottom-full-width",
+                        "closeButton":"true",
+                        "preventDuplicates":"true"
+                      }
+                      if (myCheckValue == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (myCheckValue == 1) {
+                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
+                        toastr.info(myFilters);                         
+                      }
+                      else {
+                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
+                  });
 
                 //Download Raw Data button
                 d3.select('#download')
