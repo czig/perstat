@@ -141,9 +141,7 @@
                             </h3>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div id="us" class="col-12">
+                    <div id="us" class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
                         <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="4" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -230,9 +228,9 @@ import toastr from 'toastr'
                         'id': 'afscGroup',
                         'dim': this.afscGroupDim,
                         'group': this.removeEmptyBins(this.afscGroupDim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial)),
-                        'minHeight': 350,
+                        'minHeight': 420,
                         'aspectRatio': 7,
-                        'margins': chartSpecs.baseChart.margins,
+                        'margins': {top: 10, left: 40, right: 10, bottom: 100},
                         'colors': [chartSpecs.afscGroupChart.color], 
                     }
           },
@@ -466,13 +464,20 @@ import toastr from 'toastr'
                 //     dimData.forEach(function (x) {
                 //     console.log(JSON.stringify(x));
                 // });
+                // usConfig.group = removeError(usConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial))
+                // usConfig.scale = 1.0
+                // usConfig.minHeight = 360
+                // usConfig.maxHeight = '450 !important'
+                // usConfig.aspectRatio = 2.0 
+                // usConfig.xRatio = 2.0
+                // usConfig.yRatio = 2.0
                 usConfig.group = removeError(usConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial))
                 usConfig.scale = 1.0
-                usConfig.minHeight = 360
-                usConfig.maxHeight = '450 !important'
-                usConfig.aspectRatio = 2.0 
+                usConfig.minHeight = 220
+                usConfig.aspectRatio = 2
                 usConfig.xRatio = 2.0
                 usConfig.yRatio = 2.0
+
                 //default color scale from #E2F2FF to #0061B5.
                 usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
                 
@@ -524,7 +529,7 @@ import toastr from 'toastr'
                         .attr("x", usConfig.width * 0.12)
                         .attr("y", usConfig.height * 0.67)
                         .attr("fill", color) 
-                        .attr("font-size", '1.2vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold')  
                         .text('Guam')
                         .on('click', ()=>{
@@ -539,7 +544,7 @@ import toastr from 'toastr'
                         .attr("x", usConfig.width * 0.54)
                         .attr("y", usConfig.height * 0.97)
                         .attr("fill", color)  
-                        .attr("font-size", '1.2vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
                         .text('Puerto Rico')
                         .on('click', ()=>{
@@ -554,7 +559,7 @@ import toastr from 'toastr'
                         .attr("x", usConfig.width * 0.61)
                         .attr("y", usConfig.height * 0.91)
                         .attr("fill", color)  
-                        .attr("font-size", '1.2vw')
+                        .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
                         .text('US Virgin Islands')
                         .on('click', ()=>{

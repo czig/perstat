@@ -496,7 +496,7 @@
                 })
                 var edLevelGroup = removeEmptyBins(edLevelConfig.dim.group().reduce(this.edAdd, this.edRemove, this.edInitial))
                 edLevelConfig.group = removeError(edLevelGroup)
-                edLevelConfig.minHeight = 430 
+                edLevelConfig.minHeight = 360 
                 edLevelConfig.aspectRatio = 2.5
                 edLevelConfig.margins = {top: 10, left: 50, right: 30, bottom: 50}
                 edLevelConfig.colors = ["#cc5500"]

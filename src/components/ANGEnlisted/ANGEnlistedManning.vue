@@ -505,11 +505,11 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 //     console.log(JSON.stringify(x));
                 // });
                 usConfig.group = removeError(usConfig.dim.group().reduce(this.manningAdd,this.manningRemove,this.manningInitial))
-                usConfig.scale = 1
+                usConfig.scale = .90
                 usConfig.minHeight = 300
                 usConfig.aspectRatio = 1.8
                 usConfig.xRatio = 2.0
-                usConfig.yRatio = 2.4
+                usConfig.yRatio = 2.0
                 //default color scale from #E2F2FF to #0061B5.
                 usConfig.colors = d3.scale.quantize().range(["#E2F2FF","#d4eafc","#C4E4FF","#badefc","#a6d4fc","#9ED2FF","#81C5FF","#75bfff","#6BBAFF","#51AEFF","#40a4f9","#36A2FF","#2798f9","#1E96FF","#0089FF","#0061B5"])
                 
@@ -558,8 +558,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     var textStroke = 2
                     textLabels
                         .append("text")
-                        .attr("x", usConfig.width * 0.12)
-                        .attr("y", usConfig.height * 0.56)
+                        .attr("x", usConfig.width * 0.07)
+                        .attr("y", usConfig.height * 0.64)
                         .attr("fill", color) 
                         .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold')  
@@ -574,7 +574,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     textLabels
                         .append("text")
                         .attr("x", usConfig.width * 0.54)
-                        .attr("y", usConfig.height * 0.83)
+                        .attr("y", usConfig.height * 0.95)
                         .attr("fill", color)  
                         .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
@@ -588,8 +588,8 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                     
                     textLabels
                         .append("text")
-                        .attr("x", usConfig.width * 0.55)
-                        .attr("y", usConfig.height * 0.75)
+                        .attr("x", usConfig.width * 0.59)
+                        .attr("y", usConfig.height * 0.87)
                         .attr("fill", color)  
                         .attr("font-size", '0.6vw')
                         .attr("font-weight", 'bold') 
