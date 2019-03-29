@@ -24,6 +24,30 @@
                 </div>
             </div>
         </div>
+
+        <div role="alert" class="row mt-3">
+<!-- light secondary success info warning danger -->
+            <div class="col">
+                <div class="card alert alert-dismissible alert-success">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="card-body row">
+                        <h4 class="col-lg-12 col-md-12 col-sm-12 pl-3">New PERS-STAT Items
+                        <br>
+                        <h6>New items have been added to the PERS-STAT website.  </h6>
+                        <hr>
+                        <h6>On pages with interactive charts, there are two new buttons at the top one titled "Demo", and another titled "View Filters."</h6>
+                        <br>
+                        <h6>The "Demo" Button allows you to observe important aspects on the page.</h6>
+                        <h6>The "View Filter" Button allows you to quickly see all applied filters on the respective page.</h6>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
         <div class="row mt-3">
             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" style="padding-bottom: 15px;">
                 <div id="tf-card" class="card hoverable click" @click="$router.push('/totalforce')">
@@ -121,9 +145,35 @@
 </template>
 
 <script>
-    
-</script>
+import VueAlert from 'vue-alert'
 
+
+  export default {
+    data() {
+      return {
+        dismissSecs: 30,
+        dismissCountDown: 0,
+        showDismissibleAlert: true
+      }
+    },
+    methods: {
+      countDownChanged(dismissCountDown) {
+        this.dismissCountDown = dismissCountDown
+      },
+      showAlert() {
+        this.dismissCountDown = this.dismissSecs
+      }
+    },
+    mounted () {
+        this.$alert.success({ message: 'Component mounted!' })
+    }
+  }
+</script>
+<style>
+.vue-alert {
+  margin-top: 10px;
+}
+</style>
 <style scoped>
 .click { 
     cursor: pointer;
