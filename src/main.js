@@ -30,8 +30,9 @@ import faCheckCircle from '@fortawesome/fontawesome-free-solid/faCheckCircle'
 import faExclamationTriangle from '@fortawesome/fontawesome-free-solid/faExclamationTriangle'
 import faTimesCircle from '@fortawesome/fontawesome-free-solid/faTimesCircle'
 import faEye from '@fortawesome/fontawesome-free-solid/faEye'
+import faSearchFilters from '@fortawesome/fontawesome-free-solid/faSearchFilters'
 
-fontawesome.library.add(faSpinner,faQuestionCircle, faInfoCircle, faFilter, faDownload, faRedoAlt, faCheckCircle, faExclamationTriangle, faTimesCircle, faEye)
+fontawesome.library.add(faSpinner,faQuestionCircle, faInfoCircle, faFilter, faDownload, faRedoAlt, faCheckCircle, faExclamationTriangle, faTimesCircle, faEye, faSearchFilters)
 
 import { store } from '@/store/store'
 
