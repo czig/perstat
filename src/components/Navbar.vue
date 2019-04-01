@@ -114,7 +114,7 @@
                   <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('enlHighEd')" data-toggle="collapse" data-target="#navbarNavDropdown">Enlisted</router-link>
               </div>
           </li>
-            <li class="nav-item dropdown">
+            <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     ANG
                 </a>
@@ -122,22 +122,18 @@
                     <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle">Officer</a>
                         <ul class="dropdown-menu">
                             <router-link class="dropdown-item" to="/angofficer" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-off-manning')">Manning</router-link>
-                            <!-- <router-link class="dropdown-item" to="/angofficer" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-off-promo')">Promotions</router-link> -->
                             <router-link class="dropdown-item" to="/angofficer" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-off-edu')">Education</router-link>
                         </ul>
                     </li>
                     <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle">Enlisted</a>
                         <ul class="dropdown-menu">
                             <router-link class="dropdown-item" to="/angenlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-enl-manning')">Manning</router-link>
-                            <!-- <router-link class="dropdown-item" to="/angenlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-enl-retention')">Retention</router-link> -->
-                            <!-- <router-link class="dropdown-item" to="/angenlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-enl-promo')">Promotions</router-link> -->
                             <router-link class="dropdown-item" to="/angenlisted" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-enl-edu')">Education</router-link>                        
-                            <!-- <router-link class="dropdown-item font-weight-bold" to="/angassignments" tag="li" style="cursor: pointer;" @click.native="goToPage('ang-tos')">Assignments</router-link> -->
                         </ul>
                     </li>
                 </div>
             </li>
-
+ -->
             <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     ANG
