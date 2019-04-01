@@ -114,7 +114,7 @@
                   <router-link class="dropdown-item" to="/education" tag="li" style="cursor: pointer;" @click.native="goToPage('enlHighEd')" data-toggle="collapse" data-target="#navbarNavDropdown">Enlisted</router-link>
               </div>
           </li>
-            <!-- <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     ANG
                 </a>
@@ -133,7 +133,7 @@
                     </li>
                 </div>
             </li>
- -->
+
             <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     ANG
