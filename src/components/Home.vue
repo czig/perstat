@@ -144,36 +144,6 @@
     </div> 
 </template>
 
-<script>
-import VueAlert from 'vue-alert'
-
-
-  export default {
-    data() {
-      return {
-        dismissSecs: 30,
-        dismissCountDown: 0,
-        showDismissibleAlert: true
-      }
-    },
-    methods: {
-      countDownChanged(dismissCountDown) {
-        this.dismissCountDown = dismissCountDown
-      },
-      showAlert() {
-        this.dismissCountDown = this.dismissSecs
-      }
-    },
-    mounted () {
-        this.$alert.success({ message: 'Component mounted!' })
-    }
-  }
-</script>
-<style>
-.vue-alert {
-  margin-top: 10px;
-}
-</style>
 <style scoped>
 .click { 
     cursor: pointer;
