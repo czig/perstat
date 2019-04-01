@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="3" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
+                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="3" data-intro="You can zoom in and out, mouse over a state or territory on the maps to see the personnel total, or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                 class="btn btn-danger btn-sm btn-rounded reset" 
@@ -620,7 +620,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
     margin-bottom: 1rem;
 }
 #us svg {
-    background-color: darkGray !important;
+    background-color: #dee2e6 !important;
 }
 #us svg g.state path {
   stroke:#555;

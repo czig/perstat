@@ -52,11 +52,11 @@
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="8" data-intro="See the currently applied filters here!"
                                 title="Filter">
-                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="filter" 
+                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
+                        <FontAwesomeIcon icon="search-filters" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button>  
+                        </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="7" data-intro="Download data in tabular form here!"
@@ -154,7 +154,7 @@
                         </div>
                     </div>
                     <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="4" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
+                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="4" data-intro="You can zoom in and out, mouse over a state or territory on the maps to see the personnel total, or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                 class="btn btn-danger btn-sm btn-rounded reset" 
@@ -200,29 +200,39 @@
 			ndx: function() {
 				return crossfilter (this.data)
 			},
-            asDate: function() {
-                return store.state.asDate;
-            },
-            allGroup: function(){
-                return this.ndx.groupAll()
-            },
-            mpfDim: function() {
-                return this.ndx.dimension(function(d) {return d.mpf;});
-            },
-            mpfGroup: function() {
-                return this.mpfDim.group().reduce(this.edAdd,this.edRemove,this.edInitial);
-            },
-            ylabel: function() {
-              if (_.includes(this.selected,"Percent")) {
-                  return "(%)"
-              }
-              else {
-                  return "(Count)"
-              }
-            },
-            pageLabel: function() {
-                return this.pageName
-            }
+      asDate: function() {
+        return store.state.asDate;
+      },
+      allGroup: function(){
+        return this.ndx.groupAll()
+      },
+      mpfDim: function() {
+        return this.ndx.dimension(function(d) {return d.mpf;});
+      },
+      mpfGroup: function() {
+        return this.mpfDim.group().reduce(this.edAdd,this.edRemove,this.edInitial);
+      },
+      ylabel: function() {
+        if (this.selected === "totalCount") {
+            return "Total"
+        }
+        else if (this.selected === "stem") {
+            return "STEM Count"
+        }
+        else if (this.selected === "nonStem") {
+            return "Non-STEM Count"
+        }
+        else if (this.selected === "stemPercent") {
+            return "% STEM"
+        }
+        else {
+            return "% Non-STEM"
+        }
+      },
+      pageLabel: function() {
+        return this.pageName
+      }
+
 		},
 
         methods: {
@@ -310,6 +320,10 @@
                 stemPercent: 0,
                 nonStemPercent: 0
               };
+          },            
+          toProperCase: function(s) {
+              return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                  function($1) { return $1.toUpperCase(); });
           }
 		},
 
@@ -651,29 +665,27 @@
                     } 
                     })
                     if (myFilters !== undefined) {
-                      var myCheckValue = '0';
-                        if (this.selected == "totalCount") { myCheckValue = totalCountND.value() };                        
-                        if (this.selected == "stem") { myCheckValue = stemTotalND.value() };
-                        if (this.selected == "nonStem") { myCheckValue = nonStemTotalND.value() };
+                        var myCheckValue = 0;
+                        if (this.selected == "totalCount") {myCheckValue = totalCountND.value; };
+                        if (this.selected == "stem") { myCheckValue = stemTotalND.value };
+                        if (this.selected == "nonStem") { myCheckValue = nonStemTotalND.value };
                         if (this.selected == "stemPercent") { myCheckValue = percentStemND.value };
                         if (this.selected == "nonStemPercent") { myCheckValue = percentNonStemND.value };
-
-                      //console.log("myCheckValue.value: "+myCheckValue.value());
                       // Override global options
                       toastr.options = {
                         "positionClass": "toast-bottom-full-width",
                         "closeButton":"true",
                         "preventDuplicates":"true"
                       }
-                      if (myCheckValue == '0.0%' || myCheckValue == 0 ) {
+                      if (myCheckValue() == '0.0%' || myCheckValue() == 0 ) {
                         toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
                       }
-                      else if (myCheckValue == 1) {
-                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
+                      else if (myCheckValue() == '1') {
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' result.'
                         toastr.info(myFilters);                         
                       }
                       else {
-                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
+                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' results.'
                         toastr.info(myFilters);  
                       }                      
                     }
@@ -738,7 +750,7 @@
     margin-bottom: 1rem;
 }
 #us svg {
-    background-color: darkGray !important;
+    background-color: #dee2e6 !important;
 }
 #us svg g.state path {
   stroke:#555;

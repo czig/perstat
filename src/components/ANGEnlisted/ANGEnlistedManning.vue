@@ -57,11 +57,11 @@
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="8" data-intro="See the currently applied filters here!"
                                 title="Filter">
-                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="filter" 
+                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
+                        <FontAwesomeIcon icon="search-filters" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button>  
+                        </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="7" data-intro="Download data in tabular form here!"
@@ -152,7 +152,7 @@
                         </div>
                     </div>
                     <div id="us" class="col-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="4" data-intro="You can mouse over a state or territory on the maps to see the personnel total or click on it to apply filters and update the other charts!">
+                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="4" data-intro="You can zoom in and out, mouse over a state or territory on the maps to see the personnel total, or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                 class="btn btn-danger btn-sm btn-rounded reset" 
@@ -632,7 +632,7 @@ import toastr from 'toastr'
                                 
                 usChart.controlsUseVisibility(true)
 
-                //Curent Filters button
+               //Curent Filters button
                 d3.select('#showMyFilters')
                   .on('click', ()=>{
                     var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
@@ -675,7 +675,6 @@ import toastr from 'toastr'
                         toastr.error('Something went wrong. Please reset and try again.')
                     }          
                   });
-
 
                 //Download Raw Data button
                 d3.select('#download')
@@ -732,7 +731,7 @@ import toastr from 'toastr'
     margin-bottom: 1rem;
 }
 #us svg {
-    background-color: darkGray !important;
+    background-color: #dee2e6 !important;
 }
 #us svg g.state path {
   stroke:#555;

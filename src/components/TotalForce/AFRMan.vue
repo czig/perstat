@@ -25,8 +25,8 @@
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="6" data-intro="See the currently applied filters here!"
                                 title="Filter">
-                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="filter" 
+                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
+                        <FontAwesomeIcon icon="search-filters" 
                                          size="lg">
                         </FontAwesomeIcon>
                         </button> 

@@ -37,8 +37,8 @@
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
-                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="filter" 
+                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
+                        <FontAwesomeIcon icon="search-filters" 
                                          size="lg">
                         </FontAwesomeIcon>
                         </button> 
@@ -1043,9 +1043,16 @@ import toastr from 'toastr'
 #tour, #type, #grade, #base, #us, #jp {
     margin-top: 1rem;
     margin-bottom: 1rem;
+    padding: 0;
+}
+#us {
+    padding-right: 10px;
+}
+#jp {
+    padding-left: 10px;
 }
 #us svg, #jp svg {
-    background-color: darkGray !important;
+    background-color: #dee2e6 !important;
 }
 #us svg g.state path, #jp svg g.state path {
   stroke:#555;
