@@ -45,7 +45,7 @@
                 </div>
                 <div class="footer-copyright">
                     <div class="container-fluid">
-                        © 2017-2018 Copyright: United States Air Force
+                        © 2019-2020 Copyright: United States Air Force
                     </div>
                 </div>
             </div>

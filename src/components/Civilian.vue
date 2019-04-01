@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <h1 class="col">Civilian</h1>
-            <div class="col-4 text-right" style="margin-top:15px;">
+            <div class="col-4 text-right" style="margin-top:15px;" data-step="3" data-intro="The data on this page is current as of the date shown here.">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
             </div>
@@ -11,14 +11,27 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div class="col-auto">
-                        Inventory:        
-                        <span id="inv"></span>
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Total number of Civilian personnel.">
+                        <div class="col-auto">
+                            Inventory:        
+                            <span id="inv"></span>
+                        </div>
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="6" data-intro="See the currently applied filters here!"
                                 title="Filter">
                         <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
@@ -27,6 +40,7 @@
                         </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="5" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
                         <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
@@ -35,6 +49,7 @@
                         </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                data-step="4" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
                                 @click="resetAll">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
@@ -48,7 +63,7 @@
                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3">
                         <div class="row">
                             <div id="grade" class="col-12">
-                                <div id="dc-grade-rowchart">
+                                <div id="dc-grade-rowchart" >
                                     <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
@@ -62,7 +77,7 @@
                     <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9">
                         <div class="row">
                             <div id="careerField" class="col-12">
-                                <div id="dc-careerField-barchart">
+                                <div id="dc-careerField-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                                     <h3>Career Field <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                                     <button type="button" 
                                             class="btn btn-danger btn-sm btn-rounded reset" 
@@ -239,6 +254,9 @@ import toastr from 'toastr'
           resetAll: (event)=>{
             dc.filterAll()
             dc.redrawAll()
+          },
+          startDemo: function() {
+            introJs().start()
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{

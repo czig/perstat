@@ -5,14 +5,28 @@
 	        <loader v-show="!loaded" key="loader"></loader>
 	        <div v-show="loaded" key="content">
 		        <div class="row pt-2">
-		        	<div class="col-auto pt-1">
-                        Assignment Actions:
-                        <span id="count"></span>
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Assignment action total.">
+                        <div class="col-auto pt-1">
+                            Assignment Actions:
+                            <span id="count"></span>
+                        </div>
                     </div>
                     <div class="col"></div>
 		        	<div class="col-auto">
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
+
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
                         <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
@@ -21,6 +35,7 @@
                         </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="6" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
                         <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
@@ -29,6 +44,7 @@
                         </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                data-step="4" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
                                 @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
@@ -40,7 +56,7 @@
 		        </div> 
 		        <div class="row">
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-6" id="year">
-                    	<div id="dc-year-rowchart">
+                    	<div id="dc-year-rowchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Year <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
 	                        	<button type="button" 
 	                                class="btn btn-danger btn-sm btn-rounded reset" 
@@ -131,7 +147,7 @@
                              :title="'Servicing MPF'"
                              :loaded="loaded">
                 </largeBarChart> -->
-                <overviewBarChart 
+                <overviewBarChart data-step="3" data-intro="Sliding scale chart.  Click the black circle for more info."
                     :id="'base'"
                     :dimension="baseDim"
                     :aspectRatio="chartSpecs.baseChart.aspectRatio"
@@ -213,6 +229,10 @@ export default {
         dc.filterAll()
         dc.redrawAll()
       },
+        startDemo: function() {
+        introJs().start()
+        },
+
       resetChart: (id)=>{
         dc.chartRegistry.list().filter(chart=>{
           return chart.anchorName() == id

@@ -4,25 +4,38 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2">
-                    <div class="col-auto pt-1">
-                        Average TOS: 
-                        <span id="average"></span>
-                    </div>
-                    <div class="col-auto pt-1">
-                        Completed Tours:        
-                        <span id="count"></span>
-                        <span data-toggle="tooltip" 
-                              data-placement="bottom"
-                              class="h3 pl-1"
-                              title="Average TOS and Completed Tours are calculated by aggregating over a 4 year period.">
-                            <FontAwesomeIcon icon="info-circle" size="xs">
-                            </FontAwesomeIcon>
-                        </span>
+                    <div class="custom-control custom-radio custom-control-inline" data-step="1" data-intro="Average TOS and Total Completed Tours.">
+                        <div class="col-auto">
+                            Average TOS: 
+                            <span id="average"></span>
+                        </div>
+                        <div class="col-auto">
+                            Completed Tours:        
+                            <span id="count"></span>
+                            <span data-toggle="tooltip" 
+                                data-placement="bottom"
+                                title="Average TOS.">
+                                <FontAwesomeIcon icon="info-circle" size="lg">
+                                </FontAwesomeIcon>
+                            </span>
+                        </div>
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
+
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
                         <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
@@ -31,6 +44,7 @@
                         </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="6" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
                         <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
                         <FontAwesomeIcon icon="download" 
@@ -39,6 +53,7 @@
                         </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                data-step="4" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
                                 @click="resetAll">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
@@ -50,7 +65,7 @@
                 </div>
                 <div class="row">
             		<div id="tour" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6">
-		                <div id="dc-tour-rowchart">
+		                <div id="dc-tour-rowchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
 		                    <h3>Tour <span style="font-size: 14pt; opacity: 0.87;">
 		                    	Avg. TOS
 		                    </span>
@@ -129,7 +144,7 @@
                 </div> -->
                 <div class="row pt-2">
                     <div id="us" class="col-lg-6 col-md-6 col-sm-12 col-12">
-                        <div id="dc-us-geoChoroplethChart">
+                        <div id="dc-us-geoChoroplethChart" data-step="3" data-intro="You can mouse over a state, territory, or country on the maps to see the personnel total or click on it to apply filters and update the other charts!">
                             <h3 class="mt-2 mb-0">CONUS Map <span style="font-size: 14pt; opacity: 0.87;">Avg. TOS</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
@@ -197,6 +212,10 @@ import toastr from 'toastr'
             dc.filterAll()
             dc.redrawAll()
           },
+          startDemo: function() {
+            introJs().start()
+          },
+
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
               return chart.anchorName() == id

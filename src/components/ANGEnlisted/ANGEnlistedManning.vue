@@ -53,7 +53,7 @@
                             </FontAwesomeIcon>
                             
                         </button>
-                        <!-- <button type="button" id="showMyFilters"
+                        <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="8" data-intro="See the currently applied filters here!"
                                 title="Filter">
@@ -61,7 +61,7 @@
                         <FontAwesomeIcon icon="filter" 
                                          size="lg">
                         </FontAwesomeIcon>
-                        </button>  -->
+                        </button>  
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
                                 data-step="7" data-intro="Download data in tabular form here!"
@@ -178,6 +178,7 @@ import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import toastr from 'toastr'
 
     export default {
         data() {
@@ -188,6 +189,7 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 loaded: false,
                 chartSpecs: chartSpecs,
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
+                pageName: 'ANG Enlisted Manning',
                 afscGroupChart: {},
                 skillLevelChart: {},
             }
@@ -256,6 +258,9 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         'margins': {top: 10, left: 40, right: 10, bottom: 75},
                         'colors': [chartSpecs.skillLevelChart.color], 
                     }
+          },
+          pageLabel: function() {
+            return this.pageName
           }
 
         },
@@ -320,6 +325,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                         })
                     }
                 }
+            },            
+            toProperCase: function(s) {
+                return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                    function($1) { return $1.toUpperCase(); });
             }
         },
         components: {
@@ -622,6 +631,51 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 })
                                 
                 usChart.controlsUseVisibility(true)
+
+                //Curent Filters button
+                d3.select('#showMyFilters')
+                  .on('click', ()=>{
+                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+
+                    dc.chartRegistry.list().forEach((d)=>{
+
+                    if (d.hasFilter() && d.anchor()!='#dc-overviewmpf-barchart') {
+                        //console.log(d.anchor(), d.filters())
+                        myFilters += '\n (' + d.filters() + ')'
+                    } 
+                    })
+                    if (myFilters !== undefined) {
+                      var myCheckValue = '0';
+                        if (this.selected == "asgn") { myCheckValue = asgn.value() };                        
+                        if (this.selected == "auth") { myCheckValue = auth.value() };
+                        if (this.selected == "gains") { myCheckValue = gains.value() };
+                        if (this.selected == "losses") { myCheckValue = losses.value() };
+                        if (this.selected == "vacancies") { myCheckValue = vacancies.value() };
+                        if (this.selected == "excess") { myCheckValue = excess.value() };
+                      //console.log("myCheckValue.value: "+myCheckValue.value());
+                      // Override global options
+                      toastr.options = {
+                        "positionClass": "toast-bottom-full-width",
+                        "closeButton":"true",
+                        "preventDuplicates":"true"
+                      }
+                      if (myCheckValue == 0) {
+                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                      }
+                      else if (myCheckValue == 1) {
+                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
+                        toastr.info(myFilters);                         
+                      }
+                      else {
+                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
+                        toastr.info(myFilters);  
+                      }                      
+                    }
+                    if (myFilters == 'undefined' || myFilters == undefined) {
+                        toastr.error('Something went wrong. Please reset and try again.')
+                    }          
+                  });
+
 
                 //Download Raw Data button
                 d3.select('#download')

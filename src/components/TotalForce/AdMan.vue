@@ -4,14 +4,27 @@
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
                 <div class="row">
-                    <div class="col-auto">
-                        Inventory:
-                        <span id="inv"></span>
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Total number of Active Duty personnel.">
+                        <div class="col-auto">
+                            Inventory:
+                            <span id="inv"></span>
+                        </div>
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="6" data-intro="See the currently applied filters here!"
                                 title="Filter">
                         <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>   
                         <FontAwesomeIcon icon="filter" 
@@ -20,6 +33,7 @@
                         </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="4" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
                         <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p> 
                         <FontAwesomeIcon icon="download" 
@@ -28,6 +42,7 @@
                         </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                data-step="3" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
                                 @click="resetAll">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
@@ -49,7 +64,7 @@
                         </div>
                     </div>
                     <div id="grade" class="col-xl-8 col-lg-7 col-md-7 col-sm-12 col-12">
-                        <div id="dc-grade-barchart">
+                        <div id="dc-grade-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
@@ -216,6 +231,9 @@ import toastr from 'toastr'
             }                    
         },
         methods: {
+            startDemo: function() {
+                introJs().start()
+            },
             resetAll: (event)=>{
                 dc.filterAll()
                 dc.redrawAll()

@@ -5,7 +5,7 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                    <div id="radioSelect" class="col-7">
+                    <div id="radioSelect" class="col-7" data-step="1" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="totalCount" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
@@ -38,8 +38,20 @@
                         </div>
                     </div>
                     <div class="col-5" align="right">
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
+
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
                         <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>    
                         <FontAwesomeIcon icon="filter" 
@@ -48,6 +60,7 @@
                         </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="6" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
                         <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="download" 
@@ -56,6 +69,7 @@
                         </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect" 
+                                data-step="4" data-intro="Click here to reset filters on all charts." 
                                 title="Reset All"
                                 @click="searchCore='';resetAll()">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
@@ -66,7 +80,7 @@
                     </div>    
                 </div>       
                 <div class="row"></div>
-                <div class="row">
+                <div class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
                     <div class="col-auto">
                         Total:
                         <span id="totalCount"></span>
@@ -112,7 +126,7 @@
                         </div>
                     </div> 
                     <div id="edlevel" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                        <div id="dc-edlevel-barchart">
+                        <div id="dc-edlevel-barchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Highest Edu Level <span style="font-size: 14pt; opacity: 0.87">{{ ylabel }}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
@@ -285,6 +299,9 @@
            resetAll(){
             dc.filterAll()
             dc.redrawAll()
+          },
+          startDemo: function() {
+            introJs().start()
           },
           resetChart: (id)=>{
             dc.chartRegistry.list().filter(chart=>{
