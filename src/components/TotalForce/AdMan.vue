@@ -4,52 +4,14 @@
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
                 <div class="row">
-                    <div id="radioSelect" class="col" data-step="1" data-intro="Total number of Active Duty personnel.">
+                    <div id="radioSelect" class="col-auto" data-step="1" data-intro="Total number of Active Duty personnel.">
                         <div class="col-auto">
                             Inventory:
                             <span id="inv"></span>
                         </div>
                     </div>
                     <div class="col"></div>
-                    <div class="col-auto">
-                        <button type="button" id="demo"
-                            class="btn btn-info btn-rounded btn-sm waves-effect"
-                            title="Demo"
-                            @click="startDemo">
-                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
-                            <FontAwesomeIcon icon="eye" 
-                                            size="lg">
-                            </FontAwesomeIcon>
-                            
-                        </button>
-                        <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="6" data-intro="See the currently applied filters here!"
-                                title="Filter">
-                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
-                        <FontAwesomeIcon icon="search-filters" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button> 
-                        <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="4" data-intro="Download data in tabular form here!"
-                                title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p> 
-                        <FontAwesomeIcon icon="download" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect"
-                                data-step="3" data-intro="Click here to reset filters on all charts." 
-                                title="Reset All"
-                                @click="resetAll">
-                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="redo-alt" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>                         
+                    <div class="col-auto">                      
                     </div>
                 </div>
                 <div class="row">
@@ -74,20 +36,6 @@
                         </div>
                     </div>
                 </div>
-<!--                 <largeBarChart :id="'majcom'"         
-                               :dimension="majcomDim"
-                               :group="removeError(majcomGroup)"
-                               :widthFactor="0.90"
-                               :aspectRatio="3"
-                               :minHeight="300"
-                               :reducer="tfAdd"
-                               :accumulator="tfInitial"
-                               :numBars="30"
-                               :margin="chartSpecs.majcomChart.margins"
-                               :colorScale="majcomColorScale"
-                               :title="'MAJCOM'"
-                               :loaded="loaded">
-                </largeBarChart> -->
                 <overviewBarChart 
                     :id="'majcom'"
                     :dimension="majcomDim"
@@ -105,20 +53,7 @@
                     :title="'MAJCOM'"
                     :loaded="loaded">
                 </overviewBarChart>                
-<!--                  <largeBarChart :id="'base'"         
-                               :dimension="baseDim"
-                               :group="removeError(baseGroup)"
-                               :widthFactor="0.90"
-                               :aspectRatio="3"
-                               :minHeight="300"
-                               :reducer="tfAdd"
-                               :accumulator="tfInitial"
-                               :numBars="30"
-                               :margin="chartSpecs.baseChart.margins"
-                               :colorScale="baseColorScale"
-                               :title="'Servicing MPF'"
-                               :loaded="loaded">
-                </largeBarChart> -->
+
                 <overviewBarChart 
                     :id="'base'"
                     :dimension="baseDim"
@@ -137,7 +72,20 @@
                     :loaded="loaded">
                 </overviewBarChart>
             </div>
+
         </transition-group>
+        <fab
+            data-step="3"
+            data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
+            :position="position"
+            :bg-color="bgColor"
+            :actions="fabActions"
+            @reset="resetAll"
+            @download="fabDownload"
+            @demo="startDemo"
+            @showMyFilters="fabFilter"
+            class="noselect"
+        ></fab>         
     </div>
 </template>
 
@@ -149,10 +97,10 @@ import formats from '@/store/format'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
-import largeBarChart from '@/components/largeBarChart'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import toastr from 'toastr'
+import fab from 'vue-fab'
 
     export default {
         data() {
@@ -164,10 +112,18 @@ import toastr from 'toastr'
                 baseColor: chartSpecs.baseChart.color,
                 pageName: 'Total Force Active Duty',
                 chartSpecs: chartSpecs,
-                majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),                
-                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),                                
+                majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
+                baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
                 gradeChart: {},
-                typeChart: {}
+                typeChart: {},
+
+                bgColor: '#333333',
+                position: 'bottom-right',  
+                iconSize: 'small',        
+                fabActions: [{ name: 'reset', icon: 'autorenew', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'cloud_download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                             { name: 'demo', icon: 'remove_red_eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'filter_list', tooltip: 'View current Filters', color: '#2F96B4'}]
             }
         },
         computed: {
@@ -345,8 +301,58 @@ import toastr from 'toastr'
                 }
                 return output;
             },
-            renderCharts: function() {
 
+            fabDownload: function(){
+                var data = this.downloadDim.top(Infinity)
+                var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"})
+
+                var myFilters = ''
+                dc.chartRegistry.list().forEach((d)=>{
+                    if (d.filters()[0])
+                        myFilters += ' (' + d.filters() + ')'
+                })
+
+                FileSaver.saveAs(blob, 'PERSTAT TF Active Duty' + ' ' + store.state.asDate + myFilters + ' .csv');                
+            },
+
+            fabFilter: function(){
+                //Curent Filters button
+                var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+                dc.chartRegistry.list().forEach((d)=>{                    
+                //console.log("d.filter(): "+d.filter())
+                //if (d.hasFilter()) {console.log("d.filter(): "+d.filters())}
+                if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewbase-barchart') {
+                    //console.log(d.anchor(), d.filters())
+                    myFilters += '\n (' + d.filters() + ')'
+                } 
+                })
+                if (myFilters !== undefined) {
+                  var counterVars = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory });
+                //console.log("counterVars.value: "+counterVars.value());
+                // Override global options
+                  toastr.options = {
+                    "positionClass": "toast-bottom-full-width",
+                    "closeButton":"true",
+                    "preventDuplicates":"true"
+                  }
+                  if (counterVars.value() == 0) {
+                    toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                  }
+                  else if (counterVars.value() == 1) {
+                    myFilters += ' return ' + counterVars.value() + ' result.'
+                    toastr.info(myFilters);                         
+                  }
+                  else {
+                    myFilters += ' return ' + counterVars.value() + ' results.'
+                    toastr.info(myFilters);  
+                  }                      
+                }
+                if (myFilters == 'undefined' || myFilters == undefined) {
+                    toastr.error('Something went wrong. Please reset and try again.')
+                }                
+            },
+
+            renderCharts: function() {
                 //remove empty function (es6 syntax to keep correct scope)
                 var removeEmptyBins = (source_group) => {
                     return {
@@ -397,60 +403,6 @@ import toastr from 'toastr'
 
                 this.gradeChart = gradeChart
 
-
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
-
-                    dc.chartRegistry.list().forEach((d)=>{                    
-                    //console.log("d.filter(): "+d.filter())
-                    //if (d.hasFilter()) {console.log("d.filter(): "+d.filters())}
-                    if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewbase-barchart') {
-                        //console.log(d.anchor(), d.filters())
-                        myFilters += '\n (' + d.filters() + ')'
-                    } 
-                    })
-                    if (myFilters !== undefined) {
-                      var counterVars = inv;
-                      //console.log("counterVars.value: "+counterVars.value());
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (counterVars.value() == 0) {
-                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
-                      }
-                      else if (counterVars.value() == 1) {
-                        myFilters += ' return ' + counterVars.value() + ' result.'
-                        toastr.info(myFilters);                         
-                      }
-                      else {
-                        myFilters += ' return ' + counterVars.value() + ' results.'
-                        toastr.info(myFilters);  
-                      }                      
-                    }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
-
-                 //Download Raw Data button
-                d3.select('#download')
-                .on('click', ()=>{
-                    var data = this.downloadDim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
-
-                    var myFilters = '';
-                    dc.chartRegistry.list().forEach((d)=>{
-                        if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'
-                    })
-
-                    FileSaver.saveAs(blob, 'PERSTAT TF Active Duty' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
@@ -464,14 +416,14 @@ import toastr from 'toastr'
                 //create charts
                 dc.renderAll()
                 dc.redrawAll()
-            }
+            }      
         },
         components: {
             'loader': Loader,
             searchBox,
             FontAwesomeIcon,
-            largeBarChart,
-            overviewBarChart
+            overviewBarChart,
+            fab
         },
         created: function(){
           console.log('created')
@@ -518,6 +470,40 @@ import toastr from 'toastr'
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="../../../node_modules/dc/dc.css"/>
+<style>
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../../../src/assets/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2') format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -moz-font-feature-settings: 'liga';
+  -moz-osx-font-smoothing: grayscale;
+}
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+</style>
 <style>
 #type, #grade, #majcom, #base {
     margin-top: 1rem;
