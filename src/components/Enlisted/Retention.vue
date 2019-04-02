@@ -5,7 +5,7 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col">
+                    <div id="radioSelect" class="col" data-step="1" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="reEnlRate" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
@@ -20,8 +20,19 @@
                         </div>
                     </div>
                     <div class="col-auto">
+                        <button type="button" id="demo"
+                            class="btn btn-info btn-rounded btn-sm waves-effect"
+                            title="Demo"
+                            @click="startDemo">
+                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
+                            <FontAwesomeIcon icon="eye" 
+                                            size="lg">
+                            </FontAwesomeIcon>
+                            
+                        </button>
                         <button type="button" id="showMyFilters"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="7" data-intro="See the currently applied filters here!"
                                 title="Filter">
                         <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="filter" 
@@ -30,6 +41,7 @@
                         </button> 
                         <button type="button" id="download"
                                 class="btn btn-info btn-rounded btn-sm waves-effect"
+                                data-step="6" data-intro="Download data in tabular form here!"
                                 title="Download Raw Data">
                         <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>  
                         <FontAwesomeIcon icon="download" 
@@ -38,6 +50,7 @@
                         </button>
                         <button type="button" 
                                 class="btn btn-danger btn-rounded btn-sm waves-effect"
+                                data-step="4" data-intro="Click here to reset filters on all charts."
                                 title="Reset All"
                                 @click="searchAfsc='';searchMajcom='';searchBase='';resetAll()">
                         <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
@@ -47,7 +60,7 @@
                         </button>                        
                     </div>
                 </div>
-                <div class="row">
+                <div id="counts" class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
                     <div class="col-auto">
                         Inventory:
                         <span id="inv"></span>
@@ -91,7 +104,7 @@
                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
                         <!-- <div class="row"> -->
                             <div id="year" class="col-12">
-                                <div id="dc-year-rowchart">
+                                <div id="dc-year-rowchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">>>
                                     <h3>Year<span style="font-size: 14pt; opacity: 0.87;"> &nbsp {{ylabel}}</span>
                                     </h3>
                                 </div>
@@ -297,6 +310,9 @@
             dc.filterAll();
             this.singleSubmit('2018', 'dc-year-rowchart')
             this.singleSubmit('1ST TERM', 'dc-cat-rowchart')
+          },
+          startDemo: function() {
+            introJs().start()
           },
           resetChart: function(id) {
             dc.chartRegistry.list().filter(chart=>{
