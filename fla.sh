@@ -4,7 +4,7 @@
 #git pull to sync with remote
 #git -C ./dist pull origin master;
 #build for fla (need fla endpoints)
-yarn run fla;
+#yarn run fla;
 #get most recent commit and current branch in perstat
 lastCommitHash=$(git rev-parse --short HEAD)
 lastCommit=$(git log -n 1 --oneline)
