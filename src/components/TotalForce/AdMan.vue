@@ -470,7 +470,7 @@ import fab from 'vue-fab'
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="../../../node_modules/dc/dc.css"/>
-<style>
+<style scoped>
 
  @font-face{font-family:Material Icons;src:url(../../static/fonts/Material-Icons.d7e60f9.woff2) format("woff2");font-weight:400}
 
