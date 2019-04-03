@@ -475,7 +475,7 @@ import fab from 'vue-fab'
  /*@font-face{font-family:'Material Icons';src:url('../../static/fonts/Material-Icons.d7e60f9.woff2') format("woff2");font-weight:400}*/
 
 .material-icons {
-  font-family: 'Material Icons';
+  font-family: 'Material';
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
