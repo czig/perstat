@@ -1,8 +1,8 @@
 #!/bin/bash
 #begin by resetting ps_fla working directory to last commit state
-#git -C ./dist reset --hard; 
+git -C ./dist reset --hard; 
 #git pull to sync with remote
-#git -C ./dist pull origin master;
+git -C ./dist pull origin master;
 #build for fla (need fla endpoints)
 yarn run fla;
 #get most recent commit and current branch in perstat
