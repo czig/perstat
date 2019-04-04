@@ -1,0 +1,4 @@
+/*! 
+ * Atribution: Material Icons CSS url reference to get images for floating action button during webpack consolidation
+ *
+ */@font-face{font-family:'Material Icons';src:local(Material Icons),url(../../static/fonts/Material-Icons.d7e60f9.woff2,../src/assets/Material-Icons.woff2) format("woff2");font-weight:400}

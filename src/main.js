@@ -8,6 +8,9 @@ import '../node_modules/mdbootstrap/css/mdb.min.css'
 //intro.js styles
 import '../node_modules/intro.js/introjs.css'
 
+//import Material Icons font
+import '../assets/materialIcon.css'
+
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
