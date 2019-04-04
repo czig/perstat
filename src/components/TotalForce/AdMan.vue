@@ -472,10 +472,10 @@ import fab from 'vue-fab'
 <style src="../../../node_modules/dc/dc.css"/>
 <style>
 
- @font-face{font-family:Material;src:url(../../static/fonts/Material-Icons.d7e60f9.woff2,../../../../assets/Material-Icons.woff2) format("woff2");font-weight:400}
+ /*@font-face{font-family:Material;src:url(../../static/fonts/Material-Icons.d7e60f9.woff2,../../../../assets/Material-Icons.woff2) format("woff2");font-weight:400}*/
 
 .material-icons {
-  font-family: 'Material';
+  font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
