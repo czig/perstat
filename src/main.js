@@ -8,9 +8,6 @@ import '../node_modules/mdbootstrap/css/mdb.min.css'
 //intro.js styles
 import '../node_modules/intro.js/introjs.css'
 
-//import Material Icons font
-import './assets/materialIcon.css'
-
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
@@ -34,8 +31,9 @@ import faExclamationTriangle from '@fortawesome/fontawesome-free-solid/faExclama
 import faTimesCircle from '@fortawesome/fontawesome-free-solid/faTimesCircle'
 import faEye from '@fortawesome/fontawesome-free-solid/faEye'
 import faSearchFilters from '../src/assets/faSearchFilters'
+import faPlus from '@fortawesome/fontawesome-free-solid/faPlus'
 
-fontawesome.library.add(faSpinner,faQuestionCircle, faInfoCircle, faFilter, faDownload, faRedoAlt, faCheckCircle, faExclamationTriangle, faTimesCircle, faEye, faSearchFilters)
+fontawesome.library.add(faSpinner,faQuestionCircle, faInfoCircle, faFilter, faDownload, faRedoAlt, faCheckCircle, faExclamationTriangle, faTimesCircle, faEye, faSearchFilters, faPlus)
 
 import { store } from '@/store/store'
 

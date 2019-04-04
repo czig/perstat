@@ -119,11 +119,14 @@ import fab from 'vue-fab'
 
                 bgColor: '#333333',
                 position: 'bottom-right',  
-                iconSize: 'small',        
-                fabActions: [{ name: 'reset', icon: 'autorenew', tooltip: 'Reset All', color: '#FF3547' },
-                             { name: 'download', icon: 'cloud_download', tooltip: 'Download Raw Data', color: '#2F96B4'},
-                             { name: 'demo', icon: 'remove_red_eye', tooltip: 'Demo the page', color: '#2F96B4'},
-                             { name: 'showMyFilters', icon: 'filter_list', tooltip: 'View current Filters', color: '#2F96B4'}]
+                iconSize: 'md',        
+                fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                             // FontAwesomeIcon plus download search-filters eye redo-alt
+                             // Material Icons add cloud_download filter_list remove_red_eye auto-renew
+                             { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+                mainIcon: 'plus'
             }
         },
         computed: {
@@ -472,11 +475,11 @@ import fab from 'vue-fab'
 <style src="../../../node_modules/dc/dc.css"/>
 <style>
 
- @font-face{font-family:Material;src:url(../../static/fonts/Material-Icons.d7e60f9.woff2,../../../../assets/Material-Icons.woff2) format("woff2");font-weight:400}
+/* @font-face{font-family:Material;src:url(../../static/fonts/Material-Icons.d7e60f9.woff2,../../../../assets/Material-Icons.woff2) format("woff2");font-weight:400}*/
 
 .material-icons {
-  font-family: Material;
-  font-weight: normal;
+/*  font-family: Material;
+*/  font-weight: normal;
   font-style: normal;
   font-size: 24px;
   line-height: 1;
