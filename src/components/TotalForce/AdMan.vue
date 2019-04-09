@@ -4,7 +4,7 @@
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
                 <div class="row">
-                    <div id="radioSelect" class="col-auto" data-step="1" data-intro="Total number of Active Duty personnel.">
+                    <div id="radioSelect" class="col-auto" data-step="3" data-intro="Total number of Active Duty personnel.">
                         <div class="col-auto">
                             Inventory:
                             <span id="inv"></span>
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <div id="grade" class="col-xl-8 col-lg-7 col-md-7 col-sm-12 col-12">
-                        <div id="dc-grade-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
+                        <div id="dc-grade-barchart" data-step="4" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
@@ -75,7 +75,7 @@
 
         </transition-group>
         <fab
-            data-step="3"
+            data-step="2"
             data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
             :position="position"
             :bg-color="bgColor"
@@ -116,14 +116,14 @@ import fab from '@/components/FAB'
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
                 gradeChart: {},
                 typeChart: {},
-
+                /* FAB items */
                 bgColor: '#333333',
                 position: 'bottom-right',  
                 iconSize: 'md',        
+                // FontAwesomeIcon plus download search-filters eye redo-alt
+                // Material Icons add cloud_download filter_list remove_red_eye auto-renew
                 fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
-                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
-                             // FontAwesomeIcon plus download search-filters eye redo-alt
-                             // Material Icons add cloud_download filter_list remove_red_eye auto-renew
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},                             
                              { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
                              { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
                 mainIcon: 'plus'
@@ -315,7 +315,7 @@ import fab from '@/components/FAB'
                         myFilters += ' (' + d.filters() + ')'
                 })
 
-                FileSaver.saveAs(blob, 'PERSTAT TF Active Duty' + ' ' + store.state.asDate + myFilters + ' .csv');                
+                FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');                
             },
 
             fabFilter: function(){
