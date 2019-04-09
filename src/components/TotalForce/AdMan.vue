@@ -100,7 +100,7 @@ import searchBox from '@/components/searchBox'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import toastr from 'toastr'
-import fab from 'vue-fab'
+import fab from '@/components/FAB'
 
     export default {
         data() {
@@ -473,35 +473,7 @@ import fab from 'vue-fab'
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="../../../node_modules/dc/dc.css"/>
-<style>
 
-/* @font-face{font-family:Material;src:url(../../static/fonts/Material-Icons.d7e60f9.woff2,../../../../assets/Material-Icons.woff2) format("woff2");font-weight:400}*/
-
-.material-icons {
-/*  font-family: Material;
-*/  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -moz-font-feature-settings: 'liga';
-  -moz-osx-font-smoothing: grayscale;
-}
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-}
-</style>
 <style>
 #type, #grade, #majcom, #base {
     margin-top: 1rem;
