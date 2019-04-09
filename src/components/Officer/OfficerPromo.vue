@@ -169,7 +169,7 @@
                                :title="'Core'"
                                :loaded="loaded">
                 </largeBarChart> -->
-                <div class="row" data-step="3" data-intro="Click on the little black ball to learn more about the sliding brush barchart!">
+                <div class="row" data-step="3" data-intro="Click on the black information 'i' ball to learn more about the sliding brush barchart!">
                 <overviewBarChart 
                     :id="'core'"
                     :dimension="coreDim"

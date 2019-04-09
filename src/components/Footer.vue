@@ -26,8 +26,8 @@
                     <ul>
                       <router-link class="footer-link" to="/" tag="li"><a class="nav-link">Home</a></router-link>
                       <router-link class="footer-link" to="/tf" tag="li"><a class="nav-link">TF Military</a></router-link>
-                      <router-link class="footer-link" to="/officer" tag="li"><a class="nav-link">Officer</a></router-link>
-                    <router-link class="footer-link" to="/enlisted" tag="li"><a class="nav-link">Enlisted</a></router-link>
+                      <router-link class="footer-link" to="/officer" tag="li"><a class="nav-link">Active Duty</a></router-link>
+                    <router-link class="footer-link" to="/ANGOfficer" tag="li"><a class="nav-link">Air National Guard</a></router-link>
                     </ul>
                 </div>
                 <div class="col-md-4">

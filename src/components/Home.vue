@@ -37,6 +37,8 @@
                         <br>
                         <h6>New items have been added to the PERS-STAT website.  </h6>
                         <hr>
+                        <h6>New ANG section has been added.</h6>
+                        <br>
                         <h6>On pages with interactive charts, there are two new buttons at the top one titled "Demo", and another titled "View Filters."</h6>
                         <br>
                         <h6>The "Demo" Button allows you to observe important aspects on the page.</h6>
@@ -59,17 +61,9 @@
             </div>
             <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" style="padding-bottom: 15px;">
                 <div id="officer-card" class="card hoverable click" @click="$router.push('/officer')">
-                    <img class="card-img-top" src="../../static/officer.jpg" height="200px">
-                    <div class="card-body">
-                        <h4 class="card-title">Officer</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" style="padding-bottom: 15px;">
-                <div id="enlisted-card" class="card hoverable click" @click="$router.push('/enlisted')">
                     <img class="card-img-top" src="../../static/enlisted.jpg" height="200px">
                     <div class="card-body">
-                        <h4 class="card-title">Enlisted</h4>
+                        <h4 class="card-title">Active Duty</h4>
                     </div>
                 </div>
             </div>
@@ -94,6 +88,14 @@
                     <img class="card-img-top" src="../../static/education.jpg" height="200px">
                     <div class="card-body">
                         <h4 class="card-title">Education</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" style="padding-bottom: 15px;">
+                <div id="ANG-card" class="card hoverable click" @click="$router.push('/ANGOfficer')">
+                    <img class="card-img-top" src="../../static/ANG.jpg" height="200px">
+                    <div class="card-body">
+                        <h4 class="card-title">Air National Guard</h4>
                     </div>
                 </div>
             </div>
