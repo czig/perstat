@@ -4,51 +4,14 @@
             <loader v-show="!loaded" id="loader" key="loader"></loader>
             <div v-show="loaded" id="content" key="content">
                 <div class="row">
-                    <div id="radioSelect" class="col" data-step="1" data-intro="Total number of ANG personnel.">
+                    <div id="radioSelect" class="col-auto" data-step="3" data-intro="Total number of ANG personnel.">
                         <div class="col-auto">
                             Inventory:
                             <span id="inv"></span>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <button type="button" id="demo"
-                            class="btn btn-info btn-rounded btn-sm waves-effect"
-                            title="Demo"
-                            @click="startDemo">
-                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
-                            <FontAwesomeIcon icon="eye" 
-                                            size="lg">
-                            </FontAwesomeIcon>
-                            
-                        </button>
-                        <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="7" data-intro="See the currently applied filters here!"
-                                title="Filter">
-                        <p class="d-none d-md-inline">Filter&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="filter" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button> 
-                        <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="6" data-intro="Download data in tabular form here!"
-                                title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="download" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect"
-                                data-step="4" data-intro="Click here to reset filters on all charts." 
-                                title="Reset All"
-                                @click="resetAll">
-                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="redo-alt" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>                        
+                    <div class="col"></div>
+                    <div class="col-auto">                      
                     </div>
                 </div>
                 <div class="row">
@@ -75,7 +38,7 @@
 <!--                 </div>
                 <div class="row"> -->
                     <div id="empCat" class="col-xl-6 col-lg-4 col-md-6 col-sm-12 col-12">
-                        <div id="dc-empCat-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
+                        <div id="dc-empCat-barchart" data-step="4" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>EMPLOYEE CATEGORY <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
@@ -84,8 +47,8 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="us" class="col-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="3" data-intro="You can zoom in and out, mouse over a state or territory on the maps to see the personnel total, or click on it to apply filters and update the other charts!">
+                    <div id="us" class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                        <div id="dc-us-geoChoroplethChart" class="center-block clearfix" data-step="5" data-intro="You can zoom in and out, mouse over a state or territory on the maps to see the personnel total, or click on it to apply filters and update the other charts!">
                             <h3>US Map <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                 class="btn btn-danger btn-sm btn-rounded reset" 
@@ -97,6 +60,18 @@
                 </div>
             </div>
         </transition-group>
+        <fab
+            data-step="2"
+            data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
+            :position="position"
+            :bg-color="bgColor"
+            :actions="fabActions"
+            @reset="resetAll"
+            @download="fabDownload"
+            @demo="startDemo"
+            @showMyFilters="fabFilter"
+            class="noselect"
+        ></fab>     
     </div>
 </template>
 
@@ -108,9 +83,9 @@ import formats from '@/store/format'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
 import searchBox from '@/components/searchBox'
-import largeBarChart from '@/components/largeBarChart'
-import toastr from "toastr"
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import toastr from 'toastr'
+import fab from '@/components/FAB'
 
     export default {
         data() {
@@ -120,15 +95,21 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 selected: "percent",
                 ylabel: 'Inventory',
                 loaded: false,
-/*                 baseColor: chartSpecs.baseChart.color, */
                 chartSpecs: chartSpecs,
                 baseColor: chartSpecs.baseChart.color,
                 pageName: 'Total Force ANG',
                 baseLen: 0,
                 baseHasFilter: false,
-                showBase: false
-
-/*                 stateColorScale: d3.scale.ordinal().range([chartSpecs.stateChart.color]), */
+                showBase: false,
+                /* FAB items */
+                bgColor: '#333333',
+                position: 'bottom-right',  
+                iconSize: 'md',        
+                fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                             { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+                mainIcon: 'plus'
             }
         },
         computed: {
@@ -143,7 +124,10 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
           },
           pageLabel: function() {
             return this.pageName
-          }  
+          },           
+          downloadDim: function() {
+            return this.ndx.dimension(function(d) {return d;});    
+          }
 /*             stateDim: function() {
                 return this.ndx.dimension(function(d) {return d.state;});
             },
@@ -214,13 +198,59 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
           toProperCase: function(s) {
             return s.toLowerCase().replace(/^(.)|\s(.)/g, 
                 function($1) { return $1.toUpperCase(); });
-          }
+          },
+          fabDownload: function(){
+                var data = this.downloadDim.top(Infinity)
+                var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"})
+
+                var myFilters = ''
+                dc.chartRegistry.list().forEach((d)=>{
+                    if (d.filters()[0])
+                        myFilters += ' (' + d.filters() + ')'
+                })
+
+                FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');                
+           },
+           fabFilter: function(){
+                //Curent Filters button
+                var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+                dc.chartRegistry.list().forEach((d)=>{                    
+                //console.log("d.filter(): "+d.filter())
+                if (d.hasFilter()) {
+                    //console.log(d.anchor(), d.filters())
+                    myFilters += '\n (' + d.filters() + ')'
+                } 
+                })
+                if (myFilters !== undefined) {
+                  var counterVars = this.ndx.groupAll().reduceSum(function(d) { return +d.Inventory });
+                //console.log("counterVars.value: "+counterVars.value());
+                // Override global options
+                  toastr.options = {
+                    "positionClass": "toast-bottom-full-width",
+                    "closeButton":"true",
+                    "preventDuplicates":"true"
+                  }
+                  if (counterVars.value() == 0) {
+                    toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                  }
+                  else if (counterVars.value() == 1) {
+                    myFilters += ' return ' + counterVars.value() + ' result.'
+                    toastr.info(myFilters);                         
+                  }
+                  else {
+                    myFilters += ' return ' + counterVars.value() + ' results.'
+                    toastr.info(myFilters);  
+                  }                      
+                }
+                if (myFilters == 'undefined' || myFilters == undefined) {
+                    toastr.error('Something went wrong. Please reset and try again.')
+                }                
+            }
         },
         components: {
             'loader': Loader,
-            searchBox,
-            largeBarChart,
-            FontAwesomeIcon
+            FontAwesomeIcon,
+            fab
         },
         created: function(){
           console.log('created')
@@ -529,58 +559,6 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
                 })
                                 
                 usChart.controlsUseVisibility(true)
-
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
-
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                                       
-                    if (d.hasFilter()) {
-                        myFilters += '\n (' + d.filters() + ')'
-                    } 
-                    })
-                    if (myFilters !== undefined) {
-                      var counterVars = inv; 
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (counterVars.value() == 0) {
-                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
-                      }
-                      else if (counterVars.value() == 1) {
-                        myFilters += ' return ' + counterVars.value() + ' result.'
-                        toastr.info(myFilters);                         
-                      }
-                      else {
-                        myFilters += ' return ' + counterVars.value() + ' results.'
-                        toastr.info(myFilters);  
-                      }                      
-                    }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
-
-                //Download Raw Data button
-                d3.select('#download')
-                .on('click', ()=>{
-                    var data = typeConfig.dim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
-
-                    var myFilters = '';
-                    dc.chartRegistry.list().forEach((d)=>{
-                        if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'                        
-                    })
-                    console.log(myFilters);
-                    FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
-                });
-
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
