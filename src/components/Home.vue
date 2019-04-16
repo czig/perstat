@@ -38,11 +38,25 @@
                         <h6>New items have been added to the PERS-STAT website.  </h6>
                         <hr>
                         <h6>New ANG section has been added.</h6>
+                        <br>                         
+                        <h6>On pages with interactive charts, click on the floating action button         
+                            <fab                                
+                                :position-Type="inherit"
+                                :position="inherit"
+                                :bg-color="bgColor"
+                                :actions="fabActions"
+                                @reset="reset"
+                                @download="download"
+                                @demo="demo"
+                                @showMyFilters="filter"
+                                class="noselect"
+                            ></fab>                             
+                        to see the following buttons: Reset All, Download Raw Data, Demo the page, View current filters."</h6>
                         <br>
-                        <h6>On pages with interactive charts, there are two new buttons at the top one titled "Demo", and another titled "View Filters."</h6>
-                        <br>
-                        <h6>The "Demo" Button allows you to observe important aspects on the page.</h6>
-                        <h6>The "View Filter" Button allows you to quickly see all applied filters on the respective page.</h6>
+                        <h6>The "Reset All" Button resets all chart selections to a default state.</h6> 
+                        <h6>The "Download Raw Data" Button allows you to save a file with the raw data we use to build the charts on this page.</h6>                                
+                        <h6>The "Demo" Button allows you to observe important aspects on the particular page.</h6>
+                        <h6>The "View current Filters" Button allows you to quickly see all applied filters on the respective page.</h6>
                         </h4>
                     </div>
                 </div>
@@ -145,13 +159,59 @@
         </div>
     </div> 
 </template>
+<script>    
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import fab from '@/components/FAB'
 
+    export default {
+        data() {
+            return {
+                pageName: 'Total Force Active Duty',
+                /* FAB items */
+                bgColor: '#333333',
+                positionType: 'inherit',
+                position: 'bottom-right',  
+                iconSize: 'md',        
+                // FontAwesomeIcon plus download search-filters eye redo-alt
+                // Material Icons add cloud_download filter_list remove_red_eye auto-renew
+                fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},                             
+                             { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+                mainIcon: 'plus'
+            }
+        },
+        components: {
+            FontAwesomeIcon,
+            fab
+        },
+        methods:{
+            reset(){
+                alert('Clicking this button on an Interactive page will Reset All Filters applied to charts on the page.');
+            },
+            download(){
+                alert('Clicking this button on an Interactive page will Download Raw Data from the selections made on the page.');
+            },
+            demo(){
+                alert('Clicking this button on an Interactive page will Demonstrate important aspects of the page.');
+            },
+            filter(){
+                alert('Clicking this button on an Interactive page will pop up a message with the currently selected filters for the page.');
+            }
+       }
+}
+
+</script>
 <style scoped>
 .click { 
     cursor: pointer;
 }
 .elevate-2 {
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0px 3px 6px rgba(0,0,0,0.23);
+}
+#bottom-right-wrapper {
+    float: right;
+    position: inherit !important;
 }
     
 </style>
