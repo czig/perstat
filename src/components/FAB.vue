@@ -20,7 +20,7 @@
                                     ref="actions">
                                     <i :class="[ actionIconSize ,'material-icons']">
                                         <FontAwesomeIcon :icon="action.icon" 
-                                         :size="iconSize">
+                                         :size="action.iconSize">
                                         </FontAwesomeIcon>
                                     </i>
                                 </li>
@@ -30,7 +30,7 @@
                                     @click="toParent(action.name)" class="pointer">
                                     <i :class="[ actionIconSize ,'material-icons']">
                                     <FontAwesomeIcon :icon="action.icon" 
-                                         :size="iconSize">
+                                         :size="action.iconSize">
                                     </FontAwesomeIcon>
                                     </i>
                                 </li>

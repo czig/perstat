@@ -5,7 +5,7 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                    <div class="custom-control custom-radio custom-control-inline" data-step="1" data-intro="STEM and Non-STEM totals.">
+                    <div class="custom-control custom-radio custom-control-inline col-auto" data-step="3" data-intro="STEM and Non-STEM totals.">
                         <div class="col-auto">
                             Total:
                             <span id="totalCount"></span>
@@ -20,49 +20,12 @@
                         </div>  
                     </div> 
                     <div class="col"></div>
-                    <div class="col-auto">
-                        <button type="button" id="demo"
-                            class="btn btn-info btn-rounded btn-sm waves-effect"
-                            title="Demo"
-                            @click="startDemo">
-                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
-                            <FontAwesomeIcon icon="eye" 
-                                            size="lg">
-                            </FontAwesomeIcon>
-                        </button>
-                        <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="6" data-intro="See the currently applied filters here!"
-                                title="Filter">
-                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
-                        <FontAwesomeIcon icon="search-filters" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button> 
-                        <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="5" data-intro="Download data in tabular form here!"
-                                title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
-                        <FontAwesomeIcon icon="download" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect"
-                                data-step="3" data-intro="Click here to reset filters on all charts." 
-                                title="Reset All"
-                                @click="searchCore='';resetAll()">
-                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="redo-alt" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>                         
+                    <div class="col-auto">                       
                     </div>      
                 </div>       
                 <div class='row'>
                     <div id="fyr" class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
-                        <div id="dc-fyr-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
+                        <div id="dc-fyr-barchart" data-step="4" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Fiscal Year<span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             </h3>
                         </div>
@@ -102,20 +65,6 @@
                     </div>
                 </div>
                 <br>
-<!--                 <largeBarChart :id="'core'"         
-                               :dimension="coreDim"
-                               :group="removeError(coreGroup)"
-                               :widthFactor="0.90"
-                               :aspectRatio="chartSpecs.coreChart.aspectRatio"
-                               :minHeight="chartSpecs.coreChart.minHeight"
-                               :reducer="edAdd"
-                               :accumulator="edInitial"
-                               :numBars="30"
-                               :margin="chartSpecs.coreChart.margins"
-                               :colorScale="coreColorScale"
-                               :title="'Core'"
-                               :loaded="loaded">
-                </largeBarChart> -->
                 <overviewBarChart 
                     :id="'core'"
                     :dimension="coreDim"
@@ -136,7 +85,19 @@
                 </overviewBarChart>                 
                 
             </div>    
-        </transition-group>    
+        </transition-group>   
+        <fab
+            data-step="2"
+            data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
+            :position="position"
+            :bg-color="bgColor"
+            :actions="fabActions"
+            @reset="resetAll"
+            @download="fabDownload"
+            @demo="startDemo"
+            @showMyFilters="fabFilter"
+            class="noselect"
+        ></fab> 
 	</div>
 </template>
 
@@ -146,24 +107,32 @@
 	import axios from 'axios'
 	import formats from '@/store/format'
 	import AutoComplete from '@/components/AutoComplete'
-	import searchBox from '@/components/searchBox'
 	import Loader from '@/components/Loader'
 	import { store } from '@/store/store'
-    import largeBarChart from '@/components/largeBarChart'
     import overviewBarChart from '@/components/overviewBarChart' 
     import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
     import toastr from 'toastr'
+    import fab from '@/components/FAB'
 
 	export default {
 		data() {
 			return {
-					data: [],
-                    loaded: false,
-                    searchCore: "",
-                    selected: "Count",
-                    chartSpecs: chartSpecs,
-                    pageName: 'Officer Education',
-                    coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+				data: [],
+                loaded: false,
+                searchCore: "",
+                selected: "Count",
+                chartSpecs: chartSpecs,
+                pageName: 'Officer Education',
+                coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
+                /* FAB items */
+                bgColor: '#333333',
+                position: 'bottom-right',  
+                iconSize: 'md',        
+                fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                             { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+                mainIcon: 'plus'
 			}
 		},
 
@@ -187,6 +156,9 @@
             ylabel: function() {
                 return "(Count)"
             },
+            downloadDim: function() {
+                return this.ndx.dimension(function(d) {return d;});    
+            }, 
             pageLabel: function() {
                 return this.pageName
             }  
@@ -271,16 +243,63 @@
             toProperCase: function(s) {
                 return s.toLowerCase().replace(/^(.)|\s(.)/g, 
                     function($1) { return $1.toUpperCase(); });
-            }         
+            },
+            fabDownload: function(){
+                var data = this.downloadDim.top(Infinity)
+                var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"})
+
+                var myFilters = ''
+                dc.chartRegistry.list().forEach((d)=>{
+                    if (d.filters()[0])
+                        myFilters += ' (' + d.filters() + ')'
+                })
+
+                FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
+            },
+            fabFilter: function(){
+                //Curent Filters button
+                var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+                dc.chartRegistry.list().forEach((d)=>{                    
+                //console.log("d.filter(): "+d.filter())
+                if (d.hasFilter() && d.anchor()!='#dc-overviewcore-barchart') {
+                    //console.log(d.anchor(), d.filters())
+                    myFilters += '\n (' + d.filters() + ')'
+                } 
+                })
+                if (myFilters !== undefined) {
+                  var counterVars = this.ndx.groupAll().reduceSum(function(d) { return +d.count });
+                //console.log("counterVars.value: "+counterVars.value());
+                // Override global options
+                  toastr.options = {
+                    "positionClass": "toast-bottom-full-width",
+                    "closeButton":"true",
+                    "preventDuplicates":"true"
+                  }
+                  if (counterVars.value() == 0) {
+                    toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                  }
+                  else if (counterVars.value() == 1) {
+                    myFilters += ' return ' + counterVars.value() + ' result.'
+                    toastr.info(myFilters);                         
+                  }
+                  else {
+                    myFilters += ' return ' + counterVars.value() + ' results.'
+                    toastr.info(myFilters);  
+                  }                      
+                }
+                if (myFilters == 'undefined' || myFilters == undefined) {
+                    toastr.error('Something went wrong. Please reset and try again.')
+                }                
+            } 
+
 		},
 
 		components: {
 			'AutoComplete': AutoComplete,
             'Loader': Loader,
-            searchBox,
             FontAwesomeIcon,
-            largeBarChart,
-            overviewBarChart
+            overviewBarChart,
+            fab
 		},
 
 		created: function() { 
@@ -532,59 +551,7 @@
                         })
                     })
                     .yAxis().tickFormat(function(v) {return v + "%";})
- */
-
-
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
-                    
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                    if (d.hasFilter() && d.anchor()!='#dc-overviewcore-barchart') {
-                        //console.log(d.anchor(), d.filters())
-                        myFilters += '\n (' + d.filters() + ')'
-                    } 
-                    })
-                    if (myFilters !== undefined) {
-                      var counterVars = totalCountND;                        
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (counterVars.value() == 0) {
-                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
-                      }
-                      else if (counterVars.value() == 1) {
-                        myFilters += ' return ' + counterVars.value() + ' result.'
-                        toastr.info(myFilters);                         
-                      }
-                      else {
-                        myFilters += ' return ' + counterVars.value() + ' results.'
-                        toastr.info(myFilters);  
-                      }                      
-                    }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
-
-                //Download Raw Data button
-                d3.select('#download')
-                .on('click', ()=>{
-                    var data = gradeConfig.dim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
-
-                    var myFilters = '';
-                    dc.chartRegistry.list().forEach((d)=>{
-                        if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'
-                    })
-
-                    FileSaver.saveAs(blob, 'PERSTAT High Education' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });                   
+ */                
 
                 //Filters data to count Officer only
                 var filtering = this.ndx.dimension(function(d) { return d.type; });

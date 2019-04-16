@@ -14,51 +14,14 @@
                     </div> -->
                     <div class="col"></div>
                     <div class="col-auto">
-                        <button type="button" id="demo"
-                            class="btn btn-info btn-rounded btn-sm waves-effect"
-                            title="Demo"
-                            @click="startDemo">
-                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
-                            <FontAwesomeIcon icon="eye" 
-                                            size="lg">
-                            </FontAwesomeIcon>
-                            
-                        </button>
-                        <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="7" data-intro="See the currently applied filters here!"
-                                title="Filter">
-                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
-                        <FontAwesomeIcon icon="search-filters" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button> 
-                        <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="6" data-intro="Download data in tabular form here!"
-                                title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p> 
-                        <FontAwesomeIcon icon="download" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                data-step="4" data-intro="Click here to reset filters on all charts."
-                                title="Reset All"
-                                @click="resetAll">
-                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="redo-alt" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-auto">
                     </div>
                 </div>
-                <div id="counts" class="row" data-step="1" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
+                <div class="row">
+                  <div class="row col-auto" id="counts" data-step="3" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
                     <div class="col-auto">
                         Selects:        
                         <span id="sel"></span>
@@ -71,6 +34,10 @@
                         Promotion Rate: 
                         <span id="selRate"></span>
                     </div>
+                  </div>
+                  <div class="col"></div>
+                  <div class="col-auto">                   
+                  </div>
                 </div>
                 <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
                     Data prefiltered to In-the-Promotion-Zone
@@ -80,9 +47,8 @@
                 </div>
                 <div class="row">
                     <div id="grade" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
-                        <div id="dc-grade-barchart" data-step="2" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">>>
+                        <div id="dc-grade-barchart" data-step="4" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3 class="mb-0">Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
-<!--                             <font-awesome-icon icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon> -->
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -113,7 +79,6 @@
                                 <FontAwesomeIcon v-if="HpmeLoaded" icon="info-circle" size="xs">
                                 </FontAwesomeIcon>
                             </span>   
-                            <!-- <font-awesome-icon v-show="ok" icon="info-circle" data-toggle="tooltip" data-placement="bottom" title="Competitive Category" style="display: inline-block;"></font-awesome-icon>  -->     
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
@@ -153,23 +118,8 @@
                         </div>
                     </div>
                 </div>
-<!--                 <largeBarChart :id="'core'"         
-                               :dimension="coreDim"
-                               :group="coreGroup"
-                               :widthFactor="0.90"
-                               :aspectRatio="chartSpecs.coreChart.aspectRatio"
-                               :minHeight="chartSpecs.coreChart.minHeight"
-                               :selected="selected"
-                               :ylabel="ylabel"
-                               :reducer="promoAdd"
-                               :accumulator="promoInitial"
-                               :numBars="30"
-                               :margin="chartSpecs.coreChart.margins"
-                               :colorScale="coreColorScale"
-                               :title="'Core'"
-                               :loaded="loaded">
-                </largeBarChart> -->
-                <div class="row" data-step="3" data-intro="Click on the black information 'i' ball to learn more about the sliding brush barchart!">
+
+                <div data-step="5" data-intro="Click on the black information 'i' ball to learn more about the sliding brush barchart!">
                 <overviewBarChart 
                     :id="'core'"
                     :dimension="coreDim"
@@ -188,22 +138,7 @@
                     :loaded="loaded">
                 </overviewBarChart>
                 </div>
-<!--                 <largeBarChart :id="'board'"         
-                               :dimension="boardDim"
-                               :group="boardGroup"
-                               :widthFactor="0.90"
-                               :aspectRatio="chartSpecs.boardChart.aspectRatio"
-                               :minHeight="chartSpecs.boardChart.minHeight"
-                               :selected="selected"
-                               :ylabel="ylabel"
-                               :reducer="promoAdd"
-                               :accumulator="promoInitial"
-                               :numBars="30"
-                               :margin="chartSpecs.boardChart.margins"
-                               :colorScale="boardColorScale"
-                               :title="'Board'"
-                               :loaded="loaded">
-                </largeBarChart> -->
+
                 <overviewBarChart 
                     :id="'board'"
                     :dimension="boardDim"
@@ -234,8 +169,20 @@
                         </div>
                     </div>
                 </div>
- -->            </div>
+ -->      </div>
         </transition-group>
+        <fab
+            data-step="2"
+            data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
+            :position="position"
+            :bg-color="bgColor"
+            :actions="fabActions"
+            @reset="resetAll"
+            @download="fabDownload"
+            @demo="startDemo"
+            @showMyFilters="fabFilter"
+            class="noselect"
+        ></fab>         
     </div>
 </template>
 
@@ -247,10 +194,10 @@ import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
-import largeBarChart from '@/components/largeBarChart'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import toastr from 'toastr'
+import fab from '@/components/FAB'
 
     export default {
         data() {
@@ -265,6 +212,14 @@ import toastr from 'toastr'
                 coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
                 boardColorScale: d3.scale.ordinal().range([chartSpecs.boardChart.color]),
                 pageName: 'Officer Promotions',
+                /* FAB items */
+                bgColor: '#333333',
+                position: 'bottom-right', 
+                fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                             { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+                mainIcon: 'plus'
             }
         },
         computed: {
@@ -276,7 +231,7 @@ import toastr from 'toastr'
           },
           ylabel: function() {
             if (this.selected === "percent") {
-                return "(%)"
+                return "%"
             }
             else if (this.selected === "sel") {
                 return "Selects"
@@ -369,14 +324,61 @@ import toastr from 'toastr'
           toProperCase: function(s) {
             return s.toLowerCase().replace(/^(.)|\s(.)/g, 
                 function($1) { return $1.toUpperCase(); });
-          } 
+          },
+          fabDownload: function(){
+              var data = this.downloadDim.top(Infinity)
+              var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"})
+
+              var myFilters = ''
+              dc.chartRegistry.list().forEach((d)=>{
+                  if (d.filters()[0])
+                      myFilters += ' (' + d.filters() + ')'
+              })
+
+              FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
+          },
+          fabFilter: function(){
+                //Curent Filters button
+                var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+                dc.chartRegistry.list().forEach((d)=>{                    
+                //console.log("d.filter(): "+d.filter())
+                if (d.hasFilter()) {
+                    //console.log(d.anchor(), d.filters())
+                    myFilters += '\n (' + d.filters() + ')'
+                } 
+                })
+                if (myFilters !== undefined) {                  
+                var counterVars = selRate.innerText.substr(0, selRate.innerText.length-1);
+                console.log("counterVars.value: "+counterVars);
+                // Override global options
+                  toastr.options = {
+                    "positionClass": "toast-bottom-full-width",
+                    "closeButton":"true",
+                    "preventDuplicates":"true"
+                  }
+                  if (counterVars == 0) {
+                    toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                  }
+                  else if (counterVars == 1) {
+                    myFilters += ' return ' + counterVars + this.ylabel + ' result.'
+                    toastr.info(myFilters);                         
+                  }
+                  else {
+                    myFilters += ' return ' + counterVars + this.ylabel + ' results.'
+                    toastr.info(myFilters);  
+                  }                      
+                }
+                if (myFilters == 'undefined' || myFilters == undefined) {
+                    toastr.error('Something went wrong. Please reset and try again.')
+                }
+          }    
         },
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            largeBarChart,
             overviewBarChart,
-            FontAwesomeIcon
+            FontAwesomeIcon,
+            fab
         },
         created: function(){
           console.log('created')
@@ -685,52 +687,6 @@ import toastr from 'toastr'
                     .ordering(function(d){
                       return pmeMethodOrder[d.key]
                     })                                    
-                
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
-
-                    dc.chartRegistry.list().forEach((d)=>{                                        
-                    if (d.hasFilter()) {
-                        myFilters += '\n (' + d.filters() + ')'
-                    } 
-                    })
-                    if (myFilters !== undefined) {
-                      var counterVars = selRateND;
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (counterVars.value() == 0) {
-                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
-                      }
-                      else  {
-                        myFilters += ' return a Promotion Rate of ' + counterVars.value() + '%.'
-                        toastr.info(myFilters);  
-                      }                      
-                    }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
-
-                //Download Raw Data button
-                d3.select('#download')
-                .on('click', ()=>{
-                    var data = this.downloadDim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
-
-                    var myFilters = '';
-                    dc.chartRegistry.list().forEach((d)=>{
-                        if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'
-                    })
-
-                    FileSaver.saveAs(blob, 'PERSTAT Officer_Promotion' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
@@ -764,7 +720,7 @@ import toastr from 'toastr'
     }
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="@/../node_modules/dc/dc.css"/>
+<style src="../../../node_modules/dc/dc.css"/>
 <style>
 #grade, #zone, #highestPme, #compCat, #recommend, #pmeMethod, #core, #board {
     margin-top: 1rem;

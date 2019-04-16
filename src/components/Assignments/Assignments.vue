@@ -3,7 +3,7 @@
         <div class="row">
             <h1 class="col">Assignments</h1>
             <div class="col-4 text-right" style="margin-top:15px;">
-                <span data-step="5" data-intro="The data on this page is current as of the date shown here.">
+                <span data-step="1" data-intro="The data on this page is current as of the date shown here.">
                         Data as of: 
                         <span style="font-weight:bold;color:#4d8bf9"> {{asDate}} </span>
                 </span>
