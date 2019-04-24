@@ -28,7 +28,7 @@
         <div role="alert" class="row mt-3">
 <!-- light secondary success info warning danger -->
             <div class="col">
-                <div class="card alert alert-dismissible alert-success">
+                <!--<div class="card alert alert-dismissible alert-success">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -47,8 +47,11 @@
                         The "Download Raw Data" Button allows you to save a file with the raw data we use to build the charts on this page.</h6>                                
                         <h6 class="row ml-3"><span data-v-da8e8336="" class="fab-main pointer fabulouso" style="background-color: rgb(47, 150, 180);" title="This is the Demo button, try it out on the interactive pages if you don't know where to start."><i data-v-da8e8336="" class="md-18 material-icons" style="font-size: 14px; height: 14px !important; width: 14px !important;"><svg data-v-da8e8336="" aria-hidden="true" data-prefix="fas" data-icon="eye" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-eye fa-w-18"><path data-v-da8e8336="" fill="currentColor" d="M569.354 231.631C512.969 135.949 407.81 72 288 72 168.14 72 63.004 135.994 6.646 231.631a47.999 47.999 0 0 0 0 48.739C63.031 376.051 168.19 440 288 440c119.86 0 224.996-63.994 281.354-159.631a47.997 47.997 0 0 0 0-48.738zM288 392c-75.162 0-136-60.827-136-136 0-75.162 60.826-136 136-136 75.162 0 136 60.826 136 136 0 75.162-60.826 136-136 136zm104-136c0 57.438-46.562 104-104 104s-104-46.562-104-104c0-17.708 4.431-34.379 12.236-48.973l-.001.032c0 23.651 19.173 42.823 42.824 42.823s42.824-19.173 42.824-42.823c0-23.651-19.173-42.824-42.824-42.824l-.032.001C253.621 156.431 270.292 152 288 152c57.438 0 104 46.562 104 104z" class=""></path></svg></i></span>&nbsp;The "Demo" Button allows you to observe important aspects on the particular page.</h6>
                         <h6 class="row ml-3"><span data-v-da8e8336="" class="fab-main pointer fabulouso" style="background-color: rgb(47, 150, 180);" title="This is the View current Filters button, try it out on the interactive pages to see what filters are being applied to the dataset."><i data-v-da8e8336="" class="md-18 material-icons" style="font-size: 14px; height: 14px !important; width: 14px !important;"><svg data-v-da8e8336="" aria-hidden="true" data-prefix="fas" data-icon="search-filters" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-search-filters fa-w-16"><path data-v-da8e8336="" fill="currentColor" d="M304 142 H112 C110 142 106 143 110 148 L170 202 V282 c0 7 3 15 10 19 l54 25 C235 325 253 324 250 307 V202 l54-54 C305 148 308 143 304 142zm170 365.7L476.7 505c-9.4 9.4-24.6 9.4-33.9 0L343 405.3c-4.5-4.5-7-10.6-7-17V372c-35.3 27.6-79.7 44-128 44C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208c0 48.3-6.4 92.7-44 128h16.3c6.4 0 12.5 2.5 17 7l99.7 99.7c9.3 9.4 9.3 24.6 0 34zM344 208c0-75.2-60.8-136-136-136S72 132.8 72 208s60.8 136 136 136 136-60.8 136-136z" class=""></path></svg></i></span>&nbsp;The "View current Filters" Button allows you to quickly see all applied filters on the respective page.</h6>
-                        </h4>   
-<!--                         <fab                            
+                        </h4>
+                                        
+                    </div>
+                </div>-->
+                <!--                         <fab                            
                             :position="position"
                             :bg-color="bgColor"
                             :actions="fabActions"
@@ -57,9 +60,7 @@
                             @demo="demo"
                             @showMyFilters="filter"
                             class="noselect"
-                        ></fab>   -->                                          
-                    </div>
-                </div>
+                        ></fab>   -->  
             </div>
         </div>
         
