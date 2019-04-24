@@ -225,16 +225,17 @@ import fab from '@/components/FAB'
 }
 
 .firstInLine {
-    width: 15px;
+    height: 20px;
+    width: 16px;
     left: 12px;
-    top: 8px;
+    top: 7px;
 }
 
 .nextInLine {
-  /*height: 14px;*/
-  /*width: 14px;*/
-  left: 12px;
-  top: 8px;    
+  height: 20px;
+  width: 16px;
+  left: 8px;
+  top: 10px;    
 }
 .material-icons {
   /*font-family: Material;*/
