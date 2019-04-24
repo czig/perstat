@@ -222,8 +222,8 @@ import fab from '@/components/FAB'
     top: -9px;
 }
 .makeItBigger {
-    height: 14px;
-    width: 14px;
+    height: 14px !important;
+    width: 14px !important;
 }
 .material-icons {
   /*font-family: Material;*/
