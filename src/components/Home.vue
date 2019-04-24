@@ -28,7 +28,7 @@
         <div role="alert" class="row mt-3">
 <!-- light secondary success info warning danger -->
             <div class="col">
-                <!--<div class="card alert alert-dismissible alert-success">
+                <div class="card alert alert-dismissible alert-success">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -50,7 +50,7 @@
                         </h4>
                                         
                     </div>
-                </div>-->
+                </div>
                 <!--                         <fab                            
                             :position="position"
                             :bg-color="bgColor"
