@@ -227,6 +227,8 @@ import fab from '@/components/FAB'
 
 .material-icons {
   /*font-family: Material;*/
+  height: 14px;
+  width: 14px;
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
