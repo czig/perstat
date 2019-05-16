@@ -447,11 +447,15 @@
     .fab-main .material-icons.main {
         opacity: 1;
         position: absolute;
+        top: 16px;
+        left: 20px;
     }
 
     .fab-main .material-icons.close {
         opacity: 0;
         position: absolute;
+        top:16px;
+        left:19px;
     }
 
     .fab-main .material-icons.main.rotate {
