@@ -28,13 +28,13 @@
                            <label class="custom-control-label" for="radio4">
                                 STP 
                             </label>
-                            <span class="h3 ml-2">
+                            <span class="ml-2">
                                 <span data-toggle="tooltip" 
                                       data-placement="top"
                                       title="Student, Trainee, and Personnel Hold.">
                                     <FontAwesomeIcon icon="info-circle"
-                                                     style="vertical-align: 3px"
-                                                     size="xs"
+                                                     style="vertical-align: -3px"
+                                                     size="lg"
                                                      >
                                     </FontAwesomeIcon>
                                 </span>
