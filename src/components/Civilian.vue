@@ -82,7 +82,7 @@
                         </div>
                     </div>
                 </div>
-                <overviewBarChart 
+                <multiOverBarChart 
                     :id="'majcom'"
                     :dimension="majcomDim"
                     :aspectRatio="chartSpecs.majcomChart.aspectRatio"
@@ -97,7 +97,7 @@
                     :colorScale="majcomColorScale"
                     :title="'MAJCOM'"
                     :loaded="loaded">
-                </overviewBarChart>
+                </multiOverBarChart>
                 <overviewBarChart 
                     :id="'loc'"
                     :dimension="locDim"
@@ -143,6 +143,7 @@ import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import toastr from 'toastr'
 import fab from '@/components/FAB'
+import multiOverBarChart from '@/components/multiOverBarChart'
 
     export default {
         data() {
@@ -312,7 +313,8 @@ import fab from '@/components/FAB'
             'loader': Loader,
             FontAwesomeIcon,
             overviewBarChart,
-            fab
+            fab,
+            multiOverBarChart
         },
         created: function(){
           console.log('created')
