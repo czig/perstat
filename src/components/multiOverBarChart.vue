@@ -75,23 +75,24 @@ Props:
                         @click="resetChart('dc-' + id + '-barchart')">
                     Reset Bottom
                 </button>
+                <div class="col-6">
+                    <label class="typo__label">Select {{ title }} dropdown</label>
+                    <multiselect v-model="keys"
+                             :options="keys"
+                             :multiple="true"
+                             :close-on-select="false"
+                             :clear-on-select="false"
+                             :preserve-search="true"
+                             :placeholder="'Pick' + title + 's'"
+                             label="name"
+                             track-by="name"
+                             :preselect-first="true">
+                        <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                    </multiselect>
+                </div>
             </h3>
-            <div>
-            	<label class="typo__label">Select {{ this.id }} dropdown</label>
-    			<multiselect v-model="filterArray"
-    			             :options="options"
-    			             :multiple="true"
-    			             :close-on-select="false"
-    			             :clear-on-select="false"
-    			             :preserve-search="true"
-    			             placeholder="Pick some"
-    			             label="name"
-    			             track-by="name"
-    			             :preselect-first="true">
-    			    <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
-    			</multiselect>
+
   			   	<div :id="'dc-overview' + this.id + '-barchart'">
-            	</div>
             </div>
         </div>
         <div :id="id" class="col-12">
