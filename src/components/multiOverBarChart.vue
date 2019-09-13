@@ -78,7 +78,7 @@ Props:
                 <h6 class="col-md-3 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
                     <multiselect v-model="id.selected"
-                             :options="filterArray"
+                             :options="options"
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
@@ -385,7 +385,7 @@ import Multiselect from 'vue-multiselect'
                 this.renderOverviewCharts()
             },
             renderOverviewCharts: function() {
-                var vm = this
+                var vm = this                
                 this.keys = this.overviewGroup.all().map(dc.pluck('key')).slice()
                 var overviewChart = dchelpers.getBrushBarChart(this.overviewConfig)
                 overviewChart
@@ -519,7 +519,7 @@ import Multiselect from 'vue-multiselect'
                         .style('text-anchor', 'end')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d) => {
-                            chart.filter(d) 
+                            chart.filter(d)
                             dc.redrawAll()
                         })
                     });
@@ -539,6 +539,7 @@ import Multiselect from 'vue-multiselect'
                 this.overviewChart.filter(dc.filters.RangedFilter(0,this.numBars-0.01)) 
                 this.overviewChart.redraw()                
                 this.overviewNormalChart.redraw()
+                this.options = overviewNormalChart
             },
             
         },
