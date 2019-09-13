@@ -77,8 +77,8 @@ Props:
                 </button>
                 <h6 class="col-md-3 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
-                    <multiselect v-model="id"
-                             :options="overviewNormalChart"
+                    <multiselect v-model="id.selected"
+                             :options="filterArray"
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
