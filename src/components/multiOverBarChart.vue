@@ -75,15 +75,15 @@ Props:
                         @click="resetChart('dc-' + id + '-barchart')">
                     Reset Bottom
                 </button>
-                <div class="col-6">
+                <h6 class="col-md-3 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
-                    <multiselect v-model="keys"
-                             :options="keys"
+                    <multiselect v-model="this.id"
+                             :options="overviewNormalChart.filter"
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
                              :preserve-search="true"
-                             :placeholder="'Pick' + title + 's'"
+                             :placeholder="'Pick ' + title + 's'"
                              label="name"
                              track-by="name"
                              :preselect-first="true">
