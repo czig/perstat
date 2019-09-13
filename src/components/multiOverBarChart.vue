@@ -78,7 +78,7 @@ Props:
                 <h6 class="col-md-3 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
                     <multiselect v-model="id.selected"
-                             :options="options"
+                             :options="this.filterArray"
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
@@ -539,7 +539,6 @@ import Multiselect from 'vue-multiselect'
                 this.overviewChart.filter(dc.filters.RangedFilter(0,this.numBars-0.01)) 
                 this.overviewChart.redraw()                
                 this.overviewNormalChart.redraw()
-                this.options = overviewNormalChart
             },
             
         },
