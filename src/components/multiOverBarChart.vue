@@ -78,7 +78,7 @@ Props:
                 <h6 class="col-md-3 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
                     <multiselect v-model="this.id"
-                             :options="overviewNormalChart.filter"
+                             :options="overviewNormalChart.this.filter"
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
