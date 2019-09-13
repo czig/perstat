@@ -89,7 +89,7 @@ Props:
                              :preselect-first="true">
                         <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                     </multiselect>
-                </div>
+                </h6>
             </h3>
 
   			   	<div :id="'dc-overview' + this.id + '-barchart'">
