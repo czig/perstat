@@ -75,10 +75,10 @@ Props:
                         @click="resetChart('dc-' + id + '-barchart')">
                     Reset Bottom
                 </button>
-                <h6 class="col-md-3 col-sm-6 col-12">
+                <h6 class="col-lg-4 col-md-6 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
                     <multiselect v-model="id.selected"
-                             :options="this.filterArray"
+                             :options="options"
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
@@ -520,6 +520,7 @@ import Multiselect from 'vue-multiselect'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d) => {
                             chart.filter(d)
+                            options.filter(d)
                             dc.redrawAll()
                         })
                     });
