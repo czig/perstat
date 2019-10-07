@@ -77,22 +77,29 @@ Props:
                 </button>
                 <h6 class="col-lg-4 col-md-6 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
-                    <multiselect v-model="id.selected"
-                             :options="options"
+                    <!-- v-model="filterArray.selected" lists the options with selected label in option list 
+                        :options="keys" majcom denominator 
+                        :label="keys.key" used to display a label on the options dropdown
+                        :track="keys.key" used to connect to other items on page
+                    -->
+                    <multiselect id="multiDrop"
+                             v-model="filterArray.selected" 
+                             :options="keys"
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
                              :preserve-search="true"
                              :placeholder="'Pick ' + title + 's'"
-                             label="name"
-                             track-by="name"
-                             :preselect-first="true">
+                             :label="keys.key"
+                             :track-by="keys.key"
+                             :preselect-first="true"
+                             >
                         <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                     </multiselect>
+                    <pre class="language-json"><code>{{ value  }}</code></pre>
                 </h6>
             </h3>
-
-  			   	<div :id="'dc-overview' + this.id + '-barchart'">
+  			<div :id="'dc-overview' + this.id + '-barchart'">
             </div>
         </div>
         <div :id="id" class="col-12">
@@ -118,6 +125,7 @@ import Multiselect from 'vue-multiselect'
                 rendered: false,
                 allSort: true,
                 keys: [],
+                value: [],
                 options: []
             }
         },
@@ -233,6 +241,13 @@ import Multiselect from 'vue-multiselect'
             }
         },
         methods: {
+            addTag (newTag) {
+                    const tag = {
+                      keys: newTag                    
+                }
+                this.options.push(tag)
+                this.filterArray.push(tag)
+            },
             resetChart: (id)=>{
               dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id
@@ -385,7 +400,8 @@ import Multiselect from 'vue-multiselect'
                 this.renderOverviewCharts()
             },
             renderOverviewCharts: function() {
-                var vm = this                
+                var vm = this           
+                this.options = this.overviewGroup.all().map(dc.pluck('key')).slice()     
                 this.keys = this.overviewGroup.all().map(dc.pluck('key')).slice()
                 var overviewChart = dchelpers.getBrushBarChart(this.overviewConfig)
                 overviewChart
@@ -520,7 +536,7 @@ import Multiselect from 'vue-multiselect'
                         .attr('transform', 'translate(-8,0)rotate(-45)')
                         .on('click', (d) => {
                             chart.filter(d)
-                            options.filter(d)
+                            this.options = chart.filter(d)
                             dc.redrawAll()
                         })
                     });

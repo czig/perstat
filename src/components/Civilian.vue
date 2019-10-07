@@ -278,7 +278,7 @@ import multiOverBarChart from '@/components/multiOverBarChart'
                 //console.log("d.filter(): "+d.filter())
                 //if (d.hasFilter()) {console.log("d.filter(): "+d.filters())}
                 if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewbase-barchart') {
-                    //console.log(d.anchor(), d.filters())
+                    console.log(d.anchor(), d.filters())
                     myFilters += '\n (' + d.filters() + ')'
                 } 
                 })
