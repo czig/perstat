@@ -56,11 +56,6 @@ Props:
                                      >
                     </FontAwesomeIcon>
                 </span>
-<!--                 <button :id="this.id + 'sortAll'"
-                        class="btn btn-primary btn-sm"
-                        @click="sortAll()">
-                    Sort 
-                </button> -->
                 <button type="button" 
                         class="btn btn-danger btn-sm btn-rounded reset" 
                         :id="'btn-overview-' + id + '-reset'"
@@ -72,33 +67,41 @@ Props:
                         :id="'btn-' + id + '-reset'"
                         class="btn btn-danger btn-sm btn-rounded reset" 
                         style="visibility: hidden"
-                        @click="resetChart('dc-' + id + '-barchart')">
+                        @click="resetMultiChart(id)">
+                        <!-- @click="resetMultiChart(id) -->
+                        <!--@click="resetChart('dc-' + id + '-barchart')"-->
                     Reset Bottom
                 </button>
                 <h6 class="col-lg-4 col-md-6 col-sm-6 col-12">
                     <label class="typo__label">Select {{ title }} dropdown</label>
-                    <!-- v-model="filterArray.selected" lists the options with selected label in option list 
+                    <!-- v-model="filterArray.selected" => (needs to be two-way binding to input) returns "value" array
+
+                        :placeholder="'Pick ' + title + ''"
                         :options="keys" majcom denominator 
                         :label="keys.key" used to display a label on the options dropdown
-                        :track="keys.key" used to connect to other items on page
-                    -->
-                    <multiselect id="multiDrop"
-                             v-model="filterArray.selected" 
-                             :options="keys"
+                        :track="keys.key" used to connect to other items on page => value.value
+                        pre filterArray.selected => value
                              :multiple="true"
                              :close-on-select="false"
                              :clear-on-select="false"
-                             :preserve-search="true"
-                             :placeholder="'Pick ' + title + 's'"
-                             :label="keys.key"
-                             :track-by="keys.key"
-                             :preselect-first="true"
-                             >
+                    -->
+                    <multiselect 
+                             :id="'multi-' + id + '-select'"
+                             v-model="value" 
+                             :options="keys"
+                             :searchable="false"
+                             :allow-empty="true"
+                             :close-on-select="true"
+                             :placeholder="'Pick ' + title + ''"
+                             :label="options"
+                             :track-by="options"             
+                             :@click="renderDropdowns('dc-' + id + '-barchart',multiLabels)">
                         <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                     </multiselect>
-                    <pre class="language-json"><code>{{ value  }}</code></pre>
+                    <!--<pre class="language-json"><code>{{  value  }}</code></pre>-->
                 </h6>
             </h3>
+            <div :id="'dc-' + this.id + '-select'"></div>
   			<div :id="'dc-overview' + this.id + '-barchart'">
             </div>
         </div>
@@ -126,7 +129,7 @@ import Multiselect from 'vue-multiselect'
                 allSort: true,
                 keys: [],
                 value: [],
-                options: []
+                options: null
             }
         },
         props: {
@@ -203,7 +206,7 @@ import Multiselect from 'vue-multiselect'
             orderBy: {
                 type: String,
                 required: false,
-            }
+            },            
         },
         computed: {
             overviewGroup: function() {
@@ -233,6 +236,12 @@ import Multiselect from 'vue-multiselect'
                     'colors': this.colorScale,
                 }
             },
+            resetVal: function() {
+                return this.value = ''
+            },
+            multiLabels: function() {
+                return this.value || ''
+            },
             sortedBy: function() {
                 return this.sortBy || 'value';
             },
@@ -240,14 +249,7 @@ import Multiselect from 'vue-multiselect'
                 return this.orderBy || 'desc';
             }
         },
-        methods: {
-            addTag (newTag) {
-                    const tag = {
-                      keys: newTag                    
-                }
-                this.options.push(tag)
-                this.filterArray.push(tag)
-            },
+        methods: {          
             resetChart: (id)=>{
               dc.chartRegistry.list().filter(chart=>{
                 return chart.anchorName() == id
@@ -255,6 +257,70 @@ import Multiselect from 'vue-multiselect'
                 chart.filterAll()
               })
               dc.redrawAll()
+            },
+            resetMultiChart: (id)=>{
+              dc.chartRegistry.list().filter(chart=>{
+                return chart.anchorName() == 'dc-'+id+'-barchart'
+              }).forEach(chart=>{
+                chart.filterAll()
+              })
+
+              //add enter class
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-enter', true)
+
+              //add inner active class
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-enter-active', true)
+              //adjust style
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').style('display', 'block')
+
+              //toggle multiselect active
+              //d3.select('#overview' + id + ' div.multiselect').classed('multiselect--active', true)       
+              
+              //pseudoclass
+              //remove one class
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-enter', false)               
+              //add one class
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-enter-to', true)
+
+              //remove two classes
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-enter-active', false)              
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-enter-to', false)
+// comment out above
+
+              // halfway point               
+              //remove active
+              //d3.select('#overview' + id + ' .multiselect').classed('multiselect--active', false)  
+
+// comment out below
+              //add two classes      
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-leave', true)
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-leave-active', true)    
+
+             //remove one class
+             //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-leave', false)    
+             //add one class
+             //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-leave-to', true)  
+
+// comment out above
+
+              //remove selected
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper ul li span.multiselect__option.multiselect__option--selected').classed('multiselect__option--selected',false)
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper ul li span.multiselect__option.multiselect__option--highlight').classed('multiselect__option--highlight',false)
+
+              
+
+              //d3.select("'multi-' + id + '-select'").placeholder = "'Pick '+id "
+
+
+// comment out below
+              //remove two classes            
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-leave-active', false)  
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').classed('multiselect-leave-to', false)
+
+              //adjust style  
+              //d3.select('#overview' + id + ' div.multiselect div.multiselect__content-wrapper').style('display', 'none') 
+// comment out above
+              dc.redrawAll()             
             },
             //remove empty function (es6 syntax to keep correct scope)
             removeEmptyBins: function(source_group) {
@@ -371,10 +437,7 @@ import Multiselect from 'vue-multiselect'
                  d3.select("#" + this.id + "level")
                      .style("visibility","hidden");
                  // enable slider
-                 this.sliderDisabled = !all 
-                 //enable sort
-                 d3.select("#" + this.id + "sortAll")
-                    .property("disabled",false);
+                 this.sliderDisabled = !all                  
                  this.filters = []
                  this.dimension.filterAll()
                  this.level = 0
@@ -390,19 +453,72 @@ import Multiselect from 'vue-multiselect'
                 var nextVal = this.nextData.map(d => d.value)
                 this.data = this.data.filter(d => (d.value[this.selected] === undefined ? d.value : d.value[this.selected]) != 0)
             },
-            sortAll: function() {
-                this.allSort = !this.allSort
-                //key function for accessing key properties in data
-                var key = function(d) {
-                    return d.key;
-                }                
-                this.updateData()
-                this.renderOverviewCharts()
+            renderDropdowns: (id, value)=>{              
+              //console.log('start') 
+              dc.chartRegistry.list().forEach((d)=>{
+                if (d.anchorName() == id) {
+                    d.filter(null)                    
+                    if (value !== null || typeof(value) !== 'null') {
+                        let myDropdownArr = value
+                        //console.log('dropDown: '+ myDropdownArr)
+                        if (value.length > 0) {  
+                            return d.filter(value)
+                        } 
+                        //else if (value.length <= 0 || typeof(value) == 'null') {
+                        //    return d.filter(null)
+                        //}   
+                    } else {
+                        //console.log('val equals null')
+                        resetChart(d)                 
+                        resetChart('multi-'+id+'-select')      
+                        return d.filter(null)
+                    }
+                } 
+              });
+                // //Identify existing filters
+                // if (chart.hasFilter()) {
+                //     myFilters = Array.from(chart.filters())
+                //     console.log('normalChart has filter: '+myFilters)
+                //     myDropdownArr.forEach((d) => {
+                //         console.log('myDropDownArr: '+d)
+                //         if (myFilters.includes(d)) {
+                //             myFilters.pop(d)
+                //             console.log('Value removed. myFilters: '+myFilters)
+                //             return chart.filter(myFilters)
+                //         } else if (!myFilters.includes(d)) {
+                //             myFilters.push(d)
+                //             myFilters.sort()
+                //             console.log('Value added. myFilters: '+myFilters)
+                //             return chart.filter(myFilters)
+                //         }                        
+                //         //this should apply my filters into the chart filter
+                //         //return chart.filter([myFilters])  
+                //     })   
+                    
+                // } else if (!chart.hasFilter() && myDropdownArr.length > 0) {
+                //     myDropdownArr.forEach((d) => {
+                //         console.log(d)
+                //         myFilters.push(d)
+                //         myFilters.sort()
+                //         console.log('no hasfilters & dropdown.length >0 '+myFilters)     
+                                           
+                //         return chart.filter(myFilters)
+                //     })  
+                   
+              //   } else {
+              //       console.log('None of the above criteria occurred')
+              //       return chart.filter(null)
+              //   }
+              //   console.log('myFilters @ end: '+myFilters)
+                
+              // })    
+              //console.log('end')
+              dc.redrawAll()
             },
-            renderOverviewCharts: function() {
-                var vm = this           
-                this.options = this.overviewGroup.all().map(dc.pluck('key')).slice()     
+            renderOverviewCharts: function() {                               
+                var vm = this                               
                 this.keys = this.overviewGroup.all().map(dc.pluck('key')).slice()
+
                 var overviewChart = dchelpers.getBrushBarChart(this.overviewConfig)
                 overviewChart
                     .controlsUseVisibility(true)
@@ -534,12 +650,14 @@ import Multiselect from 'vue-multiselect'
                         chart.selectAll('g.x text')
                         .style('text-anchor', 'end')
                         .attr('transform', 'translate(-8,0)rotate(-45)')
-                        .on('click', (d) => {
-                            chart.filter(d)
-                            this.options = chart.filter(d)
-                            dc.redrawAll()
+                        .on('click', (d) => {   
+                          //console.log(d)                                                     
+                           chart.filter(d)                           
+                           dc.redrawAll()
                         })
                     });
+
+
                 //override turnOnControls and turnOffControls for bottom bar chart to allow reset button to be shown in first chart header
                 overviewNormalChart.turnOnControls = function() {
                     d3.select('#btn-'+vm.id+'-reset').style('visibility','visible');
@@ -556,8 +674,21 @@ import Multiselect from 'vue-multiselect'
                 this.overviewChart.filter(dc.filters.RangedFilter(0,this.numBars-0.01)) 
                 this.overviewChart.redraw()                
                 this.overviewNormalChart.redraw()
+
+                // create a select menu
+                // var selDim = overviewNormalChart,
+                //     selGroup = selDim.group()
+                // var selectMenu = dc.selectMenu('#dc-' + vm.id + '-select')
+                //   .dimension(selDim)
+                //   .group(selGroup)
+                //   .title((d)=>{
+                //      return d.key
+                //   })
+                //dc.renderAll();
+                //
+
             },
-            
+
         },
         watch: {
             //render charts once loaded changes from false to true

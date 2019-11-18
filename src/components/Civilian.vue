@@ -277,14 +277,14 @@ import multiOverBarChart from '@/components/multiOverBarChart'
                 dc.chartRegistry.list().forEach((d)=>{                    
                 //console.log("d.filter(): "+d.filter())
                 //if (d.hasFilter()) {console.log("d.filter(): "+d.filters())}
-                if (d.hasFilter() && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewbase-barchart') {
-                    console.log(d.anchor(), d.filters())
+                if (d.hasFilter() && d.anchor()!='#multi-majcom-select' && d.anchor()!='#dc-overviewmajcom-barchart' && d.anchor()!='#dc-overviewbase-barchart') {
+                    //console.log(d.anchor(), d.filters())
                     myFilters += '\n (' + d.filters() + ')'
                 } 
                 })
                 if (myFilters !== undefined) {
                   var counterVars = inv.innerText;
-                console.log("counterVars.value: "+counterVars);
+                  //console.log("counterVars.value: "+counterVars);
                 // Override global options
                   toastr.options = {
                     "positionClass": "toast-bottom-full-width",
