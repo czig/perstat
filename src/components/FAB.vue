@@ -20,7 +20,7 @@
                                     ref="actions">
                                     <i :class="[ actionIconSize ,'material-icons']">
                                         <FontAwesomeIcon :icon="action.icon" 
-                                         :size="iconSize">
+                                         :size="action.iconSize">
                                         </FontAwesomeIcon>
                                     </i>
                                 </li>
@@ -30,7 +30,7 @@
                                     @click="toParent(action.name)" class="pointer">
                                     <i :class="[ actionIconSize ,'material-icons']">
                                     <FontAwesomeIcon :icon="action.icon" 
-                                         :size="iconSize">
+                                         :size="action.iconSize">
                                     </FontAwesomeIcon>
                                     </i>
                                 </li>
@@ -447,11 +447,15 @@
     .fab-main .material-icons.main {
         opacity: 1;
         position: absolute;
+        top: 16px;
+        left: 20px;
     }
 
     .fab-main .material-icons.close {
         opacity: 0;
         position: absolute;
+        top:16px;
+        left:19px;
     }
 
     .fab-main .material-icons.main.rotate {

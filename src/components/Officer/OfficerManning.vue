@@ -4,7 +4,7 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col" data-step="1" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
+                    <div id="radioSelect" class="col-auto" data-step="3" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="percent" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
@@ -28,78 +28,45 @@
                            <label class="custom-control-label" for="radio4">
                                 STP 
                             </label>
-                            <span class="h3 ml-2">
+                            <span class="ml-2">
                                 <span data-toggle="tooltip" 
                                       data-placement="top"
                                       title="Student, Trainee, and Personnel Hold.">
                                     <FontAwesomeIcon icon="info-circle"
-                                                     style="vertical-align: 3px"
-                                                     size="xs"
+                                                     style="vertical-align: -3px"
+                                                     size="lg"
                                                      >
                                     </FontAwesomeIcon>
                                 </span>
                             </span>                            
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <button type="button" id="demo"
-                            class="btn btn-info btn-rounded btn-sm waves-effect"
-                            title="Demo"
-                            @click="startDemo">
-                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
-                            <FontAwesomeIcon icon="eye" 
-                                            size="lg">
-                            </FontAwesomeIcon>
-                            
-                        </button>
-                        <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="7" data-intro="See the currently applied filters here!"
-                                title="View Current Filter(s)">
-                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="search-filters" 
-                                         size="lg">                                              
-                        </FontAwesomeIcon>
-                        </button> 
-                        <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="6" data-intro="Download data in tabular form here!"
-                                title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>
-                        <FontAwesomeIcon icon="download" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                data-step="4" data-intro="Click here to reset filters on all charts."
-                                title="Reset All"
-                                @click="resetAll">
-                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>
-                        <FontAwesomeIcon icon="redo-alt" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>                        
+                    <div class="col"></div>
+                    <div class="col-auto">                   
                     </div>
                 </div>
-                <div id="counts" class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
-                    <div class="col-auto">
-                        Assigned:
-                        <span id="asgn"></span>
+                <div class="row pt-2"> 
+                    <div id="counts" class="row col-auto" data-step="4" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
+                        <div class="col-auto">
+                            Assigned:
+                            <span id="asgn"></span>
+                        </div>
+                        <div class="col-auto">
+                            STP:
+                            <span id="stp"></span>
+                        </div>
+                        <div class="col-auto">
+                            Authorized:
+                            <span id="auth"></span>
+                        </div>
+                        <div class="col-auto">
+                            Manning Percent:
+                            <span id="percent"></span>
+                        </div>
                     </div>
-                    <div class="col-auto">
-                        STP:
-                        <span id="stp"></span>
-                    </div>
-                    <div class="col-auto">
-                        Authorized:
-                        <span id="auth"></span>
-                    </div>
-                    <div class="col-auto">
-                        Manning Percent:
-                        <span id="percent"></span>
-                    </div>
+                    <div class="row col"></div>
                 </div>
+                
                 <overviewBarChart 
                     :id="'majcom'"
                     :dimension="majcomDim"
@@ -119,7 +86,7 @@
                 </overviewBarChart>
                 <div class="row">
                     <div id="grade" class="col-md-4 col-sm-6 col-12">
-                        <div id="dc-grade-rowchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
+                        <div id="dc-grade-rowchart" data-step="5" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Grade <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
@@ -162,6 +129,18 @@
                 </div>
             </div>
         </transition-group>
+        <fab
+            data-step="2"
+            data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
+            :position="position"
+            :bg-color="bgColor"
+            :actions="fabActions"
+            @reset="resetAll"
+            @download="fabDownload"
+            @demo="startDemo"
+            @showMyFilters="fabFilter"
+            class="noselect"
+        ></fab>         
     </div>
 </template>
 
@@ -173,11 +152,10 @@ import formats from '@/store/format'
 import AutoComplete from '@/components/AutoComplete'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
-import searchBox from '@/components/searchBox'
-import largeBarChart from '@/components/largeBarChart'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import toastr from 'toastr'
+import fab from '@/components/FAB'
 
     export default {
         data() {
@@ -192,6 +170,15 @@ import toastr from 'toastr'
                 baseColorScale: d3.scale.ordinal().range([chartSpecs.baseChart.color]),
                 pageName: 'Officer Manning',
                 afscGroupChart: {},
+                /* FAB items */
+                bgColor: '#333333',
+                position: 'bottom-right',  
+                iconSize: 'md',        
+                fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                             { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+                mainIcon: 'plus'
             }
         },
         computed: {
@@ -373,6 +360,66 @@ import toastr from 'toastr'
                 }
                 return output;
             },
+            fabDownload: function(){
+                var data = this.downloadDim.top(Infinity)
+                var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"})
+
+                var myFilters = ''
+                dc.chartRegistry.list().forEach((d)=>{
+                    if (d.filters()[0])
+                        myFilters += ' (' + d.filters() + ')'
+                })
+
+                FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
+            },
+            fabFilter: function(){
+                //Curent Filters button
+                var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+                dc.chartRegistry.list().forEach((d)=>{                    
+                //console.log("d.filter(): "+d.filter())
+                if (d.hasFilter()) {
+                    //console.log(d.anchor(), d.filters())
+                    myFilters += '\n (' + d.filters() + ')'
+                } 
+                })
+                if (myFilters !== undefined) {
+                    var myCheckValue = '0';
+                    
+                    if (this.selected == "asgn") {
+                        var asgn = this.ndx.groupAll().reduceSum(function(d) { return +d.Assigned})
+                        myCheckValue = asgn.value() };
+                    if (this.selected == "stp") { 
+                        var stp = this.ndx.groupAll().reduceSum(function(d) { return +d.STP})
+                        myCheckValue = stp.value() };
+                    if (this.selected == "auth") { 
+                        var auth = this.ndx.groupAll().reduceSum(function(d) { return +d.Authorized })
+                        myCheckValue = auth.value() };
+                    if (this.selected == "percent") { 
+                        myCheckValue = percent.innerText.substr(0, percent.innerText.length-1) };
+                //console.log("myCheckvalue: "+ myCheckValue );
+                // Override global options
+                  toastr.options = {
+                    "positionClass": "toast-bottom-full-width",
+                    "closeButton":"true",
+                    "preventDuplicates":"true"
+                  }
+                  if (myCheckValue == '0.0%' || myCheckValue == 0 ) {
+                    toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                  }
+                  else if (myCheckValue == '1') {
+                    myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
+                    toastr.info(myFilters);                         
+                  }
+                  else {
+                    myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
+                    toastr.info(myFilters);  
+                  }                      
+                }
+                if (myFilters == 'undefined' || myFilters == undefined) {
+                    toastr.error('Something went wrong. Please reset and try again.')
+                }
+
+            }, 
             renderCharts: function () {
 
                 //Number Display for Auth, Asgn, STP - show total for filtered content
@@ -438,62 +485,6 @@ import toastr from 'toastr'
                     })
                 this.afscGroupChart = afscGroupChart
 
-                //Curent Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
-
-                    dc.chartRegistry.list().forEach((d)=>{ 
-                                       
-                    if (d.hasFilter()) {
-                        myFilters += '\n (' + d.filters() + ')'
-                    } 
-                    })
-                    if (myFilters !== undefined) {
-                        var myCheckValue = '0';
-                        if (this.selected == "asgn") { myCheckValue = asgn.value() };
-                        if (this.selected == "stp") { myCheckValue = stp.value() };
-                        if (this.selected == "auth") { myCheckValue = auth.value() };
-                        if (this.selected == "percent") { myCheckValue = percent.innerText.substr(0, percent.innerText.length-1) };
-                        //console.log("myCheckvalue: "+ myCheckValue );
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (myCheckValue == '0.0%' || myCheckValue == 0 ) {
-                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
-                      }
-                      else if (myCheckValue == '1') {
-                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
-                        toastr.info(myFilters);                         
-                      }
-                      else {
-                        myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
-                        toastr.info(myFilters);  
-                      }                      
-                    }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
-                  
-                //Download Raw Data button
-                d3.select('#download')
-                .on('click', ()=>{
-                    var data = this.downloadDim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});
-
-                    var myFilters = '';
-                    dc.chartRegistry.list().forEach((d)=>{
-                        if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'
-                    })
-
-                    FileSaver.saveAs(blob, 'PERSTAT Officer_Manning' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });
-
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {
                     dc.redrawAll()
@@ -515,10 +506,9 @@ import toastr from 'toastr'
         components: {
             'autocomplete': AutoComplete,
             'loader': Loader,
-            searchBox,
             FontAwesomeIcon,
-            largeBarChart,
-            overviewBarChart
+            overviewBarChart,
+            fab
         },
         created: function(){
         },
@@ -560,7 +550,7 @@ import toastr from 'toastr'
     }
 </script>
 <style src="../../../node_modules/toastr/build/toastr.css"/>
-<style src="@/../node_modules/dc/dc.css"/>
+<style src="../../../node_modules/dc/dc.css"/>
 <style>
 #counts, #majcom, #grade, #afscGroup, #mpf {
     margin-top: 1rem;

@@ -96,7 +96,6 @@ import axios from 'axios'
 import formats from '@/store/format'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
-import searchBox from '@/components/searchBox'
 import overviewBarChart from '@/components/overviewBarChart'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import toastr from 'toastr'
@@ -317,7 +316,6 @@ import fab from '@/components/FAB'
 
                 FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');                
             },
-
             fabFilter: function(){
                 //Curent Filters button
                 var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
@@ -423,7 +421,6 @@ import fab from '@/components/FAB'
         },
         components: {
             'loader': Loader,
-            searchBox,
             FontAwesomeIcon,
             overviewBarChart,
             fab

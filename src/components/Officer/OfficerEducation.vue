@@ -5,7 +5,7 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2" >
-                    <div id="radioSelect" class="col-7" data-step="1" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
+                    <div id="radioSelect" class="col-auto" data-step="3" data-intro="Toggle the radio buttons to change the data element being shown in the charts.">
                         <div class="custom-control custom-radio custom-control-inline">
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="totalCount" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
@@ -37,70 +37,37 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-5" align="right">
-                        <button type="button" id="demo"
-                            class="btn btn-info btn-rounded btn-sm waves-effect"
-                            title="Demo"
-                            @click="startDemo">
-                            <p class="d-none d-md-inline">Demo&nbsp;&nbsp;</p>  
-                            <FontAwesomeIcon icon="eye" 
-                                            size="lg">
-                            </FontAwesomeIcon>
-                            
-                        </button>
-
-                        <button type="button" id="showMyFilters"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="7" data-intro="See the currently applied filters here!"
-                                title="Filter">
-                        <p class="d-none d-md-inline">View Filters&nbsp;&nbsp;</p>   
-                        <FontAwesomeIcon icon="search-filters" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button> 
-                        <button type="button" id="download"
-                                class="btn btn-info btn-rounded btn-sm waves-effect"
-                                data-step="6" data-intro="Download data in tabular form here!"
-                                title="Download Raw Data">
-                        <p class="d-none d-md-inline">Download&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="download" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                data-step="4" data-intro="Click here to reset filters on all charts." 
-                                title="Reset All"
-                                @click="searchCore='';resetAll()">
-                        <p class="d-none d-md-inline">Reset All&nbsp;&nbsp;</p>  
-                        <FontAwesomeIcon icon="redo-alt" 
-                                         size="lg">
-                        </FontAwesomeIcon>
-                        </button>
-                    </div>    
+                    <div class="col"></div>
+                    <div class="col-auto">                   
+                    </div>   
                 </div>       
                 <div class="row"></div>
-                <div class="row" data-step="2" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
-                    <div class="col-auto">
-                        Total:
-                        <span id="totalCount"></span>
-                    </div>
-                    <div class="col-auto">
-                        STEM:
-                        <span id="stemTotal"></span>
-                    </div>
-                    <div class="col-auto">
-                        Non-STEM:
-                        <span id="nonStemTotal"></span>
-                    </div>   
-                    <div class="col-auto">
-                        Percent STEM:
-                        <span id="percentStem"></span>
-                    </div>
-                    <div class="col-auto">
-                        Percent Non-STEM:
-                        <span id="percentNonStem"></span>
-                    </div>   
+                <div class="row">
+                  <div class="row col-auto" data-step="4" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
+                      <div class="col-auto">
+                          Total:
+                          <span id="totalCount"></span>
+                      </div>
+                      <div class="col-auto">
+                          STEM:
+                          <span id="stemTotal"></span>
+                      </div>
+                      <div class="col-auto">
+                          Non-STEM:
+                          <span id="nonStemTotal"></span>
+                      </div>   
+                      <div class="col-auto">
+                          Percent STEM:
+                          <span id="percentStem"></span>
+                      </div>
+                      <div class="col-auto">
+                          Percent Non-STEM:
+                          <span id="percentNonStem"></span>
+                      </div>
+                  </div>
+                  <div class="col"></div>
+                  <div class="col-auto">   
+                  </div>  
                 </div>
                 <div class='row'>
                     <div id="offgroup" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
@@ -126,7 +93,7 @@
                         </div>
                     </div> 
                     <div id="edlevel" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
-                        <div id="dc-edlevel-barchart" data-step="3" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
+                        <div id="dc-edlevel-barchart" data-step="5" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3>Highest Edu Level <span style="font-size: 14pt; opacity: 0.87">{{ ylabel }}</span>
                             <button type="button"
                                     class="btn btn-danger btn-sm btn-rounded reset"
@@ -137,24 +104,6 @@
                         </div>
                     </div>
                 </div>
-<!--                 <largeBarChart :id="'yrgp'"         
-                               :dimension="yrgpDim"
-                               :group="removeError(yrgpGroup)"
-                               :widthFactor="0.90"
-                               :aspectRatio="4"
-                               :minHeight="200"
-                               :ylabel="ylabel"
-                               :selected="selected"
-                               :reducer="edAddLarge"
-                               :accumulator="edInitialLarge"
-                               :numBars="30"
-                               :margin="chartSpecs.yrgpChart.margins"
-                               :colorScale="yrgpColorScale"
-                               :title="'Year Group'"
-                               :loaded="loaded"
-                               :sortBy="'key'"
-                               :orderBy="'desc'">
-                </largeBarChart> -->
                 <overviewBarChart 
                     :id="'yrgp'"
                     :dimension="yrgpDim"
@@ -174,23 +123,6 @@
                     :orderBy="'desc'"
                     >
                 </overviewBarChart>
-
-<!--                 <largeBarChart :id="'core'"         
-                               :dimension="coreDim"
-                               :group="removeError(coreGroup)"
-                               :ylabel="ylabel"
-                               :selected="selected"
-                               :widthFactor="0.90"
-                               :aspectRatio="4"
-                               :minHeight="200"
-                               :reducer="edAddLarge"
-                               :accumulator="edInitialLarge"
-                               :numBars="30"
-                               :margin="chartSpecs.coreChart.margins"
-                               :colorScale="coreColorScale"
-                               :title="'Core'"
-                               :loaded="loaded">
-                </largeBarChart> -->
                 <overviewBarChart 
                     :id="'core'"
                     :dimension="coreDim"
@@ -210,7 +142,19 @@
                     >
                 </overviewBarChart>                
              </div>    
-        </transition-group>    
+        </transition-group>
+        <fab
+            data-step="2"
+            data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
+            :position="position"
+            :bg-color="bgColor"
+            :actions="fabActions"
+            @reset="resetAll"
+            @download="fabDownload"
+            @demo="startDemo"
+            @showMyFilters="fabFilter"
+            class="noselect"
+        ></fab>  
 	</div>
 </template>
 
@@ -220,13 +164,12 @@
 	import axios from 'axios'
 	import formats from '@/store/format'
 	import AutoComplete from '@/components/AutoComplete'
-	import searchBox from '@/components/searchBox'
 	import Loader from '@/components/Loader'
 	import { store } from '@/store/store'
-  import largeBarChart from '@/components/largeBarChart'
   import overviewBarChart from '@/components/overviewBarChart'    
-  import toastr from "toastr"
   import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+  import toastr from 'toastr'
+  import fab from '@/components/FAB'  
 
 	export default {
 		data() {
@@ -239,7 +182,16 @@
           chartSpecs: chartSpecs,
           coreColorScale: d3.scale.ordinal().range([chartSpecs.coreChart.color]),
           yrgpColorScale: d3.scale.ordinal().range([chartSpecs.yrgpChart.color]),
-          pageName: 'Officer Education',                    
+          pageName: 'Officer Education', 
+          /* FAB items */
+          bgColor: '#333333',
+          position: 'bottom-right',  
+          iconSize: 'md',        
+          fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                       { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                       { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                       { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+          mainIcon: 'plus'                             
 			}
 		},
 
@@ -259,6 +211,9 @@
       coreGroup: function() {
           return this.coreDim.group().reduce(this.edAdd,this.edRemoveLarge,this.edInitial)
       },
+      downloadDim: function() {
+          return this.ndx.dimension(function(d) {return d;});    
+      }, 
       yrgpDim: function() {
           return this.ndx.dimension(function(d) {
             return d.yrgp;
@@ -355,16 +310,70 @@
           toProperCase: function(s) {
             return s.toLowerCase().replace(/^(.)|\s(.)/g, 
                 function($1) { return $1.toUpperCase(); });
+          },
+          fabDownload: function(){
+              var data = this.downloadDim.top(Infinity)
+              var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"})
+
+              var myFilters = ''
+              dc.chartRegistry.list().forEach((d)=>{
+                  if (d.filters()[0])
+                      myFilters += ' (' + d.filters() + ')'
+              })
+
+              FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
+          },
+          fabFilter: function(){
+              //Curent Filters button
+              var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+              dc.chartRegistry.list().forEach((d)=>{                    
+              //console.log("d.filter(): "+d.filter())
+              if (d.hasFilter() && d.anchor()!='#dc-overviewyrgp-barchart' && d.anchor()!='#dc-overviewcore-barchart') {
+                  //console.log(d.anchor(), d.filters())
+                  myFilters += '\n (' + d.filters() + ')'
+              } 
+              })
+              if (myFilters !== undefined) {
+                  var myCheckValue = '0';
+                    
+                  if (this.selected == "totalCount") { myCheckValue = totalCount.innerText }
+                  if (this.selected == "stem") { myCheckValue = stemTotal.innerText }
+                  if (this.selected == "nonStem") { myCheckValue = nonStemTotal.innerText }
+                  if (this.selected == "stemPercent") { 
+                      myCheckValue = percentStem.innerText.substr(0, percentStem.innerText.length-1) };
+                  if (this.selected == "nonStemPercent") { 
+                      myCheckValue = percentNonStem.innerText.substr(0, percentNonStem.innerText.length-1) };                      
+              //console.log("myCheckvalue: "+ myCheckValue );
+              // Override global options
+                toastr.options = {
+                  "positionClass": "toast-bottom-full-width",
+                  "closeButton":"true",
+                  "preventDuplicates":"true"
+                }
+                if (myCheckValue == '0.0%' || myCheckValue == 0 ) {
+                  toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                }
+                else if (myCheckValue == '1') {
+                  myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
+                  toastr.info(myFilters);                         
+                }
+                else {
+                  myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
+                  toastr.info(myFilters);  
+                }                      
+              }
+              if (myFilters == 'undefined' || myFilters == undefined) {
+                  toastr.error('Something went wrong. Please reset and try again.')
+              }
           }
 		},
 
 		components: {
 			'AutoComplete': AutoComplete,
       'Loader': Loader,
-      searchBox,
-      largeBarChart,
       overviewBarChart,
-      FontAwesomeIcon
+      FontAwesomeIcon,
+      fab
 		},
 
 		created: function() { 
@@ -577,62 +586,6 @@
                     .ordering(function(d){
                       return formats.gradeOrder[d.key]                      
                     })  
-
-                //Current Filters button
-                d3.select('#showMyFilters')
-                  .on('click', ()=>{
-                    var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
-
-                    dc.chartRegistry.list().forEach((d)=>{ 
-
-                    if (d.hasFilter() && d.anchor()!='#dc-overviewyrgp-barchart' && d.anchor()!='#dc-overviewcore-barchart') {
-                        myFilters += '\n (' + d.filters() + ')'
-                    } 
-                    })
-                    if (myFilters !== undefined) {
-                        var myCheckValue = 0;
-                        if (this.selected == "totalCount") {myCheckValue = totalCountND.value; };
-                        if (this.selected == "stem") { myCheckValue = stemTotalND.value };
-                        if (this.selected == "nonStem") { myCheckValue = nonStemTotalND.value };
-                        if (this.selected == "stemPercent") { myCheckValue = percentStemND.value };
-                        if (this.selected == "nonStemPercent") { myCheckValue = percentNonStemND.value };
-                      // Override global options
-                      toastr.options = {
-                        "positionClass": "toast-bottom-full-width",
-                        "closeButton":"true",
-                        "preventDuplicates":"true"
-                      }
-                      if (myCheckValue() == '0.0%' || myCheckValue() == 0 ) {
-                        toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
-                      }
-                      else if (myCheckValue() == '1') {
-                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' result.'
-                        toastr.info(myFilters);                         
-                      }
-                      else {
-                        myFilters += ' return ' + myCheckValue() + ' ' + this.ylabel + ' results.'
-                        toastr.info(myFilters);  
-                      }                      
-                    }
-                    if (myFilters == 'undefined' || myFilters == undefined) {
-                        toastr.error('Something went wrong. Please reset and try again.')
-                    }          
-                  });
-
-                //Download Raw Data button
-                d3.select('#download')
-                .on('click', ()=>{
-                    var data = gradeConfig.dim.top(Infinity);
-                    var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"});                  
-                    var myFilters = '';
-                    dc.chartRegistry.list().forEach((d)=>{
-                        if (d.filters()[0])
-                            myFilters += ' (' + d.filters() + ')'
-                    })
-
-                    FileSaver.saveAs(blob, 'PERSTAT Officer Year Group' + ' ' + store.state.asDate + myFilters + ' .csv');
-                });                   
-
 
                 // after DOM updated redraw to make chart widths update
                 this.$nextTick(() => {

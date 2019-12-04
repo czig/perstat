@@ -4,8 +4,8 @@
             <loader v-show="!loaded" key="loader"></loader>
             <div v-show="loaded" key="content">
                 <div class="row pt-2"> 
-                    <div id="radioSelect" class="col">
-                        <div class="custom-control custom-radio custom-control-inline">
+                    <div id="radioSelect" class="col-auto" data-step="3" data-intro="Number of Marriages and Match Percentage.">
+                        <div class="custom-control custom-radio custom-control-inline" >
                            <input class="custom-control-input" name="radio" type="radio" id="radio1" value="count" v-model="selected" @click="radioButton">
                            <label class="custom-control-label" for="radio1">
                                 Number of Marriages 
@@ -20,9 +20,6 @@
                     </div>
                     <div class="col"></div>
                     <div class="col-auto">
-                        <button type="button" 
-                                class="btn btn-danger btn-rounded btn-sm waves-effect" 
-                                @click="resetAll">Reset All</button>
                     </div>
                 </div>
                 <div v-show='showAlert' class="alert alert-warning alert-dismissible fade show" role="alert" key="first">
@@ -32,13 +29,18 @@
                     </button>
                 </div>
             	<div class="row">
-                    <div class="col-auto">
-                        Marriages (RegAF to RegAF):
-                        <span id="count"></span>
+                    <div class="row col-auto" data-step="4" data-intro="Summary statistics for the data elements are shown here. These numbers change as filters are applied.">
+                        <div class="col-auto">
+                            Marriages (RegAF to RegAF):
+                            <span id="count"></span>
+                        </div>
+                        <div class="col-auto">
+                            Matched:
+                            <span id="percent"></span>
+                        </div>
                     </div>
+                    <div class="col"></div>
                     <div class="col-auto">
-                        Matched:
-                        <span id="percent"></span>
                     </div>
                 </div>
                 <div class="row">
@@ -52,7 +54,7 @@
                                     </h3>
                                 </div>
                     </div>
-					<div class="col-sm-6 col-12">
+					<div class="col-sm-6 col-12" data-step="5" data-intro="Clicking a Grade Button applies filters to the Join Type chart. Click on one of the buttons below to see what updates!">
 						<h3> Grade 
 							<button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
@@ -102,6 +104,18 @@
 		    	</div>
 		    </div>
 		</transition-group>
+        <fab
+            data-step="2"
+            data-intro="Click here to Reset all filters for all charts, Download raw data in tab form, or View current filters applied to all charts."
+            :position="position"
+            :bg-color="bgColor"
+            :actions="fabActions"
+            @reset="resetAll"
+            @download="fabDownload"
+            @demo="startDemo"
+            @showMyFilters="fabFilter"
+            class="noselect"
+        ></fab>         
 	</div>
 </template>
 
@@ -112,6 +126,9 @@ import axios from 'axios'
 import formats from '@/store/format'
 import Loader from '@/components/Loader'
 import { store } from '@/store/store'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import toastr from 'toastr'
+import fab from '@/components/FAB'
 
 	export default {
 		data(){
@@ -121,13 +138,23 @@ import { store } from '@/store/store'
 				select: '',
 				grp: 1,
                 selected: 'count',
+                pageName: 'Join Spouse',
 				gradeADim: {},
                 gradeHasFilter: false,
 				gradeAGroup: {all:function(){return ''}},
 				grades: [],
 				gradesAll: [ "(01) 2LT", "(02) 1LT", "(03) CPT", "(04) MAJ", "(05) LTC", "(E1) AB", "(E2) AMN", "(E3) A1C", "(E4) SRA", "(E5) SSG", "(E6) TSG", "(E7) MSG", "(E8) SMS" ],
 				gradesOff: [ "(01) 2LT", "(02) 1LT", "(03) CPT", "(04) MAJ", "(05) LTC" ] ,
-				gradesEnl : ["(E1) AB", "(E2) AMN", "(E3) A1C", "(E4) SRA", "(E5) SSG", "(E6) TSG", "(E7) MSG", "(E8) SMS"]
+				gradesEnl : ["(E1) AB", "(E2) AMN", "(E3) A1C", "(E4) SRA", "(E5) SSG", "(E6) TSG", "(E7) MSG", "(E8) SMS"],
+                /* FAB items */
+                bgColor: '#333333',
+                position: 'bottom-right',  
+                iconSize: 'md',        
+                fabActions: [{ name: 'reset', icon: 'redo-alt', tooltip: 'Reset All', color: '#FF3547' },
+                             { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
+                             { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
+                             { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
+                mainIcon: 'plus'
 			}
 		},
 		watch:{
@@ -170,9 +197,18 @@ import { store } from '@/store/store'
                 else if (this.selected === "count") {
                     return "(Count)"
                 }
-            }
+            },
+            pageLabel: function() {
+                return this.pageName
+            },           
+            downloadDim: function() {
+                return this.ndx.dimension(function(d) {return d;});    
+            } 
         },
         methods: {
+            startDemo: function() {
+            introJs().start()
+            },
         	selectGrd(g){
         		this.select=g;
         		this.submit(g, 'dc-gradeA-barchart');
@@ -241,10 +277,70 @@ import { store } from '@/store/store'
                         })
                     }
                 }
-            }            
+            },
+            toProperCase: function(s) {
+                return s.toLowerCase().replace(/^(.)|\s(.)/g, 
+                function($1) { return $1.toUpperCase(); });
+            },
+            fabDownload: function(){
+                var data = this.downloadDim.top(Infinity)
+                var blob = new Blob([d3.csv.format(data)], {type: "text/csv;charset=utf-8"})
+
+                var myFilters = ''
+                dc.chartRegistry.list().forEach((d)=>{
+                    if (d.filters()[0])
+                        myFilters += ' (' + d.filters() + ')'
+                })
+
+                FileSaver.saveAs(blob, 'PERSTAT ' + this.pageName + ' ' + store.state.asDate + myFilters + ' .csv');
+            },
+           fabFilter: function(){
+                //Curent Filters button
+                var myFilters = this.toProperCase(this.pageLabel) + ' filters ';
+                dc.chartRegistry.list().forEach((d)=>{                    
+                //console.log("d.filter(): "+d.filter())
+                if (d.hasFilter()) {
+                    //console.log(d.anchor(), d.filters())
+                    myFilters += '\n (' + d.filters() + ')'
+                } 
+                })
+                if (myFilters !== undefined) {
+                    var myCheckValue = '0';
+                    
+                    if (this.selected == "count") { 
+                        var count = this.ndx.groupAll().reduceSum(function(d) { return +d.count })
+                        myCheckValue = count.value() };
+                    if (this.selected == "percent") { 
+                        myCheckValue = percent.innerText.substr(0, percent.innerText.length-1) };
+                //console.log("counterVars.value: "+counterVars.value());
+                // Override global options
+                  toastr.options = {
+                    "positionClass": "toast-bottom-full-width",
+                    "closeButton":"true",
+                    "preventDuplicates":"true"
+                  }
+                  if (myCheckValue == '0.0%' || myCheckValue == 0 ) {
+                    toastr.warning('Your ' + this.toProperCase(this.pageLabel) + ' filter(s) returned no results. Please reset and try again.');
+                  }
+                  else if (myCheckValue == '1') {
+                    myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' result.'
+                    toastr.info(myFilters);                         
+                  }
+                  else {
+                    myFilters += ' return ' + myCheckValue + ' ' + this.ylabel + ' results.'
+                    toastr.info(myFilters);  
+                  }                      
+                }
+                if (myFilters == 'undefined' || myFilters == undefined) {
+                    toastr.error('Something went wrong. Please reset and try again.')
+                }                
+            }
+            
 	    },
         components: {
             'loader': Loader,
+            FontAwesomeIcon,
+            fab
         },
         created: function(){
           console.log('created')
@@ -564,7 +660,7 @@ import { store } from '@/store/store'
         }
 	}
 </script>
-
+<style src="../../../node_modules/toastr/build/toastr.css"/>
 <style src="../../../node_modules/dc/dc.css">
 </style>
 
