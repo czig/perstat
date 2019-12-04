@@ -192,7 +192,7 @@
                 majcomColorScale: d3.scale.ordinal().range([chartSpecs.majcomChart.color]),
                 pageName: 'Enlisted Retention',
                 category: '1ST TERM',
-                year: '2018',
+                year: new Date().getFullYear(),
                 /* FAB items */
                 bgColor: '#333333',
                 position: 'bottom-right',  
@@ -258,10 +258,10 @@
           resetAll(){
             this.category = '1ST TERM';
             this.selected = 'reEnlRate';
-            this.year = '2018'
+            this.year = this.year
             store.state.resetAfsc = true;
             dc.filterAll();
-            this.singleSubmit('2018', 'dc-year-rowchart')
+            this.singleSubmit(this.year, 'dc-year-rowchart')
             this.singleSubmit('1ST TERM', 'dc-cat-rowchart')
           },
           startDemo: function() {
@@ -281,7 +281,7 @@
               }).forEach(chart=>{
                   chart.filterAll()
                   if (_.includes(id,'year')) {
-                    this.singleSubmit('2018', id)
+                    this.singleSubmit(this.year, id)
                   } else {
                     this.singleSubmit('1ST TERM', id)
                   }
@@ -571,7 +571,7 @@
                         });
                     })
                     .controlsUseVisibility(true);
-                yearChart.filter('2018')
+                yearChart.filter(this.year)
 
                 //CAT
                 var catConfig = {};
