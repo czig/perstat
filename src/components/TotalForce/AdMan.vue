@@ -35,7 +35,7 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="age" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                    <div id="age" class="col-xl-4 col-lg-5 col-md-5 col-sm-12 col-12">
                         <div id="dc-age-rowchart">
                             <h3>Age <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
@@ -398,9 +398,9 @@ import fab from '@/components/FAB'
                     return d.Age_Group;
                 })
                 ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
-                ageConfig.minHeight = 130 
+                ageConfig.minHeight = 250 
                 ageConfig.aspectRatio = 2
-                ageConfig.margins = {top: 0, left: 30, right: 30, bottom: 66}
+                ageConfig.margins = {top: 0, left: 30, right: 30, bottom: 60}
                 var c = d3.rgb("coral")
                 ageConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
                 var ageChart = dchelpers.getRowChart(ageConfig)
