@@ -25,13 +25,23 @@
                             </h3>
                         </div>
                     </div>
-                    <div id="grade" class="col-xl-8 col-lg-7 col-md-7 col-sm-12 col-12">
+                    <div id="grade" class="col-xl-4 col-lg-5 col-md-5 col-sm-12 col-12">
                         <div id="dc-grade-barchart" data-step="4" data-intro="Clicking the bars applies filters to the chart. Click on one of the bars and watch the other charts update!">
                             <h3> Grade/Rank <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
                             <button type="button" 
                                     class="btn btn-danger btn-sm btn-rounded reset" 
                                     style="visibility: hidden"
                                     @click="resetChart('dc-grade-barchart')">Reset</button>
+                            </h3>
+                        </div>
+                    </div>
+                    <div id="age" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        <div id="dc-age-rowchart">
+                            <h3>Age <span style="font-size: 14pt; opacity: 0.87;">{{ylabel}}</span>
+                            <button type="button" 
+                                    class="btn btn-danger btn-sm btn-rounded reset" 
+                                    style="visibility: hidden"
+                                    @click="resetChart('dc-age-rowchart')">Reset</button>
                             </h3>
                         </div>
                     </div>
@@ -262,6 +272,7 @@ import fab from '@/components/FAB'
                 obj.File_Type = formats.type[given.type]
                 obj.grade = formats.gradeFormat[given.grade]
                 obj.MAJCOM = formats.majFormat[given.maj]
+                obj.Age_Group = given.age_grp;
                 obj.MPF = formats.mpfFormat[given.mpf]
                 obj.Inventory = given.freq
 
@@ -380,6 +391,23 @@ import fab from '@/components/FAB'
                 
                 this.typeChart = typeChart
 
+                //age
+                var ageConfig = {}
+                ageConfig.id = 'age'
+                ageConfig.dim = this.ndx.dimension(function(d) {
+                    return d.Age_Group;
+                })
+                ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
+                ageConfig.minHeight = 130 
+                ageConfig.aspectRatio = 2
+                ageConfig.margins = {top: 0, left: 30, right: 30, bottom: 66}
+                var c = d3.rgb("coral")
+                ageConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
+                var ageChart = dchelpers.getRowChart(ageConfig)
+                ageChart
+                    .ordering((d)=>{ return d.key })
+
+
                  //grade
                 var gradeChart = dchelpers.getOrdinalBarChart(this.gradeConfig)
                 gradeChart
@@ -472,7 +500,7 @@ import fab from '@/components/FAB'
 <style src="../../../node_modules/dc/dc.css"/>
 
 <style>
-#type, #grade, #majcom, #base {
+#type, #grade, #majcom, #age, #base {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
