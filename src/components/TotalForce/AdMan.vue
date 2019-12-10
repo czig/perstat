@@ -399,7 +399,8 @@ import fab from '@/components/FAB'
                 })
                 ageConfig.group = ageConfig.dim.group().reduceSum(function(d) {return d.Inventory;})
                 ageConfig.minHeight = 250 
-                ageConfig.aspectRatio = 2
+                ageConfig.maxHeight = 250
+                ageConfig.aspectRatio = 3
                 ageConfig.margins = {top: 0, left: 30, right: 30, bottom: 60}
                 var c = d3.rgb("coral")
                 ageConfig.colors = d3.scale.ordinal().range([c.brighter(1).toString(),c.brighter(0.7).toString(), c.brighter(0.3).toString(), c.toString(),c.darker(0.3).toString(),c.darker(0.6).toString()])
