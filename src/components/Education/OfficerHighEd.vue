@@ -168,8 +168,11 @@
            resetAll(){
             dc.filterAll()
             dc.redrawAll()
-            this.fyr = '2020'
-            this.singleSubmit('2020', 'dc-fyr-barchart')
+            var d = new Date();
+            var n = d.getFullYear();
+            this.fyr = '2019'
+            this.singleSubmit('2019', 'dc-fyr-barchart')
+            // previously hardcoded FY 2020
           },
           startDemo: function() {
             introJs().start()
@@ -447,8 +450,9 @@
                             this.singleSubmit(d.data.key, 'dc-fyr-barchart')
                         });
                     })
-                fyrChart.filter('2020')
- 
+                fyrChart.filter('2019')
+                // previously hardcoded 2020
+
                 //Group Barchart
                 var groupConfig = {}
                 groupConfig.id = 'offgroup'

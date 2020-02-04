@@ -102,7 +102,7 @@
 			return {
 				data: [],
                 loaded: false,
-                fyr: '2020',
+                fyr: '2019',
                 searchCAFSC: "",
                 pageName: 'Enlisted Education',
                 /* FAB items */
@@ -142,8 +142,8 @@
            resetAll(){
             dc.filterAll()
             dc.redrawAll()
-            this.fyr = '2020'
-            this.singleSubmit('2020', 'dc-fyr-barchart')
+            this.fyr = '2019'
+            this.singleSubmit('2019', 'dc-fyr-barchart')
           },
           startDemo: function() {
             introJs().start()
@@ -396,7 +396,7 @@
                             this.singleSubmit(d.data.key, 'dc-fyr-barchart')
                         });
                     })
-                fyrChart.filter('2020')
+                fyrChart.filter('2019')
   
                 //Education Level / Degree Type Barchart
                 var edLevelConfig = {}
