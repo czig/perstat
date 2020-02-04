@@ -113,7 +113,8 @@
                              { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},
                              { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
                              { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
-                mainIcon: 'plus'
+                mainIcon: 'plus',
+                year: new Date().getFullYear()
 			}
 		},
 
@@ -142,8 +143,8 @@
            resetAll(){
             dc.filterAll()
             dc.redrawAll()
-            this.fyr = '2019'
-            this.singleSubmit('2019', 'dc-fyr-barchart')
+            this.year = this.year
+            this.singleSubmit(this.year, 'dc-fyr-barchart')
           },
           startDemo: function() {
             introJs().start()
@@ -367,7 +368,7 @@
                 }                
 
                 //YEAR
-                 d3.selectAll("#row1")
+                d3.selectAll("#row1")
                 var fyrConfig = {};
                 fyrConfig.id = 'fyr';
                 fyrConfig.dim = this.ndx.dimension(function (d) {
@@ -396,7 +397,7 @@
                             this.singleSubmit(d.data.key, 'dc-fyr-barchart')
                         });
                     })
-                fyrChart.filter('2019')
+                fyrChart.filter(this.year)
   
                 //Education Level / Degree Type Barchart
                 var edLevelConfig = {}
