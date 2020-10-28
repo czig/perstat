@@ -1,5 +1,49 @@
 <template>
     <div class="container">
+      <div>
+        <script type="text/x-template" id="modal-template">
+      <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-wrapper">
+            <div class="modal-container">
+
+              <div class="modal-header">
+                <slot name="header">
+                  default header
+                </slot>
+              </div>
+
+              <div class="modal-body">
+                <slot name="body">
+                  This site has migrated to cloud web services at <em class="text-secondary bg-light">&nbsp;https://starsdemog.a1vdc.us.af.mil/PERS_STAT/&nbsp;</em> <br>
+                  Please bookmark the link as this page will be removed 15NOV2020.
+                </slot>
+              </div>
+
+              <div class="modal-footer">
+                <slot name="footer">
+                  -DSYDT &nbsp;&nbsp;&nbsp;
+                  <button class="modal-default-button" @click="$emit('close')">
+                    OK
+                  </button>
+                </slot>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>         
+    </script>
+        </div>
+      <button id="show-modal" @click="showModal = true">What was that new link?</button>
+      <!-- use the modal component, pass in the prop -->
+      <modal v-if="showModal" @close="showModal = false">
+        <!--
+      you can use custom content here to overwrite
+      default content
+    -->
+        <h3 slot="header">PERS-STAT Site News!</h3>
+      </modal>
+
         <div class="row">
             <div class="col">
                 <div class="card">
@@ -165,6 +209,7 @@
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
 import fab from '@/components/FAB'
 
+
     export default {
         data() {
             return {
@@ -180,12 +225,16 @@ import fab from '@/components/FAB'
                              { name: 'download', icon: 'download', tooltip: 'Download Raw Data', color: '#2F96B4'},                             
                              { name: 'demo', icon: 'eye', tooltip: 'Demo the page', color: '#2F96B4'},
                              { name: 'showMyFilters', icon: 'search-filters', tooltip: 'View current Filters', color: '#2F96B4'}],
-                mainIcon: 'plus'
+                mainIcon: 'plus',
+                showModal: false
             }
         },
         components: {
             FontAwesomeIcon,
-            fab
+            fab,
+            "modal": {
+              template: "#modal-template"
+            }
         },
         methods:{
             reset(){
@@ -200,6 +249,9 @@ import fab from '@/components/FAB'
             filter(){
                 alert('Clicking this button on an Interactive page will pop up a message with the currently selected filters for the page.');
             }
+       },
+       mounted() {
+        this.showModal = true
        }
 }
 
@@ -262,6 +314,74 @@ import fab from '@/components/FAB'
                                   supported by Chrome and Opera */
 }
 </style> 
+<style>
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-container {
+  width: 50%;  
+  min-width: 300px;
+  margin: 0px auto;
+  padding: 20px 30px;
+  background-color: #0d47a1 !important;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  color: #fff;
+  transition: all 0.3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.modal-header h3 {
+  margin-top: 0;
+  color: #42b983;
+}
+
+.modal-body {
+  margin: 20px 0;
+}
+
+.modal-default-button {
+  float: right;
+}
+
+/*
+ * The following styles are auto-applied to elements with
+ * transition="modal" when their visibility is toggled
+ * by Vue.js.
+ *
+ * You can easily play with the modal transition by editing
+ * these styles.
+ */
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+
+</style>
 <style>
     .fab-tooltip.tooltip {
         display: block !important;
