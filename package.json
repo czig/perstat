@@ -35,7 +35,7 @@
     "popper.js": "^1.12.3",
     "toastr": "^2.1.4",
     "topojson": "^3.0.2",
-    "vue": "^2.5.17",
+    "vue": "^3.0.0",
     "vue-alert": "^1.0.1",
     "vue-clickaway": "^2.2.2",
     "vue-fab": "^2.3.1",
